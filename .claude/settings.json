@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "npm run verify; if ($LASTEXITCODE -ne 0) { exit 2 }",
+            "timeout": 120,
+            "statusMessage": "Running npm run verify"
+          }
+        ]
+      }
+    ]
+  }
+}

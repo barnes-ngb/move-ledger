@@ -11,7 +11,7 @@ Two rules:
 
 | Plan | Status | Notes |
 | --- | --- | --- |
-| `APPLY-01-domain-core.md` | Not run | Verified on Node 22.22 before delivery. Build machine is Node 24. |
+| `APPLY-01-domain-core.md` | Run 2026-08-01 | Verified on Node 22.22 before delivery. Build machine is Node 24. The plan's flat `tsconfig.json` omitted `jsx`, `allowImportingTsExtensions`, and `vite/client`, so `tsc` failed on the template files it had pulled into `include`. Corrected during the run. |
 | `APPLY-02-firebase-repositories.md` | Not run | Needs APPLY-01 merged, plus the Firebase CLI and a JRE. Its rules tests have never executed anywhere. |
 
 Update the status column in the same pull request as the run.

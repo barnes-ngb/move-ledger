@@ -12,7 +12,9 @@
     "noEmit": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
-    "types": ["vitest/globals", "node"]
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
+    "types": ["vitest/globals", "node", "vite/client"]
   },
   "include": ["src"]
 }

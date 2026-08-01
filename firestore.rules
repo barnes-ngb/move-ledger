@@ -1,0 +1,75 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isMember(moveId) {
+      return signedIn()
+        && request.auth.uid in get(/databases/$(database)/documents/moves/$(moveId)).data.memberUids;
+    }
+
+    function unchanged(field) {
+      return request.resource.data[field] == resource.data[field];
+    }
+
+    match /moves/{moveId} {
+      allow read: if isMember(moveId);
+
+      allow create: if signedIn()
+        && request.resource.data.memberUids == [request.auth.uid];
+
+      allow update: if isMember(moveId)
+        && unchanged('createdAt');
+
+      allow delete: if isMember(moveId);
+
+      match /members/{memberId} {
+        allow read: if isMember(moveId);
+        allow write: if isMember(moveId);
+      }
+
+      match /locations/{locationId} {
+        allow read, write: if isMember(moveId);
+      }
+
+      match /zones/{zoneId} {
+        allow read, write: if isMember(moveId);
+      }
+
+      match /containers/{containerId} {
+        allow read: if isMember(moveId);
+
+        allow create: if isMember(moveId)
+          && request.resource.data.moveId == moveId
+          && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.sequenceNumber is int;
+
+        allow update: if isMember(moveId)
+          && unchanged('sequenceNumber')
+          && unchanged('createdAt')
+          && unchanged('createdBy')
+          && request.resource.data.updatedBy == request.auth.uid;
+
+        allow delete: if isMember(moveId);
+      }
+
+      match /photos/{photoId} {
+        allow read: if isMember(moveId);
+        allow create: if isMember(moveId)
+          && request.resource.data.createdBy == request.auth.uid;
+        allow update, delete: if isMember(moveId);
+      }
+
+      match /activity/{eventId} {
+        allow read: if isMember(moveId);
+        allow create: if isMember(moveId)
+          && request.resource.data.actorId == request.auth.uid;
+        allow update, delete: if false;
+      }
+    }
+  }
+}

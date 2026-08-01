@@ -27,16 +27,17 @@ Done:
 
 - Phase 0 prototype validated. The 20-second loop holds.
 - Domain core run in the repository on 2026-08-01 from `plans/APPLY-01-domain-core.md`. Scaffold plus schemas, number reservation, status transitions, conditions, search, export. 47 tests across 6 files, `tsc --noEmit` clean under strict.
-- APPLY-02 authored and packaged as `plans/APPLY-02-firebase-repositories.md`.
+- APPLY-02 run in the repository on 2026-08-01 from `plans/APPLY-02-firebase-repositories.md`. Firebase app init with the persistent local cache, Google sign-in, one repository per collection with schema-validated writes, and both rules files copied from doc 10. ADR-0005 landed.
+- The rules tests ran for the first time anywhere on 2026-08-01. 9 of 9 passed. No rule was weakened and no test was weakened.
+- Firestore rules deployed to the live project. The default Firestore database was created by that deploy.
 - Firebase project created and configured. See `docs/12-firebase-project-setup.md`.
 - Repository created, doc set committed.
 - Auth settled: Google sign-in, two accounts. ADR-0005 lands with APPLY-02.
 
 Not done:
 
-- APPLY-02 has not executed anywhere.
-- The rules tests in APPLY-02 have never run. They typecheck and encode the nine cases from doc 10, but their first execution will be on the build machine.
-- The build machine has no Firebase CLI and no JRE. The emulator step and the deploy step both need them.
+- Storage rules are not deployed. Firebase Storage is not set up on the project, and `firebase deploy` refuses until someone clicks Get Started in the console.
+- `tests/rules/` covers seven of the nine cases doc 10 requires. The two Storage cases are missing.
 
 ## Domain model, settled
 
@@ -67,7 +68,7 @@ Evenings and weekends. The Zahner separation sweep and household decision work b
 1. Firebase project created. Done.
 2. Repository created, docs committed. Done.
 3. Run APPLY-01. Scaffold and domain core. Done.
-4. Run APPLY-02. Firebase init, auth, repositories, rules, rules tests, rules deploy.
+4. Run APPLY-02. Firebase init, auth, repositories, rules, rules tests, rules deploy. Done, except the Storage rules deploy.
 5. Vertical slice: create a box, set room and status, save, find it by number. Deployed to Hosting, installed on both phones. **Gate: August 24.**
 6. Photo capture, client-side resize, upload queue to Storage.
 7. Cloud Function for the vision call, contents list written back to the box record.
@@ -83,10 +84,15 @@ Steps 6 through 8 can land through September and still beat early October. Stop 
 - `create-vite` resolved to 9.1.2, which ships vite 8, react 19.2, typescript `~6.0.2`, and an oxlint config. APPLY-01 claimed typescript 7.0.2, so the resolved compiler is a major version below the stated baseline. The `.oxlintrc.json` and the `oxlint` dependency came with the template rather than being added. They are untouched and unused.
 - APPLY-01 step 2 was applied by scaffolding into an empty scratch directory and copying the result in. create-vite 9 offers no safe in-place answer for a non-empty directory: `--no-interactive` cancels and writes nothing, and `--overwrite` deletes the existing files.
 - The `tsconfig.json` written by APPLY-01 step 4 omitted `jsx`, `allowImportingTsExtensions`, and `vite/client` while setting `"include": ["src"]`, so `tsc` walked into the template TSX and failed with 60 errors. Corrected on the APPLY-01 branch.
-- `tsconfig.json` `include` must become `["src", "tests"]` during APPLY-02, or the rules tests will not be typechecked.
+- `tsconfig.json` `include` must become `["src", "tests"]` during APPLY-02, or the rules tests will not be typechecked. Applied during the APPLY-02 run.
+- `tests/rules/firestore.rules.test.ts` covers seven of the nine cases doc 10 lists as required. Cases 8 and 9, a Storage write above 2 MB and a Storage write with a non-image content type, have no test. The file's 9 passing tests are 7 required cases plus 2 extra Firestore cases, so the count matches the doc by coincidence rather than by coverage. The `storage.rules` file is written and deployed nowhere, so nothing enforced is untested today, but the gap must close before photos land in APPLY-03.
+- Doc 10 runs the rules tests with `--only firestore,storage`. The APPLY-02 script uses `--only firestore`, which is consistent with the tests actually present and would need widening alongside the missing Storage tests.
+- APPLY-02 was branched from `feat/domain-core` rather than `main`, because APPLY-01 is not merged. If APPLY-01 is squash-merged, this branch needs a rebase before its own merge.
+- The emulator needs `java` on `PATH`, not only `JAVA_HOME`. `firebase emulators:exec` reports "Could not spawn `java -version`" when `JAVA_HOME` alone is set, so the session sets `$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"` first.
 
 ## Open items
 
-- Confirm the Firestore and Storage locations, then fill the two CONFIRM rows in doc 12.
+- Set up Firebase Storage in the console, then deploy `storage.rules`. Until then the Storage half of the rules deploy cannot run. Photos in APPLY-03 depend on this.
+- Add the two missing Storage rules tests from doc 10, cases 8 and 9, and widen the `test:rules` script to `--only firestore,storage`.
+- Confirm the Storage location, then fill the CONFIRM rows in doc 12. The Firestore database was created during the APPLY-02 rules deploy, so its location is now fixed.
 - Restrict the browser API key by HTTP referrer once Hosting is live.
-- Install the Firebase CLI and a portable JRE before APPLY-02.

@@ -31,7 +31,7 @@ Cloud Functions are not used in Phase 1 or Phase 2. If AI summaries are built in
 - React Router
 - Zustand for UI state only
 - Zod for every persisted shape
-- Firebase JS SDK v10 modular
+- Firebase JS SDK v12 modular
 - `vite-plugin-pwa` for the service worker and install prompt
 - Dexie for the photo blob store
 

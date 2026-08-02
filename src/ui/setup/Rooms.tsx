@@ -54,7 +54,7 @@ export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDo
 
       <Field label="Add a room" value={name} onChange={setName} placeholder="Kitchen" />
       <p className="text-sm text-slate-400">
-        Next colour: <span style={{ color: nextColor.value }}>{nextColor.name}</span>
+        Next color: <span style={{ color: nextColor.value }}>{nextColor.name}</span>
       </p>
       <ErrorLine message={error} />
       <Button onClick={() => void add()} disabled={busy || !name.trim()} tone="quiet">

@@ -4,6 +4,21 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (id.includes("node_modules/@firebase") || id.includes("node_modules/firebase")) {
+            return "firebase";
+          }
+          if (id.includes("node_modules/react") || id.includes("node_modules/scheduler")) {
+            return "react";
+          }
+          return undefined;
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),

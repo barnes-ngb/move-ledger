@@ -2,9 +2,15 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    // Rules tests live under tests/rules and need the emulator, so the default
-    // run is scoped to src. Run rules tests via `npm run test:rules` only.
+    // jsdom rather than node, so components can render. Domain tests are
+    // environment-agnostic and pass either way. Rules tests are excluded
+    // here and run under the emulator via `npm run test:rules`.
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
-    environment: "node",
+    environment: "jsdom",
+    // Testing Library registers its own cleanup only when a global afterEach
+    // exists. Without this, a second render in one file stacks on the first
+    // and every query finds two of everything. tsconfig.json already lists
+    // vitest/globals in types, so this makes the runtime match the types.
+    globals: true,
   },
 });

@@ -85,7 +85,11 @@ Rules:
 
 - The user is not required to photograph the written label.
 - Zone name may appear as small supporting text. Number and color are the required marks.
-- The color swatch is a background fill, not a small dot.
+- The color is carried by the color name set in the room's own color at large type, not by a swatch. In the room picker, where the color is one attribute of a chip rather than the subject, a 24px dot is enough.
+
+### Naming
+
+This section previously read "The color swatch is a background fill, not a small dot". Amended 2026-08-02 during the APPLY-05 run, and the code was judged better than the doc here. What a person copies onto cardboard is the word, so the word is what the screen sets in the room's color at large type. A background fill would put the color behind the number and cost contrast on the one mark that has to be read at arm's length. The dot on a room chip is a different job: it labels a choice rather than instructing a hand.
 
 ## 4. Find box
 

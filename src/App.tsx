@@ -22,7 +22,7 @@ function SignedIn({ user }: { user: User }) {
   if (setupOpen || ctx.zones.length === 0) {
     return <Setup user={user} ctx={ctx} onFinished={() => setSetupOpen(false)} />;
   }
-  return <Home ctx={ctx} onSetup={() => setSetupOpen(true)} />;
+  return <Home ctx={ctx} uid={user.uid} onSetup={() => setSetupOpen(true)} />;
 }
 
 function FirstRun({ user, ctx }: { user: User; ctx: ReturnType<typeof useMove> }) {

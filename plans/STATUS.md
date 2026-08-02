@@ -30,6 +30,7 @@ Done:
 - APPLY-02 run in the repository on 2026-08-01 from `plans/APPLY-02-firebase-repositories.md`. Firebase app init with the persistent local cache, Google sign-in, one repository per collection with schema-validated writes, and both rules files copied from doc 10. ADR-0005 landed.
 - The rules tests ran for the first time anywhere on 2026-08-01. 9 of 9 passed. No rule was weakened and no test was weakened.
 - The two missing doc 10 cases are closed. `tests/rules/storage.rules.test.ts` landed on 2026-08-02 with 11 tests: cases 8 and 9, plus the read and write authorization paths `storage.rules` defines. `test:rules` now runs `--only firestore,storage` per doc 10. 20 of 20 pass. `storage.rules` was not modified.
+- APPLY-03 run in the repository on 2026-08-02 from `plans/APPLY-03-pwa-shell.md`. Tailwind v4, a service worker and manifest, the Google sign-in gate, the header indicator from doc 04 section 9, and an account screen that puts the signed-in uid on screen for the ADR-0005 onboarding step. Deployed to `https://move-ledger.web.app`. First code delivered to this repository without being compiled first, and it compiled clean on the first attempt.
 - Firebase Storage set up in the console on 2026-08-02.
 - Firestore rules deployed to the live project. The default Firestore database was created by that deploy.
 - Firebase project created and configured. See `docs/12-firebase-project-setup.md`.
@@ -70,13 +71,16 @@ Evenings and weekends. The Zahner separation sweep and household decision work b
 2. Repository created, docs committed. Done.
 3. Run APPLY-01. Scaffold and domain core. Done.
 4. Run APPLY-02. Firebase init, auth, repositories, rules, rules tests, rules deploy. Done, except the Storage rules deploy. The rules tests now cover all nine cases doc 10 requires.
-5. Vertical slice: create a box, set room and status, save, find it by number. Deployed to Hosting, installed on both phones. **Gate: August 24.**
-6. Photo capture, client-side resize, upload queue to Storage.
-7. Cloud Function for the vision call, contents list written back to the box record.
-8. Text search across notes and contents.
-9. Shelly logs twenty real boxes without help. If that works, the app is done.
+5. Run APPLY-03. Tailwind, PWA shell, auth gate, indicator, first deploy. Done.
+6. Run APPLY-04. Create a box, set room and status, save, find it by number. First-run setup. Installed on both phones. **Gate: August 24.**
+7. Run APPLY-05. Photo capture, client-side resize, upload queue to Storage.
+8. Run APPLY-06. Cloud Function for the vision call, contents list written back to the box record.
+9. Text search across notes and contents.
+10. Shelly logs twenty real boxes without help. If that works, the app is done.
 
-Steps 6 through 8 can land through September and still beat early October. Stop at step 9. Anything past it is the builder solving a harder problem than the situation requires.
+The vertical slice was one plan in the original sequence and is now two. APPLY-03 proves sign-in, install, and the offline shell on the real phones with no screens on top of them. APPLY-04 carries the box flow that the August 24 gate actually measures. Everything after the slice shifted by one: the photo pipeline is APPLY-05 and the Cloud Function is APPLY-06. `plans/README.md` holds the numbering table.
+
+Steps 7 through 9 can land through September and still beat early October. Stop at step 10. Anything past it is the builder solving a harder problem than the situation requires.
 
 ## Known drift
 
@@ -90,10 +94,13 @@ Steps 6 through 8 can land through September and still beat early October. Stop 
 - The Storage emulator resolves a `firestore.get` inside `storage.rules` against the project the CLI is running as, taken from `GCLOUD_PROJECT`, not against the project id the test environment was created with. Membership seeded under a test-only project id is invisible to the rule and every member check reads null. `tests/rules/storage.rules.test.ts` reads `GCLOUD_PROJECT` for this reason. It is also why that file runs on a different project id than the Firestore test file, which clears Firestore in its own `beforeEach` while vitest runs both files in parallel.
 - APPLY-02 was branched from `feat/domain-core` rather than `main`, because APPLY-01 is not merged. If APPLY-01 is squash-merged, this branch needs a rebase before its own merge.
 - The emulator needs `java` on `PATH`, not only `JAVA_HOME`. `firebase emulators:exec` reports "Could not spawn `java -version`" when `JAVA_HOME` alone is set, so the session sets `$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"` first.
+- `watchMoves` subscribed to the whole `moves` collection with no `where` clause, under a comment claiming the security rules narrowed the result. Firestore rules are not filters. A list query is evaluated per document and the whole query fails the moment it touches a document the caller cannot read, so the function would have thrown for both members the first time a move existed that one of them was not on. It worked only because every move in the database belonged to the signed-in user, and because nothing called it yet. Fixed during the APPLY-03 run: the query filters on `memberUids` with `array-contains`, which needs no composite index, and the signature took a `uid` parameter. The query and `firestore.rules` now assert the same thing.
+- The production bundle is a single 790 kB chunk, 238 kB gzipped, almost entirely the Firebase SDK. Vite warned about it on the APPLY-03 build. It is tolerable for a shell that loads once and then runs from the service worker cache, and it is not tolerable as a first load over cellular in a garage. Split it before APPLY-04 puts real screens on top of it.
+- There are no component tests. `vitest.config.ts` runs in the `node` environment, so nothing can render. The 47 tests are all domain tests and the 20 rules tests run separately against the emulators. Adding jsdom and a render library is deferred to APPLY-04, where the box flow gives them behavior worth asserting. APPLY-03's UI is a sign-in gate and two static screens, and the real test of it is the phone.
 - The Storage rules tests were written and run in a cloud container, not on the Windows machine. Two things there do not apply locally. The Firebase CLI had no credentials, so `firebase deploy --only storage` exited with "Failed to authenticate, have you run firebase login?" and the deploy is still owed. The container also sets `HTTPS_PROXY`, and `firebase-tools` proxies every request without checking `NO_PROXY`, including the Storage rules runtime's own call to the Firestore emulator on 127.0.0.1. That call comes back 405 and the CLI swallows it as a missing document, which reads exactly like a membership failure. Clearing `HTTPS_PROXY` for the one command is the fix there. Neither affects a local run.
 
 ## Open items
 
-- Run `firebase deploy --only storage` from the Windows machine. Storage is set up and the rules tests pass, so this is the last step before photos in APPLY-03.
+- Run `firebase deploy --only storage` from the Windows machine. Storage is set up and the rules tests pass, so this is the last step before photos in APPLY-05.
 - Confirm the Storage location, then fill the CONFIRM rows in doc 12. The Firestore database was created during the APPLY-02 rules deploy, so its location is now fixed.
-- Restrict the browser API key by HTTP referrer once Hosting is live.
+- Restrict the browser API key by HTTP referrer. Hosting went live on 2026-08-02 with the APPLY-03 deploy, so this is now actionable. The referrers are `move-ledger.web.app` and `move-ledger.firebaseapp.com`.

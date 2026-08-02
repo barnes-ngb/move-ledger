@@ -1,9 +1,13 @@
 import { useOnline } from "../hooks/useOnline";
 
 /**
- * Doc 04 screen 9. The wording is deliberate: offline data is held, not lost,
- * not pending, not unsaved. A user who believes their work might vanish will
- * stop trusting the app, and that costs more than any bug.
+ * Doc 04 screen 9, with the strings taken from doc 09, which arbitrates
+ * naming. Two rules drive the wording. Offline data is saved, not lost, not
+ * pending, not unsaved: a user who believes their work might vanish will stop
+ * trusting the app, and that costs more than any bug. And the online state
+ * reads "Online" rather than "Synced" because doc 09 bars sync as a
+ * user-facing word, and because useOnline reports connectivity, not whether
+ * every write has landed.
  */
 export function SyncIndicator() {
   const online = useOnline();
@@ -15,7 +19,7 @@ export function SyncIndicator() {
       }
     >
       <span className={"size-2 rounded-full " + (online ? "bg-emerald-400" : "bg-amber-300")} />
-      {online ? "Synced" : "Offline, changes held here"}
+      {online ? "Online" : "Offline, changes saved here"}
     </span>
   );
 }

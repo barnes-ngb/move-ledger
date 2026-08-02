@@ -26,7 +26,7 @@ The primary user is Shelly. Nathan is remote and travels one week a month. Every
 Done:
 
 - Phase 0 prototype validated. The 20-second loop holds.
-- Domain core built and verified before delivery. 47 tests, tsc strict clean. Packaged as `plans/APPLY-01-domain-core.md`.
+- Domain core run in the repository on 2026-08-01 from `plans/APPLY-01-domain-core.md`. Scaffold plus schemas, number reservation, status transitions, conditions, search, export. 47 tests across 6 files, `tsc --noEmit` clean under strict.
 - APPLY-02 authored and packaged as `plans/APPLY-02-firebase-repositories.md`.
 - Firebase project created and configured. See `docs/12-firebase-project-setup.md`.
 - Repository created, doc set committed.
@@ -34,7 +34,7 @@ Done:
 
 Not done:
 
-- Neither apply-file has executed anywhere. The repository holds no source yet.
+- APPLY-02 has not executed anywhere.
 - The rules tests in APPLY-02 have never run. They typecheck and encode the nine cases from doc 10, but their first execution will be on the build machine.
 - The build machine has no Firebase CLI and no JRE. The emulator step and the deploy step both need them.
 
@@ -66,7 +66,7 @@ Evenings and weekends. The Zahner separation sweep and household decision work b
 
 1. Firebase project created. Done.
 2. Repository created, docs committed. Done.
-3. Run APPLY-01. Scaffold and domain core.
+3. Run APPLY-01. Scaffold and domain core. Done.
 4. Run APPLY-02. Firebase init, auth, repositories, rules, rules tests, rules deploy.
 5. Vertical slice: create a box, set room and status, save, find it by number. Deployed to Hosting, installed on both phones. **Gate: August 24.**
 6. Photo capture, client-side resize, upload queue to Storage.
@@ -79,7 +79,11 @@ Steps 6 through 8 can land through September and still beat early October. Stop 
 ## Known drift
 
 - Doc 05 names Firebase SDK v10. Resolved reality is v12, and the modular API is unchanged for everything this app uses. APPLY-02 fixes the version line in its own pull request.
-- The build machine runs Node 24.18.1 and npm 11.16. Both apply-files were verified on Node 22.22 and npm 10.9. A failure traceable to that gap is a finding to report, not a thing to patch around.
+- The build machine runs Node 24.18.1 and npm 11.16. Both apply-files were verified on Node 22.22 and npm 10.9. A failure traceable to that gap is a finding to report, not a thing to patch around. Nothing in the APPLY-01 run traced back to it.
+- `create-vite` resolved to 9.1.2, which ships vite 8, react 19.2, typescript `~6.0.2`, and an oxlint config. APPLY-01 claimed typescript 7.0.2, so the resolved compiler is a major version below the stated baseline. The `.oxlintrc.json` and the `oxlint` dependency came with the template rather than being added. They are untouched and unused.
+- APPLY-01 step 2 was applied by scaffolding into an empty scratch directory and copying the result in. create-vite 9 offers no safe in-place answer for a non-empty directory: `--no-interactive` cancels and writes nothing, and `--overwrite` deletes the existing files.
+- The `tsconfig.json` written by APPLY-01 step 4 omitted `jsx`, `allowImportingTsExtensions`, and `vite/client` while setting `"include": ["src"]`, so `tsc` walked into the template TSX and failed with 60 errors. Corrected on the APPLY-01 branch.
+- `tsconfig.json` `include` must become `["src", "tests"]` during APPLY-02, or the rules tests will not be typechecked.
 
 ## Open items
 

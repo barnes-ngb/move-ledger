@@ -76,9 +76,9 @@ beforeEach(async () => {
   });
 });
 
-async function seedPhoto() {
+async function seedPhoto(path = PHOTO) {
   await env.withSecurityRulesDisabled(async (ctx) => {
-    await uploadBytes(photoRef(ctx.storage()), bytes(64), IMAGE);
+    await uploadBytes(photoRef(ctx.storage(), path), bytes(64), IMAGE);
   });
 }
 
@@ -102,8 +102,13 @@ describe("storage reads", () => {
   });
 
   it("a read under a move that does not exist is denied", async () => {
+    // The object is seeded but the move document is not, so the only thing that
+    // can reject this read is the firestore.exists arm of the read rule. Without
+    // the seed a missing object would reject too, for the wrong reason.
+    const ghostPhoto = `moves/${GHOST_MOVE}/${CONTAINER}/photo.jpg`;
+    await seedPhoto(ghostPhoto);
     const storage = env.authenticatedContext(NATHAN).storage();
-    await assertFails(getMetadata(photoRef(storage, `moves/${GHOST_MOVE}/${CONTAINER}/photo.jpg`)));
+    await assertFails(getMetadata(photoRef(storage, ghostPhoto)));
   });
 });
 

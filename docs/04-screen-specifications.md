@@ -173,11 +173,15 @@ Not a screen. A persistent indicator in the header.
 
 ### States
 
-- Synced
-- Offline, changes held locally
+- Online
+- Offline, changes saved here
 - Uploading photos, n remaining
 - Upload failed, tap to retry
 
 ### Rule
 
-Never present local unsynced data as lost, invalid, or provisional. It is real data that has not been copied yet.
+Never present local data that has not been copied to the server as lost, invalid, or provisional. It is real data that has not been copied yet.
+
+### Naming
+
+This section previously read "Synced" and "Offline, changes held locally". `docs/09-glossary.md` arbitrated on 2026-08-02 during the APPLY-03 run: sync is not a user-facing word, and the offline string is the one doc 09 already wrote. The online state also reports connectivity rather than write confirmation, because `useOnline` reads `navigator.onLine` and the Firestore SDK does not expose a sync state.

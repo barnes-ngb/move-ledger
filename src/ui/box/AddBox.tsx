@@ -100,7 +100,7 @@ export function AddBox({
         {/* The label instruction. Written before anything else is decided. */}
         <div className="rounded-3xl bg-slate-800 p-6 text-center">
           <p className="text-sm text-slate-400">Write on the box</p>
-          <p className="mt-2 font-mono text-6xl font-bold tracking-wider text-slate-50">
+          <p className="mt-2 font-mono text-7xl font-bold tracking-wider text-slate-50">
             {container ? container.displayCode : "..."}
           </p>
           {room ? (

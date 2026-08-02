@@ -13,12 +13,12 @@ Console account: the personal Google account. Nothing here touches a Zahner-adja
 | Storage bucket | `move-ledger.firebasestorage.app` |
 | Messaging sender ID | `1012528589337` |
 | Google Analytics | Off |
-| Firestore location | CONFIRM |
-| Storage location | CONFIRM |
+| Firestore location | `nam5` |
+| Storage location | `US-CENTRAL1` |
 
 The project ID carries no random suffix, which means `move-ledger` was still free at creation. `.firebaserc` points at it.
 
-The two location rows need one glance at the console. Firestore location is permanent once set, so it is worth having written down rather than remembered.
+Both locations were confirmed against the console on 2026-08-02. Firestore location is permanent once set, so it is written down here rather than remembered.
 
 ## Billing
 
@@ -38,9 +38,27 @@ Production mode from creation. The database stays empty until the first write fr
 
 Rules ship from `firestore.rules`, copied verbatim from doc 10. They deploy during APPLY-02 before any UI exists, so the production database is locked correctly from its first minute. A deliberate rules change goes to doc 10 first, then to the file, and it requires a matching rules test per AGENTS.md.
 
+### One database, `(default)`
+
+The project holds a single Firestore database, `(default)`, in Native mode at `nam5`. It was created by the APPLY-02 rules deploy.
+
+A second database, `move-ledger-db`, was created in error and has been deleted from the console. Nothing in the app ever addressed it.
+
+The app resolves to `(default)` because `initializeFirestore` in `src/lib/firebase.ts` takes an app and an options object and no database id. That is the only reason it resolves there, so adding a named database later means changing that call, not only the console.
+
 ## Storage
 
-One bucket. Rules in `storage.rules` restrict reads and writes to members of the move, cap uploads at 2 MB, and require an image content type. Photo bytes never enter Firestore.
+One bucket, `move-ledger.firebasestorage.app`, single region at `US-CENTRAL1`. Rules in `storage.rules` restrict reads and writes to members of the move, cap uploads at 2 MB, and require an image content type. Photo bytes never enter Firestore.
+
+`storage.rules` deployed to production on 2026-08-02.
+
+### The two locations are different shapes
+
+Firestore is multi-region at `nam5`. Storage is single-region at `US-CENTRAL1`. That mismatch is intentional and it works. The rules tests exercise the cross-service lookup, so the arrangement is covered rather than assumed.
+
+### The IAM grant that makes `firestore.get` work
+
+The `storage.rules` deploy on 2026-08-02 prompted for an IAM role grant for cross-service rules, and it was accepted. That grant is what allows a `firestore.get` inside `storage.rules` to resolve against the Firestore database. Without it, a membership check in the Storage rules reads null and every access is denied.
 
 ## What is secret and what is not
 

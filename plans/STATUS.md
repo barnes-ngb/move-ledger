@@ -29,16 +29,17 @@ Done:
 - Domain core run in the repository on 2026-08-01 from `plans/APPLY-01-domain-core.md`. Scaffold plus schemas, number reservation, status transitions, conditions, search, export. 47 tests across 6 files, `tsc --noEmit` clean under strict.
 - APPLY-02 run in the repository on 2026-08-01 from `plans/APPLY-02-firebase-repositories.md`. Firebase app init with the persistent local cache, Google sign-in, one repository per collection with schema-validated writes, and both rules files copied from doc 10. ADR-0005 landed.
 - The rules tests ran for the first time anywhere on 2026-08-01. 9 of 9 passed. No rule was weakened and no test was weakened.
-- The two missing doc 10 cases are closed. `tests/rules/storage.rules.test.ts` landed on 2026-08-02 with 11 tests: cases 8 and 9, plus the read and write authorization paths `storage.rules` defines. `test:rules` now runs `--only firestore,storage` per doc 10. 20 of 20 pass. `storage.rules` was not modified.
-- Firebase Storage set up in the console on 2026-08-02.
-- Firestore rules deployed to the live project. The default Firestore database was created by that deploy.
+- The two missing doc 10 cases are closed. `tests/rules/storage.rules.test.ts` landed on 2026-08-02 with 11 tests: cases 8 and 9, plus the read and write authorization paths `storage.rules` defines. `test:rules` now runs `--only firestore,storage` per doc 10. `storage.rules` was not modified.
+- `npm run test:rules` passes 20 of 20 across 2 files on the Windows build machine.
+- Firebase Storage set up in the console on 2026-08-02. One bucket, `move-ledger.firebasestorage.app`, single region at `US-CENTRAL1`.
+- Firestore rules deployed to the live project. The default Firestore database was created by that deploy. It is the only database on the project: `move-ledger-db` was created in error and has been deleted.
+- `storage.rules` deployed to production on 2026-08-02. The deploy prompted for an IAM role grant for cross-service rules and it was accepted, which is what lets `firestore.get` inside `storage.rules` resolve.
+- Both location rows in doc 12 are filled: Firestore `nam5`, Storage `US-CENTRAL1`.
 - Firebase project created and configured. See `docs/12-firebase-project-setup.md`.
 - Repository created, doc set committed.
 - Auth settled: Google sign-in, two accounts. ADR-0005 lands with APPLY-02.
 
-Not done:
-
-- Storage rules are not deployed. Storage is now set up on the project and the rules tests pass, so the only thing left is running the deploy from an authenticated machine. See "Known drift" for why the branch could not run it.
+The backend is complete. Both rules files are deployed, both rules test suites pass on this machine, and the project configuration is recorded.
 
 ## Domain model, settled
 
@@ -69,8 +70,8 @@ Evenings and weekends. The Zahner separation sweep and household decision work b
 1. Firebase project created. Done.
 2. Repository created, docs committed. Done.
 3. Run APPLY-01. Scaffold and domain core. Done.
-4. Run APPLY-02. Firebase init, auth, repositories, rules, rules tests, rules deploy. Done, except the Storage rules deploy. The rules tests now cover all nine cases doc 10 requires.
-5. Vertical slice: create a box, set room and status, save, find it by number. Deployed to Hosting, installed on both phones. **Gate: August 24.**
+4. Run APPLY-02. Firebase init, auth, repositories, rules, rules tests, rules deploy. Done. The rules tests cover all nine cases doc 10 requires and both rules files are deployed. The backend is complete.
+5. Vertical slice: create a box, set room and status, save, find it by number. Deployed to Hosting, installed on both phones. **Gate: August 24.** This is next.
 6. Photo capture, client-side resize, upload queue to Storage.
 7. Cloud Function for the vision call, contents list written back to the box record.
 8. Text search across notes and contents.
@@ -90,10 +91,9 @@ Steps 6 through 8 can land through September and still beat early October. Stop 
 - The Storage emulator resolves a `firestore.get` inside `storage.rules` against the project the CLI is running as, taken from `GCLOUD_PROJECT`, not against the project id the test environment was created with. Membership seeded under a test-only project id is invisible to the rule and every member check reads null. `tests/rules/storage.rules.test.ts` reads `GCLOUD_PROJECT` for this reason. It is also why that file runs on a different project id than the Firestore test file, which clears Firestore in its own `beforeEach` while vitest runs both files in parallel.
 - APPLY-02 was branched from `feat/domain-core` rather than `main`, because APPLY-01 is not merged. If APPLY-01 is squash-merged, this branch needs a rebase before its own merge.
 - The emulator needs `java` on `PATH`, not only `JAVA_HOME`. `firebase emulators:exec` reports "Could not spawn `java -version`" when `JAVA_HOME` alone is set, so the session sets `$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"` first.
-- The Storage rules tests were written and run in a cloud container, not on the Windows machine. Two things there do not apply locally. The Firebase CLI had no credentials, so `firebase deploy --only storage` exited with "Failed to authenticate, have you run firebase login?" and the deploy is still owed. The container also sets `HTTPS_PROXY`, and `firebase-tools` proxies every request without checking `NO_PROXY`, including the Storage rules runtime's own call to the Firestore emulator on 127.0.0.1. That call comes back 405 and the CLI swallows it as a missing document, which reads exactly like a membership failure. Clearing `HTTPS_PROXY` for the one command is the fix there. Neither affects a local run.
+- VS Code's integrated terminal does not inherit a newly set user-scope `JAVA_HOME`. The variable is read at process start, so a terminal opened inside an already-running VS Code keeps the old environment no matter how many new terminals are spawned. Restart VS Code after setting it. This cost time twice.
+- Resolved 2026-08-02. The Storage rules tests were written and first run in a cloud container, not on the Windows machine. Two things there did not apply locally. The Firebase CLI had no credentials, so `firebase deploy --only storage` exited with "Failed to authenticate, have you run firebase login?"; the deploy has since run from the Windows machine. The container also sets `HTTPS_PROXY`, and `firebase-tools` proxies every request without checking `NO_PROXY`, including the Storage rules runtime's own call to the Firestore emulator on 127.0.0.1. That call comes back 405 and the CLI swallows it as a missing document, which reads exactly like a membership failure. Clearing `HTTPS_PROXY` for the one command is the fix there. Neither affects a local run, and `npm run test:rules` now passes 20 of 20 locally.
 
 ## Open items
 
-- Run `firebase deploy --only storage` from the Windows machine. Storage is set up and the rules tests pass, so this is the last step before photos in APPLY-03.
-- Confirm the Storage location, then fill the CONFIRM rows in doc 12. The Firestore database was created during the APPLY-02 rules deploy, so its location is now fixed.
 - Restrict the browser API key by HTTP referrer once Hosting is live.

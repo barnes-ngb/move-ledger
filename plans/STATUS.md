@@ -2,7 +2,7 @@
 
 Living file. Edit in place. Git history is the version record, so this file never takes a version suffix and the old pickup summaries do not get carried into the repo.
 
-Last updated: 2026-08-01.
+Last updated: 2026-08-02.
 
 ## What this is
 
@@ -29,6 +29,8 @@ Done:
 - Domain core run in the repository on 2026-08-01 from `plans/APPLY-01-domain-core.md`. Scaffold plus schemas, number reservation, status transitions, conditions, search, export. 47 tests across 6 files, `tsc --noEmit` clean under strict.
 - APPLY-02 run in the repository on 2026-08-01 from `plans/APPLY-02-firebase-repositories.md`. Firebase app init with the persistent local cache, Google sign-in, one repository per collection with schema-validated writes, and both rules files copied from doc 10. ADR-0005 landed.
 - The rules tests ran for the first time anywhere on 2026-08-01. 9 of 9 passed. No rule was weakened and no test was weakened.
+- The two missing doc 10 cases are closed. `tests/rules/storage.rules.test.ts` landed on 2026-08-02 with 11 tests: cases 8 and 9, plus the read and write authorization paths `storage.rules` defines. `test:rules` now runs `--only firestore,storage` per doc 10. 20 of 20 pass. `storage.rules` was not modified.
+- Firebase Storage set up in the console on 2026-08-02.
 - Firestore rules deployed to the live project. The default Firestore database was created by that deploy.
 - Firebase project created and configured. See `docs/12-firebase-project-setup.md`.
 - Repository created, doc set committed.
@@ -36,8 +38,7 @@ Done:
 
 Not done:
 
-- Storage rules are not deployed. Firebase Storage is not set up on the project, and `firebase deploy` refuses until someone clicks Get Started in the console.
-- `tests/rules/` covers seven of the nine cases doc 10 requires. The two Storage cases are missing.
+- Storage rules are not deployed. Storage is now set up on the project and the rules tests pass, so the only thing left is running the deploy from an authenticated machine. See "Known drift" for why the branch could not run it.
 
 ## Domain model, settled
 
@@ -68,7 +69,7 @@ Evenings and weekends. The Zahner separation sweep and household decision work b
 1. Firebase project created. Done.
 2. Repository created, docs committed. Done.
 3. Run APPLY-01. Scaffold and domain core. Done.
-4. Run APPLY-02. Firebase init, auth, repositories, rules, rules tests, rules deploy. Done, except the Storage rules deploy.
+4. Run APPLY-02. Firebase init, auth, repositories, rules, rules tests, rules deploy. Done, except the Storage rules deploy. The rules tests now cover all nine cases doc 10 requires.
 5. Vertical slice: create a box, set room and status, save, find it by number. Deployed to Hosting, installed on both phones. **Gate: August 24.**
 6. Photo capture, client-side resize, upload queue to Storage.
 7. Cloud Function for the vision call, contents list written back to the box record.
@@ -85,14 +86,14 @@ Steps 6 through 8 can land through September and still beat early October. Stop 
 - APPLY-01 step 2 was applied by scaffolding into an empty scratch directory and copying the result in. create-vite 9 offers no safe in-place answer for a non-empty directory: `--no-interactive` cancels and writes nothing, and `--overwrite` deletes the existing files.
 - The `tsconfig.json` written by APPLY-01 step 4 omitted `jsx`, `allowImportingTsExtensions`, and `vite/client` while setting `"include": ["src"]`, so `tsc` walked into the template TSX and failed with 60 errors. Corrected on the APPLY-01 branch.
 - `tsconfig.json` `include` must become `["src", "tests"]` during APPLY-02, or the rules tests will not be typechecked. Applied during the APPLY-02 run.
-- `tests/rules/firestore.rules.test.ts` covers seven of the nine cases doc 10 lists as required. Cases 8 and 9, a Storage write above 2 MB and a Storage write with a non-image content type, have no test. The file's 9 passing tests are 7 required cases plus 2 extra Firestore cases, so the count matches the doc by coincidence rather than by coverage. The `storage.rules` file is written and deployed nowhere, so nothing enforced is untested today, but the gap must close before photos land in APPLY-03.
-- Doc 10 runs the rules tests with `--only firestore,storage`. The APPLY-02 script uses `--only firestore`, which is consistent with the tests actually present and would need widening alongside the missing Storage tests.
+- Resolved 2026-08-02. `tests/rules/firestore.rules.test.ts` covered seven of the nine cases doc 10 lists as required. Cases 8 and 9, a Storage write above 2 MB and a Storage write with a non-image content type, had no test, so the 9 passing tests matched the doc's count by coincidence rather than by coverage. `tests/rules/storage.rules.test.ts` closes both, and the `test:rules` script now uses `--only firestore,storage`.
+- The Storage emulator resolves a `firestore.get` inside `storage.rules` against the project the CLI is running as, taken from `GCLOUD_PROJECT`, not against the project id the test environment was created with. Membership seeded under a test-only project id is invisible to the rule and every member check reads null. `tests/rules/storage.rules.test.ts` reads `GCLOUD_PROJECT` for this reason. It is also why that file runs on a different project id than the Firestore test file, which clears Firestore in its own `beforeEach` while vitest runs both files in parallel.
 - APPLY-02 was branched from `feat/domain-core` rather than `main`, because APPLY-01 is not merged. If APPLY-01 is squash-merged, this branch needs a rebase before its own merge.
 - The emulator needs `java` on `PATH`, not only `JAVA_HOME`. `firebase emulators:exec` reports "Could not spawn `java -version`" when `JAVA_HOME` alone is set, so the session sets `$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"` first.
+- The Storage rules tests were written and run in a cloud container, not on the Windows machine. Two things there do not apply locally. The Firebase CLI had no credentials, so `firebase deploy --only storage` exited with "Failed to authenticate, have you run firebase login?" and the deploy is still owed. The container also sets `HTTPS_PROXY`, and `firebase-tools` proxies every request without checking `NO_PROXY`, including the Storage rules runtime's own call to the Firestore emulator on 127.0.0.1. That call comes back 405 and the CLI swallows it as a missing document, which reads exactly like a membership failure. Clearing `HTTPS_PROXY` for the one command is the fix there. Neither affects a local run.
 
 ## Open items
 
-- Set up Firebase Storage in the console, then deploy `storage.rules`. Until then the Storage half of the rules deploy cannot run. Photos in APPLY-03 depend on this.
-- Add the two missing Storage rules tests from doc 10, cases 8 and 9, and widen the `test:rules` script to `--only firestore,storage`.
+- Run `firebase deploy --only storage` from the Windows machine. Storage is set up and the rules tests pass, so this is the last step before photos in APPLY-03.
 - Confirm the Storage location, then fill the CONFIRM rows in doc 12. The Firestore database was created during the APPLY-02 rules deploy, so its location is now fixed.
 - Restrict the browser API key by HTTP referrer once Hosting is live.

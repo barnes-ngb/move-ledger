@@ -23,6 +23,10 @@ export async function addMember(
   return createValidated(members(moveId), moveMemberSchema, { ...member, id: newId(), moveId });
 }
 
-export function watchMembers(moveId: string, onData: (m: MoveMember[]) => void): () => void {
-  return subscribeValidated(members(moveId), moveMemberSchema, onData);
+export function watchMembers(
+  moveId: string,
+  onData: (m: MoveMember[]) => void,
+  onError?: (error: unknown) => void
+): () => void {
+  return subscribeValidated(members(moveId), moveMemberSchema, onData, { onError });
 }

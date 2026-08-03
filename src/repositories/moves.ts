@@ -27,8 +27,18 @@ export async function updateMove(next: Move): Promise<Move> {
  * outright the moment it touches a document the caller cannot read. The
  * query and firestore.rules now assert the same thing.
  */
-export function watchMoves(uid: string, onData: (m: Move[]) => void): () => void {
-  return subscribeValidated(moves(), moveSchema, onData, undefined, where("memberUids", "array-contains", uid));
+export function watchMoves(
+  uid: string,
+  onData: (m: Move[]) => void,
+  onError?: (error: unknown) => void
+): () => void {
+  return subscribeValidated(
+    moves(),
+    moveSchema,
+    onData,
+    { onError },
+    where("memberUids", "array-contains", uid)
+  );
 }
 
 export async function deleteMove(moveId: string): Promise<void> {

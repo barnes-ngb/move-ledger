@@ -18,12 +18,16 @@ export async function logActivity(
   });
 }
 
-export function watchActivity(moveId: string, onData: (e: ActivityEvent[]) => void): () => void {
+export function watchActivity(
+  moveId: string,
+  onData: (e: ActivityEvent[]) => void,
+  onError?: (error: unknown) => void
+): () => void {
   return subscribeValidated(
     activity(moveId),
     activityEventSchema,
     onData,
-    undefined,
+    { onError },
     orderBy("occurredAt", "desc")
   );
 }

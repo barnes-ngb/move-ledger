@@ -2,7 +2,7 @@
 
 Living file. Edit in place. Git history is the version record, so this file never takes a version suffix.
 
-Last updated: 2026-08-02, after the APPLY-05 run.
+Last updated: 2026-08-03, after the subscription error path fix.
 
 ## What this is
 
@@ -39,6 +39,7 @@ Done:
 - APPLY-03 verified on hardware 2026-08-02. Nathan's Android phone installs to the home screen, runs standalone with no browser chrome, signs in through the Google popup inside standalone mode, keeps the session across installation, and loads the shell in airplane mode with the correct offline wording. Popup auth in a standalone PWA was the largest unknown in the plan and it holds, so ADR-0005 needs no revisiting.
 - APPLY-04 run 2026-08-02. Move, member, place, and room subscriptions behind the auth gate. First-run flow creating the move, both places, and the owner's member record holding 1 to 499. Both halves of the ADR-0005 couch step are implemented: the waiting screen shows the second person her own id and the Members screen takes it. Hosting cache headers pinned and verified live.
 - Both APPLY-03 and APPLY-04 were delivered without being compiled first and compiled clean on the first attempt.
+- Subscription failures given an error path on 2026-08-03. Every listener in the app could stop silently before this. See the first entry under Resolved drift for what it cost and how it was found.
 - APPLY-05 run 2026-08-02. Add box with the number reserved on mount, the room chips, the note, and Save and next. Find by number on the local cache, opening the box the moment one match remains. Box detail with the legal forward transitions, note, and room change. The Firebase bundle split into three chunks and the first render environment, so components can be tested at all. Deployed to `https://move-ledger.web.app`.
 
 Not done:
@@ -106,7 +107,9 @@ Things that are still true and still owed.
 
 **`oxlint` came with the template** rather than being added. `.oxlintrc.json` and the dependency are untouched and unused.
 
-**Component tests cover two files.** The render environment exists now, but only `keypad.ts`, `label.ts`, and `FindBox.tsx` have tests. `AddBox.tsx` is the screen the 20-second number turns on and nothing covers it but a phone, because reserving a number touches Firestore and there is no fake for it yet. The first-run flow is still uncovered too.
+**Component tests cover two files.** The render environment exists now, but only `keypad.ts`, `label.ts`, and `FindBox.tsx` have tests, plus the two hooks as of 2026-08-03. `AddBox.tsx` is the screen the 20-second number turns on and nothing covers it but a phone, because reserving a number touches Firestore and there is no fake for it yet. The first-run flow is still uncovered too. `SubscriptionFailed` has no render test for the same reason: reaching it through `App.tsx` means loading `lib/firebase`, and the hook tests already assert the state that puts it on screen.
+
+**Nothing exercises a real Firestore failure.** The 2026-08-03 fix is covered by stubbing `firebase/firestore` and by replacing the repositories module. Both assert real contracts and both would catch the defect coming back, but neither proves the app recovers from an actual denied read. The emulator suite can do that and does not, since `tests/rules` runs under a separate config and only asserts rules verdicts. Worth an item on the day someone changes the rules and wants to know what the app does about it.
 
 **Testing Library needs `globals: true`.** It registers its own `cleanup` only when a global `afterEach` exists. Without it a second `render` in one file stacks on the first and every query finds two of everything, which reads as a component bug rather than a harness one. Set during the APPLY-05 run. `tsconfig.json` had listed `vitest/globals` in `types` since APPLY-01, so the types had been claiming this all along.
 
@@ -114,6 +117,8 @@ Things that are still true and still owed.
 
 One line each, so a reader knows these were real and are closed.
 
+- **A stopped listener hung the app on "Loading".** `subscribeValidated` handed `onSnapshot` a success callback and nothing else. Firestore's error callback is optional, so a listener the rules denied, or one that failed for any other reason, simply never called back. `useMove` cleared `loading` only from the data path, so the app sat on the word "Loading" for as long as the phone stayed open, and the actual reason went to the console where nobody standing in a room holding a box will ever see it. Fixed on 2026-08-03. `subscribeValidated` now takes an optional handlers object carrying `onBadDoc` and `onError`, replacing the bare `onBadDoc` parameter, which keeps the query constraints in the rest parameter and spares every caller a run of `undefined` arguments. Each `watch*` function gained an optional third parameter for the error. `useMove` and `useContainers` end loading and expose `failed` plus `retry`. `App.tsx` and `Home.tsx` answer a failure with one sentence and a Try again button rather than a spinner. How it was found is the part worth keeping: on a phone, by looking at it. Nothing in the suite failed, `tsc` was clean, and 55 tests passed, because no test had ever run a listener that fails. There are 12 tests on that path now, 5 of them against the SDK boundary with `firebase/firestore` stubbed, and 4 of those 5 fail if the error callback is removed again.
+- `index.html` set `apple-mobile-web-app-capable` and not the standard `mobile-web-app-capable`, which Chrome reports as deprecated in the console on every load. Both are present as of 2026-08-03. Install behavior did not change; the warning is gone.
 - Doc 05 named Firebase SDK v10 against a resolved v12. Corrected during the APPLY-02 run.
 - APPLY-01's flat `tsconfig.json` omitted `jsx`, `allowImportingTsExtensions`, and `vite/client` while including all of `src`, so `tsc` failed with 60 errors on the template files. Corrected during the APPLY-01 run.
 - `tsconfig.json` `include` had to become `["src", "tests"]` or the rules tests were never typechecked. Applied during the APPLY-02 run.

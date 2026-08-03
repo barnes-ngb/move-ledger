@@ -174,6 +174,63 @@ describe("the moves list query", () => {
   });
 });
 
+/**
+ * The shape useMove actually sends. watchMembers, watchZones and watchLocations
+ * each open an unfiltered list query on a subcollection of /moves/{moveId}.
+ * A suite built from getDoc never evaluates the list path on these rules.
+ */
+describe("subcollection list queries", () => {
+  const SUBS = ["members", "zones", "locations", "containers", "photos", "activity"] as const;
+
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const fs = ctx.firestore();
+      for (const sub of SUBS) {
+        await setDoc(doc(fs, "moves", MOVE, sub, `${sub}-1`), { moveId: MOVE, seeded: true });
+      }
+    });
+  });
+
+  for (const sub of SUBS) {
+    it(`a member can list ${sub}`, async () => {
+      const db = env.authenticatedContext(NATHAN).firestore();
+      const snap = await assertSucceeds(getDocs(collection(db, "moves", MOVE, sub)));
+      expect(snap.docs.map((d) => d.id)).toEqual([`${sub}-1`]);
+    });
+
+    it(`a non-member cannot list ${sub}`, async () => {
+      const db = env.authenticatedContext(STRANGER).firestore();
+      await assertFails(getDocs(collection(db, "moves", MOVE, sub)));
+    });
+
+    // The state actually reported: a move exists and nothing has been added to
+    // it yet, so all three listeners open on an empty collection.
+    it(`a member can list ${sub} when the collection is empty`, async () => {
+      await env.withSecurityRulesDisabled(async (ctx) => {
+        await deleteDoc(doc(ctx.firestore(), "moves", MOVE, sub, `${sub}-1`));
+      });
+      const db = env.authenticatedContext(NATHAN).firestore();
+      const snap = await assertSucceeds(getDocs(collection(db, "moves", MOVE, sub)));
+      expect(snap.empty).toBe(true);
+    });
+  }
+});
+
+/**
+ * Diagnostic, not a rule requirement. isMember() resolves membership with a
+ * get() on the parent move. If that document is not on the server yet, the
+ * get() returns null and every subcollection listener under it is denied at
+ * once, which is the same symptom as a broken list rule and is not one.
+ */
+describe("a subcollection of a move the server does not have", () => {
+  it("denies every subcollection listener at once", async () => {
+    const db = env.authenticatedContext(NATHAN).firestore();
+    for (const sub of ["members", "zones", "locations"]) {
+      await assertFails(getDocs(collection(db, "moves", "not-on-server", sub)));
+    }
+  });
+});
+
 describe("move creation", () => {
   it("refuses a memberUids array that omits the creator", async () => {
     const db = env.authenticatedContext(NATHAN).firestore();

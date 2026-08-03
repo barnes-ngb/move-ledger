@@ -64,3 +64,23 @@ export function Screen({ title, children }: { title: string; children: ReactNode
 export function ErrorLine({ message }: { message: string | null }) {
   return message ? <p className="text-sm text-amber-300">{message}</p> : null;
 }
+
+/**
+ * What a stopped listener looks like. A spinner is the wrong answer here: the
+ * data is not on its way, and nothing will arrive without another attempt.
+ *
+ * The wording follows docs/09-glossary.md. The reason a listener stopped is a
+ * Firestore code and it stays in the console. On screen it is one plain
+ * sentence, because the person reading it is standing in a room holding a box
+ * and the only useful action is the button.
+ */
+export function SubscriptionFailed({ title, onRetry }: { title: string; onRetry: () => void }) {
+  return (
+    <Screen title={title}>
+      <p className="text-slate-400">
+        Move Ledger stopped receiving data for this move. Nothing you saved is gone.
+      </p>
+      <Button onClick={onRetry}>Try again</Button>
+    </Screen>
+  );
+}

@@ -29,6 +29,10 @@ export async function updatePhotoRecord(moveId: string, next: ContainerPhoto): P
   return updateValidated(photos(moveId), containerPhotoSchema, next);
 }
 
-export function watchPhotos(moveId: string, onData: (p: ContainerPhoto[]) => void): () => void {
-  return subscribeValidated(photos(moveId), containerPhotoSchema, onData);
+export function watchPhotos(
+  moveId: string,
+  onData: (p: ContainerPhoto[]) => void,
+  onError?: (error: unknown) => void
+): () => void {
+  return subscribeValidated(photos(moveId), containerPhotoSchema, onData, { onError });
 }

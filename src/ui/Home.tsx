@@ -5,16 +5,22 @@ import { useContainers } from "../hooks/useContainers";
 import { AddBox } from "./box/AddBox";
 import { BoxDetail } from "./box/BoxDetail";
 import { FindBox } from "./box/FindBox";
-import { Button, Screen } from "./kit";
+import { Button, Screen, SubscriptionFailed } from "./kit";
 
 type View = { name: "home" } | { name: "add" } | { name: "find" } | { name: "detail"; id: string };
 
 export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onSetup: () => void }) {
   const [view, setView] = useState<View>({ name: "home" });
-  const containers = useContainers(ctx.move?.id ?? null);
+  const { containers, failed, retry } = useContainers(ctx.move?.id ?? null);
 
   if (!ctx.move || !ctx.me) return null;
   const moveId = ctx.move.id;
+
+  // Containers are subscribed here rather than in useMove, so the failure is
+  // answered here too. Falling through would show a box count of zero and let
+  // Add box reserve a number against an empty list, which is the one mistake
+  // in this app that a marker makes permanent.
+  if (failed) return <SubscriptionFailed title="Cannot load your boxes" onRetry={retry} />;
 
   if (view.name === "add") {
     return (

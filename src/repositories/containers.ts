@@ -124,6 +124,10 @@ export async function clearContainerCondition(
   return saved;
 }
 
-export function watchContainers(moveId: string, onData: (c: Container[]) => void): () => void {
-  return subscribeValidated(containers(moveId), containerSchema, onData);
+export function watchContainers(
+  moveId: string,
+  onData: (c: Container[]) => void,
+  onError?: (error: unknown) => void
+): () => void {
+  return subscribeValidated(containers(moveId), containerSchema, onData, { onError });
 }

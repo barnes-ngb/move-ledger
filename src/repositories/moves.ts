@@ -1,7 +1,14 @@
 import { collection, deleteDoc, doc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { moveSchema, type Move } from "../domain/schemas";
-import { createValidated, newId, nowIso, subscribeValidated, updateValidated } from "./shared";
+import {
+  createValidated,
+  newId,
+  nowIso,
+  subscribeValidated,
+  updateValidated,
+  type SnapshotOrigin,
+} from "./shared";
 
 const moves = () => collection(db, "moves");
 
@@ -26,17 +33,21 @@ export async function updateMove(next: Move): Promise<Move> {
  * result. Firestore rules are not filters: an unfiltered list query fails
  * outright the moment it touches a document the caller cannot read. The
  * query and firestore.rules now assert the same thing.
+ *
+ * The only listener in the app that watches metadata. A caller has to know
+ * whether the move it just received exists on the server, because everything
+ * under `/moves/{id}` is read against the server's copy of that document.
  */
 export function watchMoves(
   uid: string,
-  onData: (m: Move[]) => void,
+  onData: (m: Move[], origin: SnapshotOrigin) => void,
   onError?: (error: unknown) => void
 ): () => void {
   return subscribeValidated(
     moves(),
     moveSchema,
     onData,
-    { onError },
+    { onError, watchMetadata: true },
     where("memberUids", "array-contains", uid)
   );
 }

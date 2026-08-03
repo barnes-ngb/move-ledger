@@ -22,19 +22,27 @@ vi.mock("firebase/firestore", () => ({
   updateDoc: vi.fn(),
 }));
 
-const { subscribeValidated } = await import("../shared");
+const { serverConfirmed, subscribeValidated } = await import("../shared");
 
 const schema = z.object({ id: z.string(), n: z.number() });
 const ref = {} as never;
 
-/** The three arguments the SDK was handed on the last call. */
+/** What the SDK was handed on the last call. Options sit second in this overload. */
 function lastCall() {
-  const call = mocks.onSnapshot.mock.calls.at(-1) as [unknown, (s: unknown) => void, (e: unknown) => void];
-  return { onNext: call[1], onError: call[2] };
+  const call = mocks.onSnapshot.mock.calls.at(-1) as [
+    unknown,
+    { includeMetadataChanges: boolean },
+    (s: unknown) => void,
+    (e: unknown) => void,
+  ];
+  return { options: call[1], onNext: call[2], onError: call[3] };
 }
 
-function snapshot(docs: Array<{ id: string; body: unknown }>) {
-  return { docs: docs.map((d) => ({ id: d.id, data: () => d.body })) };
+function snapshot(
+  docs: Array<{ id: string; body: unknown }>,
+  metadata = { fromCache: false, hasPendingWrites: false }
+) {
+  return { docs: docs.map((d) => ({ id: d.id, data: () => d.body })), metadata };
 }
 
 describe("subscribeValidated", () => {
@@ -84,6 +92,37 @@ describe("subscribeValidated", () => {
 
     expect(onBadDoc).toHaveBeenCalledTimes(1);
     expect(onError).not.toHaveBeenCalled();
-    expect(onData).toHaveBeenCalledWith([{ id: "good", n: 1 }]);
+    expect(onData).toHaveBeenCalledWith([{ id: "good", n: 1 }], expect.anything());
+  });
+
+  it("passes the snapshot origin to onData", () => {
+    const onData = vi.fn();
+
+    subscribeValidated(ref, schema, onData);
+    lastCall().onNext(snapshot([{ id: "a", body: { n: 1 } }], { fromCache: true, hasPendingWrites: true }));
+
+    expect(onData).toHaveBeenCalledWith([{ id: "a", n: 1 }], {
+      fromCache: true,
+      hasPendingWrites: true,
+    });
+  });
+
+  it("watches metadata only when a caller asks for it", () => {
+    subscribeValidated(ref, schema, () => undefined);
+    expect(lastCall().options.includeMetadataChanges).toBe(false);
+
+    // Without this, the acknowledgement of a local write changes no document
+    // and Firestore raises no snapshot, so a caller waiting for the server
+    // waits forever.
+    subscribeValidated(ref, schema, () => undefined, { watchMetadata: true });
+    expect(lastCall().options.includeMetadataChanges).toBe(true);
+  });
+});
+
+describe("serverConfirmed", () => {
+  it("is true only when the server has answered and holds no unsent write", () => {
+    expect(serverConfirmed({ fromCache: false, hasPendingWrites: false })).toBe(true);
+    expect(serverConfirmed({ fromCache: true, hasPendingWrites: false })).toBe(false);
+    expect(serverConfirmed({ fromCache: false, hasPendingWrites: true })).toBe(false);
   });
 });

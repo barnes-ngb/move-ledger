@@ -26,7 +26,10 @@ service cloud.firestore {
     }
 
     match /moves/{moveId} {
-      allow read: if isMember(moveId);
+      allow get: if isMember(moveId);
+
+      allow list: if signedIn()
+        && request.auth.uid in resource.data.memberUids;
 
       allow create: if signedIn()
         && request.resource.data.memberUids == [request.auth.uid];
@@ -86,6 +89,8 @@ service cloud.firestore {
 
 Notes on the choices:
 
+- The move document splits `read` into `get` and `list`. They cannot share one condition. `isMember(moveId)` resolves membership with `get()` against `/moves/$(moveId)`, and on a list query `moveId` is a wildcard with nothing bound to it, so that lookup returns null and the rule fails with a null value error before it ever looks at a document. The list condition reads `resource.data.memberUids` instead, which is the candidate document itself and is already loaded. This is not only a correctness fix: even where the `get()` resolves, it bills one extra document read per result, so a 40 move list would cost 80 reads.
+- `list` is a filter on candidates, not a filter on the query. A client still has to send `where('memberUids', 'array-contains', uid)`. An unfiltered list of every move is denied the moment it reaches a document the caller does not belong to. `watchMoves` in `src/repositories/moves.ts` sends that filter and the rule asserts the same thing.
 - `sequenceNumber` is immutable after creation. A renumbered box would break every physical marker in the house.
 - Activity is append-only at the rules level, not just by convention.
 - `memberUids` on the move document costs one document read per rule evaluation, cached within a request. The alternative is a `get` against the members subcollection, which costs the same and reads worse.
@@ -127,6 +132,10 @@ The 2 MB ceiling is ten times the expected resized size. If an upload hits it, c
 7. Creating a move with a `memberUids` array that omits the creator is denied.
 8. A Storage write above 2 MB is denied.
 9. A Storage write with a non-image content type is denied.
+10. The `array-contains` list query on `moves` succeeds against an empty collection, returns the caller's own move, and returns nothing for a caller who belongs to no move.
+11. An unfiltered list of every move is denied.
+
+Cases 10 and 11 are list queries. A rules suite built only from `getDoc` never evaluates the `list` path, which is how the null value error on the move rule reached a deployed build.
 
 Run with the emulator:
 

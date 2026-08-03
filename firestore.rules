@@ -17,7 +17,12 @@ service cloud.firestore {
     }
 
     match /moves/{moveId} {
-      allow read: if isMember(moveId);
+      // get and list cannot share a condition. On a list, moveId is unbound,
+      // so the get() inside isMember() resolves to null. See docs/10-security-rules.md.
+      allow get: if isMember(moveId);
+
+      allow list: if signedIn()
+        && request.auth.uid in resource.data.memberUids;
 
       allow create: if signedIn()
         && request.resource.data.memberUids == [request.auth.uid];

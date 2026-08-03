@@ -4,14 +4,24 @@
  * Covers the required cases from docs/10-security-rules.md.
  */
 import { readFileSync } from "node:fs";
-import { afterAll, beforeAll, beforeEach, describe, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   assertFails,
   assertSucceeds,
   initializeTestEnvironment,
   type RulesTestEnvironment,
 } from "@firebase/rules-unit-testing";
-import { doc, setDoc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  getDoc,
+  where,
+} from "firebase/firestore";
 
 let env: RulesTestEnvironment;
 
@@ -128,6 +138,39 @@ describe("activity is append-only", () => {
     );
     await assertFails(updateDoc(event, { type: "notes_changed" }));
     await assertFails(deleteDoc(event));
+  });
+});
+
+/**
+ * These are list queries, not document gets. They are the shape watchMoves
+ * actually sends: collection("moves") filtered on memberUids array-contains.
+ */
+describe("the moves list query", () => {
+  function myMoves(db: ReturnType<ReturnType<typeof env.authenticatedContext>["firestore"]>, uid: string) {
+    return getDocs(query(collection(db, "moves"), where("memberUids", "array-contains", uid)));
+  }
+
+  it("succeeds against an empty moves collection", async () => {
+    await env.clearFirestore();
+    const db = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(myMoves(db, NATHAN));
+  });
+
+  it("succeeds and returns the move the caller belongs to", async () => {
+    const db = env.authenticatedContext(NATHAN).firestore();
+    const snap = await assertSucceeds(myMoves(db, NATHAN));
+    expect(snap.docs.map((d) => d.id)).toEqual([MOVE]);
+  });
+
+  it("succeeds and returns nothing when the caller belongs to no move", async () => {
+    const db = env.authenticatedContext(STRANGER).firestore();
+    const snap = await assertSucceeds(myMoves(db, STRANGER));
+    expect(snap.empty).toBe(true);
+  });
+
+  it("refuses an unfiltered list of every move", async () => {
+    const db = env.authenticatedContext(NATHAN).firestore();
+    await assertFails(getDocs(collection(db, "moves")));
   });
 });
 

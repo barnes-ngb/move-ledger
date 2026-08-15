@@ -13,7 +13,16 @@ import { reportCondition, clearCondition, type ConditionKey } from "../domain/co
 import type { ConditionReport } from "../domain/schemas";
 import { db } from "../lib/firebase";
 import { logActivity } from "./activity";
-import { createValidated, moveScoped, newId, nowIso, subscribeValidated, updateValidated } from "./shared";
+import {
+  allWritten,
+  createValidated,
+  moveScoped,
+  newId,
+  nowIso,
+  subscribeValidated,
+  updateValidated,
+  type PendingWrite,
+} from "./shared";
 
 const containers = (moveId: string) => moveScoped(db, moveId, "containers");
 
@@ -35,16 +44,20 @@ const NO_FLAGS = {
  *
  * `knownContainers` is the current subscription state, which the persistent
  * cache keeps complete for this member's own boxes even offline.
+ *
+ * The number is returned without waiting for the server, because the person
+ * holding the marker cannot wait for it and the local cache already has the
+ * document. `written` carries the server's answer for whoever wants it.
  */
-export async function reserveContainer(
+export function reserveContainer(
   moveId: string,
   member: MoveMember,
   knownContainers: readonly Container[],
   actorUid: string
-): Promise<Container> {
+): PendingWrite<Container> {
   const sequenceNumber = nextSequenceNumber(member, knownContainers.map((c) => c.sequenceNumber));
   const now = nowIso();
-  const created = await createValidated(containers(moveId), containerSchema, {
+  const created = createValidated(containers(moveId), containerSchema, {
     id: newId(),
     moveId,
     sequenceNumber,
@@ -61,22 +74,22 @@ export async function reserveContainer(
     updatedBy: actorUid,
     searchText: toDisplayCode(sequenceNumber),
   });
-  await logActivity(moveId, {
-    containerId: created.id,
+  const logged = logActivity(moveId, {
+    containerId: created.value.id,
     actorId: actorUid,
     type: "container_created",
     payload: { sequenceNumber },
   });
-  return created;
+  return { value: created.value, written: allWritten(created.written, logged.written) };
 }
 
 /** General edit path. Recomputes searchText so search never drifts from content. */
-export async function saveContainer(
+export function saveContainer(
   moveId: string,
   next: Container,
   zones: readonly Zone[],
   actorUid: string
-): Promise<Container> {
+): PendingWrite<Container> {
   const zoneName = zones.find((z) => z.id === next.destinationZoneId)?.name;
   const stamped: Container = {
     ...next,
@@ -87,41 +100,41 @@ export async function saveContainer(
   return updateValidated(containers(moveId), containerSchema, stamped);
 }
 
-export async function setStatus(
+export function setStatus(
   moveId: string,
   container: Container,
   to: ContainerStatus,
   actorUid: string
-): Promise<Container> {
+): PendingWrite<Container> {
   const { container: next, event } = transition(container, to, actorUid);
-  const saved = await updateValidated(containers(moveId), containerSchema, next);
-  await logActivity(moveId, event);
-  return saved;
+  const saved = updateValidated(containers(moveId), containerSchema, next);
+  const logged = logActivity(moveId, event);
+  return { value: saved.value, written: allWritten(saved.written, logged.written) };
 }
 
-export async function reportContainerCondition(
+export function reportContainerCondition(
   moveId: string,
   container: Container,
   key: ConditionKey,
   report: Omit<ConditionReport, "reportedAt" | "reportedBy">,
   actorUid: string
-): Promise<Container> {
+): PendingWrite<Container> {
   const { container: next, event } = reportCondition(container, key, report, actorUid);
-  const saved = await updateValidated(containers(moveId), containerSchema, next);
-  await logActivity(moveId, event);
-  return saved;
+  const saved = updateValidated(containers(moveId), containerSchema, next);
+  const logged = logActivity(moveId, event);
+  return { value: saved.value, written: allWritten(saved.written, logged.written) };
 }
 
-export async function clearContainerCondition(
+export function clearContainerCondition(
   moveId: string,
   container: Container,
   key: ConditionKey,
   actorUid: string
-): Promise<Container> {
+): PendingWrite<Container> {
   const { container: next, event } = clearCondition(container, key, actorUid);
-  const saved = await updateValidated(containers(moveId), containerSchema, next);
-  await logActivity(moveId, event);
-  return saved;
+  const saved = updateValidated(containers(moveId), containerSchema, next);
+  const logged = logActivity(moveId, event);
+  return { value: saved.value, written: allWritten(saved.written, logged.written) };
 }
 
 export function watchContainers(

@@ -1,12 +1,19 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { locationSchema, zoneSchema, type Location, type Zone } from "../domain/schemas";
 import { db } from "../lib/firebase";
-import { createValidated, moveScoped, newId, subscribeValidated, updateValidated } from "./shared";
+import {
+  createValidated,
+  moveScoped,
+  newId,
+  subscribeValidated,
+  updateValidated,
+  type PendingWrite,
+} from "./shared";
 
 const zones = (moveId: string) => moveScoped(db, moveId, "zones");
 const locations = (moveId: string) => moveScoped(db, moveId, "locations");
 
-export async function addLocation(moveId: string, loc: Omit<Location, "id" | "moveId">): Promise<Location> {
+export function addLocation(moveId: string, loc: Omit<Location, "id" | "moveId">): PendingWrite<Location> {
   return createValidated(locations(moveId), locationSchema, { ...loc, id: newId(), moveId });
 }
 
@@ -18,11 +25,11 @@ export function watchLocations(
   return subscribeValidated(locations(moveId), locationSchema, onData, { onError });
 }
 
-export async function addZone(moveId: string, zone: Omit<Zone, "id" | "moveId">): Promise<Zone> {
+export function addZone(moveId: string, zone: Omit<Zone, "id" | "moveId">): PendingWrite<Zone> {
   return createValidated(zones(moveId), zoneSchema, { ...zone, id: newId(), moveId });
 }
 
-export async function updateZone(moveId: string, next: Zone): Promise<Zone> {
+export function updateZone(moveId: string, next: Zone): PendingWrite<Zone> {
   return updateValidated(zones(moveId), zoneSchema, next);
 }
 

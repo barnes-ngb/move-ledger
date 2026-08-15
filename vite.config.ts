@@ -14,6 +14,12 @@ export default defineConfig({
           if (id.includes("node_modules/react") || id.includes("node_modules/scheduler")) {
             return "react";
           }
+          // Same reason as the other two. Dexie is a dependency that does not
+          // change, and left in the application chunk it doubles the bytes an
+          // app update re-downloads.
+          if (id.includes("node_modules/dexie")) {
+            return "dexie";
+          }
           return undefined;
         },
       },

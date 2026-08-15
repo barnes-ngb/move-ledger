@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { startUploader } from "./photos/uploader";
 import { useAuth } from "./hooks/useAuth";
 import { useMove } from "./hooks/useMove";
 import type { User } from "firebase/auth";
@@ -47,6 +48,11 @@ function FirstRun({ user, ctx }: { user: User; ctx: ReturnType<typeof useMove> }
 
 export default function App() {
   const auth = useAuth();
+
+  // The queue drains from here for the whole session: on start, on `online`,
+  // and after every capture. Photos taken on a previous visit are still in
+  // Dexie and this is what picks them up.
+  useEffect(() => startUploader(), []);
 
   return (
     <div

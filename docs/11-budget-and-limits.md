@@ -32,7 +32,7 @@ Assume 300 boxes and 2 photos each.
 | Free allowance | 5 GB-months |
 | Headroom | 40x |
 
-Without client-side resize, 600 photos at 4 MB each is 2.4 GB. Still under the free tier, but uploads over a phone hotspot become the slowest part of the app and the 20-second target dies. Resize is a performance requirement first and a cost measure second.
+Without client-side resize, 600 photos at 4 MB each is 2.4 GB. Still under the free tier, but uploads over a phone hotspot become the slowest part of the app and packing starts waiting on it. Resize is a performance requirement first and a cost measure second.
 
 ### Firestore
 

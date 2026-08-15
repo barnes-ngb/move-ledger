@@ -1,18 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import type { Container, MoveMember, Zone } from "../../domain";
 import { RangeExhaustedError, remainingInRange } from "../../domain";
-import { reserveContainer, saveContainer, setStatus } from "../../repositories";
+import { reserveContainer, saveContainer, setStatus, writeInBackground } from "../../repositories";
 import { Button, ErrorLine, Field } from "../kit";
+import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 import { labelInstruction } from "./label";
+import { usePhotos } from "../../hooks/usePhotos";
 
 /**
- * The twenty-second loop.
+ * Packing a box, without a wait in it.
  *
  * The number is reserved on mount, before any input exists, because it is
  * written on cardboard with a marker and must never change afterward. That is
  * why `filling` is a status: a box record exists from the moment its number
  * is claimed.
+ *
+ * Nothing on this screen awaits a Firestore write. Those promises settle when
+ * the server acknowledges them, so awaiting one in a basement leaves the
+ * number showing "..." and both Save buttons disabled for as long as the phone
+ * stays there. The local cache has every document the moment it is written.
  */
 export function AddBox({
   moveId,
@@ -32,38 +39,55 @@ export function AddBox({
   const [container, setContainer] = useState<Container | null>(null);
   const [roomId, setRoomId] = useState<string | undefined>(undefined);
   const [note, setNote] = useState("");
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // StrictMode runs effects twice in development. Without this guard the dev
-  // build burns a box number on every mount, and burned numbers never refill.
-  const reserving = useRef(false);
+  // StrictMode runs effects twice in development, and reserving is now
+  // synchronous, so nothing else keeps the second run from burning a number.
+  // The latch is released deliberately in save(), which is the only place a
+  // second number is wanted. Burned numbers never refill.
+  const reserved = useRef(false);
+  /**
+   * Boxes reserved on this screen, kept because the containers prop arrives
+   * through a subscription. Save and next reserves the next number in the same
+   * tick as the save, and if the listener has not delivered the box just saved
+   * yet, the highest known number would still be the previous one. Two boxes
+   * with one number is the single mistake in this app that a marker makes
+   * permanent.
+   */
+  const reservedHere = useRef<Container[]>([]);
+  const photos = usePhotos(moveId, container?.id ?? null);
 
-  async function reserve() {
-    if (reserving.current) return;
-    reserving.current = true;
+  function reserve() {
+    if (reserved.current) return;
+    reserved.current = true;
     setError(null);
+    const known = [
+      ...containers,
+      ...reservedHere.current.filter((c) => !containers.some((k) => k.id === c.id)),
+    ];
     try {
-      const next = await reserveContainer(moveId, me, containers, uid);
-      setContainer(next);
+      const { value, written } = reserveContainer(moveId, me, known, uid);
+      reservedHere.current = [...reservedHere.current, value];
+      setContainer(value);
+      writeInBackground(written, () =>
+        setError("This box is saved on your phone. It has not reached the other phone yet.")
+      );
     } catch (e) {
       setError(
         e instanceof RangeExhaustedError
           ? "Your box numbers are used up. Tell the other person before you keep packing."
-          : "Could not reserve a number. Check the connection."
+          : "Could not reserve a number."
       );
     }
-    reserving.current = false;
   }
 
   useEffect(() => {
-    void reserve();
+    reserve();
     // Reserve exactly once per mount of this screen.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function save(andNext: boolean) {
+  function save(andNext: boolean) {
     if (!container) return;
-    setBusy(true);
     setError(null);
     try {
       const trimmed = note.trim();
@@ -74,21 +98,25 @@ export function AddBox({
         ...(trimmed ? { notes: trimmed } : {}),
         labelConfirmedAt: new Date().toISOString(),
       };
-      const saved = await saveContainer(moveId, next, zones, uid);
-      await setStatus(moveId, saved, "packed", uid);
+      const saved = saveContainer(moveId, next, zones, uid);
+      const packed = setStatus(moveId, saved.value, "packed", uid);
+      writeInBackground(Promise.all([saved.written, packed.written]), () =>
+        setError("This box is saved on your phone. It has not reached the other phone yet.")
+      );
+      reservedHere.current = reservedHere.current.map((c) => (c.id === packed.value.id ? packed.value : c));
 
       if (andNext) {
         setContainer(null);
         setRoomId(undefined);
         setNote("");
-        await reserve();
+        reserved.current = false;
+        reserve();
       } else {
         onClose();
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save the box.");
     }
-    setBusy(false);
   }
 
   const room = zones.find((z) => z.id === roomId);
@@ -115,6 +143,18 @@ export function AddBox({
           </span>
         </div>
 
+        {/* Photos attach while the box fills, layer by layer, not after it is sealed. */}
+        {container ? (
+          <div className="mt-6">
+            <PhotoStrip
+              moveId={moveId}
+              containerId={container.id}
+              uid={uid}
+              photos={photos}
+            />
+          </div>
+        ) : null}
+
         {left <= 25 ? (
           <p className="mt-4 text-sm text-amber-300">{left} box numbers left in your range.</p>
         ) : null}
@@ -132,10 +172,10 @@ export function AddBox({
 
       {/* Pinned below the scroll area so the keyboard never covers it. */}
       <div className="flex flex-col gap-3 border-t border-slate-800 p-4">
-        <Button onClick={() => void save(true)} disabled={busy || !container}>
+        <Button onClick={() => save(true)} disabled={!container}>
           Save and next
         </Button>
-        <Button onClick={() => void save(false)} disabled={busy || !container} tone="quiet">
+        <Button onClick={() => save(false)} disabled={!container} tone="quiet">
           Save and finish
         </Button>
       </div>

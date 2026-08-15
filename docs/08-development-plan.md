@@ -22,6 +22,8 @@ A box is recorded in under 20 seconds, or the interaction design changes until i
 
 If the loop cannot get under 20 seconds without a photo in it, the premise is wrong and Phase 1 does not start. This is the cheapest possible place to learn that.
 
+Phase 0 passed on that number and the number is kept here as the record of what it was held to. The project's success measures were rewritten on 2026-08-15, once photos were in the flow and a stopwatch had started measuring the wrong thing. See `docs/00-product-brief.md`.
+
 ## Phase 1: Vertical slice, one phone
 
 ### Build

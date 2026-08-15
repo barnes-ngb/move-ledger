@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Move, MoveMember } from "../../domain";
-import { addMember, updateMove } from "../../repositories";
+import { addMember, updateMove, writeInBackground } from "../../repositories";
 import { Button, ErrorLine, Field, Screen } from "../kit";
 
 /**
@@ -19,18 +19,17 @@ export function Members({
 }) {
   const [uid, setUid] = useState("");
   const [name, setName] = useState("");
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function add() {
-    setBusy(true);
+  function add() {
     setError(null);
     try {
       const trimmed = uid.trim();
       if (members.some((m) => m.uid === trimmed)) throw new Error("That person is already on the move.");
-      // memberUids first, so her device can read the move the moment it syncs.
-      await updateMove({ ...move, memberUids: [...move.memberUids, trimmed] });
-      await addMember(
+      // memberUids first, so her device can read the move the moment it reaches
+      // the server. Both writes are ordered by Firestore's own queue.
+      const updated = updateMove({ ...move, memberUids: [...move.memberUids, trimmed] });
+      const added = addMember(
         move.id,
         {
           uid: trimmed,
@@ -41,12 +40,14 @@ export function Members({
         },
         members
       );
+      writeInBackground(Promise.all([updated.written, added.written]), () =>
+        setError("She is saved on this phone. Her phone will not see the move until this one has signal.")
+      );
       setUid("");
       setName("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not add that person.");
     }
-    setBusy(false);
   }
 
   return (
@@ -68,7 +69,7 @@ export function Members({
       <Field label="Her name" value={name} onChange={setName} placeholder="Shelly" />
       <Field label="Her account id" value={uid} onChange={setUid} />
       <ErrorLine message={error} />
-      <Button onClick={() => void add()} disabled={busy || !uid.trim() || !name.trim()} tone="quiet">
+      <Button onClick={add} disabled={!uid.trim() || !name.trim()} tone="quiet">
         Add her
       </Button>
       <Button onClick={onDone}>Done</Button>

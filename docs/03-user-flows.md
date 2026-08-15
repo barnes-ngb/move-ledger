@@ -1,6 +1,6 @@
 # User Flows
 
-Each flow lists the taps that matter. The 20-second target in flow 3 is measured from tapping Add box to tapping Save and next, including writing on the physical box.
+Each flow lists the taps that matter. Flow 3 carried a 20-second stopwatch target until 2026-08-15, when photos entered the flow and the criteria changed. What it is held to now is that nothing between tapping Add box and tapping Save and next waits on the app. See the success measures in `docs/00-product-brief.md`.
 
 ## 1. Create the move
 
@@ -27,7 +27,7 @@ WHITE   Storage
 
 ## 3. Create and pack a box
 
-Target: under 20 seconds.
+Target: no step in it waits on the app, with or without signal.
 
 1. Tap Add box.
 2. App writes a `filling` container with the next number and shows it in large type.

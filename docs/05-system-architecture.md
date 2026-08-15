@@ -64,6 +64,9 @@ What this gives without any code from us:
 
 What it does not give:
 
+- A write promise you can wait on. `setDoc` and `updateDoc` apply to the local cache synchronously and fire listeners, but the promise they return settles when the server acknowledges the write. Offline it never settles. Awaiting one for interface progress leaves a screen waiting for a network the app is designed to work without. This was live in every screen until 2026-08-15; `plans/STATUS.md` records what it cost.
+
+  The repository layer answers it. `createValidated` and `updateValidated` are synchronous and return `{ value, written }`: the parsed document, and a promise that settles on the server's acknowledgment. Interface code reads `value` and passes `written` to `writeInBackground`, which reports a failure rather than swallowing it. The only caller that awaits `written` is the photo uploader, which must not delete a local blob until Firestore has confirmed the metadata update.
 - Photo bytes. Cloud Storage uploads do not queue offline and do not survive a page reload. That gap is the entire subject of `docs/06-photo-upload-queue.md`.
 - Conflict review. Two people editing the same box field while offline resolves to whoever syncs last. For a two-person household move that is acceptable and is a recorded decision, not an oversight.
 

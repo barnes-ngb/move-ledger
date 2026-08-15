@@ -14,7 +14,7 @@ AI suggests. The person confirms. A suggestion never becomes canonical text with
 
 ### When
 
-After the box is saved, in the background. Never in the 20-second path.
+After the box is saved, in the background. Never in the packing path, which waits on nothing.
 
 ### Input
 
@@ -48,7 +48,7 @@ No separate feature to build. It falls out of Feature 1 once `aiSummary` is in `
 - Unpacking plan generation. Sorting by `unpackPriority` is a query, not a model.
 - Damage comparison.
 
-Each of these was in the earlier draft. None of them beats the 20-second target as a use of build time.
+Each of these was in the earlier draft. None of them beats the three success measures in `docs/00-product-brief.md` as a use of build time.
 
 ## Implementation
 

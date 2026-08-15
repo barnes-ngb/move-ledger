@@ -1,6 +1,6 @@
 import { moveMemberSchema, rangesOverlap, type MoveMember } from "../domain";
 import { db } from "../lib/firebase";
-import { createValidated, moveScoped, newId, subscribeValidated } from "./shared";
+import { createValidated, moveScoped, newId, subscribeValidated, type PendingWrite } from "./shared";
 
 const members = (moveId: string) => moveScoped(db, moveId, "members");
 
@@ -8,11 +8,11 @@ const members = (moveId: string) => moveScoped(db, moveId, "members");
  * Refuses an overlapping range at the door. Overlap is how two boxes end up
  * wearing the same number, and no later code can repair that.
  */
-export async function addMember(
+export function addMember(
   moveId: string,
   member: Omit<MoveMember, "id" | "moveId">,
   existing: readonly MoveMember[]
-): Promise<MoveMember> {
+): PendingWrite<MoveMember> {
   for (const other of existing) {
     if (rangesOverlap(member, other)) {
       throw new Error(

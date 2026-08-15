@@ -1,14 +1,20 @@
 import { useState } from "react";
 import type { Container, Zone } from "../../domain";
 import { nextStatuses } from "../../domain";
-import { saveContainer, setStatus } from "../../repositories";
+import { saveContainer, setStatus, writeInBackground } from "../../repositories";
+import { usePhotos } from "../../hooks/usePhotos";
 import { Button, ErrorLine, Field } from "../kit";
+import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 
 /**
  * Detail and correction. Backward status moves are allowed because
  * corrections happen on move day, and a system that refuses them gets worked
  * around with a marker and a lie.
+ *
+ * Like Add box, nothing here waits on the server. A Firestore write promise
+ * settles on acknowledgment, so awaiting one offline would leave every button
+ * on this screen disabled while the local cache already holds the change.
  */
 export function BoxDetail({
   moveId,
@@ -25,27 +31,25 @@ export function BoxDetail({
 }) {
   const [note, setNote] = useState(container.notes ?? "");
   const [editingRoom, setEditingRoom] = useState(false);
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const photos = usePhotos(moveId, container.id);
 
   const zone = zones.find((z) => z.id === container.destinationZoneId);
   const forward = nextStatuses(container.status);
 
-  async function run(fn: () => Promise<unknown>) {
-    setBusy(true);
+  function run(write: () => { written: Promise<unknown> }) {
     setError(null);
     try {
-      await fn();
+      writeInBackground(write().written, () =>
+        setError("This change is saved on your phone. It has not reached the other phone yet.")
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save.");
     }
-    setBusy(false);
   }
 
   function saveField(patch: Partial<Container>) {
-    return run(async () => {
-      await saveContainer(moveId, { ...container, ...patch }, zones, uid);
-    });
+    run(() => saveContainer(moveId, { ...container, ...patch }, zones, uid));
   }
 
   return (
@@ -62,6 +66,10 @@ export function BoxDetail({
         )}
       </div>
 
+      {/* A box does not stop accepting photos. Something arrives crushed at
+          the other end and the picture is taken then. */}
+      <PhotoStrip moveId={moveId} containerId={container.id} uid={uid} photos={photos} />
+
       <div>
         <p className="text-sm text-slate-400">Status</p>
         <p className="text-xl text-slate-100">{container.status}</p>
@@ -69,8 +77,7 @@ export function BoxDetail({
           {forward.map((s) => (
             <Button
               key={s}
-              onClick={() => void run(() => setStatus(moveId, container, s, uid))}
-              disabled={busy}
+              onClick={() => run(() => setStatus(moveId, container, s, uid))}
               tone="quiet"
             >
               Mark {s}
@@ -83,8 +90,8 @@ export function BoxDetail({
         <Field label="Note" value={note} onChange={setNote} />
         <div className="mt-3">
           <Button
-            onClick={() => void saveField(note.trim() ? { notes: note.trim() } : {})}
-            disabled={busy || note === (container.notes ?? "")}
+            onClick={() => saveField(note.trim() ? { notes: note.trim() } : {})}
+            disabled={note === (container.notes ?? "")}
             tone="quiet"
           >
             Save note
@@ -98,11 +105,11 @@ export function BoxDetail({
           selectedId={container.destinationZoneId}
           onSelect={(id) => {
             setEditingRoom(false);
-            void saveField({ destinationZoneId: id });
+            saveField({ destinationZoneId: id });
           }}
         />
       ) : (
-        <Button onClick={() => setEditingRoom(true)} disabled={busy} tone="quiet">
+        <Button onClick={() => setEditingRoom(true)} tone="quiet">
           Change room
         </Button>
       )}

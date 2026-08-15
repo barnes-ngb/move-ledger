@@ -45,10 +45,13 @@ Two adults packing at the same time on two phones. That is the whole user model.
 
 ## Success measures
 
-Two numbers decide whether this was worth building:
+Three things decide whether this was worth building:
 
-- A new box is recorded in under 20 seconds, measured with a stopwatch, including writing on the box.
-- A known box is opened in the app in under 10 seconds.
+1. Packing a box, photos included, never waits on the app. No spinner, no network wait, no lost work, including with no signal at all.
+2. A box can be found by its number in a few taps.
+3. Shelly packs twenty real boxes without asking for help.
+
+These replace two numbers that stood here until 2026-08-15: a box recorded in under 20 seconds and a known box opened in under 10. Those numbers were proxies for low enough friction that the tool does not get abandoned in week three. With a photo in the flow the stopwatch measures the wrong thing, because the time is now spent on the physical box rather than on the app. What matters is that none of it is spent waiting.
 
 Supporting measures:
 

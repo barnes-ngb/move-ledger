@@ -24,9 +24,11 @@ The full record for Box 042 lives in the app.
 
 ## Product goal
 
-Make recording a box take less than 20 seconds and finding a box take less than 10 seconds.
+1. Packing a box, photos included, never waits on the app. No spinner, no network wait, no lost work, including with no signal at all.
+2. A box can be found by its number in a few taps.
+3. Shelly packs twenty real boxes without asking for help.
 
-These two numbers are the only success criteria that matter. Every scope decision is judged against them.
+These three are the only success criteria that matter. Every scope decision is judged against them. They replaced two stopwatch numbers on 2026-08-15; `docs/00-product-brief.md` records why.
 
 ## Stack
 

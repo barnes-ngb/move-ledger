@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import type { PhotoView } from "../../hooks/usePhotos";
 import { capturePhoto, type PhotoKind } from "../../photos/capture";
 import { ErrorLine } from "../kit";
+import { PhotoViewer } from "./PhotoViewer";
 
 /**
  * Photos are not gated on status. A box gains photos while it is being
@@ -24,6 +25,7 @@ export function PhotoStrip({
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<number | null>(null);
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -43,10 +45,15 @@ export function PhotoStrip({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex gap-3 overflow-x-auto pb-1">
-        {photos.map((v) => {
+        {photos.map((v, i) => {
           const src = v.localUrl ?? v.photo.downloadUrl;
           return (
-            <div key={v.photo.id} className="relative shrink-0">
+            <button
+              key={v.photo.id}
+              onClick={() => setViewing(i)}
+              className="relative shrink-0"
+              aria-label={`Open photo ${i + 1}`}
+            >
               {src ? (
                 <img src={src} alt="" className="size-24 rounded-xl object-cover" />
               ) : (
@@ -57,7 +64,7 @@ export function PhotoStrip({
                   Not sent yet
                 </span>
               ) : null}
-            </div>
+            </button>
           );
         })}
 
@@ -81,6 +88,10 @@ export function PhotoStrip({
       />
 
       <ErrorLine message={error} />
+
+      {viewing !== null ? (
+        <PhotoViewer photos={photos} startIndex={viewing} onClose={() => setViewing(null)} />
+      ) : null}
     </div>
   );
 }

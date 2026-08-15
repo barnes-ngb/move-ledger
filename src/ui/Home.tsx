@@ -2,16 +2,30 @@ import { useState } from "react";
 import type { Container } from "../domain";
 import type { MoveContext } from "../hooks/useMove";
 import { useContainers } from "../hooks/useContainers";
+import { usePhotoCounts } from "../hooks/usePhotoCounts";
 import { AddBox } from "./box/AddBox";
 import { BoxDetail } from "./box/BoxDetail";
+import { BoxList } from "./box/BoxList";
 import { FindBox } from "./box/FindBox";
 import { Button, Screen, SubscriptionFailed } from "./kit";
 
-type View = { name: "home" } | { name: "add" } | { name: "find" } | { name: "detail"; id: string };
+/**
+ * `detail` carries the view it was opened from rather than routing back to a
+ * fixed screen, so Done returns to the list with its filter text still in it.
+ * The text lives here, on the view, for the same reason: unmounting the list
+ * to show a box must not throw away what the person typed to find it.
+ */
+type View =
+  | { name: "home" }
+  | { name: "add" }
+  | { name: "find" }
+  | { name: "list"; query: string }
+  | { name: "detail"; id: string; from: View };
 
 export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onSetup: () => void }) {
   const [view, setView] = useState<View>({ name: "home" });
   const { containers, failed, retry } = useContainers(ctx.move?.id ?? null);
+  const photoCounts = usePhotoCounts(ctx.move?.id ?? null, view.name === "list");
 
   if (!ctx.move || !ctx.me) return null;
   const moveId = ctx.move.id;
@@ -36,16 +50,33 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
   }
 
   if (view.name === "find") {
+    const from: View = view;
     return (
       <FindBox
         containers={containers}
         zones={ctx.zones}
-        onOpen={(c) => setView({ name: "detail", id: c.id })}
+        onOpen={(c) => setView({ name: "detail", id: c.id, from })}
+      />
+    );
+  }
+
+  if (view.name === "list") {
+    const from: View = view;
+    return (
+      <BoxList
+        containers={containers}
+        zones={ctx.zones}
+        photoCounts={photoCounts}
+        query={view.query}
+        onQueryChange={(query) => setView({ name: "list", query })}
+        onOpen={(c) => setView({ name: "detail", id: c.id, from })}
+        onClose={() => setView({ name: "home" })}
       />
     );
   }
 
   if (view.name === "detail") {
+    const back = view.from;
     const found = containers.find((c) => c.id === view.id);
     if (!found) return <Screen title="That box is gone">{null}</Screen>;
     return (
@@ -54,7 +85,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         container={found as Container}
         zones={ctx.zones}
         uid={uid}
-        onClose={() => setView({ name: "find" })}
+        onClose={() => setView(back)}
       />
     );
   }
@@ -74,6 +105,9 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         <Button onClick={() => setView({ name: "add" })}>Add a box</Button>
         <Button onClick={() => setView({ name: "find" })} tone="quiet">
           Find a box
+        </Button>
+        <Button onClick={() => setView({ name: "list", query: "" })} tone="quiet">
+          See all boxes
         </Button>
         <button onClick={onSetup} className="min-h-12 text-slate-400 underline">
           Rooms and members

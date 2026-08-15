@@ -108,6 +108,21 @@ Open the exact box the moment one number matches. Do not require a submit tap.
 
 Searches the local cache. Identical behavior, no degraded mode.
 
+### What shipped
+
+Amended 2026-08-15 during the APPLY-08 run. The keypad screen is unchanged and still opens the box the moment one number matches. The other two lines were answered by a second screen rather than by additions to this one.
+
+**See all boxes** is a third action on the move overview, under Find a box. It lists every box with the newest number on top, and a text field at the top of it filters the same list as the person types. Recent boxes are therefore the first thing on it, and the last five are the first five rows, so a person who does not know a number has somewhere to go. A box opened from the list returns to the list with the filter text still in the field.
+
+Two departures from the lines above, both deliberate:
+
+- **Recent boxes are the whole list, newest first, rather than a fixed five.** A cut of five is a guess about how far back a person needs to look. The list costs nothing more, because it is the same local cache either way.
+- **The route to text search is on the overview rather than inside Find box.** Find box is the ten-second lookup and it is used standing up with a number in hand. Putting a second destination on it invites a tap that is not the one the screen exists for. The two screens are siblings under the overview instead.
+
+Search itself changed underneath both. It compares word to word rather than testing one substring per field, because the generated contents lists carry quotes, plus signs, and commas that nobody types. Real box 015 came back from the function reading `'Travel + Leisure' magazine`, and "travel leisure" found nothing against a substring test. A box now matches on any one word of the query, and answering more words moves it up the list. A word shorter than four letters has to match a whole word exactly, so "car" does not return every box holding cardboard. Accents are folded before words are compared, so "cafe" finds "café" and nobody has to reach for an accented key while standing in a garage.
+
+Row contents are in section 5's amendment.
+
 ## 5. Search
 
 ### Sources
@@ -121,6 +136,14 @@ Searches the local cache. Identical behavior, no degraded mode.
 - Status, and any condition badge
 - The matching text with the match highlighted
 - A marker when the match came from `aiSummary`
+
+### What shipped
+
+Amended 2026-08-15 during the APPLY-08 run. The list row is not this card and was not built as one. A row carries the box number in mono, the room's color dot and name, the title when there is one, the status with `filling` read as draft, a photo count when the box has photos, and the `aiSummary` marker, which is the one line of this card that survived intact.
+
+Three of the lines above are still owed and are worth having only if the list proves hard to read on a phone: the primary photo thumbnail, the color as a fill rather than a dot, and the matching text with the match highlighted. The highlight is the one with real value, since it answers "why did this box come back" without opening it. It was left out because a word match can land in any of six fields and picking the snippet to show is a design question this run did not have an answer to. The row says which field matched only in the `aiSummary` case, where it changes whether the text can be trusted.
+
+A condition badge is not on the row either. Nothing in the app writes a condition yet.
 
 ## 6. Box detail
 
@@ -138,6 +161,10 @@ Searches the local cache. Identical behavior, no degraded mode.
 ### Actions
 
 State-dependent. Only the legal next transitions appear as primary buttons. Everything else lives behind an overflow menu.
+
+### Photo gallery
+
+Amended 2026-08-15 during the APPLY-08 run. Tapping a thumbnail opens the photo at the size of the screen, fitted whole rather than cropped, with previous and next moving through that box's photos in the order they were taken. The backdrop and a close control both dismiss it. It reads the local blob first and the download URL second, the same order the strip uses, so a photo taken a minute ago with no signal opens. A photo with neither says it has not finished uploading rather than showing a broken image.
 
 ## 7. Rooms
 

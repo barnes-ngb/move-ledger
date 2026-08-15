@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSearchText, exactByNumber, findByNumber, search } from "../search";
+import { buildSearchText, exactByNumber, findByNumber, search, tokenMatches, tokenize } from "../search";
 import { makeContainer, makeZone } from "./factories";
 
 const zones = [makeZone(), makeZone({ id: "z2", name: "Garage", colorName: "RED" })];
@@ -58,6 +58,114 @@ describe("search", () => {
 
   it("returns nothing for an empty query rather than everything", () => {
     expect(search(containers, "   ", zones)).toEqual([]);
+  });
+});
+
+/**
+ * Box 015 as the deployed function actually wrote it. The quotes, the plus
+ * sign, and the word order are the reason this file exists: every phrase below
+ * is one a person would type and none of them is a substring of this text.
+ */
+const BOX_015 =
+  "Magazines and brochures: 'Travel + Leisure' magazine, '2026 Kansas City World Soccer Preview' magazine, Subaru Forester Accessories 2026 brochure, and a Navarra brochure.";
+
+describe("search, word by word", () => {
+  const box015 = makeContainer({ id: "c15", sequenceNumber: 15, displayCode: "015", aiSummary: BOX_015 });
+
+  it("finds box 015 by two words that sit apart in the text", () => {
+    expect(search([box015], "soccer magazine").map((h) => h.container.id)).toEqual(["c15"]);
+    expect(search([box015], "travel leisure").map((h) => h.container.id)).toEqual(["c15"]);
+  });
+
+  it("ignores the punctuation between the words", () => {
+    const plus = search([box015], "travel + leisure");
+    const plain = search([box015], "travel leisure");
+    expect(plus.map((h) => h.container.id)).toEqual(plain.map((h) => h.container.id));
+    expect(plus[0]!.matchedCount).toBe(plain[0]!.matchedCount);
+  });
+
+  it("still finds the one word that worked before", () => {
+    expect(search([box015], "subaru").map((h) => h.container.id)).toEqual(["c15"]);
+  });
+
+  it("puts a box that answered two words above one that answered one", () => {
+    const one = makeContainer({ id: "one", sequenceNumber: 3, displayCode: "003", notes: "soccer cleats" });
+    const two = makeContainer({ id: "two", sequenceNumber: 88, displayCode: "088", notes: "soccer magazine pile" });
+    const hits = search([one, two], "soccer magazine");
+    expect(hits.map((h) => h.container.id)).toEqual(["two", "one"]);
+    expect(hits[0]!.matchedCount).toBe(2);
+    expect(hits[1]!.matchedCount).toBe(1);
+  });
+
+  it("orders boxes that answered the same number of words by their number", () => {
+    const later = makeContainer({ id: "later", sequenceNumber: 91, displayCode: "091", notes: "mugs" });
+    const earlier = makeContainer({ id: "earlier", sequenceNumber: 12, displayCode: "012", notes: "mugs" });
+    expect(search([later, earlier], "mugs").map((h) => h.container.id)).toEqual(["earlier", "later"]);
+  });
+
+  it("resolves plurals in both directions", () => {
+    const singular = makeContainer({ id: "s", notes: "magazine" });
+    const plural = makeContainer({ id: "p", notes: "magazines" });
+    expect(search([plural], "magazine")).toHaveLength(1);
+    expect(search([singular], "magazines")).toHaveLength(1);
+  });
+
+  it("does not let a short word run loose", () => {
+    const boxes = [makeContainer({ id: "cardboard", notes: "cardboard flats" })];
+    expect(search(boxes, "car")).toEqual([]);
+  });
+
+  it("counts a word once however many fields it hit", () => {
+    const both = makeContainer({ id: "b", notes: "lamp", aiSummary: "lamp" });
+    expect(search([both], "lamp")[0]!.matchedCount).toBe(1);
+  });
+
+  it("does not call a hit a suggestion when confirmed text matched another word", () => {
+    const mixed = makeContainer({ id: "m", notes: "kettle", aiSummary: "power drill" });
+    const hit = search([mixed], "kettle drill")[0]!;
+    expect(hit.matchedCount).toBe(2);
+    expect(hit.field).toBe("notes");
+    expect(hit.suggestionOnly).toBe(false);
+  });
+
+  it("still narrows by digits while a number is being typed", () => {
+    const boxes = [
+      makeContainer({ id: "a", sequenceNumber: 4, displayCode: "004" }),
+      makeContainer({ id: "b", sequenceNumber: 42, displayCode: "042" }),
+    ];
+    expect(search(boxes, "4").map((h) => h.container.id)).toEqual(["a", "b"]);
+    expect(search(boxes, "42").map((h) => h.container.id)).toEqual(["b"]);
+  });
+});
+
+describe("tokenize", () => {
+  it("drops the punctuation a generated contents list carries", () => {
+    expect(tokenize("'Travel + Leisure' magazine, 2026")).toEqual([
+      "travel",
+      "leisure",
+      "magazine",
+      "2026",
+    ]);
+  });
+
+  it("returns nothing for text with no words in it", () => {
+    expect(tokenize("  +  ")).toEqual([]);
+  });
+});
+
+describe("tokenMatches", () => {
+  it("matches a word to itself", () => {
+    expect(tokenMatches("toy", "toy")).toBe(true);
+  });
+
+  it("matches a long enough prefix in either direction", () => {
+    expect(tokenMatches("magazine", "magazines")).toBe(true);
+    expect(tokenMatches("magazines", "magazine")).toBe(true);
+  });
+
+  it("refuses a prefix shorter than four letters", () => {
+    expect(tokenMatches("car", "cardboard")).toBe(false);
+    expect(tokenMatches("toys", "toy")).toBe(false);
   });
 });
 

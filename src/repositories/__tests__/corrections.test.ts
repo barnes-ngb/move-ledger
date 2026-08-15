@@ -212,7 +212,7 @@ describe("deleteContainer", () => {
   it("deletes a draft whose number was never written down", async () => {
     serve(makeContainer({ status: "filling" }));
 
-    await deleteContainer("m1", "c1");
+    await deleteContainer("m1", "c1", "uid-1");
 
     expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/containers/c1");
   });
@@ -220,14 +220,14 @@ describe("deleteContainer", () => {
   it("refuses a box that was already written on, even if the caller says otherwise", async () => {
     serve(makeContainer({ status: "filling", labelConfirmedAt: NOW }));
 
-    await expect(deleteContainer("m1", "c1")).rejects.toThrow(ContainerNotDeletableError);
+    await expect(deleteContainer("m1", "c1", "uid-1")).rejects.toThrow(ContainerNotDeletableError);
     expect(mocks.deleteDoc).not.toHaveBeenCalled();
   });
 
   it("refuses a box past filling", async () => {
     serve(makeContainer({ status: "packed" }));
 
-    await expect(deleteContainer("m1", "c1")).rejects.toThrow(ContainerNotDeletableError);
+    await expect(deleteContainer("m1", "c1", "uid-1")).rejects.toThrow(ContainerNotDeletableError);
     expect(mocks.deleteDoc).not.toHaveBeenCalled();
   });
 
@@ -239,7 +239,7 @@ describe("deleteContainer", () => {
   it("asks the server before deciding a number is free", async () => {
     mocks.getDoc.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
 
-    await deleteContainer("m1", "c1");
+    await deleteContainer("m1", "c1", "uid-1");
 
     expect(mocks.getDoc).toHaveBeenCalled();
     expect(mocks.getDocFromCache).not.toHaveBeenCalled();
@@ -249,7 +249,7 @@ describe("deleteContainer", () => {
     mocks.getDoc.mockRejectedValue(new Error("offline"));
     mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
 
-    await deleteContainer("m1", "c1");
+    await deleteContainer("m1", "c1", "uid-1");
 
     expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/containers/c1");
   });
@@ -271,7 +271,7 @@ describe("deleteContainer", () => {
       ],
     });
 
-    await deleteContainer("m1", "c1");
+    await deleteContainer("m1", "c1", "uid-1");
 
     expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/photos/p1");
     expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/photos/p2");
@@ -282,17 +282,37 @@ describe("deleteContainer", () => {
   it("sweeps local bytes whose document never arrived", async () => {
     serve(makeContainer({ status: "filling" }));
 
-    await deleteContainer("m1", "c1");
+    await deleteContainer("m1", "c1", "uid-1");
 
     expect(mocks.deleteBlobsFor).toHaveBeenCalledWith("c1");
   });
 
-  it("logs no event of its own", async () => {
+  /**
+   * `container_created` was written when the number was reserved and cannot be
+   * removed, so an export that stopped here would show a box appearing and
+   * then nothing at all.
+   */
+  it("logs the deletion, so the history explains where the box went", async () => {
+    serve(makeContainer({ status: "filling", sequenceNumber: 42, displayCode: "042" }));
+
+    await deleteContainer("m1", "c1", "uid-1");
+
+    const logged = mocks.setDoc.mock.calls.map((c) => c[1] as Record<string, unknown>);
+    const event = logged.find((e) => e.type === "container_deleted");
+    expect(event).toBeDefined();
+    expect(event?.actorId).toBe("uid-1");
+    expect(event?.payload).toMatchObject({ sequenceNumber: 42, displayCode: "042" });
+  });
+
+  it("logs no event for each photo it takes with it", async () => {
     serve(makeContainer({ status: "filling" }));
+    const { id: _p1, ...one } = makePhoto({ id: "p1" });
+    mocks.getDocs.mockResolvedValue({ docs: [{ id: "p1", data: () => one }] });
 
-    await deleteContainer("m1", "c1");
+    await deleteContainer("m1", "c1", "uid-1");
 
-    expect(mocks.setDoc).not.toHaveBeenCalled();
+    const logged = mocks.setDoc.mock.calls.map((c) => c[1] as { type?: string });
+    expect(logged.some((e) => e.type === "photo_deleted")).toBe(false);
   });
 });
 

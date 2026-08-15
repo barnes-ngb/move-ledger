@@ -7,10 +7,16 @@ service firebase.storage {
         && firestore.exists(/databases/(default)/documents/moves/$(moveId))
         && request.auth.uid in firestore.get(/databases/(default)/documents/moves/$(moveId)).data.memberUids;
 
-      allow write: if request.auth != null
+      // Split from a single `allow write` on 2026-08-15. A delete carries no
+      // request.resource, so the size and contentType checks dereferenced a
+      // null and denied every delete ever attempted. See docs/10-security-rules.md.
+      allow create, update: if request.auth != null
         && request.auth.uid in firestore.get(/databases/(default)/documents/moves/$(moveId)).data.memberUids
         && request.resource.size < 2 * 1024 * 1024
         && request.resource.contentType.matches('image/.*');
+
+      allow delete: if request.auth != null
+        && request.auth.uid in firestore.get(/databases/(default)/documents/moves/$(moveId)).data.memberUids;
     }
   }
 }

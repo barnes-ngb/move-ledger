@@ -244,6 +244,7 @@ interface ActivityEvent {
     | "summary_generated"
     | "container_voided"
     | "container_unvoided"
+    | "container_deleted"
     | "photo_deleted"
     | "title_changed";
   occurredAt: string;

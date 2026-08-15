@@ -92,7 +92,7 @@ export function BoxDetail({
     }
     setError(null);
     try {
-      const { written } = await deleteContainer(moveId, container.id);
+      const { written } = await deleteContainer(moveId, container.id, uid);
       writeInBackground(written, () => setError(SAVED_HERE));
       // The box is gone from the local cache already, so staying here would
       // land on the screen that says so.

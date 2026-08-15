@@ -100,7 +100,7 @@ describe("removing a box", () => {
     open(draft);
     fireEvent.click(screen.getByText("Delete this box"));
     fireEvent.click(screen.getAllByText("Delete this box")[1]!);
-    expect(mocks.deleteContainer).toHaveBeenCalledWith("m1", "c1");
+    expect(mocks.deleteContainer).toHaveBeenCalledWith("m1", "c1", "uid-1");
     expect(mocks.voidContainer).not.toHaveBeenCalled();
   });
 

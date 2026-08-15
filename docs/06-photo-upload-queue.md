@@ -86,7 +86,9 @@ The Storage delete is fired and not awaited, and that is the whole design of thi
 
 The cost is an orphaned object every time a photo is deleted offline, and it is permanent, because the document that held its path goes away. That is accepted. An object nobody points at costs a fraction of a cent against doc 11's budget; a photo that will not go away costs trust. Recorded under Live drift in `plans/STATUS.md` with what would close it.
 
-As of 2026-08-15 that orphan happens online too, and not by choice. `storage.rules` covers create, update, and delete with a single `allow write` whose last two conditions read `request.resource`, which a delete does not carry, so every delete is denied. Found in review on pull request 18 and reported rather than fixed, because the APPLY-09 plan said to stop at a rules file. Full entry under Live drift in `plans/STATUS.md`.
+For two weeks that orphan happened online too, and not by choice. `storage.rules` covered create, update, and delete with a single `allow write` whose last two conditions read `request.resource`, which a delete does not carry, so every delete was denied from the day the file was written. Found in review on pull request 18 and fixed on 2026-08-15 by splitting the rule: `create, update` keep the 2 MB ceiling and the image content type, `delete` keeps the membership check alone. Doc 10 carries the rule and the reasoning, and `tests/rules/storage.rules.test.ts` carries case 12.
+
+The fix is in the repository and not in production until somebody runs `firebase deploy --only storage` by hand, because CI has no permission to ship rules. Photo deletes stay rejected in the live app until then, which is the offline behaviour above happening all the time.
 
 The sweep in the last bullet above was never written and is no longer owed for this case. Deleting removes the blob at the source instead, and `deleteBlobsFor` catches any blob on a deleted box whose document never arrived.
 

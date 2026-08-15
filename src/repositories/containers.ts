@@ -326,16 +326,22 @@ export function unvoidContainer(
  * The returned `written` settles on server acknowledgment like every other
  * write, and every delete is already applied locally before it does.
  *
- * No activity event is logged, for the container or for its photos, because
- * the plan asked for a plain delete and a box nobody wrote on has no history
- * worth keeping. Note that this does not leave the activity collection clean:
- * the `container_created` event from the reservation stays, since activity is
- * append-only and the rules refuse to delete it. So a deleted box already has
- * one event pointing at nothing, and adding a second would not change that.
+ * A `container_deleted` event is logged, and the container document goes only
+ * after it. The event points at a document that no longer exists, which is
+ * fine and unavoidable: `container_created` was written when the number was
+ * reserved, activity is append-only, and the rules refuse to delete it. So the
+ * choice was never between a clean history and a dangling one. It was between
+ * an export that shows a box appearing and then silently stopping, and one
+ * that says the box was deleted and its number returned to the range.
+ *
+ * The photos are removed without events of their own. A person deleted a box,
+ * not five photos, and five `photo_deleted` events would bury the one line
+ * that explains what happened.
  */
 export async function deleteContainer(
   moveId: string,
-  containerId: string
+  containerId: string,
+  actorUid: string
 ): Promise<PendingWrite<void>> {
   const ref = doc(containers(moveId), containerId);
   let snap;
@@ -358,7 +364,23 @@ export async function deleteContainer(
   // it is awaited: there is nothing to wait for but IndexedDB.
   await deleteBlobsFor(containerId);
 
-  return { value: undefined, written: allWritten(deleteDoc(ref), ...photoWrites) };
+  // Logged before the document goes, so a failure to record the deletion is a
+  // failure to delete rather than a box that vanished with no explanation.
+  const logged = logActivity(moveId, {
+    containerId,
+    actorId: actorUid,
+    type: "container_deleted",
+    payload: {
+      sequenceNumber: container.sequenceNumber,
+      displayCode: container.displayCode,
+      photoCount: photos.length,
+    },
+  });
+
+  return {
+    value: undefined,
+    written: allWritten(logged.written, deleteDoc(ref), ...photoWrites),
+  };
 }
 
 export function watchContainers(

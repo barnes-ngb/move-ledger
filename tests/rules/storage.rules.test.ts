@@ -1,7 +1,7 @@
 /**
  * Runs only under the emulator:
  *   firebase emulators:exec --only firestore,storage "npx vitest run tests/rules"
- * Covers doc 10 cases 8 and 9 plus the read and write authorization paths in storage.rules.
+ * Covers doc 10 cases 8, 9, and 12 plus the read and write authorization paths in storage.rules.
  * The Storage rules call into Firestore for membership, so the Firestore emulator
  * has to be running alongside the Storage emulator. This file therefore runs on a
  * different project id than firestore.rules.test.ts, which clears Firestore in its
@@ -16,7 +16,7 @@ import {
   type RulesTestEnvironment,
 } from "@firebase/rules-unit-testing";
 import { doc, setDoc } from "firebase/firestore";
-import { getMetadata, ref, uploadBytes } from "firebase/storage";
+import { deleteObject, getMetadata, ref, uploadBytes } from "firebase/storage";
 import type { FirebaseStorage } from "firebase/storage";
 
 let env: RulesTestEnvironment;
@@ -161,6 +161,60 @@ describe("storage writes", () => {
     await assertFails(
       uploadBytes(photoRef(storage, `moves/${MOVE}/${CONTAINER}/notes.txt`), bytes(64), {
         contentType: "text/plain",
+      })
+    );
+  });
+});
+
+/**
+ * Doc 10, required case 12. Added 2026-08-15 with the rule split.
+ *
+ * These are the tests that did not exist while the rule denied every delete.
+ * The suite uploaded and read and never deleted, so a `write` condition that
+ * dereferenced `request.resource` looked correct for two weeks: every
+ * operation it was exercised against carried one.
+ */
+describe("storage deletes", () => {
+  it("a member can delete a photo object in their move", async () => {
+    await seedPhoto();
+    const storage = env.authenticatedContext(SHELLY).storage();
+    await assertSucceeds(deleteObject(photoRef(storage)));
+  });
+
+  it("a signed-in non-member cannot", async () => {
+    await seedPhoto();
+    const storage = env.authenticatedContext(STRANGER).storage();
+    await assertFails(deleteObject(photoRef(storage)));
+  });
+
+  it("a signed-out request cannot", async () => {
+    await seedPhoto();
+    const storage = env.unauthenticatedContext().storage();
+    await assertFails(deleteObject(photoRef(storage)));
+  });
+
+  it("a delete under a move that does not exist is denied", async () => {
+    const ghostPhoto = `moves/${GHOST_MOVE}/${CONTAINER}/photo.jpg`;
+    await seedPhoto(ghostPhoto);
+    const storage = env.authenticatedContext(NATHAN).storage();
+    await assertFails(deleteObject(photoRef(storage, ghostPhoto)));
+  });
+
+  /**
+   * The split has to keep both halves honest. Folding delete back into `write`
+   * would fail the case above; moving the ceiling onto the delete rule, or
+   * dropping it from create, would fail one of these two.
+   */
+  it("still refuses an oversized upload after the split", async () => {
+    const storage = env.authenticatedContext(NATHAN).storage();
+    await assertFails(uploadBytes(photoRef(storage), bytes(TWO_MB), IMAGE));
+  });
+
+  it("still refuses a non-image upload after the split", async () => {
+    const storage = env.authenticatedContext(NATHAN).storage();
+    await assertFails(
+      uploadBytes(photoRef(storage, `moves/${MOVE}/${CONTAINER}/notes.pdf`), bytes(64), {
+        contentType: "application/pdf",
       })
     );
   });

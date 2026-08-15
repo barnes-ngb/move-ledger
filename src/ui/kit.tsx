@@ -52,6 +52,36 @@ export function Field({
   );
 }
 
+/**
+ * Multi-line free text. Used by the contents list, which is prose a person
+ * corrects rather than a structured field. Nothing here adds formatting: the
+ * text is searched word by word, so bullets and markup would become part of
+ * what a search has to match.
+ */
+export function TextArea({
+  label,
+  value,
+  onChange,
+  rows = 4,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  rows?: number;
+}) {
+  return (
+    <label className="block">
+      <span className="text-sm text-slate-400">{label}</span>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        rows={rows}
+        className="mt-1 w-full rounded-xl bg-slate-800 p-4 text-lg leading-relaxed text-slate-100"
+      />
+    </label>
+  );
+}
+
 export function Screen({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-6 p-6">

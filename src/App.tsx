@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { startUploader } from "./photos/uploader";
+import { setSummaryEnabled } from "./photos/summary";
 import { useAuth } from "./hooks/useAuth";
+import { useHasAnyPhoto } from "./hooks/useHasAnyPhoto";
 import { useMove } from "./hooks/useMove";
 import type { User } from "firebase/auth";
+import { ContentsListNotice } from "./ui/ContentsListNotice";
 import { Home } from "./ui/Home";
 import { SignIn } from "./ui/SignIn";
 import { SubscriptionFailed } from "./ui/kit";
@@ -13,6 +16,15 @@ import { WaitingForInvite } from "./ui/WaitingForInvite";
 function SignedIn({ user }: { user: User }) {
   const ctx = useMove(user.uid);
   const [setupOpen, setSetupOpen] = useState(false);
+  const [noticeAnswered, setNoticeAnswered] = useState(false);
+
+  // Absent means unasked, which is not consent. The uploader defaults to off
+  // and only this line ever turns it on.
+  const aiEnabled = ctx.move?.aiEnabled;
+  useEffect(() => setSummaryEnabled(aiEnabled === true), [aiEnabled]);
+
+  const unasked = ctx.move !== null && aiEnabled === undefined;
+  const hasPhoto = useHasAnyPhoto(ctx.move?.id ?? null, unasked);
 
   // Checked before loading. A listener that stopped has already cleared
   // loading, but the order says what this screen is for: the failure is a
@@ -27,6 +39,11 @@ function SignedIn({ user }: { user: User }) {
   if (!ctx.me) return <WaitingForInvite user={user} />;
   if (setupOpen || ctx.zones.length === 0) {
     return <Setup user={user} ctx={ctx} onFinished={() => setSetupOpen(false)} />;
+  }
+  // After setup, so the question lands when there is a photo to send rather
+  // than in the middle of getting the move on its feet.
+  if (unasked && hasPhoto && !noticeAnswered) {
+    return <ContentsListNotice move={ctx.move} onAnswered={() => setNoticeAnswered(true)} />;
   }
   return <Home ctx={ctx} uid={user.uid} onSetup={() => setSetupOpen(true)} />;
 }

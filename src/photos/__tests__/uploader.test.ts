@@ -55,6 +55,63 @@ describe("drainOnce", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
+  it("asks for a contents list only after the blob is gone", async () => {
+    const order: string[] = [];
+    const d = deps({
+      list: async () => [blob("p1", "2026-08-15T10:00:01.000Z")],
+      confirm: async () => {
+        order.push("confirm");
+      },
+      remove: async () => {
+        order.push("remove");
+      },
+      afterUpload: () => {
+        order.push("summary");
+      },
+    });
+
+    await drainOnce(d.deps);
+
+    // The summary is the least important thing here. Doc 06 deletes the blob
+    // only once the metadata write confirms, and nothing about the contents
+    // list may come before either step.
+    expect(order).toEqual(["confirm", "remove", "summary"]);
+  });
+
+  it("treats a failed contents list as a successful upload", async () => {
+    const d = deps({
+      list: async () => [blob("p1", "2026-08-15T10:00:01.000Z")],
+      afterUpload: () => {
+        throw new Error("callable unreachable");
+      },
+    });
+
+    await drainOnce(d.deps);
+
+    // The photo is in Cloud Storage and the blob is gone. If this counted as a
+    // failure the uploader would retry an upload that already succeeded, and
+    // the packing path would be held hostage by a Phase 3 feature.
+    expect(d.calls.removed).toEqual(["p1"]);
+    expect(d.failures).toEqual([]);
+  });
+
+  it("does not ask for a contents list when the upload failed", async () => {
+    const asked: string[] = [];
+    const d = deps({
+      list: async () => [blob("p1", "2026-08-15T10:00:01.000Z")],
+      upload: async () => {
+        throw new Error("offline");
+      },
+      afterUpload: (b) => {
+        asked.push(b.photoId);
+      },
+    });
+
+    await drainOnce(d.deps);
+
+    expect(asked).toEqual([]);
+  });
+
   it("uploads in creation order", async () => {
     const queue = [blob("third", "2026-08-15T10:00:03.000Z"), blob("first", "2026-08-15T10:00:01.000Z")];
     // The queue arrives sorted by createdAt from Dexie. What is asserted here

@@ -3,6 +3,7 @@ import { storage } from "../lib/firebase";
 import { getPhotoRecord, updatePhotoRecord } from "../repositories";
 import type { ContainerPhoto } from "../domain";
 import { deleteBlob, pendingBlobs, type PhotoBlob } from "./db";
+import { requestSummary } from "./summary";
 
 /** Doc 06. More than two at once is worse on a phone hotspot. */
 export const MAX_CONCURRENT = 2;
@@ -18,6 +19,12 @@ export interface UploaderDeps {
   confirm: (b: PhotoBlob, result: { storagePath: string; downloadUrl: string }) => Promise<void>;
   fail: (b: PhotoBlob, attempts: number, error: unknown) => Promise<void>;
   remove: (photoId: string) => Promise<void>;
+  /**
+   * Runs once an upload is fully settled. Injected rather than called directly
+   * so the ordering can be asserted without the network, and so a test can
+   * prove the upload path survives a failure here.
+   */
+  afterUpload?: (b: PhotoBlob) => void;
   now?: () => number;
 }
 
@@ -48,6 +55,14 @@ export async function drainOnce(deps: UploaderDeps): Promise<void> {
         await deps.remove(b.photoId);
         attemptsById.delete(b.photoId);
         nextTryById.delete(b.photoId);
+        // After the blob is gone, because the contents list is the least
+        // important thing happening here and must not delay or endanger the
+        // steps above. Deliberately not awaited and deliberately swallowed.
+        try {
+          deps.afterUpload?.(b);
+        } catch (e) {
+          console.error("Post-upload hook failed", e);
+        }
       } catch (e) {
         const attempts = (attemptsById.get(b.photoId) ?? 0) + 1;
         attemptsById.set(b.photoId, attempts);
@@ -85,6 +100,7 @@ function liveDeps(): UploaderDeps {
       });
     },
     remove: deleteBlob,
+    afterUpload: (b) => void requestSummary(b.moveId, b.photoId),
   };
 }
 

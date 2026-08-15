@@ -4,6 +4,7 @@ import { nextStatuses } from "../../domain";
 import { saveContainer, setStatus, writeInBackground } from "../../repositories";
 import { usePhotos } from "../../hooks/usePhotos";
 import { Button, ErrorLine, Field } from "../kit";
+import { AiSummary } from "./AiSummary";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 
@@ -69,6 +70,21 @@ export function BoxDetail({
       {/* A box does not stop accepting photos. Something arrives crushed at
           the other end and the picture is taken then. */}
       <PhotoStrip moveId={moveId} containerId={container.id} uid={uid} photos={photos} />
+
+      {container.contentsSummary ? (
+        <div>
+          <p className="text-sm text-slate-400">Contents</p>
+          <p className="mt-1 text-lg leading-relaxed text-slate-200">{container.contentsSummary}</p>
+        </div>
+      ) : null}
+
+      <AiSummary
+        moveId={moveId}
+        container={container}
+        zones={zones}
+        photos={photos.map((v) => v.photo)}
+        uid={uid}
+      />
 
       <div>
         <p className="text-sm text-slate-400">Status</p>

@@ -29,6 +29,28 @@ describe("nextSequenceNumber", () => {
     expect(nextSequenceNumber(nathan, [1, 2, 3, 7])).toBe(8);
   });
 
+  /**
+   * The reason voiding exists. A gap in the middle of the range is never
+   * refilled, but the top of the range is not a gap: drop the highest number
+   * and the very next box is handed that same number back. Two pieces of
+   * cardboard would then carry it, and nothing downstream can tell them apart.
+   *
+   * This is pinned rather than fixed. Reserving from a high-water mark stored
+   * on the member would be the alternative, and it fails offline for exactly
+   * the reason the disjoint ranges exist. Keeping the voided document in the
+   * collection is what holds the mark instead, so the rule this test states
+   * has to keep being true for that to work.
+   */
+  it("reissues the top number once the box holding it is gone", () => {
+    expect(nextSequenceNumber(nathan, [1, 2, 3])).toBe(4);
+    expect(nextSequenceNumber(nathan, [1, 2])).toBe(3);
+  });
+
+  it("keeps counting past a voided box, because its number stays in the list", () => {
+    const voidedBox = 3;
+    expect(nextSequenceNumber(nathan, [1, 2, voidedBox])).toBe(4);
+  });
+
   it("throws once the range is spent", () => {
     const tiny = { numberRangeStart: 1, numberRangeEnd: 2 };
     expect(() => nextSequenceNumber(tiny, [1, 2])).toThrow(RangeExhaustedError);

@@ -1,5 +1,6 @@
 import {
   buildSearchText,
+  canDelete,
   containerSchema,
   nextSequenceNumber,
   toDisplayCode,
@@ -9,7 +10,8 @@ import {
   type MoveMember,
   type Zone,
 } from "../domain";
-import { deleteField, doc, updateDoc } from "firebase/firestore";
+import { ContainerNotDeletableError } from "../domain/lifecycle";
+import { deleteDoc, deleteField, doc, getDoc, getDocFromCache, updateDoc } from "firebase/firestore";
 import { reportCondition, clearCondition, type ConditionKey } from "../domain/conditions";
 import type { ConditionReport } from "../domain/schemas";
 import { db } from "../lib/firebase";
@@ -195,6 +197,99 @@ export function clearContainerCondition(
   const saved = updateValidated(containers(moveId), containerSchema, next);
   const logged = logActivity(moveId, event);
   return { value: saved.value, written: allWritten(saved.written, logged.written) };
+}
+
+/**
+ * Withdraws a box without freeing its number. The document stays in the
+ * collection on purpose: `reserveContainer` reads every container to find the
+ * highest number in use, so a voided box is what keeps the count moving past a
+ * number somebody has already written in marker.
+ */
+export function voidContainer(
+  moveId: string,
+  container: Container,
+  actorUid: string
+): PendingWrite<Container> {
+  const now = nowIso();
+  const next: Container = {
+    ...container,
+    voidedAt: now,
+    voidedBy: actorUid,
+    updatedAt: now,
+    updatedBy: actorUid,
+  };
+  const saved = updateValidated(containers(moveId), containerSchema, next);
+  const logged = logActivity(moveId, {
+    containerId: container.id,
+    actorId: actorUid,
+    type: "container_voided",
+    occurredAt: now,
+    payload: { sequenceNumber: container.sequenceNumber },
+  });
+  return { value: saved.value, written: allWritten(saved.written, logged.written) };
+}
+
+/**
+ * Puts a voided box back in use. Both stamps have to be removed rather than
+ * written as undefined: Firestore rejects an explicit undefined, and a key left
+ * out of an update leaves the stored value alone, so the box would come back
+ * still voided. Same reason `withoutAiSummary` above reaches for `deleteField`.
+ */
+export function unvoidContainer(
+  moveId: string,
+  container: Container,
+  actorUid: string
+): PendingWrite<Container> {
+  const { voidedAt: _clearedAt, voidedBy: _clearedBy, ...rest } = container;
+  const now = nowIso();
+  const parsed = containerSchema.parse({ ...rest, updatedAt: now, updatedBy: actorUid });
+  const { id, ...fields } = parsed;
+  const written = updateDoc(doc(containers(moveId), id), {
+    ...fields,
+    voidedAt: deleteField(),
+    voidedBy: deleteField(),
+  });
+  const logged = logActivity(moveId, {
+    containerId: container.id,
+    actorId: actorUid,
+    type: "container_unvoided",
+    occurredAt: now,
+    payload: { sequenceNumber: container.sequenceNumber },
+  });
+  return { value: parsed, written: allWritten(written, logged.written) };
+}
+
+/**
+ * Removes a box outright, which is only ever correct when its number was never
+ * written down. The guard reads the stored document rather than trusting an
+ * object the caller handed over, so there is no way to reach the delete with a
+ * container that says something the database does not.
+ *
+ * The read comes from the local cache first, so this works in a basement. The
+ * returned `written` settles on server acknowledgment like every other write,
+ * and the delete is already applied locally before it does.
+ *
+ * No activity event is logged. An event pointing at a document that no longer
+ * exists is a dangling reference, and a box that was never written on has no
+ * history worth keeping.
+ */
+export async function deleteContainer(
+  moveId: string,
+  containerId: string
+): Promise<PendingWrite<void>> {
+  const ref = doc(containers(moveId), containerId);
+  let snap;
+  try {
+    snap = await getDocFromCache(ref);
+  } catch {
+    snap = await getDoc(ref);
+  }
+  if (!snap.exists()) return { value: undefined, written: Promise.resolve() };
+
+  const container = containerSchema.parse({ ...snap.data(), id: snap.id });
+  if (!canDelete(container)) throw new ContainerNotDeletableError(container);
+
+  return { value: undefined, written: deleteDoc(ref) };
 }
 
 export function watchContainers(

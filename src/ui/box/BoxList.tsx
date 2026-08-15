@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Container, Zone } from "../../domain";
 import { hasCondition, isVoided, search } from "../../domain";
-import { Button } from "../kit";
+import { BackBar, Button } from "../kit";
 
 /**
  * Every box, and a text field over it. The number keypad answers "where is
@@ -19,7 +19,7 @@ export function BoxList({
   query,
   onQueryChange,
   onOpen,
-  onClose,
+  onBack,
 }: {
   containers: readonly Container[];
   zones: readonly Zone[];
@@ -27,7 +27,7 @@ export function BoxList({
   query: string;
   onQueryChange: (v: string) => void;
   onOpen: (c: Container) => void;
-  onClose: () => void;
+  onBack: () => void;
 }) {
   const [showVoided, setShowVoided] = useState(false);
   const filtering = query.trim().length > 0;
@@ -59,7 +59,8 @@ export function BoxList({
 
   return (
     <div className="flex min-h-full flex-col">
-      <div className="flex flex-col gap-2 p-6 pb-3">
+      <BackBar onBack={onBack} />
+      <div className="flex flex-col gap-2 p-6 pt-2 pb-3">
         <label className="block">
           <span className="text-sm text-slate-400">Search</span>
           <input
@@ -77,7 +78,7 @@ export function BoxList({
         {voidedCount > 0 ? (
           <button
             onClick={() => setShowVoided((v) => !v)}
-            className="min-h-12 self-start text-sm text-slate-400 underline"
+            className="min-h-14 self-start text-sm text-slate-400 underline"
           >
             {showVoided
               ? "Hide voided boxes"
@@ -97,14 +98,27 @@ export function BoxList({
                 className="flex min-h-14 w-full items-center gap-3 border-b border-slate-800 py-2 text-left"
               >
                 <span className="font-mono text-2xl text-slate-100">{container.displayCode}</span>
+                {/* A box with no room has no color to write on it and no
+                    destination when it arrives, which is a thing to fix
+                    rather than a blank. The dot is drawn as an empty outline
+                    and the words say what to do, in the same amber the
+                    conditions use for the other state worth acting on. */}
                 {zone ? (
                   <span
                     className="size-5 shrink-0 rounded-full"
                     style={{ backgroundColor: zone.colorValue }}
                   />
-                ) : null}
+                ) : (
+                  <span className="size-5 shrink-0 rounded-full border-2 border-dashed border-amber-400" />
+                )}
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-slate-300">{zone?.name ?? "No room"}</span>
+                  {zone ? (
+                    <span className="block truncate text-slate-300">{zone.name}</span>
+                  ) : (
+                    <span className="block truncate font-medium text-amber-300">
+                      No room. Open it and pick one.
+                    </span>
+                  )}
                   {container.title ? (
                     <span className="block truncate text-sm text-slate-500">{container.title}</span>
                   ) : null}
@@ -139,9 +153,11 @@ export function BoxList({
         ) : null}
       </ul>
 
+      {/* Back rather than Done: this screen completes nothing, and the word
+          has to mean the same thing here as it does everywhere else. */}
       <div className="border-t border-slate-800 p-4">
-        <Button onClick={onClose} tone="quiet">
-          Done
+        <Button onClick={onBack} tone="quiet">
+          Back
         </Button>
       </div>
     </div>

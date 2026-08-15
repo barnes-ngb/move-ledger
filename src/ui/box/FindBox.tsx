@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Container, Zone } from "../../domain";
 import { findByNumber, isVoided } from "../../domain";
+import { BackBar } from "../kit";
 import { appendDigit, deleteDigit } from "./keypad";
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "back"] as const;
@@ -14,10 +15,12 @@ export function FindBox({
   containers,
   zones,
   onOpen,
+  onBack,
 }: {
   containers: readonly Container[];
   zones: readonly Zone[];
   onOpen: (c: Container) => void;
+  onBack: () => void;
 }) {
   const [typed, setTyped] = useState("");
   const matches = findByNumber(containers, typed);
@@ -28,7 +31,8 @@ export function FindBox({
 
   return (
     <div className="flex min-h-full flex-col">
-      <div className="p-6 text-center">
+      <BackBar onBack={onBack} />
+      <div className="p-6 pt-2 text-center">
         <p className="font-mono text-5xl tracking-widest text-slate-50">{typed || "\u00a0"}</p>
         <p className="mt-2 text-sm text-slate-400">
           {typed ? `${matches.length} box${matches.length === 1 ? "" : "es"}` : "Type the number on the box"}
@@ -45,10 +49,19 @@ export function FindBox({
                 className="flex min-h-16 w-full items-center gap-4 border-b border-slate-800 text-left"
               >
                 <span className="font-mono text-2xl text-slate-100">{c.displayCode}</span>
+                {/* The same missing-room marker the box list uses. A row that
+                    reads differently on two screens is a row a person has to
+                    read twice. */}
                 {zone ? (
                   <span className="size-5 rounded-full" style={{ backgroundColor: zone.colorValue }} />
-                ) : null}
-                <span className="flex-1 truncate text-slate-300">{zone?.name ?? "No room"}</span>
+                ) : (
+                  <span className="size-5 shrink-0 rounded-full border-2 border-dashed border-amber-400" />
+                )}
+                {zone ? (
+                  <span className="flex-1 truncate text-slate-300">{zone.name}</span>
+                ) : (
+                  <span className="flex-1 truncate font-medium text-amber-300">No room</span>
+                )}
                 {/* Voided boxes are not hidden here, unlike the list. Somebody
                     typing a retired number is holding the cardboard it is
                     written on, and an empty result would tell them nothing. */}

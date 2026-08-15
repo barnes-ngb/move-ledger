@@ -67,7 +67,12 @@ export function PhotoViewer({
     <div
       onClick={onClose}
       className="fixed inset-0 z-50 flex flex-col bg-slate-950/95"
-      style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingLeft: "env(safe-area-inset-left)",
+        paddingRight: "env(safe-area-inset-right)",
+      }}
     >
       <div className="flex items-center justify-between px-4 py-3">
         <span className="text-sm text-slate-400">

@@ -28,7 +28,7 @@ export function Account({ user }: { user: User }) {
         <p className="mt-1 break-all rounded-lg bg-slate-800 p-3 font-mono text-sm text-slate-200">{user.uid}</p>
         <button
           onClick={copyUid}
-          className="mt-3 min-h-12 rounded-xl bg-slate-700 px-5 font-medium text-slate-100"
+          className="mt-3 min-h-14 rounded-xl bg-slate-700 px-5 font-medium text-slate-100"
         >
           {copied ? "Copied" : "Copy"}
         </button>
@@ -39,7 +39,7 @@ export function Account({ user }: { user: User }) {
         work on this phone.
       </p>
 
-      <button onClick={() => void signOut()} className="min-h-12 self-start text-slate-400 underline">
+      <button onClick={() => void signOut()} className="min-h-14 self-start text-slate-400 underline">
         Sign out
       </button>
     </div>

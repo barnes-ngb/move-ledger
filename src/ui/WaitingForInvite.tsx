@@ -26,7 +26,7 @@ export function WaitingForInvite({ user }: { user: User }) {
         {copied ? "Copied" : "Copy"}
       </button>
       <p className="text-sm text-slate-400">Once you are added, this screen becomes the move.</p>
-      <button onClick={() => void signOut()} className="min-h-12 self-start text-slate-400 underline">
+      <button onClick={() => void signOut()} className="min-h-14 self-start text-slate-400 underline">
         Sign out
       </button>
     </Screen>

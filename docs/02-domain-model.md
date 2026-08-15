@@ -153,6 +153,8 @@ interface Container {
   };
 
   labelConfirmedAt?: string;
+  voidedAt?: string;           // withdrawn without freeing the number, see below
+  voidedBy?: string;
   createdAt: string;
   createdBy: string;
   updatedAt: string;
@@ -175,6 +177,23 @@ opened  -> emptied
 Backward transitions are allowed and are recorded as activity events. The transition function lives in `src/domain/status.ts` and is the only place a status changes.
 
 `filling` exists because a box record is written to Firestore the moment its number is reserved, before the photo is taken. Without it, an abandoned box would have to claim a status it never reached.
+
+### Deleting versus voiding
+
+A box goes away in one of two ways, and which one is not a preference.
+
+`nextSequenceNumber` takes the highest number in use and adds one. A gap in the middle of the range is never refilled, but the top of the range is not a gap: remove the highest-numbered box and the next box is handed that number again. If it is already written in marker, two pieces of cardboard carry it, and nothing downstream can tell them apart.
+
+So a number is only free if it was never written down, and `labelConfirmedAt` is exactly that record. `canDelete` in `src/domain/lifecycle.ts` is the one place the rule is stated.
+
+| Box | What happens |
+| --- | --- |
+| `filling`, no `labelConfirmedAt` | Deleted. The number was never written, so it goes back into circulation. |
+| Anything else | Voided. `voidedAt` and `voidedBy` are stamped and the document stays. |
+
+A voided box keeps its place in the collection so `nextSequenceNumber` keeps counting past it. That means it must stay in the subscription: filtering it out in a hook or a repository would hand its number to the next box and reintroduce the collision. Voided boxes are hidden in components only.
+
+Voiding is reversible. Unvoiding removes both stamps, which has to reach Firestore as a field delete rather than an absent key.
 
 ### searchText
 
@@ -221,7 +240,13 @@ interface ActivityEvent {
     | "destination_changed"
     | "notes_changed"
     | "condition_reported"
-    | "condition_cleared";
+    | "condition_cleared"
+    | "summary_generated"
+    | "container_voided"
+    | "container_unvoided"
+    | "container_deleted"
+    | "photo_deleted"
+    | "title_changed";
   occurredAt: string;
   payload: Record<string, unknown>;
 }

@@ -108,16 +108,38 @@ service firebase.storage {
         && firestore.exists(/databases/(default)/documents/moves/$(moveId))
         && request.auth.uid in firestore.get(/databases/(default)/documents/moves/$(moveId)).data.memberUids;
 
-      allow write: if request.auth != null
+      allow create, update: if request.auth != null
         && request.auth.uid in firestore.get(/databases/(default)/documents/moves/$(moveId)).data.memberUids
         && request.resource.size < 2 * 1024 * 1024
         && request.resource.contentType.matches('image/.*');
+
+      allow delete: if request.auth != null
+        && request.auth.uid in firestore.get(/databases/(default)/documents/moves/$(moveId)).data.memberUids;
     }
   }
 }
 ```
 
 The 2 MB ceiling is ten times the expected resized size. If an upload hits it, client-side resize failed and that should surface as an error rather than a slow expensive upload.
+
+### The write rule was split on 2026-08-15, because it denied every delete
+
+This was a live defect, not a tidy-up. Until this change the three operations shared one `allow write`:
+
+```javascript
+allow write: if request.auth != null
+  && request.auth.uid in firestore.get(...).data.memberUids
+  && request.resource.size < 2 * 1024 * 1024
+  && request.resource.contentType.matches('image/.*');
+```
+
+A delete carries no `request.resource`. There is no incoming object, so there is no size and no content type to check. The last two conditions dereference a null and the rule evaluation errors, which Storage answers as a denial. So every delete of a photo object was rejected, on every attempt, with full signal, from the day `storage.rules` was written in APPLY-02.
+
+Nothing noticed for two weeks because nothing in the app deleted a photo. The rule was only ever exercised by uploads, which is exactly the shape of defect a rules suite is supposed to catch and this one could not: there was no delete to test, so the missing case looked like coverage. The APPLY-09 plan then asserted from the outside that "Storage `write` covers delete", which is true of the operation list and false of the condition, and the delete path was built on top of it. Found in review on pull request 18 and fixed here.
+
+`create` and `update` keep the ceiling and the content type, which are checks on bytes arriving. `delete` keeps membership only, which is the whole authorization model for everything else in this file.
+
+The general lesson, worth more than the fix: a condition that reads `request.resource` belongs only on operations that carry one. Grouping delete with the write operations is the trap, and `write` is the alias that sets it.
 
 ## Required tests
 
@@ -134,8 +156,11 @@ The 2 MB ceiling is ten times the expected resized size. If an upload hits it, c
 9. A Storage write with a non-image content type is denied.
 10. The `array-contains` list query on `moves` succeeds against an empty collection, returns the caller's own move, and returns nothing for a caller who belongs to no move.
 11. An unfiltered list of every move is denied.
+12. A member can delete a photo object in their move. A signed-in non-member cannot. A signed-out request cannot.
 
 Cases 10 and 11 are list queries. A rules suite built only from `getDoc` never evaluates the `list` path, which is how the null value error on the move rule reached a deployed build.
+
+Case 12 is the delete path, added 2026-08-15 with the rule split above. A suite that only uploads never evaluates a delete, which is how a rule that denied every one of them survived two weeks of passing tests. Cases 8 and 9 stay on `create`, so the split has to keep both halves honest: deletes allowed, oversized and non-image uploads still refused.
 
 Run with the emulator:
 

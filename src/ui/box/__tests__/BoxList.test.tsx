@@ -79,4 +79,69 @@ describe("BoxList", () => {
     renderList({ containers, query: "trombone" });
     expect(screen.getByText(/No box matches that/)).toBeDefined();
   });
+
+  it("names both conditions on a row carrying both", () => {
+    const report = { reportedAt: "2026-08-15T12:00:00.000Z", reportedBy: "mem1", photoIds: [] };
+    renderList({
+      containers: [makeContainer({ conditions: { missing: report, damaged: report } })],
+    });
+    expect(screen.getByText("missing, damaged")).toBeDefined();
+  });
+
+  describe("voided boxes", () => {
+    const withVoided = [
+      ...containers,
+      makeContainer({
+        id: "c4",
+        sequenceNumber: 20,
+        displayCode: "020",
+        notes: "kettle spare",
+        voidedAt: "2026-08-15T12:00:00.000Z",
+        voidedBy: "mem1",
+      }),
+    ];
+
+    it("hides them until they are asked for", () => {
+      renderList({ containers: withVoided });
+      expect(screen.queryByText("020")).toBeNull();
+      expect(screen.getByText("3 boxes")).toBeDefined();
+    });
+
+    it("reveals them on the control, reading as voided", () => {
+      renderList({ containers: withVoided });
+      fireEvent.click(screen.getByText("Show 1 voided box"));
+      expect(screen.getByText("020")).toBeDefined();
+      expect(screen.getByText("voided")).toBeDefined();
+    });
+
+    it("hides them again", () => {
+      renderList({ containers: withVoided });
+      fireEvent.click(screen.getByText("Show 1 voided box"));
+      fireEvent.click(screen.getByText("Hide voided boxes"));
+      expect(screen.queryByText("020")).toBeNull();
+    });
+
+    it("offers no control when nothing is voided", () => {
+      renderList({ containers });
+      expect(screen.queryByText(/voided/)).toBeNull();
+    });
+
+    /**
+     * The reason the filter lives in this component. Search reads the list
+     * this screen is already showing, so a retired box does not come back for
+     * a word it happens to contain, and nothing above the component has to
+     * know that voided boxes exist.
+     */
+    it("keeps them out of search results", () => {
+      renderList({ containers: withVoided, query: "kettle" });
+      expect(screen.getByText("012")).toBeDefined();
+      expect(screen.queryByText("020")).toBeNull();
+    });
+
+    it("includes them in search once they are revealed", () => {
+      renderList({ containers: withVoided, query: "kettle" });
+      fireEvent.click(screen.getByText("Show 1 voided box"));
+      expect(screen.getByText("020")).toBeDefined();
+    });
+  });
 });

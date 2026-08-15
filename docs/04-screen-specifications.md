@@ -123,6 +123,8 @@ Search itself changed underneath both. It compares word to word rather than test
 
 Row contents are in section 5's amendment.
 
+Amended again 2026-08-15 during the APPLY-09 run. The keypad screen shows voided boxes, where the box list hides them. That is not an oversight: a person typing a retired number is holding the cardboard it is written on, and an empty result would tell them nothing about why. The row reads "voided" in amber where the status sits.
+
 ## 5. Search
 
 ### Sources
@@ -143,7 +145,9 @@ Amended 2026-08-15 during the APPLY-08 run. The list row is not this card and wa
 
 Three of the lines above are still owed and are worth having only if the list proves hard to read on a phone: the primary photo thumbnail, the color as a fill rather than a dot, and the matching text with the match highlighted. The highlight is the one with real value, since it answers "why did this box come back" without opening it. It was left out because a word match can land in any of six fields and picking the snippet to show is a design question this run did not have an answer to. The row says which field matched only in the `aiSummary` case, where it changes whether the text can be trusted.
 
-A condition badge is not on the row either. Nothing in the app writes a condition yet.
+Amended again 2026-08-15 during the APPLY-09 run. The condition badge exists now that something writes a condition. It is a line of small amber text in the row's right column, under the status, naming both conditions when a box carries both. Still text rather than a badge, for the same reason the color is a dot rather than a fill: the row is already carrying six things at 14px.
+
+Voided boxes are not in this list by default, and not in these results by default. A control under the search field reveals them, counts them while it offers, and hides them again. Revealed, a row reads "voided" where its status would be. The filter is in the component on purpose, and the comment there says why: `reserveContainer` reads the same container list this screen does, so filtering voided boxes any higher up would hand a retired number to a second physical box.
 
 ## 6. Box detail
 
@@ -165,6 +169,23 @@ State-dependent. Only the legal next transitions appear as primary buttons. Ever
 ### Photo gallery
 
 Amended 2026-08-15 during the APPLY-08 run. Tapping a thumbnail opens the photo at the size of the screen, fitted whole rather than cropped, with previous and next moving through that box's photos in the order they were taken. The backdrop and a close control both dismiss it. It reads the local blob first and the download URL second, the same order the strip uses, so a photo taken a minute ago with no signal opens. A photo with neither says it has not finished uploading rather than showing a broken image.
+
+### What shipped, APPLY-09
+
+Amended 2026-08-15. This screen gained four things, and one of them is the only action in the app that cannot be undone.
+
+**Title.** A text field saved on its own control, the same shape as the note. The schema had carried `title` since APPLY-01 with nothing setting it. Emptying it deletes the field rather than storing a blank string, so `searchText` stops carrying the old words.
+
+**Conditions.** Two controls, missing and damaged. Both can be set at once and neither touches status, per ADR-0003, so a damaged box still shows `loaded` and still offers its status buttons. A box carrying either is marked twice: a badge under the number here, and a line of amber text in its list row. The report is written with no note and no photo ids. Asking for either at the moment somebody says a box is damaged is what stops them saying it at all, and the fields are on the record for a later screen to fill.
+
+**Void or delete.** One control, below Done and behind a rule, because a thumb reaching the bottom of a scrolled screen must not land on it. Which one it is follows `canDelete`, and the screen only reports the answer:
+
+- A box nobody has written on is deleted. The confirmation says its number goes back and will be given to the next box, and that its photos go with it.
+- Every other box is voided. The confirmation says the number is retired and will never be given to another box, because it may already be written on one.
+
+Neither happens on the first press. A voided box says so at the top, hides everything that edits it, keeps its photos and its number on screen because those are what somebody came to check, and offers **Put this box back**, which needs no confirmation because it takes nothing away.
+
+**Photo delete and retry.** Delete is in the full-screen viewer rather than on the strip, because at 96px a person cannot tell which photo they are about to lose. It confirms first, and the viewer closes itself when the last photo goes. The strip's "not sent" marker is now the retry control, per doc 06. The file input no longer carries `capture="environment"`, which was forcing the camera on Android and hiding the library.
 
 ## 7. Rooms
 

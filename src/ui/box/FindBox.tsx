@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Container, Zone } from "../../domain";
-import { findByNumber } from "../../domain";
+import { findByNumber, isVoided } from "../../domain";
 import { appendDigit, deleteDigit } from "./keypad";
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "back"] as const;
@@ -49,7 +49,12 @@ export function FindBox({
                   <span className="size-5 rounded-full" style={{ backgroundColor: zone.colorValue }} />
                 ) : null}
                 <span className="flex-1 truncate text-slate-300">{zone?.name ?? "No room"}</span>
-                <span className="text-sm text-slate-500">{c.status}</span>
+                {/* Voided boxes are not hidden here, unlike the list. Somebody
+                    typing a retired number is holding the cardboard it is
+                    written on, and an empty result would tell them nothing. */}
+                <span className={isVoided(c) ? "text-sm text-amber-300" : "text-sm text-slate-500"}>
+                  {isVoided(c) ? "voided" : c.status}
+                </span>
               </button>
             </li>
           );

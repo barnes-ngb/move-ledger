@@ -1,7 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { PhotoViewer } from "../PhotoViewer";
 import type { PhotoView } from "../../../hooks/usePhotos";
+
+/**
+ * The repositories are stubbed so this file never reaches `lib/firebase`,
+ * which initializes an app at import. What the delete path needs proving here
+ * is the confirmation step and what gets passed on, not the write itself.
+ */
+const mocks = vi.hoisted(() => ({ deletePhoto: vi.fn() }));
+
+vi.mock("../../../repositories", () => ({
+  deletePhoto: mocks.deletePhoto,
+  writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
+}));
+
+const { PhotoViewer } = await import("../PhotoViewer");
 
 const NOW = "2026-08-15T12:00:00.000Z";
 
@@ -39,8 +52,12 @@ describe("PhotoViewer", () => {
   }
 
   function open(startIndex = 0, list: PhotoView[] = photos) {
+    mocks.deletePhoto.mockClear();
+    mocks.deletePhoto.mockReturnValue({ value: undefined, written: Promise.resolve() });
     const onClose = vi.fn();
-    render(<PhotoViewer photos={list} startIndex={startIndex} onClose={onClose} />);
+    render(
+      <PhotoViewer moveId="m1" uid="uid-1" photos={list} startIndex={startIndex} onClose={onClose} />
+    );
     return onClose;
   }
 
@@ -88,5 +105,33 @@ describe("PhotoViewer", () => {
     open(0, [view({ id: "p9" })]);
     expect(document.querySelector("img")).toBeNull();
     expect(screen.getByText(/has not finished uploading/)).toBeDefined();
+  });
+
+  it("does not delete on the first press", () => {
+    open(1);
+    fireEvent.click(screen.getByText("Delete this photo"));
+    expect(mocks.deletePhoto).not.toHaveBeenCalled();
+  });
+
+  it("deletes the photo on screen once it is confirmed", () => {
+    open(1);
+    fireEvent.click(screen.getByText("Delete this photo"));
+    // The confirm panel repeats the label, so the second one is its button.
+    fireEvent.click(screen.getAllByText("Delete this photo")[1]!);
+    expect(mocks.deletePhoto).toHaveBeenCalledTimes(1);
+    expect(mocks.deletePhoto.mock.calls[0]?.[1]?.id).toBe("p2");
+  });
+
+  it("keeps the photo when the confirmation is declined", () => {
+    open(1);
+    fireEvent.click(screen.getByText("Delete this photo"));
+    fireEvent.click(screen.getByText("Keep it"));
+    expect(mocks.deletePhoto).not.toHaveBeenCalled();
+    expect(screen.getByText("2 of 3")).toBeDefined();
+  });
+
+  it("closes itself once the last photo is gone", () => {
+    const onClose = open(0, []);
+    expect(onClose).toHaveBeenCalled();
   });
 });

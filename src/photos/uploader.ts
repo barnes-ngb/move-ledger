@@ -1,6 +1,9 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../lib/firebase";
-import { getPhotoRecord, updatePhotoRecord } from "../repositories";
+// Imported from the module rather than the repositories barrel. `photos.ts`
+// calls back into this file for retry, and naming the one module keeps that
+// cycle to two files that only reach each other at call time.
+import { getPhotoRecord, updatePhotoRecord } from "../repositories/photos";
 import type { ContainerPhoto } from "../domain";
 import { deleteBlob, pendingBlobs, type PhotoBlob } from "./db";
 import { requestSummary } from "./summary";
@@ -152,6 +155,17 @@ export function startUploader(): () => void {
     window.removeEventListener("online", onOnline);
     clearTimeout(timer);
   };
+}
+
+/**
+ * Forgets the back-off and the attempt count this pass is holding for one
+ * photo. Retry is a person saying try now, and the ladder in module memory
+ * would otherwise make them wait out a delay that was recorded before they
+ * asked. The Firestore side of the reset is `retryUpload` in the repository.
+ */
+export function clearBackoff(photoId: string): void {
+  attemptsById.delete(photoId);
+  nextTryById.delete(photoId);
 }
 
 /** Test seam. Never call this from app code. */

@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
+import type { ContainerPhoto } from "../../domain";
 import type { PhotoView } from "../../hooks/usePhotos";
 import { capturePhoto, type PhotoKind } from "../../photos/capture";
+import { retryUpload, writeInBackground } from "../../repositories";
 import { ErrorLine } from "../kit";
 import { PhotoViewer } from "./PhotoViewer";
 
@@ -42,29 +44,48 @@ export function PhotoStrip({
     setBusy(false);
   }
 
+  /**
+   * Doc 06's retry action. The queue gives up after five attempts and the
+   * marker is where a person finds out, so the marker is what they press.
+   */
+  function retry(photo: ContainerPhoto) {
+    setError(null);
+    try {
+      writeInBackground(retryUpload(moveId, photo).written, () =>
+        setError("Still cannot send that photo. It is safe on this phone.")
+      );
+    } catch {
+      setError("Could not send that photo again.");
+    }
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex gap-3 overflow-x-auto pb-1">
         {photos.map((v, i) => {
           const src = v.localUrl ?? v.photo.downloadUrl;
           return (
-            <button
-              key={v.photo.id}
-              onClick={() => setViewing(i)}
-              className="relative shrink-0"
-              aria-label={`Open photo ${i + 1}`}
-            >
-              {src ? (
-                <img src={src} alt="" className="size-24 rounded-xl object-cover" />
-              ) : (
-                <div className="size-24 rounded-xl bg-slate-800" />
-              )}
+            // A tile rather than one button, because the retry marker is a
+            // control of its own and a button inside a button is not markup a
+            // browser will keep.
+            <div key={v.photo.id} className="relative shrink-0">
+              <button onClick={() => setViewing(i)} aria-label={`Open photo ${i + 1}`}>
+                {src ? (
+                  <img src={src} alt="" className="size-24 rounded-xl object-cover" />
+                ) : (
+                  <div className="size-24 rounded-xl bg-slate-800" />
+                )}
+              </button>
               {v.photo.uploadState === "failed" ? (
-                <span className="absolute inset-x-0 bottom-0 rounded-b-xl bg-amber-500/80 text-center text-xs text-slate-950">
-                  Not sent yet
-                </span>
+                <button
+                  onClick={() => retry(v.photo)}
+                  aria-label={`Send photo ${i + 1} again`}
+                  className="absolute inset-x-0 bottom-0 rounded-b-xl bg-amber-500/80 py-1 text-center text-xs font-semibold text-slate-950"
+                >
+                  Send again
+                </button>
               ) : null}
-            </button>
+            </div>
           );
         })}
 
@@ -78,11 +99,13 @@ export function PhotoStrip({
         </button>
       </div>
 
+      {/* No `capture` attribute. It forces the camera on Android and hides the
+          library, and a photo of a box that was taken an hour ago is still a
+          photo of that box. */}
       <input
         ref={input}
         type="file"
         accept="image/*"
-        capture="environment"
         onChange={(e) => void onFile(e)}
         className="hidden"
       />
@@ -90,7 +113,13 @@ export function PhotoStrip({
       <ErrorLine message={error} />
 
       {viewing !== null ? (
-        <PhotoViewer photos={photos} startIndex={viewing} onClose={() => setViewing(null)} />
+        <PhotoViewer
+          moveId={moveId}
+          uid={uid}
+          photos={photos}
+          startIndex={viewing}
+          onClose={() => setViewing(null)}
+        />
       ) : null}
     </div>
   );

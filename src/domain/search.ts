@@ -41,11 +41,27 @@ export interface SearchHit {
  * Splits text into comparable words. Punctuation is dropped, because the
  * generated contents lists carry quotes, plus signs, and commas that nobody
  * types into a search box.
+ *
+ * Accents are folded rather than kept, so "cafe" finds "café" and the reverse.
+ * Nobody reaches for the accented key on a phone keyboard while standing in a
+ * garage, and the model writes the word properly, so without this the two
+ * spellings never meet.
+ *
+ * Deviates from the APPLY-08 plan, which split on `[^a-z0-9]+`. Raised in
+ * review on pull request 17 and decided there. That class deleted every
+ * character of any non-Latin script, so text in one tokenized to an empty list
+ * and the box holding it could not be found at all, which the substring search
+ * this replaced had handled. Splitting on the Unicode classes alone was the
+ * suggestion and it is not enough: it leaves "jalapeño" one intact token, and
+ * "jalapeno" shares only three letters with it before the tilde, so a search
+ * that works today would have stopped working. Folding first fixes both.
  */
 export function tokenize(text: string): string[] {
   return text
     .toLowerCase()
-    .split(/[^a-z0-9]+/)
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .split(/[^\p{L}\p{N}]+/u)
     .filter((t) => t.length > 0);
 }
 

@@ -151,6 +151,38 @@ describe("tokenize", () => {
   it("returns nothing for text with no words in it", () => {
     expect(tokenize("  +  ")).toEqual([]);
   });
+
+  it("folds accents so one spelling reaches the other", () => {
+    expect(tokenize("Café")).toEqual(["cafe"]);
+    expect(tokenize("jalapeño")).toEqual(["jalapeno"]);
+  });
+
+  it("keeps a word written in another script rather than deleting it", () => {
+    expect(tokenize("коробка с книгами")).toEqual(["коробка", "с", "книгами"]);
+  });
+});
+
+/**
+ * Added in review on pull request 17. The plan's tokenizer split on
+ * `[^a-z0-9]+`, which erases a non-Latin script outright, and the suggested
+ * replacement would have broken the accented case that worked by accident.
+ */
+describe("search, text that is not plain ASCII", () => {
+  it("finds an accented word from either spelling", () => {
+    const boxes = [makeContainer({ id: "c", notes: "café press and a grinder" })];
+    expect(search(boxes, "cafe")).toHaveLength(1);
+    expect(search(boxes, "café")).toHaveLength(1);
+  });
+
+  it("keeps the accented match the old tokenizer got by accident", () => {
+    const boxes = [makeContainer({ id: "c", aiSummary: "jalapeño peppers, dried" })];
+    expect(search(boxes, "jalapeno")).toHaveLength(1);
+  });
+
+  it("finds a box whose text is written in another script", () => {
+    const boxes = [makeContainer({ id: "c", notes: "коробка с книгами" })];
+    expect(search(boxes, "коробка")).toHaveLength(1);
+  });
 });
 
 describe("tokenMatches", () => {

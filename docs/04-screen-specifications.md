@@ -112,7 +112,7 @@ Searches the local cache. Identical behavior, no degraded mode.
 
 Amended 2026-08-15 during the APPLY-08 run. The keypad screen is unchanged and still opens the box the moment one number matches. The other two lines were answered by a second screen rather than by additions to this one.
 
-**All boxes** is a third action on the move overview, under Find a box. It lists every box with the newest number on top, and a text field at the top of it filters the same list as the person types. Recent boxes are therefore the first thing on it, and the last five are the first five rows, so a person who does not know a number has somewhere to go. A box opened from the list returns to the list with the filter text still in the field.
+**See all boxes** is a third action on the move overview, under Find a box. It lists every box with the newest number on top, and a text field at the top of it filters the same list as the person types. Recent boxes are therefore the first thing on it, and the last five are the first five rows, so a person who does not know a number has somewhere to go. A box opened from the list returns to the list with the filter text still in the field.
 
 Two departures from the lines above, both deliberate:
 

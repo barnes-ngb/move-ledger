@@ -107,7 +107,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
           Find a box
         </Button>
         <Button onClick={() => setView({ name: "list", query: "" })} tone="quiet">
-          All boxes
+          See all boxes
         </Button>
         <button onClick={onSetup} className="min-h-12 text-slate-400 underline">
           Rooms and members

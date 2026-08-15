@@ -6,9 +6,18 @@ export interface ExportSources {
   containers: Container[];
   photos: ContainerPhoto[];
   activity: ActivityEvent[];
+  /**
+   * All three listeners have delivered at least once. Until then the arrays
+   * are empty because nothing has arrived, which is indistinguishable from a
+   * move with no photos and no history. The export is held until this is
+   * true, because the difference is the whole value of the file.
+   */
+  ready: boolean;
   /** A listener stopped. What arrived before it stopped is still here. */
   failed: boolean;
 }
+
+type Source = "containers" | "photos" | "activity";
 
 /**
  * The three collections the export needs that nothing else on the setup screen
@@ -31,6 +40,7 @@ export function useExportBundle(moveId: string | null, active: boolean): ExportS
   const [photos, setPhotos] = useState<ContainerPhoto[]>([]);
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
   const [failed, setFailed] = useState(false);
+  const [delivered, setDelivered] = useState<readonly Source[]>([]);
 
   useEffect(() => {
     if (!moveId || !active) {
@@ -38,16 +48,43 @@ export function useExportBundle(moveId: string | null, active: boolean): ExportS
       setPhotos([]);
       setActivity([]);
       setFailed(false);
+      setDelivered([]);
       return;
     }
     const fail = () => setFailed(true);
+    // Three listeners answering independently, so each one records that it
+    // has answered. An empty photo collection and a photo collection that has
+    // not arrived look identical from here otherwise.
+    const mark = (source: Source) =>
+      setDelivered((seen) => (seen.includes(source) ? seen : [...seen, source]));
     const stop = [
-      watchContainers(moveId, setContainers, fail),
-      watchPhotos(moveId, setPhotos, fail),
-      watchActivity(moveId, setActivity, fail),
+      watchContainers(
+        moveId,
+        (c) => {
+          setContainers(c);
+          mark("containers");
+        },
+        fail
+      ),
+      watchPhotos(
+        moveId,
+        (p) => {
+          setPhotos(p);
+          mark("photos");
+        },
+        fail
+      ),
+      watchActivity(
+        moveId,
+        (a) => {
+          setActivity(a);
+          mark("activity");
+        },
+        fail
+      ),
     ];
     return () => stop.forEach((fn) => fn());
   }, [moveId, active]);
 
-  return { containers, photos, activity, failed };
+  return { containers, photos, activity, ready: delivered.length === 3, failed };
 }

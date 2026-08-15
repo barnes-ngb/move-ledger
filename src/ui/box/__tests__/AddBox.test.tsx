@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { Container, MoveMember } from "../../../domain";
 import { makeContainer, makeZone } from "../../../domain/__tests__/factories";
 
@@ -93,12 +93,27 @@ describe("AddBox", () => {
     expect(screen.getByText(/Number 042 is already reserved/)).toBeDefined();
   });
 
-  it("deletes the draft when that is the answer, so the number goes back", () => {
+  it("deletes the draft when that is the answer, so the number goes back", async () => {
     const onLeave = open();
     fireEvent.click(screen.getByText("Back"));
     fireEvent.click(screen.getByText("Delete the draft"));
     expect(mocks.deleteContainer).toHaveBeenCalledWith("m1", "c9", "uid-1");
-    expect(onLeave).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(onLeave).toHaveBeenCalledTimes(1));
+  });
+
+  /**
+   * The guard inside `deleteContainer` can refuse, and the person was just
+   * told the number would go back to their range. Leaving anyway would make
+   * that a lie and take the only screen that could say otherwise with it.
+   */
+  it("stays on the sheet and says so when the draft cannot be deleted", async () => {
+    mocks.deleteContainer.mockRejectedValue(new Error("This box cannot be deleted."));
+    const onLeave = open();
+    fireEvent.click(screen.getByText("Back"));
+    fireEvent.click(screen.getByText("Delete the draft"));
+    await waitFor(() => expect(screen.getByText("This box cannot be deleted.")).toBeDefined());
+    expect(onLeave).not.toHaveBeenCalled();
+    expect(screen.getByText("Keep the draft")).toBeDefined();
   });
 
   it("leaves the draft alone when that is the answer", () => {

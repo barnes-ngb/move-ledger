@@ -32,13 +32,21 @@ export function ExportPanel({
   zones: readonly Zone[];
   locations: readonly Location[];
 }) {
-  const { containers, photos, activity, failed } = useExportBundle(move.id, true);
+  const { containers, photos, activity, ready, failed } = useExportBundle(move.id, true);
   const [error, setError] = useState<string | null>(null);
 
-  // Nothing to export yet. This is also what keeps the block off the screen
+  // The three listeners answer independently, and a file built while one of
+  // them is still on its way is short without saying so. A CSV with a photo
+  // count of zero against every box, or a data file with an empty history,
+  // reads as a finished export of a move that has neither. So nothing is
+  // offered until all three have answered, and nothing is offered at all once
+  // one of them has stopped.
+  if (!ready && !failed) return null;
+
+  // Nothing to export. This is also what keeps the block off the screen
   // during first-run setup, where a person is three fields into a move and an
   // empty file helps nobody.
-  if (containers.length === 0) return null;
+  if (ready && !failed && containers.length === 0) return null;
 
   function download(extension: "csv" | "json") {
     setError(null);
@@ -61,21 +69,21 @@ export function ExportPanel({
     <div className="rounded-2xl border border-slate-700 p-4">
       <p className="text-slate-200">Export</p>
       <p className="mt-1 text-sm text-slate-400">
-        {containers.length} box{containers.length === 1 ? "" : "es"} from this phone. The spreadsheet
-        has a row per box, with missing and damaged in their own columns. The data file has
-        everything, including the history.
+        {failed
+          ? "Everything this phone holds about the move, as a spreadsheet or as a data file."
+          : `${containers.length} box${containers.length === 1 ? "" : "es"} from this phone. The spreadsheet has a row per box, with missing and damaged in their own columns. The data file has everything, including the history.`}
       </p>
       {failed ? (
         <p className="mt-2 text-sm text-amber-300">
-          Some of this move stopped loading, so a file made now could be short. Go back and open this
-          screen again.
+          Part of this move stopped loading, so a file made now would be short and would not say so.
+          Go back and open this screen again.
         </p>
       ) : null}
       <div className="mt-3 flex flex-col gap-2">
-        <Button onClick={() => download("csv")} tone="quiet">
+        <Button onClick={() => download("csv")} disabled={failed} tone="quiet">
           Download the spreadsheet
         </Button>
-        <Button onClick={() => download("json")} tone="quiet">
+        <Button onClick={() => download("json")} disabled={failed} tone="quiet">
           Download the data file
         </Button>
       </div>

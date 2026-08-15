@@ -48,6 +48,10 @@ export function AddBox({
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
+  // The leave sheet covers the screen, so a failure while deleting has to be
+  // readable on the sheet. The error line under the fields is behind it.
+  const [sheetError, setSheetError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   // StrictMode runs effects twice in development, and reserving is now
   // synchronous, so nothing else keeps the second run from burning a number.
   // The latch is released deliberately in save(), which is the only place a
@@ -142,22 +146,44 @@ export function AddBox({
    * Keeping it is a real answer rather than a soft cancel. Drafts appear in
    * the box list and can be finished or deleted from box detail, so somebody
    * who was interrupted mid-box does not have to decide about it now.
+   *
+   * The delete is the one thing on this screen that is waited on, and it is
+   * the same shape box detail has used since APPLY-09. What is awaited is the
+   * guard rather than the network: `deleteContainer` reads the stored document
+   * and refuses a box that has been written on, which offline is answered by
+   * the cache. The Firestore write behind it goes to the background like
+   * everything else here. Leaving before the guard has answered would tell
+   * somebody their number went back to the range while it did not, and the
+   * screen that would have said otherwise is gone by then.
    */
   function leave(deleteDraft: boolean) {
-    setLeaving(false);
     if (!deleteDraft || !container) {
+      setLeaving(false);
       onLeave();
       return;
     }
-    const id = container.id;
-    setError(null);
-    // Fired rather than awaited, like every other write on this screen. The
-    // delete is applied to the local cache before the promise settles, so the
-    // list this returns to has already lost the draft.
-    void deleteContainer(moveId, id, uid)
-      .then(({ written }) => writeInBackground(written))
-      .catch(() => undefined);
-    onLeave();
+    void removeDraft(container.id);
+  }
+
+  async function removeDraft(id: string) {
+    setSheetError(null);
+    setDeleting(true);
+    try {
+      const { written } = await deleteContainer(moveId, id, uid);
+      writeInBackground(written, () =>
+        setError("This box is deleted on your phone. The other phone has not caught up yet.")
+      );
+      setDeleting(false);
+      setLeaving(false);
+      onLeave();
+    } catch (e) {
+      // Stay on the sheet. The draft is still there, the number is still
+      // spent, and Keep the draft is still an answer.
+      setDeleting(false);
+      setSheetError(
+        e instanceof Error ? e.message : "Could not delete the draft. It is still in the box list."
+      );
+    }
   }
 
   const room = zones.find((z) => z.id === roomId);
@@ -243,15 +269,18 @@ export function AddBox({
               delete and nothing to keep. One way out is the honest offer. */}
           {container ? (
             <>
-              <Button onClick={() => leave(true)}>Delete the draft</Button>
-              <Button onClick={() => leave(false)} tone="quiet">
+              <ErrorLine message={sheetError} />
+              <Button onClick={() => leave(true)} disabled={deleting}>
+                {deleting ? "Deleting the draft" : "Delete the draft"}
+              </Button>
+              <Button onClick={() => leave(false)} disabled={deleting} tone="quiet">
                 Keep the draft
               </Button>
             </>
           ) : (
             <Button onClick={() => leave(false)}>Leave</Button>
           )}
-          <Button onClick={() => setLeaving(false)} tone="quiet">
+          <Button onClick={() => setLeaving(false)} disabled={deleting} tone="quiet">
             Stay on this box
           </Button>
         </Sheet>

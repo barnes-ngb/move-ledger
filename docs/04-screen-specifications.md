@@ -8,7 +8,12 @@ Added 2026-08-15 during the APPLY-10 run. Navigation had grown a screen at a tim
 
 The pattern is two controls, and every screen built after this follows it.
 
-**The title is the way home.** "Move Ledger" in the header is a button on every screen that has a home to go to. It still looks like a title: same words, same weight, nothing moves when it becomes a button. Three places have no home behind them and leave it as plain text rather than offering a button that does nothing: sign-in, the first-run flow, and the room setup a move with no rooms is held in.
+**The title is the way home.** "Move Ledger" in the header is a button on every screen that has a home to go to. It still looks like a title: same words, same weight, nothing moves when it becomes a button. Four places have no home behind them and leave it as plain text rather than offering a button that does nothing:
+
+- Sign-in, where there is no move yet.
+- The first-run flow, for the same reason.
+- The room setup a move with no rooms is held in, because a box with no room has no color to write on it.
+- The contents list notice, which is the one gate with a home behind it and no way past it except answering. Raised in review on pull request 19 and decided there rather than treated as an oversight. Doc 07 requires that both members be told in plain words before a photo of their home goes to a third party, and both answers are one tap and lead straight to the move. A way past it that leaves the question unanswered would ask again on the next photo, which APPLY-07 already ruled out: that is not a question, it is nagging.
 
 The header is rendered above every screen and the state that decides where home is lives in the screens below it, so a screen offers the header a way home while it is on screen and the header uses whatever is currently offered. `src/ui/nav.tsx` holds that, and the reason it is worth a file is the handover: Add box takes the header from the move overview while it is open, so tapping the title there asks about the draft instead of stranding it.
 
@@ -244,7 +249,9 @@ Both are named for the move and the day, `kc-to-dfw-2026-08-15.csv`, because two
 
 Client side and dependency free. The text is built from the local cache and handed to the browser as a Blob, so an export works with no signal and nothing about the household leaves the phone to produce it. The three collections it needs and the setup screen does not, containers, photos, and activity, are subscribed only while this screen is open, for the reason `usePhotoCounts` does the same: doc 11 counts reads.
 
-The block is hidden until the move has a box, which also keeps it off the screen during first-run setup. A stopped listener is reported on the block rather than swallowed, because a short export is worse than none: nothing else would tell a person that half their boxes are missing from a file.
+The block is hidden until the move has a box, which also keeps it off the screen during first-run setup.
+
+Nothing is offered until all three listeners have answered, and nothing is offered at all once one of them has stopped. Raised in review on pull request 19, and the reason it is a refusal rather than a warning is that the three answer independently: a file built while the photo listener is still on its way carries a photo count of zero against every box, and a file built while the activity listener is still on its way carries an empty history. Neither says it is short. The one reader this export has is somebody checking what was in a box that arrived crushed, and a confident wrong answer is worse for them than no file. A stopped listener says so on the block and the way back is to open the screen again, which opens fresh listeners.
 
 The other actions above are still owed. This screen adds a room and shows the list. Editing a room, viewing the boxes in one, and the full-screen color chart are not built.
 

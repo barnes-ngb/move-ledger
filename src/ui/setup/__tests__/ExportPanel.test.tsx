@@ -14,6 +14,7 @@ const sources = vi.hoisted(() => ({
   containers: [] as unknown[],
   photos: [] as unknown[],
   activity: [] as unknown[],
+  ready: true,
   failed: false,
 }));
 const mocks = vi.hoisted(() => ({ downloadText: vi.fn() }));
@@ -40,6 +41,7 @@ function open() {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  sources.ready = true;
   sources.failed = false;
   sources.photos = [];
   sources.activity = [];
@@ -81,9 +83,24 @@ describe("ExportPanel", () => {
     expect(parsed.containers).toHaveLength(1);
   });
 
-  it("says so when a listener stopped, because a short file is worse than none", () => {
+  it("offers nothing until every collection has answered", () => {
+    sources.ready = false;
+    open();
+    expect(screen.queryByText("Export")).toBeNull();
+  });
+
+  /**
+   * The three listeners answer independently. A file built from one of them
+   * is short and says nothing about being short, which for the one reader
+   * this export has is worse than no file.
+   */
+  it("refuses to build a file once a listener has stopped", () => {
     sources.failed = true;
     open();
-    expect(screen.getByText(/could be short/)).toBeDefined();
+    expect(screen.getByText(/would be short/)).toBeDefined();
+    const button = screen.getByText("Download the spreadsheet") as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    fireEvent.click(button);
+    expect(mocks.downloadText).not.toHaveBeenCalled();
   });
 });

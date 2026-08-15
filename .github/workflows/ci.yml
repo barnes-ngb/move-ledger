@@ -1,0 +1,98 @@
+name: ci
+
+# One workflow rather than three, so that nothing deploys without the tests
+# having passed first. Cross-workflow dependencies are not expressible in
+# Actions, but jobs inside one workflow are.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      # Typecheck and the domain and component tests. Same command as the
+      # local Claude Code Stop hook.
+      - run: npm run verify
+
+      # The rules tests need a JVM for the Firestore and Storage emulators.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Cache emulator jars
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ runner.os }}
+
+      - run: npm install -g firebase-tools@15
+
+      # Runs entirely against the emulator. No credentials, no live project.
+      - run: npm run test:rules
+
+  preview:
+    # A temporary URL per pull request, so a change can be opened on a phone
+    # before it reaches the installed app. Expires on its own.
+    needs: verify
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MOVE_LEDGER }}
+          projectId: move-ledger
+          channelId: pr-${{ github.event.number }}
+          expires: 14d
+
+  deploy:
+    # Production. Only from main, only after verify passes. This replaces
+    # `firebase deploy` from a laptop working tree, which shipped whatever was
+    # last built locally regardless of branch.
+    needs: verify
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MOVE_LEDGER }}
+          projectId: move-ledger
+          channelId: live

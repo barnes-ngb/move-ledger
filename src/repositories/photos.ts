@@ -125,8 +125,16 @@ export async function photosForContainer(
  * That is accepted, and recorded in plans/STATUS.md.
  *
  * `removePhotoBytes` is the same work without the activity event, because
- * `deleteContainer` calls this for a box that is about to stop existing and an
- * event pointing at a deleted container is a dangling reference.
+ * `deleteContainer` calls it for a box that is about to stop existing and the
+ * plan asked for a plain delete there. It does not make the activity
+ * collection clean either way: `container_created` was written at reservation
+ * and cannot be removed.
+ *
+ * One edge this does not close. If the uploader is already mid-flight for this
+ * photo, the upload can finish after the document is gone. `patchPhoto` finds
+ * no record and writes nothing, so no document comes back, but the object
+ * reaches the bucket with nothing pointing at it. `clearBackoff` stops the
+ * queue retrying and cannot cancel a request in flight.
  */
 function removePhotoBytes(moveId: string, photo: ContainerPhoto): Promise<void> {
   const { storagePath } = photo;

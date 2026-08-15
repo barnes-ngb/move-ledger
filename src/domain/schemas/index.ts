@@ -30,6 +30,8 @@ export const moveSchema = z.object({
   originLocationId: z.string().optional(),
   destinationLocationId: z.string().optional(),
   memberUids: z.array(z.string().min(1)).min(1),
+  /** Absent means nobody has been asked yet, which is distinct from false. The privacy notice keys on that. */
+  aiEnabled: z.boolean().optional(),
   createdAt: isoString,
   updatedAt: isoString,
 });
@@ -124,6 +126,8 @@ export const containerPhotoSchema = z.object({
   height: z.number().int().positive(),
   bytes: z.number().int().positive(),
   uploadState: z.enum(["pending", "uploading", "uploaded", "failed"]),
+  /** `none` and absent mean the same thing; absent is what existing documents have. `skipped` is what dismissal writes and is what stops regeneration for that photo. */
+  summaryState: z.enum(["none", "queued", "done", "skipped", "failed"]).optional(),
   lastError: z.string().optional(),
   attempts: z.number().int().nonnegative(),
   createdAt: isoString,
@@ -144,6 +148,7 @@ export const activityEventSchema = z.object({
     "notes_changed",
     "condition_reported",
     "condition_cleared",
+    "summary_generated",
   ]),
   occurredAt: isoString,
   payload: z.record(z.string(), z.unknown()),

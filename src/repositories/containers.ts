@@ -9,6 +9,7 @@ import {
   type MoveMember,
   type Zone,
 } from "../domain";
+import { deleteField, doc, updateDoc } from "firebase/firestore";
 import { reportCondition, clearCondition, type ConditionKey } from "../domain/conditions";
 import type { ConditionReport } from "../domain/schemas";
 import { db } from "../lib/firebase";
@@ -98,6 +99,65 @@ export function saveContainer(
     updatedBy: actorUid,
   };
   return updateValidated(containers(moveId), containerSchema, stamped);
+}
+
+/**
+ * Clears `aiSummary` and rebuilds `searchText` around its absence.
+ *
+ * `aiSummary` has to be deleted rather than written as undefined. Firestore
+ * rejects an explicit undefined outright, and a key merely left out of an
+ * update leaves the stored value in place, so the suggestion would survive its
+ * own acceptance and keep matching searches after the person dismissed it.
+ *
+ * `contentsSummary` is passed only by Accept. Dismiss leaves whatever the
+ * person typed themselves alone, per doc 07: AI output never overwrites
+ * confirmed text.
+ */
+function withoutAiSummary(
+  moveId: string,
+  container: Container,
+  zones: readonly Zone[],
+  actorUid: string,
+  contentsSummary?: string
+): PendingWrite<Container> {
+  const { aiSummary: _cleared, ...rest } = container;
+  const next: Container = {
+    ...rest,
+    ...(contentsSummary ? { contentsSummary } : {}),
+    updatedAt: nowIso(),
+    updatedBy: actorUid,
+  };
+  const stamped: Container = {
+    ...next,
+    searchText: buildSearchText(next, zones.find((z) => z.id === next.destinationZoneId)?.name),
+  };
+  const parsed = containerSchema.parse(stamped);
+  const { id, ...fields } = parsed;
+  return {
+    value: parsed,
+    written: updateDoc(doc(containers(moveId), id), { ...fields, aiSummary: deleteField() }),
+  };
+}
+
+/** The suggestion becomes confirmed text. Doc 07's one tap. */
+export function acceptAiSummary(
+  moveId: string,
+  container: Container,
+  zones: readonly Zone[],
+  text: string,
+  actorUid: string
+): PendingWrite<Container> {
+  return withoutAiSummary(moveId, container, zones, actorUid, text.trim());
+}
+
+/** The suggestion is thrown away. Stopping regeneration is the caller's job, on the photos. */
+export function dismissAiSummary(
+  moveId: string,
+  container: Container,
+  zones: readonly Zone[],
+  actorUid: string
+): PendingWrite<Container> {
+  return withoutAiSummary(moveId, container, zones, actorUid);
 }
 
 export function setStatus(

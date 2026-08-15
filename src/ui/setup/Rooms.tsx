@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Move, Zone } from "../../domain";
-import { addZone, writeInBackground } from "../../repositories";
+import { addZone, updateMove, writeInBackground } from "../../repositories";
 import { PALETTE, shortCodeFor } from "../../lib/palette";
 import { Button, ErrorLine, Field, Screen } from "../kit";
 
@@ -40,6 +40,17 @@ export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDo
     }
   }
 
+  function toggleAi() {
+    setError(null);
+    try {
+      writeInBackground(updateMove({ ...move, aiEnabled: move.aiEnabled !== true }).written, () =>
+        setError("This setting is saved on your phone. It has not reached the other phone yet.")
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not change the setting.");
+    }
+  }
+
   return (
     <Screen title="Rooms at the new place">
       <ul className="flex flex-col gap-2">
@@ -60,6 +71,22 @@ export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDo
       <Button onClick={add} disabled={!name.trim()} tone="quiet">
         Add room
       </Button>
+
+      {/* Doc 07's single setting for the whole move. Off and unasked look the
+          same here on purpose: both mean no photo has been sent. */}
+      <div className="rounded-2xl border border-slate-700 p-4">
+        <p className="text-slate-200">Contents lists</p>
+        <p className="mt-1 text-sm text-slate-400">
+          {move.aiEnabled === true
+            ? "Photos of an open box are sent to Anthropic to write a list of what is inside. The photo and the room name, nothing else."
+            : "Off. No photo leaves this move."}
+        </p>
+        <div className="mt-3">
+          <Button onClick={toggleAi} tone="quiet">
+            {move.aiEnabled === true ? "Turn contents lists off" : "Turn contents lists on"}
+          </Button>
+        </div>
+      </div>
       <Button onClick={onDone} disabled={zones.length === 0}>
         Done, {zones.length} room{zones.length === 1 ? "" : "s"}
       </Button>

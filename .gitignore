@@ -15,6 +15,7 @@ dist-ssr
 # Build and deploy byproducts
 tsconfig.tsbuildinfo
 .firebase
+functions/lib
 
 # Editor directories and files
 .vscode/*

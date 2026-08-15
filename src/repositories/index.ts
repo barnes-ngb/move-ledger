@@ -1,3 +1,4 @@
+export * from "./background";
 export * from "./moves";
 export * from "./members";
 export * from "./zones";

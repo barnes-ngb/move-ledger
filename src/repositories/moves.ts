@@ -7,12 +7,13 @@ import {
   nowIso,
   subscribeValidated,
   updateValidated,
+  type PendingWrite,
   type SnapshotOrigin,
 } from "./shared";
 
 const moves = () => collection(db, "moves");
 
-export async function createMove(name: string, creatorUid: string): Promise<Move> {
+export function createMove(name: string, creatorUid: string): PendingWrite<Move> {
   const now = nowIso();
   return createValidated(moves(), moveSchema, {
     id: newId(),
@@ -24,7 +25,7 @@ export async function createMove(name: string, creatorUid: string): Promise<Move
   });
 }
 
-export async function updateMove(next: Move): Promise<Move> {
+export function updateMove(next: Move): PendingWrite<Move> {
   return updateValidated(moves(), moveSchema, { ...next, updatedAt: nowIso() });
 }
 

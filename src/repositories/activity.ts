@@ -1,15 +1,22 @@
 import { orderBy } from "firebase/firestore";
 import { activityEventSchema, type ActivityEvent } from "../domain/schemas";
 import { db } from "../lib/firebase";
-import { createValidated, moveScoped, newId, nowIso, subscribeValidated } from "./shared";
+import {
+  createValidated,
+  moveScoped,
+  newId,
+  nowIso,
+  subscribeValidated,
+  type PendingWrite,
+} from "./shared";
 
 const activity = (moveId: string) => moveScoped(db, moveId, "activity");
 
 /** Append-only, enforced again at the rules level. Nothing edits an event. */
-export async function logActivity(
+export function logActivity(
   moveId: string,
   event: Omit<ActivityEvent, "id" | "moveId" | "occurredAt"> & { occurredAt?: string }
-): Promise<ActivityEvent> {
+): PendingWrite<ActivityEvent> {
   return createValidated(activity(moveId), activityEventSchema, {
     ...event,
     id: newId(),

@@ -111,9 +111,10 @@ The MVP is accepted when the household can:
 
 - Configure five destination zones
 - Create 100 boxes across two phones with no duplicate numbers
-- Record a box in under 20 seconds with the timer running
-- Open a known box in under 10 seconds
-- Create boxes in a basement with airplane mode on, and see them sync afterward
+- Pack a box, photos included, without the app making anyone wait. No spinner, no network wait, no lost work, including with no signal at all
+- Find a box by its number in a few taps
+- Create boxes in a basement with airplane mode on, and see them reach the other phone afterward
 - Find a box by searching a word from its note
 - Track boxes through load, unload, and open
 - Export the move to JSON and CSV
+- Pack twenty real boxes, with Shelly working alone and asking for no help

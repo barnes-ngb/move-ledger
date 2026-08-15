@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Move, Zone } from "../../domain";
-import { addZone } from "../../repositories";
+import { addZone, writeInBackground } from "../../repositories";
 import { PALETTE, shortCodeFor } from "../../lib/palette";
 import { Button, ErrorLine, Field, Screen } from "../kit";
 
@@ -11,21 +11,19 @@ import { Button, ErrorLine, Field, Screen } from "../kit";
 export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDone: () => void }) {
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
 
   const locationId = move.destinationLocationId;
   const taken = new Set(zones.map((z) => z.colorName));
   const nextColor = PALETTE.find((p) => !taken.has(p.name)) ?? PALETTE[0]!;
 
-  async function add() {
+  function add() {
     if (!locationId) {
       setError("The destination place is missing. This is a setup bug, not something you did.");
       return;
     }
-    setBusy(true);
     setError(null);
     try {
-      await addZone(move.id, {
+      const { written } = addZone(move.id, {
         locationId,
         name: name.trim(),
         shortCode: shortCodeFor(name),
@@ -33,11 +31,13 @@ export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDo
         colorValue: nextColor.value,
         sortOrder: zones.length,
       });
+      writeInBackground(written, () =>
+        setError("This room is saved on your phone. It has not reached the server yet.")
+      );
       setName("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not add the room.");
     }
-    setBusy(false);
   }
 
   return (
@@ -57,7 +57,7 @@ export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDo
         Next color: <span style={{ color: nextColor.value }}>{nextColor.name}</span>
       </p>
       <ErrorLine message={error} />
-      <Button onClick={() => void add()} disabled={busy || !name.trim()} tone="quiet">
+      <Button onClick={add} disabled={!name.trim()} tone="quiet">
         Add room
       </Button>
       <Button onClick={onDone} disabled={zones.length === 0}>

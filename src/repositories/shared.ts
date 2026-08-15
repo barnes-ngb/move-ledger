@@ -13,29 +13,51 @@ import {
 import type { ZodType } from "zod";
 
 /**
+ * A write that has been applied to the local cache and is on its way to the
+ * server. `value` is the document as it was written, available immediately.
+ * `written` settles when the server acknowledges it, which offline is never.
+ *
+ * The split exists because those are two different events and the interface
+ * only ever needed the first one. Awaiting the second is what left Add box
+ * showing "..." and both Save buttons disabled in a basement.
+ */
+export interface PendingWrite<T> {
+  value: T;
+  written: Promise<void>;
+}
+
+/** One `written` promise covering several writes, for a repository call that makes more than one. */
+export function allWritten(...writes: Array<Promise<unknown>>): Promise<void> {
+  return Promise.all(writes).then(() => undefined);
+}
+
+/**
  * Every write in the app funnels through these two functions. A document that
  * fails its schema never reaches Firestore, which keeps the database and
  * docs/02-domain-model.md in agreement by force rather than by discipline.
+ *
+ * Both are synchronous on purpose. Validation is synchronous, the local cache
+ * write is synchronous, and the caller gets the parsed document without
+ * waiting for a network it may not have. A schema failure still throws here,
+ * before anything reaches Firestore.
  */
-export async function createValidated<T extends { id: string }>(
+export function createValidated<T extends { id: string }>(
   ref: CollectionReference<DocumentData>,
   schema: ZodType<T>,
   value: T
-): Promise<T> {
+): PendingWrite<T> {
   const parsed = schema.parse(value);
-  await setDoc(doc(ref, parsed.id), parsed);
-  return parsed;
+  return { value: parsed, written: setDoc(doc(ref, parsed.id), parsed) };
 }
 
-export async function updateValidated<T extends { id: string }>(
+export function updateValidated<T extends { id: string }>(
   ref: CollectionReference<DocumentData>,
   schema: ZodType<T>,
   next: T
-): Promise<T> {
+): PendingWrite<T> {
   const parsed = schema.parse(next);
   const { id, ...fields } = parsed;
-  await updateDoc(doc(ref, id), fields as DocumentData);
-  return parsed;
+  return { value: parsed, written: updateDoc(doc(ref, id), fields as DocumentData) };
 }
 
 /**

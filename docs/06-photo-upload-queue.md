@@ -17,7 +17,9 @@ A captured photo is never lost. It exists in IndexedDB from the moment of captur
 5. Show the photo in the UI immediately from the Dexie blob via `URL.createObjectURL`.
 6. Return control to the user. Never await the upload.
 
-The user is now free to save the box and start the next one. The 20-second target depends on this.
+The user is now free to save the box and start the next one. The first success criterion depends on this.
+
+Step 4 is not awaited either, and for the same reason as step 6. A Firestore write promise settles on server acknowledgment, so awaiting the metadata write would block capture in exactly the basement this queue exists for. See the offline write note in `docs/05-system-architecture.md`.
 
 ## Dexie schema
 
@@ -42,7 +44,7 @@ A single module owns the queue. It runs on app start, on `online`, and after eve
 ```text
 1. Query Dexie for all blobs.
 2. For each, in creation order, if not already uploading:
-   a. Set uploadState to "uploading".
+   a. Hold the photo id in memory as in flight.
    b. uploadBytes to moves/{moveId}/{containerId}/{photoId}.jpg
    c. On success: getDownloadURL, update the Firestore doc with
       storagePath, downloadUrl, uploadState "uploaded". Delete the Dexie blob.
@@ -52,6 +54,10 @@ A single module owns the queue. It runs on app start, on `online`, and after eve
 ```
 
 Concurrency is capped at two uploads at a time. On a phone hotspot, more is worse.
+
+Step 2a was "Set uploadState to uploading" until 2026-08-15. It is now an in-memory set, and `uploading` is never written to Firestore. Writing it costs a document write per attempt and buys nothing: the state is true for a few seconds inside one uploader pass, only that pass can act on it, and a phone that dies mid-upload would leave the record claiming an upload that no longer exists. The enum keeps the value because the record's shape is the durable part and a future uploader may want it. `attempts` and `lastError` are still written, because those outlive the pass and a person can see them.
+
+The back-off ladder and the in-flight set are held in module memory rather than in Dexie, so closing the tab forgets them. That is intentional. A reopened app should try every pending photo once, immediately, rather than honoring a ten-minute wait recorded before the phone found signal again.
 
 ## Failure handling
 
@@ -64,10 +70,21 @@ Concurrency is capped at two uploads at a time. On a phone hotspot, more is wors
 
 Before capture, check total Dexie blob bytes. Above 200 MB of pending blobs, warn the user that photos are not uploading. That threshold indicates connectivity has been absent for a long time, not that anything is broken.
 
+## Where this lives
+
+| Piece | File |
+| --- | --- |
+| Dexie schema and queries | `src/photos/db.ts` |
+| Resize | `src/photos/resize.ts` |
+| Capture path | `src/photos/capture.ts` |
+| Uploader, back-off, concurrency cap | `src/photos/uploader.ts` |
+| Metadata merged with local bytes | `src/hooks/usePhotos.ts` |
+| The strip and the camera button | `src/ui/box/PhotoStrip.tsx` |
+
 ## Testing
 
-- Domain test: the queue orders by `createdAt` and respects the concurrency cap.
-- Integration test with the Storage emulator: a failed upload leaves the blob in Dexie.
+- Domain test: the queue orders by `createdAt` and respects the concurrency cap. `drainOnce` takes its Storage and Firestore calls as injected dependencies so this runs with neither. `src/photos/__tests__/uploader.test.ts`.
+- Integration test with the Storage emulator: a failed upload leaves the blob in Dexie. Not written. The unit test asserts the same rule against the injected dependencies, which is a weaker claim: it proves the uploader does not remove a blob it failed to confirm, not that Dexie kept it.
 - Manual test: airplane mode, take five photos, close the tab, reopen, restore connectivity, confirm all five arrive.
 
-That manual test is the acceptance criterion for Phase 1.
+That manual test is the acceptance criterion for Phase 1. It is manual on purpose. Nothing automated proves that bytes survive a browser closing.

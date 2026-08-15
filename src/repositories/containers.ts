@@ -313,13 +313,25 @@ export function unvoidContainer(
  * be holding several. Deleting only the container would strand them in three
  * places at once.
  *
- * The read comes from the local cache first, so this works in a basement. The
- * returned `written` settles on server acknowledgment like every other write,
- * and every delete is already applied locally before it does.
+ * The guard reads the server first and falls back to the cache, so it works in
+ * a basement and does not decide from a stale copy when it does not have to.
+ * The other phone can confirm a label at any moment, and this phone's cached
+ * draft would then say a number is free that somebody has just written down.
+ * Reading the server closes most of that window. It does not close all of it:
+ * nothing here is atomic, and a confirmation landing between the read and the
+ * delete still gets through. Closing it properly means the rule itself, which
+ * cannot be expressed today because `canDelete` reads two fields the rule
+ * would have to duplicate.
  *
- * No activity event is logged, for the container or for its photos. An event
- * pointing at a document that no longer exists is a dangling reference, and a
- * box that was never written on has no history worth keeping.
+ * The returned `written` settles on server acknowledgment like every other
+ * write, and every delete is already applied locally before it does.
+ *
+ * No activity event is logged, for the container or for its photos, because
+ * the plan asked for a plain delete and a box nobody wrote on has no history
+ * worth keeping. Note that this does not leave the activity collection clean:
+ * the `container_created` event from the reservation stays, since activity is
+ * append-only and the rules refuse to delete it. So a deleted box already has
+ * one event pointing at nothing, and adding a second would not change that.
  */
 export async function deleteContainer(
   moveId: string,
@@ -328,9 +340,9 @@ export async function deleteContainer(
   const ref = doc(containers(moveId), containerId);
   let snap;
   try {
-    snap = await getDocFromCache(ref);
-  } catch {
     snap = await getDoc(ref);
+  } catch {
+    snap = await getDocFromCache(ref);
   }
   if (!snap.exists()) return { value: undefined, written: Promise.resolve() };
 

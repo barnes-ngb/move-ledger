@@ -140,6 +140,15 @@ function snapshotOf(container: Container) {
   return { exists: () => true, id, data: () => data };
 }
 
+/**
+ * Both reads answer, because the code asks the server first and falls back.
+ * A test that cares which one answered sets them apart itself.
+ */
+function serve(container: Container) {
+  mocks.getDoc.mockResolvedValue(snapshotOf(container));
+  mocks.getDocFromCache.mockResolvedValue(snapshotOf(container));
+}
+
 beforeEach(() => {
   mocks.order.length = 0;
   vi.clearAllMocks();
@@ -149,6 +158,7 @@ beforeEach(() => {
   mocks.deleteObject.mockResolvedValue(undefined);
   mocks.deleteBlob.mockResolvedValue(undefined);
   mocks.deleteBlobsFor.mockResolvedValue(undefined);
+  mocks.getDocs.mockResolvedValue({ docs: [] });
   mocks.getDocsFromCache.mockResolvedValue({ docs: [] });
 });
 
@@ -200,7 +210,7 @@ describe("unvoidContainer", () => {
 
 describe("deleteContainer", () => {
   it("deletes a draft whose number was never written down", async () => {
-    mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
+    serve(makeContainer({ status: "filling" }));
 
     await deleteContainer("m1", "c1");
 
@@ -208,27 +218,40 @@ describe("deleteContainer", () => {
   });
 
   it("refuses a box that was already written on, even if the caller says otherwise", async () => {
-    mocks.getDocFromCache.mockResolvedValue(
-      snapshotOf(makeContainer({ status: "filling", labelConfirmedAt: NOW }))
-    );
+    serve(makeContainer({ status: "filling", labelConfirmedAt: NOW }));
 
     await expect(deleteContainer("m1", "c1")).rejects.toThrow(ContainerNotDeletableError);
     expect(mocks.deleteDoc).not.toHaveBeenCalled();
   });
 
   it("refuses a box past filling", async () => {
-    mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "packed" })));
+    serve(makeContainer({ status: "packed" }));
 
     await expect(deleteContainer("m1", "c1")).rejects.toThrow(ContainerNotDeletableError);
     expect(mocks.deleteDoc).not.toHaveBeenCalled();
   });
 
-  it("reads from the cache, so it works with no signal", async () => {
+  /**
+   * The guard decides whether a number is free. The other phone can confirm a
+   * label at any moment, so deciding that from this phone's cache when the
+   * server is reachable is deciding it from a copy that may already be wrong.
+   */
+  it("asks the server before deciding a number is free", async () => {
+    mocks.getDoc.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
+
+    await deleteContainer("m1", "c1");
+
+    expect(mocks.getDoc).toHaveBeenCalled();
+    expect(mocks.getDocFromCache).not.toHaveBeenCalled();
+  });
+
+  it("falls back to the cache, so a draft can still be deleted with no signal", async () => {
+    mocks.getDoc.mockRejectedValue(new Error("offline"));
     mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
 
     await deleteContainer("m1", "c1");
 
-    expect(mocks.getDoc).not.toHaveBeenCalled();
+    expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/containers/c1");
   });
 
   /**
@@ -238,10 +261,10 @@ describe("deleteContainer", () => {
    * photos nothing else would ever clean up.
    */
   it("takes the box's photos with it", async () => {
-    mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
+    serve(makeContainer({ status: "filling" }));
     const { id: _p1, ...one } = makePhoto({ id: "p1", storagePath: "moves/m1/c1/p1.jpg" });
     const { id: _p2, ...two } = makePhoto({ id: "p2" });
-    mocks.getDocsFromCache.mockResolvedValue({
+    mocks.getDocs.mockResolvedValue({
       docs: [
         { id: "p1", data: () => one },
         { id: "p2", data: () => two },
@@ -257,15 +280,15 @@ describe("deleteContainer", () => {
   });
 
   it("sweeps local bytes whose document never arrived", async () => {
-    mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
+    serve(makeContainer({ status: "filling" }));
 
     await deleteContainer("m1", "c1");
 
     expect(mocks.deleteBlobsFor).toHaveBeenCalledWith("c1");
   });
 
-  it("logs nothing, because an event pointing at a deleted box is a dangling reference", async () => {
-    mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
+  it("logs no event of its own", async () => {
+    serve(makeContainer({ status: "filling" }));
 
     await deleteContainer("m1", "c1");
 

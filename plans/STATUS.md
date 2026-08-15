@@ -127,6 +127,30 @@ Things that are still true and still owed.
 
 **The storage budget guard is unwired.** `pendingBytes` exists in `src/photos/db.ts` and nothing calls it. Doc 06 asks for a warning above 200 MB of pending blobs, which is the signal that connectivity has been absent for a long time rather than that something is broken. The threshold matters most in exactly the situation the queue is for, so it is worth closing before the first long offline packing session.
 
+**`storage.rules` denies every delete, so no photo object is ever removed.** Found in review on pull request 18, after APPLY-09 shipped the delete path. The plan for that run asserted that Storage `write` covers delete and instructed the runner to stop and report rather than edit a rules file, so this is reported and not fixed.
+
+The rule is one `allow write` covering create, update, and delete:
+
+```
+allow write: if request.auth != null
+  && request.auth.uid in firestore.get(...).data.memberUids
+  && request.resource.size < 2 * 1024 * 1024
+  && request.resource.contentType.matches('image/.*');
+```
+
+A delete carries no `request.resource`. The last two conditions dereference it, so the condition errors and the request is denied. Every `deleteObject` call the app makes is rejected, and `deletePhoto` logs the rejection and carries on by design, so the document and the local bytes go and the object stays. This is not the offline orphan described below. It happens with full signal, on every uploaded photo, every time.
+
+What it costs: bytes in the bucket that nothing points at, against doc 11's budget. What it does not cost is correctness anywhere a person can see, because the photo leaves both phones when its document does. The user-facing confirmation was reworded during the same review and no longer claims the picture is not kept anywhere else.
+
+The fix is to split the rule, which is a rules change and therefore needs a matching rules test per `AGENTS.md`:
+
+```
+allow create, update: if isMember() && request.resource.size < ... && contentType ...;
+allow delete: if isMember();
+```
+
+It also needs a hand deploy, since CI has no permission to ship rules; see the entry below.
+
 **Deleting a photo orphans its Cloud Storage object whenever the phone has no signal, and that is accepted.** The Storage SDK has no offline queue. Firestore takes a delete into its local cache and replays it on reconnect; Storage either reaches the network now or does not happen at all. So `deletePhoto` fires the Storage delete and does not wait for it, and a delete performed offline removes the document and the local bytes and leaves the object behind for good. Nothing points at it and nothing ever will, because the document that held its path is gone.
 
 This was a deliberate trade and it is worth writing down which way it went. Awaiting the Storage delete was tried first and is what the plan originally said. It leaves a deleted photo on screen for as long as the Storage SDK spends retrying, which is around two minutes offline, and the whole app is built on the rule that nothing waits on the network. An orphaned object costs a fraction of a cent against doc 11's budget. A photo that will not go away costs trust in the app. The same applies to the objects a deleted box takes with it.

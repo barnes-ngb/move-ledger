@@ -86,6 +86,8 @@ The Storage delete is fired and not awaited, and that is the whole design of thi
 
 The cost is an orphaned object every time a photo is deleted offline, and it is permanent, because the document that held its path goes away. That is accepted. An object nobody points at costs a fraction of a cent against doc 11's budget; a photo that will not go away costs trust. Recorded under Live drift in `plans/STATUS.md` with what would close it.
 
+As of 2026-08-15 that orphan happens online too, and not by choice. `storage.rules` covers create, update, and delete with a single `allow write` whose last two conditions read `request.resource`, which a delete does not carry, so every delete is denied. Found in review on pull request 18 and reported rather than fixed, because the APPLY-09 plan said to stop at a rules file. Full entry under Live drift in `plans/STATUS.md`.
+
 The sweep in the last bullet above was never written and is no longer owed for this case. Deleting removes the blob at the source instead, and `deleteBlobsFor` catches any blob on a deleted box whose document never arrived.
 
 ## Storage budget guard

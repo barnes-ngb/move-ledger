@@ -84,8 +84,11 @@ export async function getPhotoRecord(
 }
 
 /**
- * Every photo document for one box, served from the local cache so it works
- * with no signal. Used when the box itself is deleted.
+ * Every photo document for one box. Used when the box itself is deleted, so it
+ * asks the server first and falls back to the cache: the other phone can have
+ * added photos this one has never seen, and a cache-only answer would delete
+ * the box and leave those behind with nothing pointing at them. Offline the
+ * cache is all there is, and the same gap reopens.
  */
 export async function photosForContainer(
   moveId: string,
@@ -94,9 +97,9 @@ export async function photosForContainer(
   const q = query(photos(moveId), where("containerId", "==", containerId));
   let snap;
   try {
-    snap = await getDocsFromCache(q);
-  } catch {
     snap = await getDocs(q);
+  } catch {
+    snap = await getDocsFromCache(q);
   }
   const found: ContainerPhoto[] = [];
   for (const d of snap.docs) {

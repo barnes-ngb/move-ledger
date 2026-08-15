@@ -136,7 +136,7 @@ export function PhotoViewer({
       {confirming ? (
         <Confirm
           title="Delete this photo?"
-          detail="It goes from this phone and from the other one. There is no undo, and the picture is not kept anywhere else."
+          detail="It goes from this phone and from the other one. There is no undo."
           confirmLabel="Delete this photo"
           onConfirm={remove}
           onCancel={() => setConfirming(false)}

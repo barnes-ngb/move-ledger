@@ -22,8 +22,11 @@ const mocks = vi.hoisted(() => ({
   setDoc: vi.fn(),
   getDocFromCache: vi.fn(),
   getDoc: vi.fn(),
+  getDocsFromCache: vi.fn(),
+  getDocs: vi.fn(),
   deleteObject: vi.fn(),
   deleteBlob: vi.fn(),
+  deleteBlobsFor: vi.fn(),
   clearBackoff: vi.fn(),
   kickUploader: vi.fn(),
 }));
@@ -41,11 +44,14 @@ vi.mock("firebase/firestore", () => ({
   },
   getDoc: mocks.getDoc,
   getDocFromCache: mocks.getDocFromCache,
+  getDocs: mocks.getDocs,
+  getDocsFromCache: mocks.getDocsFromCache,
   onSnapshot: vi.fn(),
   orderBy: vi.fn(),
   query: (ref: unknown) => ref,
   setDoc: mocks.setDoc,
   updateDoc: mocks.updateDoc,
+  where: vi.fn(),
 }));
 
 vi.mock("firebase/storage", () => ({
@@ -63,6 +69,7 @@ vi.mock("../../photos/db", () => ({
     mocks.order.push("dexie");
     return mocks.deleteBlob(...args);
   },
+  deleteBlobsFor: mocks.deleteBlobsFor,
 }));
 
 vi.mock("../../photos/uploader", () => ({
@@ -141,6 +148,8 @@ beforeEach(() => {
   mocks.setDoc.mockResolvedValue(undefined);
   mocks.deleteObject.mockResolvedValue(undefined);
   mocks.deleteBlob.mockResolvedValue(undefined);
+  mocks.deleteBlobsFor.mockResolvedValue(undefined);
+  mocks.getDocsFromCache.mockResolvedValue({ docs: [] });
 });
 
 describe("voidContainer", () => {
@@ -221,30 +230,99 @@ describe("deleteContainer", () => {
 
     expect(mocks.getDoc).not.toHaveBeenCalled();
   });
+
+  /**
+   * Capture writes a photo document as soon as the shutter closes, which is
+   * before the box is saved. So a box that is still a draft, and therefore the
+   * only kind that can be deleted, is exactly the kind that can be holding
+   * photos nothing else would ever clean up.
+   */
+  it("takes the box's photos with it", async () => {
+    mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
+    const { id: _p1, ...one } = makePhoto({ id: "p1", storagePath: "moves/m1/c1/p1.jpg" });
+    const { id: _p2, ...two } = makePhoto({ id: "p2" });
+    mocks.getDocsFromCache.mockResolvedValue({
+      docs: [
+        { id: "p1", data: () => one },
+        { id: "p2", data: () => two },
+      ],
+    });
+
+    await deleteContainer("m1", "c1");
+
+    expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/photos/p1");
+    expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/photos/p2");
+    expect(mocks.deleteObject).toHaveBeenCalledWith("moves/m1/c1/p1.jpg");
+    expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/containers/c1");
+  });
+
+  it("sweeps local bytes whose document never arrived", async () => {
+    mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
+
+    await deleteContainer("m1", "c1");
+
+    expect(mocks.deleteBlobsFor).toHaveBeenCalledWith("c1");
+  });
+
+  it("logs nothing, because an event pointing at a deleted box is a dangling reference", async () => {
+    mocks.getDocFromCache.mockResolvedValue(snapshotOf(makeContainer({ status: "filling" })));
+
+    await deleteContainer("m1", "c1");
+
+    expect(mocks.setDoc).not.toHaveBeenCalled();
+  });
 });
 
 describe("deletePhoto", () => {
-  it("removes the object, then the document, then the local bytes", async () => {
-    await deletePhoto("m1", makePhoto({ storagePath: "moves/m1/c1/p1.jpg" }));
+  it("removes the object, then the document, then the local bytes", () => {
+    deletePhoto("m1", makePhoto({ storagePath: "moves/m1/c1/p1.jpg" }), "uid-1");
 
     expect(mocks.order).toEqual(["storage", "firestore", "dexie"]);
   });
 
-  it("skips Storage for a photo that never got there", async () => {
-    await deletePhoto("m1", makePhoto());
+  it("skips Storage for a photo that never got there", () => {
+    deletePhoto("m1", makePhoto(), "uid-1");
 
     expect(mocks.order).toEqual(["firestore", "dexie"]);
   });
 
-  it("still removes the document and the bytes when the object will not delete", async () => {
+  /**
+   * The correction that produced this test. Awaiting the Storage delete held
+   * the Firestore delete behind however long the Storage SDK spends retrying,
+   * which offline is around two minutes of a deleted photo still on screen.
+   */
+  it("does not wait for Storage before removing the document", () => {
+    mocks.deleteObject.mockReturnValue(new Promise(() => undefined));
+
+    deletePhoto("m1", makePhoto({ storagePath: "moves/m1/c1/p1.jpg" }), "uid-1");
+
+    // Same tick, with the Storage call still outstanding.
+    expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/photos/p1");
+    expect(mocks.deleteBlob).toHaveBeenCalledWith("p1");
+  });
+
+  it("keeps going when the object will not delete", async () => {
     mocks.deleteObject.mockRejectedValue(new Error("no signal"));
 
-    await deletePhoto("m1", makePhoto({ storagePath: "moves/m1/c1/p1.jpg" }));
+    await deletePhoto("m1", makePhoto({ storagePath: "moves/m1/c1/p1.jpg" }), "uid-1").written;
 
     // An orphaned object costs a fraction of a cent. A photo that will not go
     // away costs trust.
     expect(mocks.deleteDoc).toHaveBeenCalledWith("moves/m1/photos/p1");
     expect(mocks.deleteBlob).toHaveBeenCalledWith("p1");
+  });
+
+  it("logs the event", () => {
+    deletePhoto("m1", makePhoto(), "uid-1");
+
+    const logged = mocks.setDoc.mock.calls.map((c) => c[1] as { type?: string });
+    expect(logged.some((e) => e.type === "photo_deleted")).toBe(true);
+  });
+
+  it("stops the uploader chasing bytes whose document is gone", () => {
+    deletePhoto("m1", makePhoto(), "uid-1");
+
+    expect(mocks.clearBackoff).toHaveBeenCalledWith("p1");
   });
 });
 

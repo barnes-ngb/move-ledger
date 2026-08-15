@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { PhotoView } from "../../hooks/usePhotos";
+import { deletePhoto, writeInBackground } from "../../repositories";
+import { Confirm, ErrorLine } from "../kit";
 
 /**
  * A photo at the size of the screen. The strip is for knowing a box has
@@ -11,20 +13,49 @@ import type { PhotoView } from "../../hooks/usePhotos";
  * Sourced the way the strip sources it: the local blob first, the download URL
  * only when there is no blob left. A photo taken thirty seconds ago in a
  * basement has no download URL and has to open anyway.
+ *
+ * Deleting is offered here rather than on the strip, because at 96px a person
+ * cannot tell which photo they are about to lose.
  */
 export function PhotoViewer({
+  moveId,
+  uid,
   photos,
   startIndex,
   onClose,
 }: {
+  moveId: string;
+  uid: string;
   photos: readonly PhotoView[];
   startIndex: number;
   onClose: () => void;
 }) {
   const [index, setIndex] = useState(startIndex);
+  const [confirming, setConfirming] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Deleting the last photo leaves nothing to look at. The subscription this
+  // reads from shortens as soon as the local cache does, so this is the same
+  // tick the person pressed in.
+  const empty = photos.length === 0;
+  useEffect(() => {
+    if (empty) onClose();
+  }, [empty, onClose]);
 
   const view = photos[Math.min(index, photos.length - 1)];
   if (!view) return null;
+
+  function remove() {
+    setConfirming(false);
+    setError(null);
+    try {
+      writeInBackground(deletePhoto(moveId, view!.photo, uid).written, () =>
+        setError("Deleted on this phone. The other phone has not caught up yet.")
+      );
+    } catch {
+      setError("Could not delete that photo.");
+    }
+  }
 
   const src = view.localUrl ?? view.photo.downloadUrl;
   const atStart = index === 0;
@@ -91,6 +122,26 @@ export function PhotoViewer({
           Next
         </button>
       </div>
+
+      <div className="px-4 pb-3" onClick={(e) => e.stopPropagation()}>
+        <ErrorLine message={error} />
+        <button
+          onClick={() => setConfirming(true)}
+          className="min-h-14 w-full text-lg text-rose-300 underline"
+        >
+          Delete this photo
+        </button>
+      </div>
+
+      {confirming ? (
+        <Confirm
+          title="Delete this photo?"
+          detail="It goes from this phone and from the other one. There is no undo, and the picture is not kept anywhere else."
+          confirmLabel="Delete this photo"
+          onConfirm={remove}
+          onCancel={() => setConfirming(false)}
+        />
+      ) : null}
     </div>
   );
 }

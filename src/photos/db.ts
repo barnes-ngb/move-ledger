@@ -45,6 +45,14 @@ export async function blobsFor(containerId: string): Promise<PhotoBlob[]> {
   return photoDb.blobs.where("containerId").equals(containerId).sortBy("createdAt");
 }
 
+/**
+ * Every blob held for one box. Used when the box itself is deleted, which
+ * catches bytes whose photo document never made it or has already gone.
+ */
+export async function deleteBlobsFor(containerId: string): Promise<void> {
+  await photoDb.blobs.where("containerId").equals(containerId).delete();
+}
+
 /** Drives the doc 06 storage budget guard. */
 export async function pendingBytes(): Promise<number> {
   const all = await photoDb.blobs.toArray();

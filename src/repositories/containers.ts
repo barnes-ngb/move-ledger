@@ -15,7 +15,9 @@ import { deleteDoc, deleteField, doc, getDoc, getDocFromCache, updateDoc } from 
 import { reportCondition, clearCondition, type ConditionKey } from "../domain/conditions";
 import type { ConditionReport } from "../domain/schemas";
 import { db } from "../lib/firebase";
+import { deleteBlobsFor } from "../photos/db";
 import { logActivity } from "./activity";
+import { photosForContainer, removePhotoWithContainer } from "./photos";
 import {
   allWritten,
   createValidated,
@@ -101,6 +103,47 @@ export function saveContainer(
     updatedBy: actorUid,
   };
   return updateValidated(containers(moveId), containerSchema, stamped);
+}
+
+/**
+ * The title, which searchText carries and the list row shows. Separate from
+ * `saveContainer` only because it logs: a box getting a name is the kind of
+ * change a person later wants to see they made.
+ *
+ * An emptied title is removed rather than stored as a blank string, so nothing
+ * downstream has to tell "" and absent apart.
+ */
+export function setTitle(
+  moveId: string,
+  container: Container,
+  title: string,
+  zones: readonly Zone[],
+  actorUid: string
+): PendingWrite<Container> {
+  const trimmed = title.trim();
+  const { title: _previous, ...rest } = container;
+  const next: Container = { ...rest, ...(trimmed ? { title: trimmed } : {}) };
+  const parsed = containerSchema.parse({
+    ...next,
+    searchText: buildSearchText(next, zones.find((z) => z.id === next.destinationZoneId)?.name),
+    updatedAt: nowIso(),
+    updatedBy: actorUid,
+  });
+  const { id, ...fields } = parsed;
+  // Emptying it has to reach Firestore as a delete. A key left out of an update
+  // leaves the stored value, so the old title would survive being cleared and
+  // keep matching searches.
+  const written = updateDoc(doc(containers(moveId), id), {
+    ...fields,
+    ...(trimmed ? {} : { title: deleteField() }),
+  });
+  const logged = logActivity(moveId, {
+    containerId: container.id,
+    actorId: actorUid,
+    type: "title_changed",
+    payload: { title: trimmed || null },
+  });
+  return { value: parsed, written: allWritten(written, logged.written) };
 }
 
 /**
@@ -265,13 +308,18 @@ export function unvoidContainer(
  * object the caller handed over, so there is no way to reach the delete with a
  * container that says something the database does not.
  *
+ * The photos go with it. Capture writes a photo document as soon as the shutter
+ * closes, which is before the box is saved, so a box that is still a draft can
+ * be holding several. Deleting only the container would strand them in three
+ * places at once.
+ *
  * The read comes from the local cache first, so this works in a basement. The
  * returned `written` settles on server acknowledgment like every other write,
- * and the delete is already applied locally before it does.
+ * and every delete is already applied locally before it does.
  *
- * No activity event is logged. An event pointing at a document that no longer
- * exists is a dangling reference, and a box that was never written on has no
- * history worth keeping.
+ * No activity event is logged, for the container or for its photos. An event
+ * pointing at a document that no longer exists is a dangling reference, and a
+ * box that was never written on has no history worth keeping.
  */
 export async function deleteContainer(
   moveId: string,
@@ -289,7 +337,16 @@ export async function deleteContainer(
   const container = containerSchema.parse({ ...snap.data(), id: snap.id });
   if (!canDelete(container)) throw new ContainerNotDeletableError(container);
 
-  return { value: undefined, written: deleteDoc(ref) };
+  // Photos first. If this phone dies between the two, a box with no photos is
+  // recoverable and a photo with no box is not reachable from anywhere.
+  const photos = await photosForContainer(moveId, containerId);
+  const photoWrites = photos.map((p) => removePhotoWithContainer(moveId, p));
+
+  // Catches bytes whose document never arrived or has already gone. Local, so
+  // it is awaited: there is nothing to wait for but IndexedDB.
+  await deleteBlobsFor(containerId);
+
+  return { value: undefined, written: allWritten(deleteDoc(ref), ...photoWrites) };
 }
 
 export function watchContainers(

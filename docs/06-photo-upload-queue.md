@@ -66,6 +66,28 @@ The back-off ladder and the in-flight set are held in module memory rather than 
 - The Dexie blob is deleted only after Firestore confirms the metadata update, not merely after the Storage upload returns.
 - If Dexie holds a blob whose Firestore document no longer exists, the blob is deleted on next sweep.
 
+### What shipped
+
+Built 2026-08-15 during the APPLY-09 run, having been specified here since the queue was written and never implemented.
+
+The retry action is the marker itself. `PhotoStrip` already drew "Not sent yet" over a photo the queue had given up on, which is the only place a person finds out, so that is what they press. It reads "Send again" now and is a control of its own inside the tile rather than a label inside the tile's button.
+
+`retryUpload` in `src/repositories/photos.ts` does the document half: `uploadState` back to `pending`, `attempts` to zero, `lastError` removed. Removed, not set to undefined and not left out. Firestore rejects an explicit undefined, and a key merely absent from an update leaves the stored value in place, so without a `deleteField` sentinel a stale failure message would sit under a photo that is uploading again.
+
+`clearBackoff` in `src/photos/uploader.ts` does the other half, and it is the part this document did not anticipate. The attempt count and the next-try time live in module memory rather than in the record, which is deliberate and is explained above. It means resetting the document alone is not a retry: the uploader would still be holding a ten-minute wait recorded before the person asked, and the next pass would skip the photo. `clearBackoff` drops both maps for one photo id. `deletePhoto` calls it too, so the uploader stops chasing bytes whose document has gone.
+
+The count in the header is still not built. Doc 04 section 9 carries the strings.
+
+### Deleting a photo
+
+Added 2026-08-15. `deletePhoto` removes a photo from the three places it exists, in this order: the Cloud Storage object, the Firestore document, the Dexie blob. `deleteContainer` does the same for every photo on a box, since capture writes a photo document before the box is saved and a box that is still a draft can be holding several.
+
+The Storage delete is fired and not awaited, and that is the whole design of this function. Storage has no offline queue: Firestore takes a delete into its local cache and replays it on reconnect, and Storage either reaches the network now or does not happen. Awaiting it puts the Firestore delete behind however long the SDK spends retrying, which offline is around two minutes of a deleted photo still on screen, and nothing in this app waits on the network.
+
+The cost is an orphaned object every time a photo is deleted offline, and it is permanent, because the document that held its path goes away. That is accepted. An object nobody points at costs a fraction of a cent against doc 11's budget; a photo that will not go away costs trust. Recorded under Live drift in `plans/STATUS.md` with what would close it.
+
+The sweep in the last bullet above was never written and is no longer owed for this case. Deleting removes the blob at the source instead, and `deleteBlobsFor` catches any blob on a deleted box whose document never arrived.
+
 ## Storage budget guard
 
 Before capture, check total Dexie blob bytes. Above 200 MB of pending blobs, warn the user that photos are not uploading. That threshold indicates connectivity has been absent for a long time, not that anything is broken.
@@ -79,7 +101,8 @@ Before capture, check total Dexie blob bytes. Above 200 MB of pending blobs, war
 | Capture path | `src/photos/capture.ts` |
 | Uploader, back-off, concurrency cap | `src/photos/uploader.ts` |
 | Metadata merged with local bytes | `src/hooks/usePhotos.ts` |
-| The strip and the camera button | `src/ui/box/PhotoStrip.tsx` |
+| The strip, the camera button, retry | `src/ui/box/PhotoStrip.tsx` |
+| Delete and retry on the record | `src/repositories/photos.ts` |
 
 ## Testing
 

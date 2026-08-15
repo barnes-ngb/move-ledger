@@ -1,5 +1,6 @@
+import { useState } from "react";
 import type { Container, Zone } from "../../domain";
-import { search } from "../../domain";
+import { hasCondition, isVoided, search } from "../../domain";
 import { Button } from "../kit";
 
 /**
@@ -28,13 +29,31 @@ export function BoxList({
   onOpen: (c: Container) => void;
   onClose: () => void;
 }) {
+  const [showVoided, setShowVoided] = useState(false);
   const filtering = query.trim().length > 0;
+
+  /**
+   * The voided filter lives here, in the component, and must not move up.
+   *
+   * `reserveContainer` picks the next number from the highest one in use, and
+   * it reads the same subscription this screen does. A voided box is what
+   * holds a retired number above that high-water mark. Filtering voided boxes
+   * out of the hook or the repository would hand a number that is already
+   * written on cardboard to a second physical box, which is the one mistake in
+   * this app that nothing can repair. Hiding them from a list is safe. Hiding
+   * them from the count is not.
+   *
+   * Search reads from the same filtered list, so somebody looking for a
+   * stapler does not get back a box they retired last week.
+   */
+  const voidedCount = containers.filter(isVoided).length;
+  const visible = showVoided ? containers : containers.filter((c) => !isVoided(c));
 
   // Unfiltered, the newest box is the one being worked on, so it goes on top.
   // Filtered, the ranking from the search decides and this order is discarded.
   const rows = filtering
-    ? search(containers, query, zones).map((h) => ({ container: h.container, suggestionOnly: h.suggestionOnly }))
-    : [...containers]
+    ? search(visible, query, zones).map((h) => ({ container: h.container, suggestionOnly: h.suggestionOnly }))
+    : [...visible]
         .sort((a, b) => b.sequenceNumber - a.sequenceNumber)
         .map((container) => ({ container, suggestionOnly: false }));
 
@@ -52,9 +71,19 @@ export function BoxList({
         </label>
         <p className="text-sm text-slate-400">
           {filtering
-            ? `${rows.length} of ${containers.length} box${containers.length === 1 ? "" : "es"}`
-            : `${containers.length} box${containers.length === 1 ? "" : "es"}`}
+            ? `${rows.length} of ${visible.length} box${visible.length === 1 ? "" : "es"}`
+            : `${visible.length} box${visible.length === 1 ? "" : "es"}`}
         </p>
+        {voidedCount > 0 ? (
+          <button
+            onClick={() => setShowVoided((v) => !v)}
+            className="min-h-12 self-start text-sm text-slate-400 underline"
+          >
+            {showVoided
+              ? "Hide voided boxes"
+              : `Show ${voidedCount} voided box${voidedCount === 1 ? "" : "es"}`}
+          </button>
+        ) : null}
       </div>
 
       <ul className="flex-1 overflow-y-auto px-6">
@@ -87,6 +116,9 @@ export function BoxList({
                 </span>
                 <span className="shrink-0 text-right">
                   <span className="block text-sm text-slate-400">{statusWord(container)}</span>
+                  {conditionWord(container) ? (
+                    <span className="block text-xs text-amber-300">{conditionWord(container)}</span>
+                  ) : null}
                   {photos > 0 ? (
                     <span className="block text-xs text-slate-500">
                       {photos} photo{photos === 1 ? "" : "s"}
@@ -116,7 +148,23 @@ export function BoxList({
   );
 }
 
-/** Per docs/09-glossary.md, `filling` is a draft everywhere a person can read it. */
+/**
+ * Per docs/09-glossary.md, `filling` is a draft everywhere a person can read
+ * it. A voided box reads as voided instead of its status, because what a
+ * person needs from this row is that the box is out of use, not where it got
+ * to before that.
+ */
 function statusWord(container: Container): string {
+  if (isVoided(container)) return "voided";
   return container.status === "filling" ? "draft" : container.status;
+}
+
+/** Both can be true at once, per ADR-0003, so both are named. */
+function conditionWord(container: Container): string {
+  return [
+    hasCondition(container, "missing") ? "missing" : null,
+    hasCondition(container, "damaged") ? "damaged" : null,
+  ]
+    .filter((w): w is string => w !== null)
+    .join(", ");
 }

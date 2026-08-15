@@ -1,10 +1,23 @@
-import { deleteDoc, deleteField, doc, getDoc, getDocFromCache, updateDoc } from "firebase/firestore";
+import {
+  deleteDoc,
+  deleteField,
+  doc,
+  getDoc,
+  getDocFromCache,
+  getDocs,
+  getDocsFromCache,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { deleteObject, ref as storageRef } from "firebase/storage";
 import { containerPhotoSchema, type ContainerPhoto } from "../domain/schemas";
 import { db, storage } from "../lib/firebase";
 import { deleteBlob } from "../photos/db";
 import { clearBackoff, kickUploader } from "../photos/uploader";
+import { logActivity } from "./activity";
 import {
+  allWritten,
   createValidated,
   moveScoped,
   nowIso,
@@ -71,33 +84,87 @@ export async function getPhotoRecord(
 }
 
 /**
- * Removes a photo from all three places it can exist, in that order.
- *
- * The Storage object goes first, while `storagePath` is still in hand. A
- * failure there is logged and nothing more: an object nobody points at costs a
- * fraction of a cent, and a photo that will not go away costs trust.
- *
- * Offline, the Storage call rejects after its own retry window and the
- * document and the local bytes still go. The photo leaves the screen when the
- * Firestore delete lands in the local cache, and the object is left behind.
+ * Every photo document for one box, served from the local cache so it works
+ * with no signal. Used when the box itself is deleted.
  */
-export async function deletePhoto(moveId: string, photo: ContainerPhoto): Promise<PendingWrite<void>> {
-  if (photo.storagePath) {
-    try {
-      await deleteObject(storageRef(storage, photo.storagePath));
-    } catch (e) {
-      console.error(`Could not delete ${photo.storagePath}`, e);
-    }
+export async function photosForContainer(
+  moveId: string,
+  containerId: string
+): Promise<ContainerPhoto[]> {
+  const q = query(photos(moveId), where("containerId", "==", containerId));
+  let snap;
+  try {
+    snap = await getDocsFromCache(q);
+  } catch {
+    snap = await getDocs(q);
+  }
+  const found: ContainerPhoto[] = [];
+  for (const d of snap.docs) {
+    const parsed = containerPhotoSchema.safeParse({ ...d.data(), id: d.id });
+    if (parsed.success) found.push(parsed.data);
+    else console.error(`Invalid document ${d.id}`, parsed.error);
+  }
+  return found;
+}
+
+/**
+ * Removes a photo from the three places it can exist, in that order.
+ *
+ * The Storage object goes first, while `storagePath` is still in hand, and is
+ * deliberately not awaited. Awaiting it would hold the Firestore delete behind
+ * however long the Storage SDK spends retrying, which offline is around two
+ * minutes of a deleted photo still sitting on screen. Nothing in this app
+ * waits on the network, and a delete is not the place to start.
+ *
+ * A Storage failure is logged and nothing more: an object nobody points at
+ * costs a fraction of a cent, and a photo that will not go away costs trust.
+ * Offline, the delete never reaches Storage at all and the object is orphaned.
+ * That is accepted, and recorded in plans/STATUS.md.
+ *
+ * `removePhotoBytes` is the same work without the activity event, because
+ * `deleteContainer` calls this for a box that is about to stop existing and an
+ * event pointing at a deleted container is a dangling reference.
+ */
+function removePhotoBytes(moveId: string, photo: ContainerPhoto): Promise<void> {
+  const { storagePath } = photo;
+  if (storagePath) {
+    void deleteObject(storageRef(storage, storagePath)).catch((e) =>
+      console.error(`Could not delete ${storagePath}`, e)
+    );
   }
 
-  // Queues offline like every other write, so this is not awaited.
+  // Queues offline like every other write, so this is not awaited either.
   const written = deleteDoc(doc(photos(moveId), photo.id));
 
   // The uploader would otherwise find bytes with no document and keep trying.
   clearBackoff(photo.id);
-  await deleteBlob(photo.id);
+  void deleteBlob(photo.id).catch((e) => console.error(`Could not delete local photo ${photo.id}`, e));
 
-  return { value: undefined, written };
+  return written;
+}
+
+export function deletePhoto(
+  moveId: string,
+  photo: ContainerPhoto,
+  actorUid: string
+): PendingWrite<void> {
+  const written = removePhotoBytes(moveId, photo);
+  const logged = logActivity(moveId, {
+    containerId: photo.containerId,
+    actorId: actorUid,
+    type: "photo_deleted",
+    payload: { photoId: photo.id, type: photo.type },
+  });
+  return { value: undefined, written: allWritten(written, logged.written) };
+}
+
+/**
+ * For `deleteContainer` and nothing else. Same removal, no activity event,
+ * because the container the event would point at is going away in the same
+ * breath. Anything a person does to a single photo goes through `deletePhoto`.
+ */
+export function removePhotoWithContainer(moveId: string, photo: ContainerPhoto): Promise<void> {
+  return removePhotoBytes(moveId, photo);
 }
 
 /**

@@ -91,6 +91,53 @@ export function Screen({ title, children }: { title: string; children: ReactNode
   );
 }
 
+/**
+ * The stop before something that cannot be taken back. Deleting a box, voiding
+ * a box, and deleting a photo are the only three, and all three are reached
+ * one-handed while holding cardboard, so the panel sits at the bottom of the
+ * screen where a thumb already is.
+ *
+ * It does not dismiss on a tap outside. Cancelling by accident is harmless;
+ * this exists to make confirming by accident hard. The tap is stopped rather
+ * than passed on, because the photo viewer closes on its own backdrop and this
+ * opens on top of it.
+ */
+export function Confirm({
+  title,
+  detail,
+  confirmLabel,
+  cancelLabel = "Keep it",
+  onConfirm,
+  onCancel,
+}: {
+  title: string;
+  detail: string;
+  confirmLabel: string;
+  cancelLabel?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      className="fixed inset-0 z-[60] flex flex-col justify-end bg-slate-950/85 p-4"
+      style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+    >
+      <div className="flex flex-col gap-4 rounded-3xl bg-slate-800 p-6">
+        <h3 className="text-xl font-semibold text-slate-100">{title}</h3>
+        <p className="leading-relaxed text-slate-300">{detail}</p>
+        <Button onClick={onConfirm}>{confirmLabel}</Button>
+        <Button onClick={onCancel} tone="quiet">
+          {cancelLabel}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function ErrorLine({ message }: { message: string | null }) {
   return message ? <p className="text-sm text-amber-300">{message}</p> : null;
 }

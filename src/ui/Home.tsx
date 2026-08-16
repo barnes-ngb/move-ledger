@@ -8,10 +8,11 @@ import { BoxDetail } from "./box/BoxDetail";
 import { BoxList } from "./box/BoxList";
 import { FindBox } from "./box/FindBox";
 import { Button, Screen, SubscriptionFailed } from "./kit";
+import { useOfferHome } from "./nav";
 
 /**
  * `detail` carries the view it was opened from rather than routing back to a
- * fixed screen, so Done returns to the list with its filter text still in it.
+ * fixed screen, so Back returns to the list with its filter text still in it.
  * The text lives here, on the view, for the same reason: unmounting the list
  * to show a box must not throw away what the person typed to find it.
  */
@@ -22,10 +23,22 @@ type View =
   | { name: "list"; query: string }
   | { name: "detail"; id: string; from: View };
 
+/** What the back control on box detail says, given where it was opened from. */
+function backLabel(from: View): string {
+  if (from.name === "list") return "Back to the list";
+  if (from.name === "find") return "Back to find";
+  return "Back";
+}
+
 export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onSetup: () => void }) {
   const [view, setView] = useState<View>({ name: "home" });
   const { containers, failed, retry } = useContainers(ctx.move?.id ?? null);
   const photoCounts = usePhotoCounts(ctx.move?.id ?? null, view.name === "list");
+
+  // Every screen under this one goes home through the header title. Add box
+  // is the exception and takes the header itself, because leaving it means
+  // answering for the draft first.
+  useOfferHome(view.name !== "add", () => setView({ name: "home" }));
 
   if (!ctx.move || !ctx.me) return null;
   const moveId = ctx.move.id;
@@ -44,7 +57,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         containers={containers}
         zones={ctx.zones}
         uid={uid}
-        onClose={() => setView({ name: "home" })}
+        onLeave={() => setView({ name: "home" })}
       />
     );
   }
@@ -56,6 +69,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         containers={containers}
         zones={ctx.zones}
         onOpen={(c) => setView({ name: "detail", id: c.id, from })}
+        onBack={() => setView({ name: "home" })}
       />
     );
   }
@@ -70,7 +84,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         query={view.query}
         onQueryChange={(query) => setView({ name: "list", query })}
         onOpen={(c) => setView({ name: "detail", id: c.id, from })}
-        onClose={() => setView({ name: "home" })}
+        onBack={() => setView({ name: "home" })}
       />
     );
   }
@@ -78,14 +92,21 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
   if (view.name === "detail") {
     const back = view.from;
     const found = containers.find((c) => c.id === view.id);
-    if (!found) return <Screen title="That box is gone">{null}</Screen>;
+    if (!found) {
+      return (
+        <Screen title="That box is gone" onBack={() => setView(back)}>
+          {null}
+        </Screen>
+      );
+    }
     return (
       <BoxDetail
         moveId={moveId}
         container={found as Container}
         zones={ctx.zones}
         uid={uid}
-        onClose={() => setView(back)}
+        backLabel={backLabel(back)}
+        onBack={() => setView(back)}
       />
     );
   }
@@ -96,9 +117,21 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
     <div className="flex min-h-full flex-col justify-between p-6">
       <div className="flex flex-col gap-2">
         <h2 className="text-2xl font-semibold text-slate-100">{ctx.move.name}</h2>
-        <p className="text-slate-400">
-          {containers.length} box{containers.length === 1 ? "" : "es"}, {mine} of them yours.
-        </p>
+        {/* Doc 04 section 1: a person who has not started is not shown a row
+            of zeroes. Three lines explaining the physical system, and the
+            route to room setup, because a move with no rooms has no color to
+            write on a box. */}
+        {containers.length === 0 ? (
+          <div className="flex flex-col gap-1 text-slate-400">
+            <p>Every box gets a number and a room color.</p>
+            <p>You write both on the box with a marker.</p>
+            <p>Photograph what is inside before you seal it.</p>
+          </div>
+        ) : (
+          <p className="text-slate-400">
+            {containers.length} box{containers.length === 1 ? "" : "es"}, {mine} of them yours.
+          </p>
+        )}
       </div>
 
       <div className="flex flex-col gap-4">
@@ -109,7 +142,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         <Button onClick={() => setView({ name: "list", query: "" })} tone="quiet">
           See all boxes
         </Button>
-        <button onClick={onSetup} className="min-h-12 text-slate-400 underline">
+        <button onClick={onSetup} className="min-h-14 text-slate-400 underline">
           Rooms and members
         </button>
       </div>

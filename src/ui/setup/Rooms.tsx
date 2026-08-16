@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { Move, Zone } from "../../domain";
 import { addZone, updateMove, writeInBackground } from "../../repositories";
 import { PALETTE, shortCodeFor } from "../../lib/palette";
@@ -8,7 +8,20 @@ import { Button, ErrorLine, Field, Screen } from "../kit";
  * Rooms at the destination. Colour is chosen here because it is written on
  * the box by hand, so it is a naming decision rather than a styling one.
  */
-export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDone: () => void }) {
+export function Rooms({
+  move,
+  zones,
+  onDone,
+  onBack,
+  exportPanel,
+}: {
+  move: Move;
+  zones: Zone[];
+  onDone: () => void;
+  /** Null during first run and while the move still has no rooms. */
+  onBack: (() => void) | null;
+  exportPanel?: ReactNode;
+}) {
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -52,7 +65,7 @@ export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDo
   }
 
   return (
-    <Screen title="Rooms at the new place">
+    <Screen title="Rooms at the new place" {...(onBack ? { onBack } : {})}>
       <ul className="flex flex-col gap-2">
         {zones.map((z) => (
           <li key={z.id} className="flex items-center gap-3 rounded-xl bg-slate-800 p-3">
@@ -87,6 +100,15 @@ export function Rooms({ move, zones, onDone }: { move: Move; zones: Zone[]; onDo
           </Button>
         </div>
       </div>
+      {exportPanel}
+
+      {/* Done, because this one does complete something: it closes the room
+          step and moves to the next. Nothing else in the app says Done. */}
+      {zones.length === 0 ? (
+        <p className="text-sm text-amber-300">
+          Add at least one room. A box with no room has no color to write on it.
+        </p>
+      ) : null}
       <Button onClick={onDone} disabled={zones.length === 0}>
         Done, {zones.length} room{zones.length === 1 ? "" : "s"}
       </Button>

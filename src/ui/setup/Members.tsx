@@ -12,10 +12,12 @@ export function Members({
   move,
   members,
   onDone,
+  onBack,
 }: {
   move: Move;
   members: MoveMember[];
   onDone: () => void;
+  onBack: () => void;
 }) {
   const [uid, setUid] = useState("");
   const [name, setName] = useState("");
@@ -51,7 +53,7 @@ export function Members({
   }
 
   return (
-    <Screen title="Who else is packing">
+    <Screen title="Who else is packing" onBack={onBack}>
       <ul className="flex flex-col gap-2">
         {members.map((m) => (
           <li key={m.id} className="rounded-xl bg-slate-800 p-3">

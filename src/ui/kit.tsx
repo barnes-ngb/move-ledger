@@ -82,11 +82,48 @@ export function TextArea({
   );
 }
 
-export function Screen({ title, children }: { title: string; children: ReactNode }) {
+export function Screen({
+  title,
+  onBack,
+  children,
+}: {
+  title: string;
+  onBack?: () => void;
+  children: ReactNode;
+}) {
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <h2 className="text-2xl font-semibold text-slate-100">{title}</h2>
-      {children}
+    <div className="flex flex-col">
+      {onBack ? <BackBar onBack={onBack} /> : null}
+      <div className={"flex flex-col gap-6 p-6" + (onBack ? " pt-2" : "")}>
+        <h2 className="text-2xl font-semibold text-slate-100">{title}</h2>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The way back, in the one place every screen puts it: top left, above the
+ * scroll area, so it does not move as a list scrolls under it. A standalone
+ * PWA shows no browser chrome and therefore no browser back button, so this
+ * is the only back there is.
+ *
+ * 56px square rather than the 44px a back control is usually given, because
+ * every other target in this app is 56px and this one is pressed one-handed
+ * while holding a box.
+ */
+export function BackBar({ onBack, label = "Back" }: { onBack: () => void; label?: string }) {
+  return (
+    <div className="px-3 pt-3">
+      <button
+        onClick={onBack}
+        className="flex min-h-14 min-w-14 items-center gap-1 rounded-xl pr-4 pl-2 text-lg text-slate-300"
+      >
+        <span aria-hidden="true" className="text-2xl leading-none">
+          {"‹"}
+        </span>
+        {label}
+      </button>
     </div>
   );
 }
@@ -118,21 +155,50 @@ export function Confirm({
   onCancel: () => void;
 }) {
   return (
+    <Sheet title={title} detail={detail}>
+      <Button onClick={onConfirm}>{confirmLabel}</Button>
+      <Button onClick={onCancel} tone="quiet">
+        {cancelLabel}
+      </Button>
+    </Sheet>
+  );
+}
+
+/**
+ * The panel `Confirm` sits in, on its own so a question with three answers
+ * can use it too. Leaving Add box is the one: delete the draft, keep it, or
+ * stay on the screen, and none of the three is a cancel.
+ *
+ * It is `fixed`, so it escapes the insets `App` puts on the whole app and
+ * carries its own. Bottom matters because it sits on the home indicator;
+ * left and right matter in landscape on a phone with a notch.
+ */
+export function Sheet({
+  title,
+  detail,
+  children,
+}: {
+  title: string;
+  detail: string;
+  children: ReactNode;
+}) {
+  return (
     <div
       onClick={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
       aria-label={title}
       className="fixed inset-0 z-[60] flex flex-col justify-end bg-slate-950/85 p-4"
-      style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+      style={{
+        paddingBottom: "calc(1rem + env(safe-area-inset-bottom))",
+        paddingLeft: "calc(1rem + env(safe-area-inset-left))",
+        paddingRight: "calc(1rem + env(safe-area-inset-right))",
+      }}
     >
       <div className="flex flex-col gap-4 rounded-3xl bg-slate-800 p-6">
         <h3 className="text-xl font-semibold text-slate-100">{title}</h3>
         <p className="leading-relaxed text-slate-300">{detail}</p>
-        <Button onClick={onConfirm}>{confirmLabel}</Button>
-        <Button onClick={onCancel} tone="quiet">
-          {cancelLabel}
-        </Button>
+        {children}
       </div>
     </div>
   );

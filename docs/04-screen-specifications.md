@@ -2,6 +2,27 @@
 
 Every screen must define loading, empty, error, and offline behavior. Where this doc does not name one, the default is: show the last known local data and an offline indicator.
 
+## 0. Navigation
+
+Added 2026-08-15 during the APPLY-10 run. Navigation had grown a screen at a time across five plans and had never been designed as one thing, so a person could reach Add box, Find, the box list, or box detail and have no way back to the move except finishing the flow. An installed PWA runs standalone and shows no browser chrome, so there is no browser back button underneath any of this.
+
+The pattern is two controls, and every screen built after this follows it.
+
+**The title is the way home.** "Move Ledger" in the header is a button on every screen that has a home to go to. It still looks like a title: same words, same weight, nothing moves when it becomes a button. Four places have no home behind them and leave it as plain text rather than offering a button that does nothing:
+
+- Sign-in, where there is no move yet.
+- The first-run flow, for the same reason.
+- The room setup a move with no rooms is held in, because a box with no room has no color to write on it.
+- The contents list notice, which is the one gate with a home behind it and no way past it except answering. Raised in review on pull request 19 and decided there rather than treated as an oversight. Doc 07 requires that both members be told in plain words before a photo of their home goes to a third party, and both answers are one tap and lead straight to the move. A way past it that leaves the question unanswered would ask again on the next photo, which APPLY-07 already ruled out: that is not a question, it is nagging.
+
+The header is rendered above every screen and the state that decides where home is lives in the screens below it, so a screen offers the header a way home while it is on screen and the header uses whatever is currently offered. `src/ui/nav.tsx` holds that, and the reason it is worth a file is the handover: Add box takes the header from the move overview while it is open, so tapping the title there asks about the draft instead of stranding it.
+
+**Back is top left, above the scroll area.** 56px square, the same minimum as every other target, and it does not move as a list scrolls under it. Back returns to wherever the screen was opened from rather than to a fixed screen, so a box opened from the list goes back to the list with the filter text still in the field, and the same box opened from the keypad goes back to the keypad. Box detail names its destination, because it is opened from three places.
+
+**One word per promise.** "Back" returns. "Done" completes something. Before this run box detail said Done and meant go back, while setup said Done and meant finish setup. Done now appears on the two setup screens and nowhere else.
+
+**Leaving Add box asks about the draft.** The number is reserved on mount and is spent either way, so the only open question is whether the draft goes with it. Both exits, the back control and the title, ask the same question: delete the draft and the number goes back to the range, keep it and finish the box later from the list, or stay on the box. Keeping it is a real answer rather than a soft cancel, because drafts are visible in the list and can be finished or deleted from box detail. Deleting is safe here and only here, for the reason in section 6: nothing has been written on cardboard yet, which is what `canDelete` reads.
+
 ## 1. Move overview
 
 ### Purpose
@@ -25,6 +46,10 @@ Show progress and the next useful action.
 ### Empty state
 
 Explain the physical system in three lines and route to zone setup. Do not show zeroed counters to a user who has not started.
+
+Built 2026-08-15 during the APPLY-10 run, having been specified since the doc was written. The screen had been showing "0 boxes, 0 of them yours" to a person who had not started, which is the sentence this section exists to forbid. The three lines are the number and the color, the marker, and the photo before the box is sealed. Rooms and members is the route to setup and was already on the screen.
+
+The counters in **Shows** above are still owed. The overview names the move, counts the boxes, and offers the three actions. Progress by status, the open-first count, boxes by room, and pending photo uploads are not built.
 
 ## 2. Add box
 
@@ -60,6 +85,18 @@ Record a box with the least possible effort.
 - A failed photo upload never discards the captured image.
 - A validation failure never clears entered text.
 - A box with no photo can still be saved. It is flagged in the overview as incomplete.
+
+### What shipped, APPLY-10
+
+Amended 2026-08-15. Two of the rules above were true of the layout and false on a phone.
+
+**The keyboard was covering `Save and next`.** Both buttons are pinned below the scroll area, which only helps if the layout gets shorter when the keyboard opens. The browser default is `interactive-widget=resizes-visual`: the layout viewport stays at full height and the keyboard slides over the bottom of it, pinned buttons included. `index.html` now asks for `resizes-content` in the viewport meta, which is the whole fix and applies to every screen with a field on it.
+
+**Backgrounding the app preserves the draft, partly.** The reserved number and any photos are Firestore and Dexie records and survive anything. The room and the note are component state and do not survive the screen unmounting. Recorded rather than fixed, because the note is usually typed and saved in the same handful of seconds.
+
+The last error line is still owed: a box saved with no photo is saved, and nothing in the overview flags it.
+
+**The way out.** The back control and the leave question are in section 0.
 
 ## 3. Label instruction
 
@@ -145,6 +182,8 @@ Amended 2026-08-15 during the APPLY-08 run. The list row is not this card and wa
 
 Three of the lines above are still owed and are worth having only if the list proves hard to read on a phone: the primary photo thumbnail, the color as a fill rather than a dot, and the matching text with the match highlighted. The highlight is the one with real value, since it answers "why did this box come back" without opening it. It was left out because a word match can land in any of six fields and picking the snippet to show is a design question this run did not have an answer to. The row says which field matched only in the `aiSummary` case, where it changes whether the text can be trusted.
 
+Amended again 2026-08-15 during the APPLY-10 run. **A box with no room now reads as a thing to fix.** The row drew a colored dot and the room's name, and a box with no room got neither: no dot, and the words "No room" in the same grey the rest of the row uses. Every box in the move was in that state at the time, because a room is optional on Add box. The dot is now drawn as a dashed outline where the color would be, and the row reads "No room. Open it and pick one." in the amber the conditions use, which is the app's one color for a state worth acting on. The keypad screen carries the same marker, so a row does not read differently on two screens. It is on box detail too, above the Change room control that fixes it.
+
 Amended again 2026-08-15 during the APPLY-09 run. The condition badge exists now that something writes a condition. It is a line of small amber text in the row's right column, under the status, naming both conditions when a box carries both. Still text rather than a badge, for the same reason the color is a dot rather than a fill: the row is already carrying six things at 14px.
 
 Voided boxes are not in this list by default, and not in these results by default. A control under the search field reveals them, counts them while it offers, and hides them again. Revealed, a row reads "voided" where its status would be. The filter is in the component on purpose, and the comment there says why: `reserveContainer` reads the same container list this screen does, so filtering voided boxes any higher up would hand a retired number to a second physical box.
@@ -197,6 +236,25 @@ Room name, short code, color, box count, delivered count, unopened count.
 
 Add, edit, view boxes in room, open full-screen color chart.
 
+### Export
+
+Added 2026-08-15 during the APPLY-10 run. Product rule 10 says the user must be able to export all data, and `toCsv` and `toJson` had been written and tested since APPLY-01 with nothing calling them. The rule was true of the domain layer and false of the app.
+
+Two files, offered on this screen because it is the one a person reaches from the move when they are not packing.
+
+- **The spreadsheet.** A row per box, with missing and damaged in their own columns. That shape is the point: filter to the damaged rows and the list is the insurance conversation.
+- **The data file.** The whole move, including the members, the places, the photo records, and the activity history. This is what somebody would need to rebuild the move somewhere else.
+
+Both are named for the move and the day, `kc-to-dfw-2026-08-15.csv`, because two exports in one week are otherwise indistinguishable in a downloads folder. The name is run through the search tokenizer rather than a second punctuation rule, so accents fold and nothing lands in a file name that should not be there.
+
+Client side and dependency free. The text is built from the local cache and handed to the browser as a Blob, so an export works with no signal and nothing about the household leaves the phone to produce it. The three collections it needs and the setup screen does not, containers, photos, and activity, are subscribed only while this screen is open, for the reason `usePhotoCounts` does the same: doc 11 counts reads.
+
+The block is hidden until the move has a box, which also keeps it off the screen during first-run setup.
+
+Nothing is offered until all three listeners have answered, and nothing is offered at all once one of them has stopped. Raised in review on pull request 19, and the reason it is a refusal rather than a warning is that the three answer independently: a file built while the photo listener is still on its way carries a photo count of zero against every box, and a file built while the activity listener is still on its way carries an empty history. Neither says it is short. The one reader this export has is somebody checking what was in a box that arrived crushed, and a confident wrong answer is worse for them than no file. A stopped listener says so on the block and the way back is to open the screen again, which opens fresh listeners.
+
+The other actions above are still owed. This screen adds a room and shows the list. Editing a room, viewing the boxes in one, and the full-screen color chart are not built.
+
 ## 8. Move Day
 
 ### Controls
@@ -234,6 +292,54 @@ Not a screen. A persistent indicator in the header.
 
 Never present local data that has not been copied to the server as lost, invalid, or provisional. It is real data that has not been copied yet.
 
+Amended 2026-08-15 during the APPLY-10 run. The rule reaches further than the header. A photo the other phone took, whose bytes have not arrived here, drew as an empty grey square on the photo strip, which reads as broken rather than as pending. That tile now says "Not on this phone yet". The full-screen viewer already said it and the strip did not.
+
 ### Naming
 
 This section previously read "Synced" and "Offline, changes held locally". `docs/09-glossary.md` arbitrated on 2026-08-02 during the APPLY-03 run: sync is not a user-facing word, and the offline string is the one doc 09 already wrote. The online state also reports connectivity rather than write confirmation, because `useOnline` reads `navigator.onLine` and the Firestore SDK does not expose a sync state.
+
+## 10. The APPLY-10 audit
+
+Every screen was walked against this doc on 2026-08-15. Recorded here because the next person to add a screen needs the list of rules that were actually checked, and because half of these were already right and should not be re-argued.
+
+### Touch targets, 56px
+
+The floor is 56px for anything a thumb lands on, `min-h-14` in the shared kit, and 64px on Move Day per section 8. Written down here for the first time in this run: the kit had been citing this doc for a number this doc never carried.
+
+Fixed: four controls at 48px. The route to Rooms and members on the move overview, the show and hide voided boxes control on the box list, and both controls on the account screen. Back and the title in the header are new and are 56px and 44px, the title being a title first.
+
+Already compliant: every `Button` in the kit, the keypad, the box list rows, the room chips, the photo strip tiles and the add tile, which are 96px. Section 8's Move Day controls do not exist yet and are not a finding.
+
+### The keyboard never covers the primary action
+
+Fixed: the viewport meta, in section 2's amendment. This was failing on every screen with a field, not only Add box, and the pinned footer that was supposed to answer it could not.
+
+Already compliant: the pinning itself on Add box.
+
+### No unsynced data presented as provisional
+
+Fixed: the blank photo tile, in section 9.
+
+Already compliant: the header indicator, every "saved on this phone" error line, the box list, which never waits on the network and says so in a comment, and the offline case of the full-screen photo.
+
+### The number readable at arm's length
+
+Already compliant: 72px on Add box, raised to that in 2026-08-02 and unchanged. Nothing else on a screen is the mark a person copies onto cardboard, so nothing else is held to it.
+
+### Named items
+
+- **Box list rows with no room.** Fixed, in section 5.
+- **The photo strip meets 56px.** Already compliant at 96px, both the thumbnails and the add tile.
+- **Buttons disabled during a write say why.** Fixed on the photo strip's add tile, which is the one write on that screen long enough to see and which dimmed with no explanation. It now reads "Adding". Already compliant on sign-in, on the first-run flow, and on the contents list, all of which change their own label. Two disabled buttons were judged not to be this: Save title and Save note are disabled when nothing has changed, which the field above them shows, and no button in the app is disabled while a background write is in flight, on purpose, because a Firestore write promise settles on server acknowledgment and disabling anything on it would hang the screen offline.
+- **Safe-area insets everywhere, not only App.tsx.** Fixed: horizontal insets, which nothing carried, on the app frame, the full-screen photo, and the confirmation sheets. Already compliant: the top and bottom insets on the app frame and the photo viewer, and the bottom inset on the sheets.
+
+### Found and not fixed
+
+Each of these is a feature rather than a polish, and is recorded in `plans/STATUS.md`.
+
+- The move overview shows none of the counters in section 1. The empty state was the failing rule and is fixed; the counters are owed.
+- A box saved with no photo is not flagged anywhere, per section 2.
+- The room and the note on Add box do not survive the screen unmounting, per section 2.
+- Three lines of section 5's result card are still owed, unchanged since APPLY-08 recorded them.
+- Section 7's edit, view boxes in room, and color chart are not built.
+- `src/ui/Account.tsx` is reachable from nowhere. It was APPLY-03's screen for reading a uid and the waiting screen took that job. Its targets were raised with the rest and it is still dead code.

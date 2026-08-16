@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import type { Container, MoveMember, Zone } from "../../domain";
 import { RangeExhaustedError, remainingInRange } from "../../domain";
-import { reserveContainer, saveContainer, setStatus, writeInBackground } from "../../repositories";
-import { Button, ErrorLine, Field } from "../kit";
+import {
+  deleteContainer,
+  reserveContainer,
+  saveContainer,
+  setStatus,
+  writeInBackground,
+} from "../../repositories";
+import { BackBar, Button, ErrorLine, Field, Sheet } from "../kit";
+import { useOfferHome } from "../nav";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 import { labelInstruction } from "./label";
@@ -27,19 +34,24 @@ export function AddBox({
   containers,
   zones,
   uid,
-  onClose,
+  onLeave,
 }: {
   moveId: string;
   me: MoveMember;
   containers: readonly Container[];
   zones: readonly Zone[];
   uid: string;
-  onClose: () => void;
+  onLeave: () => void;
 }) {
   const [container, setContainer] = useState<Container | null>(null);
   const [roomId, setRoomId] = useState<string | undefined>(undefined);
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [leaving, setLeaving] = useState(false);
+  // The leave sheet covers the screen, so a failure while deleting has to be
+  // readable on the sheet. The error line under the fields is behind it.
+  const [sheetError, setSheetError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   // StrictMode runs effects twice in development, and reserving is now
   // synchronous, so nothing else keeps the second run from burning a number.
   // The latch is released deliberately in save(), which is the only place a
@@ -55,6 +67,11 @@ export function AddBox({
    */
   const reservedHere = useRef<Container[]>([]);
   const photos = usePhotos(moveId, container?.id ?? null);
+
+  // This screen takes the header title from Home while it is open, so the way
+  // home asks about the draft rather than stranding it. Both exits ask the
+  // same question in the same words.
+  useOfferHome(true, () => setLeaving(true));
 
   function reserve() {
     if (reserved.current) return;
@@ -112,10 +129,60 @@ export function AddBox({
         reserved.current = false;
         reserve();
       } else {
-        onClose();
+        onLeave();
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save the box.");
+    }
+  }
+
+  /**
+   * Leaving without saving. The number was reserved on mount and is spent
+   * either way, so the only question worth asking is whether the draft goes
+   * with it. Deleting returns the number to the range, which is safe here and
+   * only here: nothing has been written on cardboard yet, which is exactly
+   * what `canDelete` reads.
+   *
+   * Keeping it is a real answer rather than a soft cancel. Drafts appear in
+   * the box list and can be finished or deleted from box detail, so somebody
+   * who was interrupted mid-box does not have to decide about it now.
+   *
+   * The delete is the one thing on this screen that is waited on, and it is
+   * the same shape box detail has used since APPLY-09. What is awaited is the
+   * guard rather than the network: `deleteContainer` reads the stored document
+   * and refuses a box that has been written on, which offline is answered by
+   * the cache. The Firestore write behind it goes to the background like
+   * everything else here. Leaving before the guard has answered would tell
+   * somebody their number went back to the range while it did not, and the
+   * screen that would have said otherwise is gone by then.
+   */
+  function leave(deleteDraft: boolean) {
+    if (!deleteDraft || !container) {
+      setLeaving(false);
+      onLeave();
+      return;
+    }
+    void removeDraft(container.id);
+  }
+
+  async function removeDraft(id: string) {
+    setSheetError(null);
+    setDeleting(true);
+    try {
+      const { written } = await deleteContainer(moveId, id, uid);
+      writeInBackground(written, () =>
+        setError("This box is deleted on your phone. The other phone has not caught up yet.")
+      );
+      setDeleting(false);
+      setLeaving(false);
+      onLeave();
+    } catch (e) {
+      // Stay on the sheet. The draft is still there, the number is still
+      // spent, and Keep the draft is still an answer.
+      setDeleting(false);
+      setSheetError(
+        e instanceof Error ? e.message : "Could not delete the draft. It is still in the box list."
+      );
     }
   }
 
@@ -124,7 +191,8 @@ export function AddBox({
 
   return (
     <div className="flex min-h-full flex-col">
-      <div className="flex-1 overflow-y-auto p-6">
+      <BackBar onBack={() => setLeaving(true)} />
+      <div className="flex-1 overflow-y-auto p-6 pt-2">
         {/* The label instruction. Written before anything else is decided. */}
         <div className="rounded-3xl bg-slate-800 p-6 text-center">
           <p className="text-sm text-slate-400">Write on the box</p>
@@ -172,6 +240,14 @@ export function AddBox({
 
       {/* Pinned below the scroll area so the keyboard never covers it. */}
       <div className="flex flex-col gap-3 border-t border-slate-800 p-4">
+        {/* A dimmed button with no reason on it is the same as a broken one.
+            There is no number, which is the only thing that disables these,
+            and the reason it failed is on the error line above. */}
+        {container ? null : (
+          <p className="text-sm text-amber-300">
+            No box number yet, so there is nothing to save. Go back and open Add box again.
+          </p>
+        )}
         <Button onClick={() => save(true)} disabled={!container}>
           Save and next
         </Button>
@@ -179,6 +255,36 @@ export function AddBox({
           Save and finish
         </Button>
       </div>
+
+      {leaving ? (
+        <Sheet
+          title={container ? `Leave box ${container.displayCode}?` : "Leave without saving?"}
+          detail={
+            container
+              ? `Nothing on this box is saved yet. Number ${container.displayCode} is already reserved for it: delete the draft and the number goes back to your range${photos.length > 0 ? `, along with the ${photos.length} photo${photos.length === 1 ? "" : "s"} on it` : ""}. Keep it and the draft stays in the box list, where you can finish it later.`
+              : "No number was reserved, so there is no draft to decide about."
+          }
+        >
+          {/* No container means the reserve failed, so there is nothing to
+              delete and nothing to keep. One way out is the honest offer. */}
+          {container ? (
+            <>
+              <ErrorLine message={sheetError} />
+              <Button onClick={() => leave(true)} disabled={deleting}>
+                {deleting ? "Deleting the draft" : "Delete the draft"}
+              </Button>
+              <Button onClick={() => leave(false)} disabled={deleting} tone="quiet">
+                Keep the draft
+              </Button>
+            </>
+          ) : (
+            <Button onClick={() => leave(false)}>Leave</Button>
+          )}
+          <Button onClick={() => setLeaving(false)} disabled={deleting} tone="quiet">
+            Stay on this box
+          </Button>
+        </Sheet>
+      ) : null}
     </div>
   );
 }

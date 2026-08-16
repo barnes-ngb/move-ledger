@@ -45,11 +45,9 @@ const NOW = "2026-08-15T12:00:00.000Z";
 const zones = [makeZone()];
 
 function open(container: Container) {
-  const onClose = vi.fn();
-  render(
-    <BoxDetail moveId="m1" container={container} zones={zones} uid="uid-1" onClose={onClose} />
-  );
-  return onClose;
+  const onBack = vi.fn();
+  render(<BoxDetail moveId="m1" container={container} zones={zones} uid="uid-1" onBack={onBack} />);
+  return onBack;
 }
 
 beforeEach(() => {

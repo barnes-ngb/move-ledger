@@ -2,7 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!--
+      interactive-widget=resizes-content is what makes doc 04 section 2's rule
+      true: "The keyboard never covers Save and next". Those buttons are
+      pinned below the scroll area of a full-height layout, which only helps
+      if the layout gets shorter when the keyboard opens. The browser default
+      is resizes-visual, which leaves the layout viewport at full height and
+      slides the keyboard over the bottom of it, buttons included.
+    -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content"
+    />
     <meta name="theme-color" content="#0f172a" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />

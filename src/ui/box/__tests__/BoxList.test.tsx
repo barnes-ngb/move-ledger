@@ -13,7 +13,7 @@ function renderList(over: Partial<Parameters<typeof BoxList>[0]> = {}) {
     query: "",
     onQueryChange: vi.fn(),
     onOpen: vi.fn(),
-    onClose: vi.fn(),
+    onBack: vi.fn(),
     ...over,
   };
   render(<BoxList {...props} />);
@@ -78,6 +78,28 @@ describe("BoxList", () => {
   it("says nothing matched when the move has boxes and the words reach none", () => {
     renderList({ containers, query: "trombone" });
     expect(screen.getByText(/No box matches that/)).toBeDefined();
+  });
+
+  /**
+   * A box with no room has no color to write on it and nowhere to be put down
+   * at the other end. Grey text reads as an absence; this has to read as a
+   * thing to go and fix.
+   */
+  it("marks a box with no room rather than leaving the row blank", () => {
+    renderList({ containers: [makeContainer({ destinationZoneId: undefined })] });
+    expect(screen.getByText("No room. Open it and pick one.")).toBeDefined();
+  });
+
+  it("says the room by name when there is one", () => {
+    renderList({ containers: [makeContainer({ destinationZoneId: "z1" })] });
+    expect(screen.getByText("Kitchen")).toBeDefined();
+    expect(screen.queryByText(/No room/)).toBeNull();
+  });
+
+  it("goes back from both the top control and the bottom one", () => {
+    const { onBack } = renderList({ containers });
+    for (const control of screen.getAllByText("Back")) fireEvent.click(control);
+    expect(onBack).toHaveBeenCalledTimes(2);
   });
 
   it("names both conditions on a row carrying both", () => {

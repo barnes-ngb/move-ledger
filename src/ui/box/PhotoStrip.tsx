@@ -73,7 +73,12 @@ export function PhotoStrip({
                 {src ? (
                   <img src={src} alt="" className="size-24 rounded-xl object-cover" />
                 ) : (
-                  <div className="size-24 rounded-xl bg-slate-800" />
+                  // Bytes on the other phone. Doc 04 section 9: this is real
+                  // data that has not been copied here yet, so the tile says
+                  // that rather than showing a blank that reads as broken.
+                  <div className="flex size-24 items-center justify-center rounded-xl bg-slate-800 p-2 text-center text-xs leading-snug text-slate-400">
+                    Not on this phone yet
+                  </div>
                 )}
               </button>
               {v.photo.uploadState === "failed" ? (
@@ -89,13 +94,16 @@ export function PhotoStrip({
           );
         })}
 
+        {/* Disabled while a photo is being resized and written, which is the
+            one write on this screen long enough to see. It says which,
+            because a dimmed tile with a plus on it says only "no". */}
         <button
           onClick={() => input.current?.click()}
           disabled={busy}
-          className="flex size-24 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-4xl text-slate-400 disabled:opacity-50"
-          aria-label="Add a photo"
+          className="flex size-24 shrink-0 flex-col items-center justify-center rounded-xl bg-slate-800 text-slate-400 disabled:opacity-50"
+          aria-label={busy ? "Adding a photo" : "Add a photo"}
         >
-          +
+          {busy ? <span className="px-2 text-center text-sm leading-snug">Adding</span> : <span className="text-4xl">+</span>}
         </button>
       </div>
 

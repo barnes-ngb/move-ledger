@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EXPORT_FORMAT_VERSION, toCsv, toJson } from "../export";
+import { EXPORT_FORMAT_VERSION, exportFilename, toCsv, toJson } from "../export";
 import { makeContainer, makeZone } from "./factories";
 
 const zones = [makeZone()];
@@ -91,5 +91,27 @@ describe("toCsv", () => {
       photos: [photo("p1"), photo("p2")],
     });
     expect(csv.split("\r\n")[1]).toMatch(/,2,/);
+  });
+});
+
+describe("exportFilename", () => {
+  const day = new Date("2026-08-15T21:30:00.000Z");
+
+  it("names the file after the move and the day", () => {
+    expect(exportFilename("KC to DFW", "csv", day)).toBe("kc-to-dfw-2026-08-15.csv");
+  });
+
+  it("drops the punctuation a file name should not carry", () => {
+    expect(exportFilename("Nathan & Shelly's move!", "json", day)).toBe(
+      "nathan-shelly-s-move-2026-08-15.json"
+    );
+  });
+
+  it("folds accents rather than emitting them", () => {
+    expect(exportFilename("Café move", "csv", day)).toBe("cafe-move-2026-08-15.csv");
+  });
+
+  it("falls back rather than producing a file called .csv", () => {
+    expect(exportFilename("!!!", "csv", day)).toBe("move-2026-08-15.csv");
   });
 });

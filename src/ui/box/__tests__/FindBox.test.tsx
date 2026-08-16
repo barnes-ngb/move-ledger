@@ -44,7 +44,7 @@ describe("FindBox", () => {
       box({ id: "b", sequenceNumber: 42, displayCode: "042" }),
       box({ id: "c", sequenceNumber: 43, displayCode: "043" }),
     ];
-    render(<FindBox containers={boxes} zones={zones} onOpen={() => undefined} />);
+    render(<FindBox containers={boxes} zones={zones} onOpen={() => undefined} onBack={() => undefined} />);
     fireEvent.click(screen.getByText("4"));
     expect(screen.getByText("3 boxes")).toBeDefined();
   });
@@ -55,7 +55,7 @@ describe("FindBox", () => {
       box({ id: "a", sequenceNumber: 4, displayCode: "004" }),
       box({ id: "b", sequenceNumber: 42, displayCode: "042" }),
     ];
-    render(<FindBox containers={boxes} zones={zones} onOpen={onOpen} />);
+    render(<FindBox containers={boxes} zones={zones} onOpen={onOpen} onBack={() => undefined} />);
     fireEvent.click(screen.getByText("4"));
     fireEvent.click(screen.getByText("2"));
     expect(onOpen).toHaveBeenCalledTimes(1);

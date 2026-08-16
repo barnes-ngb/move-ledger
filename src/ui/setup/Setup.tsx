@@ -1,6 +1,6 @@
-import { useState } from "react";
 import type { User } from "firebase/auth";
 import type { MoveContext } from "../../hooks/useMove";
+import { useHistoryView } from "../history";
 import { CreateMove } from "./CreateMove";
 import { ExportPanel } from "./ExportPanel";
 import { Members } from "./Members";
@@ -26,16 +26,19 @@ export function Setup({
   onFinished: () => void;
   onExit: (() => void) | null;
 }) {
-  const [stage, setStage] = useState<"rooms" | "members">("rooms");
+  // The second step is a screen change, so it takes an entry too. Without one
+  // the back gesture on Members left setup entirely rather than returning to
+  // the rooms it was reached from.
+  const stage = useHistoryView<"rooms" | "members">("setupStage", "rooms");
 
   if (!ctx.move || !ctx.me) return <CreateMove user={user} />;
   const move = ctx.move;
-  if (stage === "rooms") {
+  if (stage.view === "rooms") {
     return (
       <Rooms
         move={move}
         zones={ctx.zones}
-        onDone={() => setStage("members")}
+        onDone={() => stage.open("members")}
         onBack={onExit}
         exportPanel={
           <ExportPanel
@@ -55,7 +58,7 @@ export function Setup({
       move={move}
       members={ctx.members}
       onDone={onFinished}
-      onBack={() => setStage("rooms")}
+      onBack={stage.back}
     />
   );
 }

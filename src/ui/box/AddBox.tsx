@@ -8,6 +8,7 @@ import {
   setStatus,
   writeInBackground,
 } from "../../repositories";
+import { useBackGuard } from "../history";
 import { BackBar, Button, ErrorLine, Field, Sheet } from "../kit";
 import { useOfferHome } from "../nav";
 import { PhotoStrip } from "./PhotoStrip";
@@ -69,9 +70,20 @@ export function AddBox({
   const photos = usePhotos(moveId, container?.id ?? null);
 
   // This screen takes the header title from Home while it is open, so the way
-  // home asks about the draft rather than stranding it. Both exits ask the
-  // same question in the same words.
+  // home asks about the draft rather than stranding it. All three exits ask
+  // the same question in the same words.
   useOfferHome(true, () => setLeaving(true));
+
+  // The third exit is the phone's own back gesture, which would otherwise
+  // strand the draft silently, which is the whole thing APPLY-10 fixed. The
+  // guard puts the entry back and asks instead. It is released on the way out,
+  // because leaving is a navigation and a guard still standing refuses it too.
+  const releaseBack = useBackGuard(true, () => setLeaving(true));
+
+  function exit() {
+    releaseBack();
+    onLeave();
+  }
 
   function reserve() {
     if (reserved.current) return;
@@ -129,7 +141,7 @@ export function AddBox({
         reserved.current = false;
         reserve();
       } else {
-        onLeave();
+        exit();
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save the box.");
@@ -159,7 +171,7 @@ export function AddBox({
   function leave(deleteDraft: boolean) {
     if (!deleteDraft || !container) {
       setLeaving(false);
-      onLeave();
+      exit();
       return;
     }
     void removeDraft(container.id);
@@ -175,7 +187,7 @@ export function AddBox({
       );
       setDeleting(false);
       setLeaving(false);
-      onLeave();
+      exit();
     } catch (e) {
       // Stay on the sheet. The draft is still there, the number is still
       // spent, and Keep the draft is still an answer.

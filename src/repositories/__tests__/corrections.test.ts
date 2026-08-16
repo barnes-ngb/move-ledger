@@ -77,7 +77,9 @@ vi.mock("../../photos/uploader", () => ({
   kickUploader: mocks.kickUploader,
 }));
 
-const { deleteContainer, unvoidContainer, voidContainer } = await import("../containers");
+const { deleteContainer, setContentsSummary, unvoidContainer, voidContainer } = await import(
+  "../containers"
+);
 const { deletePhoto, retryUpload } = await import("../photos");
 const { ContainerNotDeletableError } = await import("../../domain/lifecycle");
 
@@ -389,5 +391,61 @@ describe("retryUpload", () => {
 
     expect(mocks.clearBackoff).toHaveBeenCalledWith("p1");
     expect(mocks.kickUploader).toHaveBeenCalled();
+  });
+});
+
+/**
+ * The contents list, corrected after the fact. Search reads `searchText` and
+ * nothing else, so a write that skipped the rebuild would leave a box coming
+ * back for words it no longer holds, or not coming back for the ones it does.
+ */
+describe("setContentsSummary", () => {
+  const zones = [
+    {
+      id: "z1",
+      moveId: "m1",
+      locationId: "l1",
+      name: "Kitchen",
+      shortCode: "KIT",
+      colorName: "BLUE",
+      colorValue: "#2563c9",
+      sortOrder: 0,
+    },
+  ];
+
+  const box = makeContainer({
+    destinationZoneId: "z1",
+    contentsSummary: "kettle and two mugs",
+    searchText: "042 kettle and two mugs kitchen",
+  });
+
+  it("rebuilds searchText around the new text", () => {
+    const result = setContentsSummary("m1", box, "kettle, two mugs, tea towels", zones, "uid-1");
+
+    expect(result.value.contentsSummary).toBe("kettle, two mugs, tea towels");
+    expect(result.value.searchText).toBe("042 kettle, two mugs, tea towels kitchen");
+    expect(result.value.searchText).not.toContain("and two mugs kitchen");
+  });
+
+  it("keeps the room name in searchText, since the room is one of the things searched", () => {
+    const result = setContentsSummary("m1", box, "winter boots", zones, "uid-1");
+
+    expect(result.value.searchText).toContain("kitchen");
+  });
+
+  it("sends a delete sentinel when the list is emptied, because an absent key leaves it stored", () => {
+    const result = setContentsSummary("m1", box, "   ", zones, "uid-1");
+
+    expect("contentsSummary" in result.value).toBe(false);
+    expect(result.value.searchText).toBe("042 kitchen");
+    const fields = lastUpdate();
+    expect(fields.contentsSummary).toBe(DELETE_FIELD);
+    expect(Object.values(fields)).not.toContain(undefined);
+  });
+
+  it("stamps who changed it", () => {
+    const result = setContentsSummary("m1", box, "winter boots", zones, "uid-9");
+
+    expect(result.value.updatedBy).toBe("uid-9");
   });
 });

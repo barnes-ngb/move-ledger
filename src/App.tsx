@@ -7,6 +7,7 @@ import { useMove } from "./hooks/useMove";
 import type { User } from "firebase/auth";
 import { ContentsListNotice } from "./ui/ContentsListNotice";
 import { Home } from "./ui/Home";
+import { useHistoryView } from "./ui/history";
 import { HomeSlotProvider, useHomeSlot, useOfferHome } from "./ui/nav";
 import { SignIn } from "./ui/SignIn";
 import { SubscriptionFailed } from "./ui/kit";
@@ -16,7 +17,10 @@ import { WaitingForInvite } from "./ui/WaitingForInvite";
 
 function SignedIn({ user }: { user: User }) {
   const ctx = useMove(user.uid);
-  const [setupOpen, setSetupOpen] = useState(false);
+  // Rooms and members is a screen reached from the move, so it takes a history
+  // entry like every other one. Without it the back gesture closed the app
+  // from here too. See `src/ui/history.ts`.
+  const setup = useHistoryView<boolean>("setup", false);
   const [noticeAnswered, setNoticeAnswered] = useState(false);
 
   // Absent means unasked, which is not consent. The uploader defaults to off
@@ -30,9 +34,11 @@ function SignedIn({ user }: { user: User }) {
   // A move with no rooms is held in setup, and there is no home behind that
   // to go to. Leaving is offered only once a room exists, which is also the
   // point at which Home has something to show.
-  const showingSetup = setupOpen || (ctx.move !== null && ctx.me !== null && ctx.zones.length === 0);
+  const showingSetup = setup.view || (ctx.move !== null && ctx.me !== null && ctx.zones.length === 0);
   const canLeaveSetup = ctx.zones.length > 0;
-  const leaveSetup = () => setSetupOpen(false);
+  // Home rather than back: setup is reached from the move overview, and its
+  // second step pushes an entry of its own that leaving should not stop at.
+  const leaveSetup = setup.home;
   useOfferHome(showingSetup && canLeaveSetup, leaveSetup);
 
   // Checked before loading. A listener that stopped has already cleared
@@ -61,7 +67,7 @@ function SignedIn({ user }: { user: User }) {
   if (unasked && hasPhoto && !noticeAnswered) {
     return <ContentsListNotice move={ctx.move} onAnswered={() => setNoticeAnswered(true)} />;
   }
-  return <Home ctx={ctx} uid={user.uid} onSetup={() => setSetupOpen(true)} />;
+  return <Home ctx={ctx} uid={user.uid} onSetup={() => setup.open(true)} />;
 }
 
 function FirstRun({ user, ctx }: { user: User; ctx: ReturnType<typeof useMove> }) {

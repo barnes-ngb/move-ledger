@@ -21,6 +21,19 @@ The header is rendered above every screen and the state that decides where home 
 
 **One word per promise.** "Back" returns. "Done" completes something. Before this run box detail said Done and meant go back, while setup said Done and meant finish setup. Done now appears on the two setup screens and nowhere else.
 
+**Every view change pushes a history entry, and the pop is what changes the view.** Added 2026-08-16 during the APPLY-11 run, after the first real use of the installed app. The two controls above were built and worked, and the gesture every Android user reaches for first did not: a standalone PWA shows no browser chrome, the system back gesture fires `popstate`, and with no entry ever pushed there was nothing to pop but the app itself, so Android closed it and took the screen with it.
+
+The rule for every screen built after this: a screen change calls `open` on the view slot, which pushes an entry. Nothing sets a view directly. The on-screen Back and the header title navigate through history too, so the three ways out cannot drift apart. `src/ui/history.ts` holds it, alongside `nav.tsx`, and there is still no router: the `View` union stays in the screen that owns it and only its storage moved.
+
+Four things follow from that and are worth stating rather than rediscovering:
+
+- **Back from the move overview leaves the app.** That is correct. The overview is the root and there is nothing behind it.
+- **State that is not a screen change replaces the entry rather than pushing one.** The box list's filter text is the case: eight letters typed is one screen, not eight, and a person leaving the list presses back once.
+- **An entry carries every slot's value at the moment it was pushed,** so returning to the list brings its filter text with it. That is the origin tracking APPLY-08 built, now kept by the browser rather than by a `from` field alone. `from` stays, because box detail still has to name where back goes.
+- **A screen with a question to ask first refuses the gesture rather than obeying it.** Add box is the only one: the guard puts the entry back and asks about the draft, in the same words the other two exits use.
+
+What a phone has to check is the half jsdom cannot: that the installed app no longer closes on the gesture, and that the gesture inside Add box asks rather than leaving.
+
 **Leaving Add box asks about the draft.** The number is reserved on mount and is spent either way, so the only open question is whether the draft goes with it. Both exits, the back control and the title, ask the same question: delete the draft and the number goes back to the range, keep it and finish the box later from the list, or stay on the box. Keeping it is a real answer rather than a soft cancel, because drafts are visible in the list and can be finished or deleted from box detail. Deleting is safe here and only here, for the reason in section 6: nothing has been written on cardboard yet, which is what `canDelete` reads.
 
 ## 1. Move overview
@@ -217,6 +230,10 @@ Amended 2026-08-15. This screen gained four things, and one of them is the only 
 
 **Conditions.** Two controls, missing and damaged. Both can be set at once and neither touches status, per ADR-0003, so a damaged box still shows `loaded` and still offers its status buttons. A box carrying either is marked twice: a badge under the number here, and a line of amber text in its list row. The report is written with no note and no photo ids. Asking for either at the moment somebody says a box is damaged is what stops them saying it at all, and the fields are on the record for a later screen to fill.
 
+**Contents.** Added 2026-08-16 during the APPLY-11 run, and it is a correction to what shipped rather than a new feature. The contents list could be edited in the one moment a suggestion was accepted and never again: accepted into `contentsSummary`, or reached from anywhere other than that panel, it was text on a screen with nothing to change it. It is now a text area with its own save control, the same shape as the title and the note, and it is where the read-only block used to be so the reading order of the screen does not change. A voided box shows it and cannot change it, like everything else here.
+
+The save goes through `setContentsSummary`, which goes through `saveContainer`, because `searchText` is rebuilt there and a direct field write would leave search answering for words that are no longer on the screen. Emptying it removes the field with a `deleteField` sentinel for the reason the title does: a key left out of an update leaves the stored value, so a cleared list would keep matching searches. The suggestion panel is untouched. While an unaccepted suggestion is on screen, accept, edit, dismiss, and ask again behave exactly as APPLY-07 built them, and accepting one fills the field below it.
+
 **Void or delete.** One control, below Done and behind a rule, because a thumb reaching the bottom of a scrolled screen must not land on it. Which one it is follows `canDelete`, and the screen only reports the answer:
 
 - A box nobody has written on is deleted. The confirmation says its number goes back and will be given to the next box, and that its photos go with it.
@@ -225,6 +242,19 @@ Amended 2026-08-15. This screen gained four things, and one of them is the only 
 Neither happens on the first press. A voided box says so at the top, hides everything that edits it, keeps its photos and its number on screen because those are what somebody came to check, and offers **Put this box back**, which needs no confirmation because it takes nothing away.
 
 **Photo delete and retry.** Delete is in the full-screen viewer rather than on the strip, because at 96px a person cannot tell which photo they are about to lose. It confirms first, and the viewer closes itself when the last photo goes. The strip's "not sent" marker is now the retry control, per doc 06. The file input no longer carries `capture="environment"`, which was forcing the camera on Android and hiding the library.
+
+### Adding a photo: two controls, one path
+
+Amended 2026-08-16 during the APPLY-11 run, and this is the settled pattern for anywhere a photo is added. The line above was half right and cost the camera. Removing `capture` did not make one input offer both the camera and the library; on the phone this app is built for, it made that input offer files only. `capture` is a hint, and a browser is free to read it as "camera only", "camera first", or to ignore it. Neither state of one attribute gets both.
+
+So the strip stops asking one input for two jobs and asks the person instead:
+
+- **Take a photo.** `accept="image/*"` with `capture="environment"`.
+- **Choose a photo.** `accept="image/*"` and no `capture`.
+
+Both 56px, both feeding the same `capturePhoto` call, so nothing downstream knows or cares which one was pressed. The control that was pressed says "Adding" while the photo is resized and written, and the other is disabled meanwhile. The `+` tile is gone: two labelled controls say what the tile only implied, and the thumbnails are the strip now.
+
+A test can prove which input asks for what. It cannot prove what Android offers in answer, which is the half that has to be checked on a phone.
 
 ## 7. Rooms
 
@@ -253,7 +283,20 @@ The block is hidden until the move has a box, which also keeps it off the screen
 
 Nothing is offered until all three listeners have answered, and nothing is offered at all once one of them has stopped. Raised in review on pull request 19, and the reason it is a refusal rather than a warning is that the three answer independently: a file built while the photo listener is still on its way carries a photo count of zero against every box, and a file built while the activity listener is still on its way carries an empty history. Neither says it is short. The one reader this export has is somebody checking what was in a box that arrived crushed, and a confident wrong answer is worse for them than no file. A stopped listener says so on the block and the way back is to open the screen again, which opens fresh listeners.
 
-The other actions above are still owed. This screen adds a room and shows the list. Editing a room, viewing the boxes in one, and the full-screen color chart are not built.
+### Changing a room's color
+
+Added 2026-08-16 during the APPLY-11 run. A room was given a color at creation, the first one in `PALETTE` nobody had taken, and nothing could ever change it. That is the wrong way round. The physical system is sticker sheets somebody bought in a shop, so the app has to match what is on the roll rather than tell a person which color their kitchen is. Product rule 3 already said zone colors are editable metadata; nothing in the app had made that true.
+
+The color on each room row is the control. Tapping it opens the eight named palette entries, each 56px, and choosing one writes `colorName` and `colorValue` together through `updateZone`.
+
+Two things it deliberately does not do:
+
+- **No free color input.** Doc 09 is the arbiter here: `colorName` is written on cardboard with a marker, so it is one legible uppercase word from the fixed palette. A picker would produce something nobody can write and nobody can read at arm's length.
+- **No refusal when two rooms share a color.** A chip says which other room already wears it, and once two do, a line under the list says so in plain words. Somebody with two sheets of the same sticker is not making a mistake, and the number on the box is what tells two boxes apart anyway.
+
+Nothing caches a color. Every screen that draws one reads it from the zone it was handed out of the live subscription: the list row, the keypad row, the room picker, box detail, the label instruction on Add box, and the CSV, which reads `colorName` at export time. `searchText` carries the room's name and not its color, so a color change needs no rebuild. A box already written in the old color shows the new one the moment the write lands, which is exactly what somebody re-labelling a room wants to see.
+
+The other actions above are still owed. This screen adds a room, shows the list, and changes a color. Renaming a room, viewing the boxes in one, and the full-screen color chart are not built.
 
 ## 8. Move Day
 
@@ -341,5 +384,5 @@ Each of these is a feature rather than a polish, and is recorded in `plans/STATU
 - A box saved with no photo is not flagged anywhere, per section 2.
 - The room and the note on Add box do not survive the screen unmounting, per section 2.
 - Three lines of section 5's result card are still owed, unchanged since APPLY-08 recorded them.
-- Section 7's edit, view boxes in room, and color chart are not built.
+- Section 7's edit, view boxes in room, and color chart are not built. Half of the first one closed on 2026-08-16: a room's color can be changed, its name still cannot.
 - `src/ui/Account.tsx` is reachable from nowhere. It was APPLY-03's screen for reading a uid and the waiting screen took that job. Its targets were raised with the rest and it is still dead code.

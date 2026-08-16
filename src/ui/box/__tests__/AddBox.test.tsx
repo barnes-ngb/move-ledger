@@ -87,6 +87,19 @@ describe("AddBox", () => {
     expect(screen.getByText("Leave box 042?")).toBeDefined();
   });
 
+  /**
+   * The exit a phone offers and a test harness does not. Without the guard the
+   * pop takes the screen away and the draft is stranded silently, which is the
+   * thing APPLY-10 built the question for.
+   */
+  it("asks the same question when the phone's back gesture fires", async () => {
+    const onLeave = open();
+    window.history.pushState(null, "");
+    window.history.back();
+    await waitFor(() => expect(screen.getByText("Leave box 042?")).toBeDefined());
+    expect(onLeave).not.toHaveBeenCalled();
+  });
+
   it("names the number that is at stake", () => {
     open();
     fireEvent.click(screen.getByText("Back"));

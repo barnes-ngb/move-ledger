@@ -7,6 +7,7 @@ import {
   deleteContainer,
   reportContainerCondition,
   saveContainer,
+  setContentsSummary,
   setStatus,
   setTitle,
   unvoidContainer,
@@ -14,7 +15,7 @@ import {
   writeInBackground,
 } from "../../repositories";
 import { usePhotos } from "../../hooks/usePhotos";
-import { BackBar, Button, Confirm, ErrorLine, Field } from "../kit";
+import { BackBar, Button, Confirm, ErrorLine, Field, TextArea } from "../kit";
 import { AiSummary } from "./AiSummary";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
@@ -48,6 +49,17 @@ export function BoxDetail({
 }) {
   const [title, setTitleText] = useState(container.title ?? "");
   const [note, setNote] = useState(container.notes ?? "");
+  const stored = container.contentsSummary ?? "";
+  const [contents, setContents] = useState(stored);
+  // What the document said last time this rendered. Accepting a suggestion
+  // writes `contentsSummary` while this screen is open, and the field below has
+  // to show what the box now holds rather than the blank it started as. An
+  // edit in progress is kept: only an untouched field takes the new value.
+  const [lastStored, setLastStored] = useState(stored);
+  if (stored !== lastStored) {
+    setLastStored(stored);
+    if (contents === lastStored) setContents(stored);
+  }
   const [editingRoom, setEditingRoom] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -148,12 +160,32 @@ export function BoxDetail({
             the other end and the picture is taken then. */}
         <PhotoStrip moveId={moveId} containerId={container.id} uid={uid} photos={photos} />
 
-        {container.contentsSummary ? (
+        {/* The contents list, which until now could be corrected only in the
+            moment a suggestion was accepted. It is confirmed text like the
+            title and the note, so it is edited the same way and on the same
+            screen. A voided box shows it and cannot change it, like everything
+            else here. */}
+        {voided ? (
+          container.contentsSummary ? (
+            <div>
+              <p className="text-sm text-slate-400">Contents</p>
+              <p className="mt-1 text-lg leading-relaxed text-slate-200">{container.contentsSummary}</p>
+            </div>
+          ) : null
+        ) : (
           <div>
-            <p className="text-sm text-slate-400">Contents</p>
-            <p className="mt-1 text-lg leading-relaxed text-slate-200">{container.contentsSummary}</p>
+            <TextArea label="Contents" value={contents} onChange={setContents} />
+            <div className="mt-3">
+              <Button
+                onClick={() => run(() => setContentsSummary(moveId, container, contents, zones, uid))}
+                disabled={contents.trim() === stored}
+                tone="quiet"
+              >
+                Save contents
+              </Button>
+            </div>
           </div>
-        ) : null}
+        )}
 
         <AiSummary
           moveId={moveId}

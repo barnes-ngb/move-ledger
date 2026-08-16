@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { Container } from "../domain";
 import type { MoveContext } from "../hooks/useMove";
 import { useContainers } from "../hooks/useContainers";
@@ -7,6 +6,7 @@ import { AddBox } from "./box/AddBox";
 import { BoxDetail } from "./box/BoxDetail";
 import { BoxList } from "./box/BoxList";
 import { FindBox } from "./box/FindBox";
+import { useHistoryView } from "./history";
 import { Button, Screen, SubscriptionFailed } from "./kit";
 import { useOfferHome } from "./nav";
 
@@ -15,6 +15,11 @@ import { useOfferHome } from "./nav";
  * fixed screen, so Back returns to the list with its filter text still in it.
  * The text lives here, on the view, for the same reason: unmounting the list
  * to show a box must not throw away what the person typed to find it.
+ *
+ * The view is held in session history rather than in `useState`, so the system
+ * back gesture moves through these screens instead of closing the app. See
+ * `src/ui/history.ts`. Every field here survives `structuredClone`, which is
+ * what the browser does to it, and the nested `from` travels with the rest.
  */
 type View =
   | { name: "home" }
@@ -22,6 +27,9 @@ type View =
   | { name: "find" }
   | { name: "list"; query: string }
   | { name: "detail"; id: string; from: View };
+
+/** The move overview. Stable so it can be the root of the history slot. */
+const HOME: View = { name: "home" };
 
 /** What the back control on box detail says, given where it was opened from. */
 function backLabel(from: View): string {
@@ -31,14 +39,15 @@ function backLabel(from: View): string {
 }
 
 export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onSetup: () => void }) {
-  const [view, setView] = useState<View>({ name: "home" });
+  const nav = useHistoryView<View>("move", HOME);
+  const view = nav.view;
   const { containers, failed, retry } = useContainers(ctx.move?.id ?? null);
   const photoCounts = usePhotoCounts(ctx.move?.id ?? null, view.name === "list");
 
   // Every screen under this one goes home through the header title. Add box
   // is the exception and takes the header itself, because leaving it means
   // answering for the draft first.
-  useOfferHome(view.name !== "add", () => setView({ name: "home" }));
+  useOfferHome(view.name !== "add", nav.home);
 
   if (!ctx.move || !ctx.me) return null;
   const moveId = ctx.move.id;
@@ -57,7 +66,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         containers={containers}
         zones={ctx.zones}
         uid={uid}
-        onLeave={() => setView({ name: "home" })}
+        onLeave={nav.home}
       />
     );
   }
@@ -68,8 +77,8 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
       <FindBox
         containers={containers}
         zones={ctx.zones}
-        onOpen={(c) => setView({ name: "detail", id: c.id, from })}
-        onBack={() => setView({ name: "home" })}
+        onOpen={(c) => nav.open({ name: "detail", id: c.id, from })}
+        onBack={nav.back}
       />
     );
   }
@@ -82,19 +91,21 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         zones={ctx.zones}
         photoCounts={photoCounts}
         query={view.query}
-        onQueryChange={(query) => setView({ name: "list", query })}
-        onOpen={(c) => setView({ name: "detail", id: c.id, from })}
-        onBack={() => setView({ name: "home" })}
+        // The filter text replaces this entry rather than pushing one. It is
+        // the same screen, and a person who typed eight letters to find a box
+        // should not have to press back eight times to leave it.
+        onQueryChange={(query) => nav.update({ name: "list", query })}
+        onOpen={(c) => nav.open({ name: "detail", id: c.id, from })}
+        onBack={nav.back}
       />
     );
   }
 
   if (view.name === "detail") {
-    const back = view.from;
     const found = containers.find((c) => c.id === view.id);
     if (!found) {
       return (
-        <Screen title="That box is gone" onBack={() => setView(back)}>
+        <Screen title="That box is gone" onBack={nav.back}>
           {null}
         </Screen>
       );
@@ -105,8 +116,8 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         container={found as Container}
         zones={ctx.zones}
         uid={uid}
-        backLabel={backLabel(back)}
-        onBack={() => setView(back)}
+        backLabel={backLabel(view.from)}
+        onBack={nav.back}
       />
     );
   }
@@ -135,11 +146,11 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
       </div>
 
       <div className="flex flex-col gap-4">
-        <Button onClick={() => setView({ name: "add" })}>Add a box</Button>
-        <Button onClick={() => setView({ name: "find" })} tone="quiet">
+        <Button onClick={() => nav.open({ name: "add" })}>Add a box</Button>
+        <Button onClick={() => nav.open({ name: "find" })} tone="quiet">
           Find a box
         </Button>
-        <Button onClick={() => setView({ name: "list", query: "" })} tone="quiet">
+        <Button onClick={() => nav.open({ name: "list", query: "" })} tone="quiet">
           See all boxes
         </Button>
         <button onClick={onSetup} className="min-h-14 text-slate-400 underline">

@@ -147,6 +147,46 @@ export function setTitle(
 }
 
 /**
+ * The confirmed contents list, corrected after the fact.
+ *
+ * Everything a person can type about a box is searched, so this goes through
+ * `saveContainer` rather than writing the field on its own: `searchText` is
+ * rebuilt there, and a direct field write would leave search answering for
+ * text that is no longer on the screen.
+ *
+ * Emptying it is the one case `saveContainer` cannot express. An update with
+ * the key left out leaves the stored value alone, so the old list would
+ * survive being cleared and keep matching searches. That path removes the
+ * field the way `setTitle` does and rebuilds `searchText` around its absence.
+ *
+ * No activity event. A person correcting a list is editing the same box they
+ * are looking at, which is what the note and the room change do too.
+ */
+export function setContentsSummary(
+  moveId: string,
+  container: Container,
+  text: string,
+  zones: readonly Zone[],
+  actorUid: string
+): PendingWrite<Container> {
+  const trimmed = text.trim();
+  if (trimmed) return saveContainer(moveId, { ...container, contentsSummary: trimmed }, zones, actorUid);
+
+  const { contentsSummary: _cleared, ...rest } = container;
+  const parsed = containerSchema.parse({
+    ...rest,
+    searchText: buildSearchText(rest, zones.find((z) => z.id === rest.destinationZoneId)?.name),
+    updatedAt: nowIso(),
+    updatedBy: actorUid,
+  });
+  const { id, ...fields } = parsed;
+  return {
+    value: parsed,
+    written: updateDoc(doc(containers(moveId), id), { ...fields, contentsSummary: deleteField() }),
+  };
+}
+
+/**
  * Clears `aiSummary` and rebuilds `searchText` around its absence.
  *
  * `aiSummary` has to be deleted rather than written as undefined. Firestore

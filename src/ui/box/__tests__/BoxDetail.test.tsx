@@ -19,6 +19,7 @@ const mocks = vi.hoisted(() => ({
   reportContainerCondition: vi.fn(),
   clearContainerCondition: vi.fn(),
   setTitle: vi.fn(),
+  setContentsSummary: vi.fn(),
 }));
 
 const pending = { value: undefined, written: Promise.resolve() };
@@ -32,6 +33,7 @@ vi.mock("../../../repositories", () => ({
   saveContainer: vi.fn(() => pending),
   setStatus: vi.fn(() => pending),
   setTitle: mocks.setTitle,
+  setContentsSummary: mocks.setContentsSummary,
   writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
 }));
 
@@ -58,6 +60,7 @@ beforeEach(() => {
   mocks.reportContainerCondition.mockReturnValue(pending);
   mocks.clearContainerCondition.mockReturnValue(pending);
   mocks.setTitle.mockReturnValue(pending);
+  mocks.setContentsSummary.mockReturnValue(pending);
 });
 
 describe("removing a box", () => {
@@ -195,5 +198,76 @@ describe("title", () => {
   it("stays disabled until the text changes", () => {
     open(makeContainer({ title: "winter coats" }));
     expect(screen.getByText("Save title").hasAttribute("disabled")).toBe(true);
+  });
+});
+
+/**
+ * Until this run the contents list could be corrected only in the moment a
+ * suggestion was accepted. Once it was confirmed text, nothing edited it.
+ *
+ * The save goes through `setContentsSummary` rather than a field write, and
+ * that is the point of these: `searchText` is rebuilt in there, so what a
+ * search answers for stays what the screen shows.
+ */
+describe("the contents list", () => {
+  function field(): HTMLTextAreaElement {
+    return screen.getByLabelText("Contents") as HTMLTextAreaElement;
+  }
+
+  it("shows what the box already holds, ready to correct", () => {
+    open(makeContainer({ contentsSummary: "kettle, two mugs" }));
+    expect(field().value).toBe("kettle, two mugs");
+  });
+
+  it("saves a correction through the path that rebuilds searchText", () => {
+    open(makeContainer({ contentsSummary: "kettle, two mugs" }));
+    fireEvent.change(field(), { target: { value: "kettle, two mugs, tea towels" } });
+    fireEvent.click(screen.getByText("Save contents"));
+    expect(mocks.setContentsSummary).toHaveBeenCalledWith(
+      "m1",
+      expect.objectContaining({ id: "c1" }),
+      "kettle, two mugs, tea towels",
+      zones,
+      "uid-1"
+    );
+  });
+
+  it("takes a list on a box that never had one", () => {
+    open(makeContainer());
+    fireEvent.change(field(), { target: { value: "winter boots" } });
+    fireEvent.click(screen.getByText("Save contents"));
+    expect(mocks.setContentsSummary).toHaveBeenCalledWith(
+      "m1",
+      expect.anything(),
+      "winter boots",
+      zones,
+      "uid-1"
+    );
+  });
+
+  it("stays disabled until the text changes", () => {
+    open(makeContainer({ contentsSummary: "kettle, two mugs" }));
+    expect(screen.getByText("Save contents").hasAttribute("disabled")).toBe(true);
+  });
+
+  it("takes the accepted suggestion into the field, so it is not saved back empty", () => {
+    const before = makeContainer();
+    const { rerender } = render(
+      <BoxDetail moveId="m1" container={before} zones={zones} uid="uid-1" onBack={() => undefined} />
+    );
+    expect(field().value).toBe("");
+
+    // What accepting a suggestion does to this screen while it is open.
+    const after = makeContainer({ contentsSummary: "two lamps and a rug" });
+    rerender(
+      <BoxDetail moveId="m1" container={after} zones={zones} uid="uid-1" onBack={() => undefined} />
+    );
+    expect(field().value).toBe("two lamps and a rug");
+  });
+
+  it("is read-only on a voided box, like everything else on it", () => {
+    open(makeContainer({ contentsSummary: "kettle, two mugs", voidedAt: NOW, voidedBy: "mem1" }));
+    expect(screen.getByText("kettle, two mugs")).toBeDefined();
+    expect(screen.queryByText("Save contents")).toBeNull();
   });
 });

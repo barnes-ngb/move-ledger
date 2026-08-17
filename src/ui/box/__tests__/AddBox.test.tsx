@@ -252,4 +252,112 @@ describe("a suggestion arriving while the box is open", () => {
     fireEvent.click(screen.getByText("Save and finish"));
     expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBe("Books, a lamp, two mugs");
   });
+
+  /**
+   * Answering a suggestion and saving in the same moment.
+   *
+   * Every write settles on server acknowledgment, so the answered box comes
+   * back through the `containers` prop after the tap rather than during it.
+   * Saving inside that window spreads the whole container into the write, and
+   * a copy still carrying `aiSummary` puts the suggestion back over the answer
+   * somebody just gave it. `containers` deliberately does not change in these
+   * two, which is the window held open.
+   *
+   * Product rule 8 is what this protects: a suggestion never overwrites
+   * confirmed text, and returning after a dismiss is that fault in reverse.
+   */
+  describe("saving in the same moment", () => {
+    const LATER = "2026-08-17T00:00:00.000Z";
+
+    it("carries an accepted contents list into the save", () => {
+      const accepted: Container = {
+        ...draft,
+        contentsSummary: "Books, a lamp, two mugs",
+        updatedAt: LATER,
+      };
+      mocks.acceptAiSummary.mockReturnValue({ value: accepted, written: Promise.resolve() });
+
+      open([suggested]);
+      fireEvent.click(screen.getByText("Accept"));
+      fireEvent.click(screen.getByText("Save and finish"));
+
+      const saved = mocks.saveContainer.mock.calls[0]?.[1];
+      expect(saved?.contentsSummary).toBe("Books, a lamp, two mugs");
+      expect(saved?.aiSummary).toBeUndefined();
+    });
+
+    it("does not write a dismissed suggestion back", () => {
+      mocks.dismissAiSummary.mockReturnValue({
+        value: { ...draft, updatedAt: LATER },
+        written: Promise.resolve(),
+      });
+
+      open([suggested]);
+      fireEvent.click(screen.getByText("Dismiss"));
+      fireEvent.click(screen.getByText("Save and finish"));
+
+      expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBeUndefined();
+    });
+
+    it("takes the answer off the screen without waiting for the subscription", () => {
+      mocks.dismissAiSummary.mockReturnValue({
+        value: { ...draft, updatedAt: LATER },
+        written: Promise.resolve(),
+      });
+
+      open([suggested]);
+      fireEvent.click(screen.getByText("Dismiss"));
+
+      expect(screen.queryByText("Suggested contents")).toBeNull();
+    });
+
+    /**
+     * Raised in review on pull request 22. Ordering the two copies by
+     * `updatedAt` was the first attempt and it compares two clocks: the answer
+     * is stamped by this phone and the suggestion by the function's clock. A
+     * phone running slow would never beat the suggestion it had just answered,
+     * and the save would put it back. The stamp here is deliberately older than
+     * the suggestion's.
+     */
+    it("holds the answer when this phone's clock is behind the function's", () => {
+      const EARLIER = "2026-07-01T00:00:00.000Z";
+      mocks.dismissAiSummary.mockReturnValue({
+        value: { ...draft, updatedAt: EARLIER },
+        written: Promise.resolve(),
+      });
+
+      open([suggested]);
+      fireEvent.click(screen.getByText("Dismiss"));
+      fireEvent.click(screen.getByText("Save and finish"));
+
+      expect(screen.queryByText("Suggested contents")).toBeNull();
+      expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBeUndefined();
+    });
+
+    /**
+     * The other half of holding an answer: letting go of it. Ask again clears
+     * the text and asks the function for another one, and an answer held past
+     * its own write would suppress every suggestion that came after it.
+     */
+    it("shows a suggestion that arrives after the answer landed", () => {
+      mocks.dismissAiSummary.mockReturnValue({
+        value: { ...draft, updatedAt: LATER },
+        written: Promise.resolve(),
+      });
+
+      const { rerender } = render(
+        <AddBox moveId="m1" me={me} containers={[suggested]} zones={zones} uid="uid-1" onLeave={vi.fn()} />
+      );
+      fireEvent.click(screen.getByText("Dismiss"));
+      expect(screen.queryByText("Suggested contents")).toBeNull();
+
+      // The subscription catches up, then the function writes another one.
+      const asked: Container = { ...draft, aiSummary: "A kettle and four mugs" };
+      rerender(
+        <AddBox moveId="m1" me={me} containers={[asked]} zones={zones} uid="uid-1" onLeave={vi.fn()} />
+      );
+
+      expect(screen.getByText("A kettle and four mugs")).toBeDefined();
+    });
+  });
 });

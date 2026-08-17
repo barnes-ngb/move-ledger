@@ -20,6 +20,9 @@ const mocks = vi.hoisted(() => ({
   deleteContainer: vi.fn(),
   saveContainer: vi.fn(),
   setStatus: vi.fn(),
+  acceptAiSummary: vi.fn(),
+  dismissAiSummary: vi.fn(),
+  updatePhotoRecord: vi.fn(),
 }));
 
 const pending = { value: undefined, written: Promise.resolve() };
@@ -29,8 +32,16 @@ vi.mock("../../../repositories", () => ({
   deleteContainer: mocks.deleteContainer,
   saveContainer: mocks.saveContainer,
   setStatus: mocks.setStatus,
+  acceptAiSummary: mocks.acceptAiSummary,
+  dismissAiSummary: mocks.dismissAiSummary,
+  updatePhotoRecord: mocks.updatePhotoRecord,
   writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
 }));
+
+// `AiSummary` is the real component here, because what this run has to prove is
+// that mounting it on this screen changes nothing else on it. The callable
+// behind Ask again is stubbed so the Functions SDK is never loaded.
+vi.mock("../../../lib/functions", () => ({ summarizePhoto: vi.fn() }));
 
 vi.mock("../../../hooks/usePhotos", () => ({ usePhotos: () => [] }));
 vi.mock("../PhotoStrip", () => ({ PhotoStrip: () => null }));
@@ -56,10 +67,15 @@ const draft: Container = makeContainer({
   status: "filling",
 });
 
-function open() {
+/**
+ * `containers` is the live subscription. Passing the draft back through it is
+ * how this screen sees anything written to the box while it is open, which is
+ * the whole path a suggestion travels.
+ */
+function open(containers: readonly Container[] = []) {
   const onLeave = vi.fn();
   render(
-    <AddBox moveId="m1" me={me} containers={[]} zones={zones} uid="uid-1" onLeave={onLeave} />
+    <AddBox moveId="m1" me={me} containers={containers} zones={zones} uid="uid-1" onLeave={onLeave} />
   );
   return onLeave;
 }
@@ -70,6 +86,9 @@ beforeEach(() => {
   mocks.deleteContainer.mockResolvedValue(pending);
   mocks.saveContainer.mockReturnValue({ value: draft, written: Promise.resolve() });
   mocks.setStatus.mockReturnValue({ value: draft, written: Promise.resolve() });
+  mocks.acceptAiSummary.mockReturnValue(pending);
+  mocks.dismissAiSummary.mockReturnValue(pending);
+  mocks.updatePhotoRecord.mockReturnValue(pending);
 });
 
 describe("AddBox", () => {
@@ -152,5 +171,85 @@ describe("AddBox", () => {
     expect(mocks.saveContainer).toHaveBeenCalledTimes(1);
     expect(mocks.deleteContainer).not.toHaveBeenCalled();
     expect(onLeave).toHaveBeenCalledTimes(1);
+  });
+});
+
+/**
+ * A summary is written in the background after a photo uploads, so it lands
+ * while the person is usually still on this screen. Until APPLY-12 it landed
+ * into a screen that did not render it, and the only way to read it was to save
+ * the box, leave, and open it again from the list.
+ *
+ * These assert the two halves of that: the block appears where the person is
+ * standing, and it cannot reach anything else on the screen.
+ */
+describe("a suggestion arriving while the box is open", () => {
+  const suggested: Container = { ...draft, aiSummary: "Books, a lamp, two mugs" };
+
+  it("shows nothing until there is one", () => {
+    open([draft]);
+    expect(screen.queryByText("Suggested contents")).toBeNull();
+  });
+
+  it("shows the block when the live box carries one", () => {
+    open([suggested]);
+    expect(screen.getByText("Suggested contents")).toBeDefined();
+    expect(screen.getByText("Books, a lamp, two mugs")).toBeDefined();
+    expect(screen.getByText("Accept")).toBeDefined();
+    expect(screen.getByText("Dismiss")).toBeDefined();
+  });
+
+  it("accepts without disturbing the room or the note", () => {
+    open([suggested]);
+    fireEvent.click(screen.getByText("Kitchen"));
+    fireEvent.change(screen.getByLabelText("Note, optional"), {
+      target: { value: "kettle and mugs" },
+    });
+
+    fireEvent.click(screen.getByText("Accept"));
+
+    expect(mocks.acceptAiSummary).toHaveBeenCalledTimes(1);
+    expect(mocks.acceptAiSummary.mock.calls[0]?.[3]).toBe("Books, a lamp, two mugs");
+    // Both are component state on a screen the suggestion writes around
+    // rather than through, so neither can be cleared by answering it.
+    expect((screen.getByLabelText("Note, optional") as HTMLInputElement).value).toBe(
+      "kettle and mugs"
+    );
+    expect(screen.getByText("BLUE")).toBeDefined();
+  });
+
+  it("dismisses without disturbing the note", () => {
+    open([suggested]);
+    fireEvent.change(screen.getByLabelText("Note, optional"), { target: { value: "winter coats" } });
+
+    fireEvent.click(screen.getByText("Dismiss"));
+
+    expect(mocks.dismissAiSummary).toHaveBeenCalledTimes(1);
+    expect((screen.getByLabelText("Note, optional") as HTMLInputElement).value).toBe(
+      "winter coats"
+    );
+  });
+
+  /**
+   * The criterion this screen is measured by. Nothing about a suggestion may
+   * change what the two save buttons do.
+   */
+  it("saves and reserves the next number with a suggestion on screen", () => {
+    open([suggested]);
+    fireEvent.click(screen.getByText("Save and next"));
+    expect(mocks.saveContainer).toHaveBeenCalledTimes(1);
+    expect(mocks.setStatus).toHaveBeenCalledTimes(1);
+    expect(mocks.reserveContainer).toHaveBeenCalledTimes(2);
+  });
+
+  /**
+   * `saveContainer` rebuilds `searchText` from what it is handed, so saving the
+   * copy reserved on mount took the summary's own words back out of it and the
+   * box stopped answering for them.
+   */
+  it("saves the live box rather than the one reserved on mount", () => {
+    open([suggested]);
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBe("Books, a lamp, two mugs");
   });
 });

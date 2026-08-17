@@ -62,6 +62,35 @@ describe("BoxList", () => {
     expect(screen.queryByText("Matched a suggestion nobody has confirmed")).toBeNull();
   });
 
+  /**
+   * The marker with no query typed, which is what makes reviewing a suggestion
+   * later a thing a person can do rather than a thing they have to remember.
+   * Accept and dismiss both clear `aiSummary`, so its presence is the question.
+   */
+  it("marks a box carrying a suggestion nobody has answered", () => {
+    renderList({ containers });
+    expect(screen.getByText("A suggestion nobody has confirmed")).toBeDefined();
+  });
+
+  it("leaves a box with no suggestion unmarked", () => {
+    renderList({ containers: [makeContainer({ id: "c1", notes: "kettle and mugs" })] });
+    expect(screen.queryByText(/suggestion nobody has confirmed/)).toBeNull();
+  });
+
+  it("leaves a box whose suggestion was accepted unmarked", () => {
+    renderList({
+      containers: [makeContainer({ id: "c1", contentsSummary: "Books, a lamp, two mugs" })],
+    });
+    expect(screen.queryByText(/suggestion nobody has confirmed/)).toBeNull();
+  });
+
+  /** One line, so a searched row does not carry both wordings at once. */
+  it("does not stack the two markers on a searched row", () => {
+    renderList({ containers, query: "subaru" });
+    expect(screen.getByText("Matched a suggestion nobody has confirmed")).toBeDefined();
+    expect(screen.queryByText("A suggestion nobody has confirmed")).toBeNull();
+  });
+
   it("opens the box that was tapped", () => {
     const onOpen = vi.fn();
     renderList({ containers, onOpen });
@@ -164,6 +193,43 @@ describe("BoxList", () => {
       renderList({ containers: withVoided, query: "kettle" });
       fireEvent.click(screen.getByText("Show 1 voided box"));
       expect(screen.getByText("020")).toBeDefined();
+    });
+
+    /**
+     * A retired number is not a box to go and review. The row already reads
+     * "voided" instead of a status for the same reason: it says the box is out
+     * of use rather than what to do about it.
+     */
+    it("does not ask for a suggestion on a box to be reviewed", () => {
+      renderList({
+        containers: [
+          makeContainer({
+            id: "c5",
+            aiSummary: "Books, a lamp, two mugs",
+            voidedAt: "2026-08-15T12:00:00.000Z",
+            voidedBy: "mem1",
+          }),
+        ],
+      });
+      fireEvent.click(screen.getByText("Show 1 voided box"));
+      expect(screen.queryByText("A suggestion nobody has confirmed")).toBeNull();
+    });
+
+    /** The search marker survives, because it answers why the row came back. */
+    it("still says why a voided row came back for a word only the suggestion holds", () => {
+      renderList({
+        containers: [
+          makeContainer({
+            id: "c5",
+            aiSummary: "Books, a lamp, two mugs",
+            voidedAt: "2026-08-15T12:00:00.000Z",
+            voidedBy: "mem1",
+          }),
+        ],
+        query: "lamp",
+      });
+      fireEvent.click(screen.getByText("Show 1 voided box"));
+      expect(screen.getByText("Matched a suggestion nobody has confirmed")).toBeDefined();
     });
   });
 });

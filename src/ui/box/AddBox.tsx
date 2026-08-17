@@ -11,6 +11,7 @@ import {
 import { useBackGuard } from "../history";
 import { BackBar, Button, ErrorLine, Field, Sheet } from "../kit";
 import { useOfferHome } from "../nav";
+import { AiSummary } from "./AiSummary";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 import { labelInstruction } from "./label";
@@ -69,6 +70,21 @@ export function AddBox({
   const reservedHere = useRef<Container[]>([]);
   const photos = usePhotos(moveId, container?.id ?? null);
 
+  /**
+   * The draft as the subscription currently has it, which is not what
+   * `container` holds. That state is written once by `reserveContainer` and
+   * never again, so anything written to this box while the screen is open is
+   * invisible to it. A contents summary is exactly that: it is produced in the
+   * background after the photo uploads, so it usually lands while the person is
+   * still standing here packing the same box.
+   *
+   * The fallback is the window between the reserve and the listener's first
+   * delivery, when the document is in the local cache and not yet in the prop.
+   */
+  const live = container
+    ? (containers.find((c) => c.id === container.id) ?? container)
+    : null;
+
   // This screen takes the header title from Home while it is open, so the way
   // home asks about the draft rather than stranding it. All three exits ask
   // the same question in the same words.
@@ -115,14 +131,22 @@ export function AddBox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Saves the live document rather than the one reserved on mount.
+   *
+   * `saveContainer` rebuilds `searchText` from whatever it is handed, so the
+   * stale copy took the box's own words back out of it: a summary that arrived
+   * while this screen was open, or a contents list accepted on it a moment ago,
+   * was stored and unfindable until the next write to that box.
+   */
   function save(andNext: boolean) {
-    if (!container) return;
+    if (!live) return;
     setError(null);
     try {
       const trimmed = note.trim();
       // Conditional spread. An explicit undefined here throws at the write.
       const next: Container = {
-        ...container,
+        ...live,
         ...(roomId ? { destinationZoneId: roomId } : {}),
         ...(trimmed ? { notes: trimmed } : {}),
         labelConfirmedAt: new Date().toISOString(),
@@ -224,13 +248,39 @@ export function AddBox({
         </div>
 
         {/* Photos attach while the box fills, layer by layer, not after it is sealed. */}
-        {container ? (
+        {live ? (
           <div className="mt-6">
             <PhotoStrip
               moveId={moveId}
-              containerId={container.id}
+              containerId={live.id}
               uid={uid}
               photos={photos}
+            />
+          </div>
+        ) : null}
+
+        {/* The suggestion, where it arrives rather than where it was first
+            built. A summary is written in the background after a photo
+            uploads, so it usually lands while the person is still on this
+            screen, and until now the only way to read it was to save the box,
+            leave, and open it again from the list.
+
+            The same component box detail mounts, doing the same four things.
+            It renders nothing until there is a suggestion, and everything it
+            writes goes through the repositories rather than through this
+            screen, so the room, the note, and the photos are untouched by any
+            of it. The key resets its edit state at the box boundary: Save and
+            next swaps the container underneath it, and a half-typed edit of
+            one box's suggestion must not be sitting in the next one's. */}
+        {live ? (
+          <div className="mt-6">
+            <AiSummary
+              key={live.id}
+              moveId={moveId}
+              container={live}
+              zones={zones}
+              photos={photos.map((v) => v.photo)}
+              uid={uid}
             />
           </div>
         ) : null}

@@ -122,9 +122,18 @@ export function BoxList({
                   {container.title ? (
                     <span className="block truncate text-sm text-slate-500">{container.title}</span>
                   ) : null}
+                  {/* One line, two things it can say, so they cannot stack.
+                      With a query typed, the row explains why this box came
+                      back. With none, it says the box is carrying a suggestion
+                      nobody has answered, which is the only way to find one
+                      without opening every box in turn. */}
                   {suggestionOnly ? (
                     <span className="block text-sm text-amber-300">
                       Matched a suggestion nobody has confirmed
+                    </span>
+                  ) : unconfirmed(container) ? (
+                    <span className="block text-sm text-amber-300">
+                      A suggestion nobody has confirmed
                     </span>
                   ) : null}
                 </span>
@@ -173,6 +182,23 @@ export function BoxList({
 function statusWord(container: Container): string {
   if (isVoided(container)) return "voided";
   return container.status === "filling" ? "draft" : container.status;
+}
+
+/**
+ * A box holding a suggestion nobody has answered yet.
+ *
+ * There is no third state to read and no flag to keep: accept and dismiss both
+ * clear `aiSummary`, so the field being present is the whole question. Per doc
+ * 09 this is not confirmed text, which is why the row says so in the words it
+ * uses for a search hit rather than inventing a second phrase for it.
+ *
+ * A voided box is left unmarked. Its number is retired and there is nothing to
+ * do about the box, which is the same reason its row reads "voided" instead of
+ * a status. It still carries the search marker, because that one answers a
+ * different question: why this row came back at all.
+ */
+function unconfirmed(container: Container): boolean {
+  return !isVoided(container) && (container.aiSummary?.trim().length ?? 0) > 0;
 }
 
 /** Both can be true at once, per ADR-0003, so both are named. */

@@ -111,6 +111,16 @@ The last error line is still owed: a box saved with no photo is saved, and nothi
 
 **The way out.** The back control and the leave question are in section 0.
 
+### What shipped, APPLY-12
+
+Amended 2026-08-17. **The suggestion block is on this screen now, below the photos.** It was built in APPLY-07 and mounted on box detail only, which was wrong about where a person is standing when a suggestion arrives. A summary is written in the background after the photo uploads, so it usually lands while the same box is still being packed, and this screen did not render `aiSummary` at all. The only way to read one was to save the box, leave, open the box list, find the number, and open it.
+
+It is the same component box detail mounts, doing the same four things: accept, edit, dismiss, ask again. It renders nothing when there is no suggestion. Everything it writes goes through the repositories rather than through this screen, so accepting or dismissing cannot reach the room, the note, or the photos, and both save buttons behave exactly as they did.
+
+Two things this required and are worth stating. **The screen now reads the live container** rather than the copy `reserveContainer` handed it on mount, which is what makes anything written to the box while the screen is open visible here at all. And **the save writes that live copy**, which is a fix rather than plumbing: `saveContainer` rebuilds `searchText` from what it is handed, so saving the stale copy took a summary's own words back out of the index and the box stopped answering for them.
+
+What a phone has to check is the shift. The block appears between the photos and the room picker, so a summary arriving while somebody is typing the note moves the field under their thumb. Nothing is lost and no focus changes, and whether the movement is worth answering is not a question jsdom can settle.
+
 ## 3. Label instruction
 
 Part of Add box, not a separate route. Shown as soon as a zone is selected.
@@ -196,6 +206,12 @@ Amended 2026-08-15 during the APPLY-08 run. The list row is not this card and wa
 Three of the lines above are still owed and are worth having only if the list proves hard to read on a phone: the primary photo thumbnail, the color as a fill rather than a dot, and the matching text with the match highlighted. The highlight is the one with real value, since it answers "why did this box come back" without opening it. It was left out because a word match can land in any of six fields and picking the snippet to show is a design question this run did not have an answer to. The row says which field matched only in the `aiSummary` case, where it changes whether the text can be trusted.
 
 Amended again 2026-08-15 during the APPLY-10 run. **A box with no room now reads as a thing to fix.** The row drew a colored dot and the room's name, and a box with no room got neither: no dot, and the words "No room" in the same grey the rest of the row uses. Every box in the move was in that state at the time, because a room is optional on Add box. The dot is now drawn as a dashed outline where the color would be, and the row reads "No room. Open it and pick one." in the amber the conditions use, which is the app's one color for a state worth acting on. The keypad screen carries the same marker, so a row does not read differently on two screens. It is on box detail too, above the Change room control that fixes it.
+
+Amended again 2026-08-17 during the APPLY-12 run. **A row says when its box is carrying a suggestion nobody has answered, with nothing typed in the search field.** The marker above is a fact about the query: it fires only when `aiSummary` was the one field a word reached, so with no query typed a move with eleven unconfirmed suggestions looked exactly like a move with none, and reviewing one later was a memory test rather than a rhythm.
+
+Both markers are the same line in the row's left column, so they cannot appear at once. Matched by a query and nothing else matched, it reads "Matched a suggestion nobody has confirmed", unchanged. Otherwise, carrying one, it reads "A suggestion nobody has confirmed". Doc 09 arbitrates the wording: this is not confirmed text, and the row says so in the words it already used rather than inventing a second phrase for the same state.
+
+Accept and dismiss both clear `aiSummary`, so the field being present is the whole question and there is no flag to keep. A voided box is left unmarked, for the reason its row reads "voided" instead of a status: its number is retired and there is nothing to go and do about it. It keeps the search marker, which answers a different question.
 
 Amended again 2026-08-15 during the APPLY-09 run. The condition badge exists now that something writes a condition. It is a line of small amber text in the row's right column, under the status, naming both conditions when a box carries both. Still text rather than a badge, for the same reason the color is a dot rather than a fill: the row is already carrying six things at 14px.
 

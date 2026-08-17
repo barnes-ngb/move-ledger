@@ -175,15 +175,33 @@ saying nobody has confirmed it. Product rule 8 forbids both.
 The fix is a third copy of the box on this screen. `AiSummary` takes an optional
 `onAnswered` and hands back the container accept and dismiss just wrote, which
 is available immediately because validation and the local write are both
-synchronous. `liveContainer` picks between the three: the subscription is the
-authority, the reserve-time copy covers the window before its first delivery,
-and an answer given here wins over both while it is strictly newer. Every writer
-stamps `updatedAt`, the function included, so the prop takes over the moment the
-answer lands. That last part is what keeps Ask again working: it clears the text
-and the function writes a new suggestion, stamped later, and the screen must not
-go on showing the blank.
+synchronous. The subscription is the authority, an answer given here outranks it
+until it lands, and the reserve-time copy is last and covers only the window
+before the listener's first delivery.
 
 Box detail passes no `onAnswered` and is unchanged. It has no save of its own
 that carries this field.
 
-Three tests, and all three fail with the callback unwired.
+### How long the answer is held, which took two attempts
+
+The first attempt ordered the copies by `updatedAt`, and it was wrong. Raised in
+review on pull request 22. Those two stamps come from two clocks: the answer is
+stamped by the phone in `withoutAiSummary`, the suggestion by the function's own
+clock. A phone running a minute slow would never beat the suggestion it had just
+answered, so the answer would be discarded on the spot and the next save would
+write the suggestion back. That is the defect this amendment exists to close,
+returning on any phone whose clock has drifted, and this app is used offline for
+hours at a time.
+
+Nothing compares clocks now. The answered box is kept alongside the exact
+`aiSummary` text it answered, and it is held only while the subscription is
+still showing that same text. The moment the subscription shows anything else,
+the write has landed and the answer is dropped.
+
+Dropping it matters as much as holding it. Ask again clears the text and asks
+the function for another, and an answer held past its own write would suppress
+every suggestion that came after it.
+
+Five tests. Three fail with the callback unwired, one fails if the copies are
+ordered by `updatedAt` again, and one fails if the answer is never dropped. All
+three were checked by making each change.

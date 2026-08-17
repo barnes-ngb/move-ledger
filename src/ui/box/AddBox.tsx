@@ -18,34 +18,19 @@ import { labelInstruction } from "./label";
 import { usePhotos } from "../../hooks/usePhotos";
 
 /**
- * Which copy of this box the screen believes, out of the three it can hold.
+ * A suggestion answered on this screen, held until the subscription says so.
  *
- * The subscription is the authority, because it carries what every writer has
- * done to the box, including the other phone and the function that writes a
- * contents summary. It is preferred over the copy `reserveContainer` returned
- * on mount, which is the same document until somebody writes to it and is only
- * here to cover the window before the listener's first delivery.
- *
- * A suggestion answered on this screen wins over both, and only while it is
- * strictly newer. Every write settles on server acknowledgment, so the answer
- * comes back through the prop after the tap rather than during it, and a save
- * landing inside that window would write the suggestion back over its own
- * answer. Every writer stamps `updatedAt`, the function included, so the
- * moment the answer arrives the prop copy ties and takes over again. That
- * matters for Ask again, which clears the text and produces a new suggestion:
- * the new one is stamped later and this must not go on showing the old blank.
+ * The text is kept alongside the box because it is what says the answer has
+ * landed. Ordering the two copies by `updatedAt` was tried first and is wrong:
+ * the answer is stamped by this phone and the suggestion by the function's
+ * clock, so a phone running a minute slow would never beat the suggestion it
+ * had just dismissed and the next save would write it back. Raised in review on
+ * pull request 22. Nothing here compares clocks.
  */
-function liveContainer(
-  reserved: Container | null,
-  containers: readonly Container[],
-  answered: Container | null
-): Container | null {
-  if (!reserved) return null;
-  const known = containers.find((c) => c.id === reserved.id) ?? reserved;
-  if (answered !== null && answered.id === known.id && answered.updatedAt > known.updatedAt) {
-    return answered;
-  }
-  return known;
+interface AnsweredSuggestion {
+  box: Container;
+  /** The exact `aiSummary` that was on screen when it was answered. */
+  suggestion: string;
 }
 
 /**
@@ -110,21 +95,52 @@ export function AddBox({
    * Product rule 8 is the one that forbids that: a suggestion never overwrites
    * confirmed text, and coming back from the dead after a dismiss is the same
    * fault wearing a different hat.
+   *
+   * How long it is held is decided by the suggestion text going away rather
+   * than by any clock. See `AnsweredSuggestion`.
    */
-  const [answered, setAnswered] = useState<Container | null>(null);
+  const [answered, setAnswered] = useState<AnsweredSuggestion | null>(null);
   const photos = usePhotos(moveId, container?.id ?? null);
 
+  /** This box as the subscription has it, or nothing if it has not arrived. */
+  const subscribed = container ? containers.find((c) => c.id === container.id) : undefined;
+
   /**
-   * The draft as this screen currently knows it, which is not what `container`
-   * holds. That state is written once by `reserveContainer` and never again, so
-   * anything written to this box while the screen is open is invisible to it. A
-   * contents summary is exactly that: it is produced in the background after
-   * the photo uploads, so it usually lands while the person is still standing
-   * here packing the same box.
+   * The answer is dropped the moment the subscription stops showing the
+   * suggestion it answered, which is the only thing that says the write landed.
+   * Adjusting state during render rather than in an effect, the same shape box
+   * detail uses for the contents field.
    *
-   * See `liveContainer` for which of the three copies of this box wins.
+   * Dropping it is as important as holding it. Ask again clears the text and
+   * asks the function for another, and an answer held past its own write would
+   * suppress everything that came after it.
    */
-  const live = liveContainer(container, containers, answered);
+  if (
+    answered !== null &&
+    (container === null ||
+      answered.box.id !== container.id ||
+      (subscribed !== undefined && subscribed.aiSummary !== answered.suggestion))
+  ) {
+    setAnswered(null);
+  }
+
+  /**
+   * The draft as this screen currently knows it, out of the three copies it can
+   * hold, which is not what `container` alone holds. That state is written once
+   * by `reserveContainer` and never again, so anything written to this box
+   * while the screen is open is invisible to it. A contents summary is exactly
+   * that: it is produced in the background after the photo uploads, so it
+   * usually lands while the person is still standing here packing the same box.
+   *
+   * The subscription is the authority, because it carries what every writer has
+   * done to the box. An answer given here outranks it until it lands, because a
+   * write settles on server acknowledgment and a save inside that window would
+   * put the answered suggestion back. The reserve-time copy is last and covers
+   * only the window before the listener's first delivery.
+   */
+  const live = container
+    ? (answered?.box.id === container.id ? answered.box : undefined) ?? subscribed ?? container
+    : null;
 
   // This screen takes the header title from Home while it is open, so the way
   // home asks about the draft rather than stranding it. All three exits ask
@@ -323,7 +339,7 @@ export function AddBox({
               zones={zones}
               photos={photos.map((v) => v.photo)}
               uid={uid}
-              onAnswered={setAnswered}
+              onAnswered={(box) => setAnswered({ box, suggestion: live.aiSummary ?? "" })}
             />
           </div>
         ) : null}

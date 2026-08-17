@@ -18,6 +18,37 @@ import { labelInstruction } from "./label";
 import { usePhotos } from "../../hooks/usePhotos";
 
 /**
+ * Which copy of this box the screen believes, out of the three it can hold.
+ *
+ * The subscription is the authority, because it carries what every writer has
+ * done to the box, including the other phone and the function that writes a
+ * contents summary. It is preferred over the copy `reserveContainer` returned
+ * on mount, which is the same document until somebody writes to it and is only
+ * here to cover the window before the listener's first delivery.
+ *
+ * A suggestion answered on this screen wins over both, and only while it is
+ * strictly newer. Every write settles on server acknowledgment, so the answer
+ * comes back through the prop after the tap rather than during it, and a save
+ * landing inside that window would write the suggestion back over its own
+ * answer. Every writer stamps `updatedAt`, the function included, so the
+ * moment the answer arrives the prop copy ties and takes over again. That
+ * matters for Ask again, which clears the text and produces a new suggestion:
+ * the new one is stamped later and this must not go on showing the old blank.
+ */
+function liveContainer(
+  reserved: Container | null,
+  containers: readonly Container[],
+  answered: Container | null
+): Container | null {
+  if (!reserved) return null;
+  const known = containers.find((c) => c.id === reserved.id) ?? reserved;
+  if (answered !== null && answered.id === known.id && answered.updatedAt > known.updatedAt) {
+    return answered;
+  }
+  return known;
+}
+
+/**
  * Packing a box, without a wait in it.
  *
  * The number is reserved on mount, before any input exists, because it is
@@ -68,22 +99,32 @@ export function AddBox({
    * permanent.
    */
   const reservedHere = useRef<Container[]>([]);
+  /**
+   * The box as it stood when a suggestion was accepted or dismissed on this
+   * screen, held until the subscription delivers the same thing.
+   *
+   * Every write settles on server acknowledgment, so the answered box arrives
+   * back through the prop a moment after the tap rather than during it. Saving
+   * inside that moment would spread a copy still carrying the suggestion into
+   * the write and put it back, over the answer somebody had just given it.
+   * Product rule 8 is the one that forbids that: a suggestion never overwrites
+   * confirmed text, and coming back from the dead after a dismiss is the same
+   * fault wearing a different hat.
+   */
+  const [answered, setAnswered] = useState<Container | null>(null);
   const photos = usePhotos(moveId, container?.id ?? null);
 
   /**
-   * The draft as the subscription currently has it, which is not what
-   * `container` holds. That state is written once by `reserveContainer` and
-   * never again, so anything written to this box while the screen is open is
-   * invisible to it. A contents summary is exactly that: it is produced in the
-   * background after the photo uploads, so it usually lands while the person is
-   * still standing here packing the same box.
+   * The draft as this screen currently knows it, which is not what `container`
+   * holds. That state is written once by `reserveContainer` and never again, so
+   * anything written to this box while the screen is open is invisible to it. A
+   * contents summary is exactly that: it is produced in the background after
+   * the photo uploads, so it usually lands while the person is still standing
+   * here packing the same box.
    *
-   * The fallback is the window between the reserve and the listener's first
-   * delivery, when the document is in the local cache and not yet in the prop.
+   * See `liveContainer` for which of the three copies of this box wins.
    */
-  const live = container
-    ? (containers.find((c) => c.id === container.id) ?? container)
-    : null;
+  const live = liveContainer(container, containers, answered);
 
   // This screen takes the header title from Home while it is open, so the way
   // home asks about the draft rather than stranding it. All three exits ask
@@ -160,6 +201,7 @@ export function AddBox({
 
       if (andNext) {
         setContainer(null);
+        setAnswered(null);
         setRoomId(undefined);
         setNote("");
         reserved.current = false;
@@ -281,6 +323,7 @@ export function AddBox({
               zones={zones}
               photos={photos.map((v) => v.photo)}
               uid={uid}
+              onAnswered={setAnswered}
             />
           </div>
         ) : null}

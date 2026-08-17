@@ -119,6 +119,8 @@ It is the same component box detail mounts, doing the same four things: accept, 
 
 Two things this required and are worth stating. **The screen now reads the live container** rather than the copy `reserveContainer` handed it on mount, which is what makes anything written to the box while the screen is open visible here at all. And **the save writes that live copy**, which is a fix rather than plumbing: `saveContainer` rebuilds `searchText` from what it is handed, so saving the stale copy took a summary's own words back out of the index and the box stopped answering for them.
 
+A third copy exists for one window, and it is the answer to a defect the first two created. Saving spreads the whole container, and a write promise settles on server acknowledgment, so an answered suggestion returns through the subscription after the tap rather than during it. A save landing inside that window wrote the suggestion back over its own answer, which product rule 8 forbids. So `AiSummary` hands back the container accept and dismiss just wrote, and the screen prefers it while it is strictly newer than what the subscription has. Every writer stamps `updatedAt`, so the subscription takes over the moment the answer arrives, which is what keeps Ask again from being shown the blank it cleared.
+
 What a phone has to check is the shift. The block appears between the photos and the room picker, so a summary arriving while somebody is typing the note moves the field under their thumb. Nothing is lost and no focus changes, and whether the movement is worth answering is not a question jsdom can settle.
 
 ## 3. Label instruction

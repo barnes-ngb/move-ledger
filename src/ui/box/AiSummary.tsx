@@ -25,12 +25,24 @@ export function AiSummary({
   zones,
   photos,
   uid,
+  onAnswered,
 }: {
   moveId: string;
   container: Container;
   zones: readonly Zone[];
   photos: readonly ContainerPhoto[];
   uid: string;
+  /**
+   * The box as it stands the moment a suggestion is answered, for a screen that
+   * is also holding an edit of the same document.
+   *
+   * Every write here settles on server acknowledgment, so the subscription
+   * delivers the answered box a moment after the tap rather than during it. Add
+   * box saves the whole container, so a save landing inside that moment would
+   * write the suggestion back over its own answer. Box detail passes nothing
+   * and is unaffected: it has no save of its own that carries this field.
+   */
+  onAnswered?: (container: Container) => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
@@ -42,21 +54,26 @@ export function AiSummary({
 
   if (!suggestion) return null;
 
-  function run(write: () => { written: Promise<unknown> }) {
+  /** Returns the written document, which is available before the server has it. */
+  function run<T>(write: () => { value: T; written: Promise<unknown> }): T | null {
     setError(null);
     try {
-      writeInBackground(write().written, () =>
+      const { value, written } = write();
+      writeInBackground(written, () =>
         setError("This change is saved on your phone. It has not reached the other phone yet.")
       );
+      return value;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save.");
+      return null;
     }
   }
 
   function accept(text: string) {
     if (!text.trim()) return;
     setEditing(false);
-    run(() => acceptAiSummary(moveId, container, zones, text, uid));
+    const answered = run(() => acceptAiSummary(moveId, container, zones, text, uid));
+    if (answered) onAnswered?.(answered);
   }
 
   /**
@@ -65,7 +82,8 @@ export function AiSummary({
    * would leave the next upload free to regenerate it.
    */
   function dismiss() {
-    run(() => dismissAiSummary(moveId, container, zones, uid));
+    const answered = run(() => dismissAiSummary(moveId, container, zones, uid));
+    if (answered) onAnswered?.(answered);
     for (const photo of contentsPhotos) {
       run(() => updatePhotoRecord(moveId, { ...photo, summaryState: "skipped" }));
     }
@@ -80,7 +98,8 @@ export function AiSummary({
   function redo() {
     setAsking(true);
     setError(null);
-    run(() => dismissAiSummary(moveId, container, zones, uid));
+    const cleared = run(() => dismissAiSummary(moveId, container, zones, uid));
+    if (cleared) onAnswered?.(cleared);
     void Promise.allSettled(
       contentsPhotos.map((p) => summarizePhoto({ moveId, photoId: p.id, redo: true }))
     )

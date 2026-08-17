@@ -252,4 +252,63 @@ describe("a suggestion arriving while the box is open", () => {
     fireEvent.click(screen.getByText("Save and finish"));
     expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBe("Books, a lamp, two mugs");
   });
+
+  /**
+   * Answering a suggestion and saving in the same moment.
+   *
+   * Every write settles on server acknowledgment, so the answered box comes
+   * back through the `containers` prop after the tap rather than during it.
+   * Saving inside that window spreads the whole container into the write, and
+   * a copy still carrying `aiSummary` puts the suggestion back over the answer
+   * somebody just gave it. `containers` deliberately does not change in these
+   * two, which is the window held open.
+   *
+   * Product rule 8 is what this protects: a suggestion never overwrites
+   * confirmed text, and returning after a dismiss is that fault in reverse.
+   */
+  describe("saving in the same moment", () => {
+    const LATER = "2026-08-17T00:00:00.000Z";
+
+    it("carries an accepted contents list into the save", () => {
+      const accepted: Container = {
+        ...draft,
+        contentsSummary: "Books, a lamp, two mugs",
+        updatedAt: LATER,
+      };
+      mocks.acceptAiSummary.mockReturnValue({ value: accepted, written: Promise.resolve() });
+
+      open([suggested]);
+      fireEvent.click(screen.getByText("Accept"));
+      fireEvent.click(screen.getByText("Save and finish"));
+
+      const saved = mocks.saveContainer.mock.calls[0]?.[1];
+      expect(saved?.contentsSummary).toBe("Books, a lamp, two mugs");
+      expect(saved?.aiSummary).toBeUndefined();
+    });
+
+    it("does not write a dismissed suggestion back", () => {
+      mocks.dismissAiSummary.mockReturnValue({
+        value: { ...draft, updatedAt: LATER },
+        written: Promise.resolve(),
+      });
+
+      open([suggested]);
+      fireEvent.click(screen.getByText("Dismiss"));
+      fireEvent.click(screen.getByText("Save and finish"));
+
+      expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBeUndefined();
+    });
+
+    it("takes the answer off the screen without waiting for the subscription", () => {
+      mocks.dismissAiSummary.mockReturnValue({
+        value: { ...draft, updatedAt: LATER },
+        written: Promise.resolve(),
+      });
+
+      open([suggested]);
+      fireEvent.click(screen.getByText("Dismiss"));
+
+      expect(screen.queryByText("Suggested contents")).toBeNull();
+    });
+  });
 });

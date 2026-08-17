@@ -154,3 +154,36 @@ then:
 - Suppressing the marker on a voided row.
 - Basing `save()` on the live container, which fixes a `searchText` defect this
   run was not sent to find.
+
+## Amendment, found in review
+
+Recorded here rather than folded into the steps above, the way APPLY-09 did it,
+because the plan is a record of how the code got its shape and this is part of
+that shape.
+
+Step 1 as written introduced a defect of its own, raised on pull request 21 and
+confirmed by reading the code. Saving spreads the whole container into the
+write, so basing it on the live copy means that answering a suggestion and
+tapping save inside the same moment writes the suggestion back over the answer.
+The window is the one between the tap and the subscription redelivering the
+box, which every write has because a Firestore write promise settles on server
+acknowledgment. Dismissed, the suggestion returns from the dead. Accepted after
+an edit, `contentsSummary` survives and `searchText` is rebuilt from the old
+suggestion instead, so the accepted wording is unsearchable and the row goes on
+saying nobody has confirmed it. Product rule 8 forbids both.
+
+The fix is a third copy of the box on this screen. `AiSummary` takes an optional
+`onAnswered` and hands back the container accept and dismiss just wrote, which
+is available immediately because validation and the local write are both
+synchronous. `liveContainer` picks between the three: the subscription is the
+authority, the reserve-time copy covers the window before its first delivery,
+and an answer given here wins over both while it is strictly newer. Every writer
+stamps `updatedAt`, the function included, so the prop takes over the moment the
+answer lands. That last part is what keeps Ask again working: it clears the text
+and the function writes a new suggestion, stamped later, and the screen must not
+go on showing the blank.
+
+Box detail passes no `onAnswered` and is unchanged. It has no save of its own
+that carries this field.
+
+Three tests, and all three fail with the callback unwired.

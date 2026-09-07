@@ -54,4 +54,33 @@ describe("useContainers", () => {
     renderHook(() => useContainers(null));
     expect(spy.subscriptions).toBe(0);
   });
+
+  /**
+   * An empty array before the first delivery and an empty array after it are
+   * not the same thing, and Add box reserving against the first one is how
+   * production issued number 1 twice.
+   */
+  it("says nothing has loaded until the listener delivers, even an empty list", () => {
+    const { result } = renderHook(() => useContainers("m1"));
+    expect(result.current.loaded).toBe(false);
+    expect(result.current.containers).toEqual([]);
+
+    act(() => spy.send?.([]));
+
+    expect(result.current.loaded).toBe(true);
+    expect(result.current.containers).toEqual([]);
+  });
+
+  it("forgets that it loaded when the listener is opened again", () => {
+    const { result } = renderHook(() => useContainers("m1"));
+    act(() => spy.send?.([{ id: "c1" }]));
+    expect(result.current.loaded).toBe(true);
+
+    act(() => spy.fail?.());
+    act(() => result.current.retry());
+
+    expect(result.current.loaded).toBe(false);
+    act(() => spy.send?.([{ id: "c1" }]));
+    expect(result.current.loaded).toBe(true);
+  });
 });

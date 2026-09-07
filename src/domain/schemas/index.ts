@@ -44,6 +44,13 @@ export const moveMemberSchema = z.object({
   role: z.enum(["owner", "member"]),
   numberRangeStart: z.number().int().positive(),
   numberRangeEnd: z.number().int().positive(),
+  /**
+   * The number watermark: the highest box number this member has ever been
+   * handed, written in the same batch as the container that took it. Absent
+   * means 0, which is nothing reserved yet. It may only rise; the rules refuse
+   * a lower value. See docs/02-domain-model.md, Number reservation.
+   */
+  highestIssued: z.number().int().nonnegative().optional(),
 }).refine((m) => m.numberRangeEnd >= m.numberRangeStart, {
   message: "numberRangeEnd must not be below numberRangeStart",
   path: ["numberRangeEnd"],

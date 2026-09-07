@@ -4,6 +4,13 @@ import { watchContainers } from "../repositories";
 
 export interface ContainerSet {
   containers: Container[];
+  /**
+   * The listener has delivered at least once. Until then `containers` is the
+   * initial empty array and says nothing about the move. Add box waits on
+   * this: reserving a number against an empty list hands out the bottom of
+   * the range, which is how production issued number 1 twice.
+   */
+  loaded: boolean;
   /** The listener stopped. `containers` holds whatever arrived before that. */
   failed: boolean;
   retry: () => void;
@@ -20,15 +27,24 @@ export interface ContainerSet {
  */
 export function useContainers(moveId: string | null): ContainerSet {
   const [containers, setContainers] = useState<Container[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    setLoaded(false);
     if (!moveId) {
       setContainers([]);
       return;
     }
-    return watchContainers(moveId, setContainers, () => setFailed(true));
+    return watchContainers(
+      moveId,
+      (next) => {
+        setContainers(next);
+        setLoaded(true);
+      },
+      () => setFailed(true)
+    );
   }, [moveId, attempt]);
 
   const retry = useCallback(() => {
@@ -36,5 +52,5 @@ export function useContainers(moveId: string | null): ContainerSet {
     setAttempt((n) => n + 1);
   }, []);
 
-  return { containers, failed, retry };
+  return { containers, loaded, failed, retry };
 }

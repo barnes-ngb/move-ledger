@@ -21,6 +21,8 @@ import {
   deleteDoc,
   getDoc,
   where,
+  writeBatch,
+  deleteField,
 } from "firebase/firestore";
 
 let env: RulesTestEnvironment;
@@ -138,6 +140,102 @@ describe("activity is append-only", () => {
     );
     await assertFails(updateDoc(event, { type: "notes_changed" }));
     await assertFails(deleteDoc(event));
+  });
+});
+
+/**
+ * Doc 10 case 13. `highestIssued` is the number watermark: the highest box
+ * number a member has ever been handed. It is written in the same batch as the
+ * container that took the number, and it may stay or rise but never fall,
+ * because a lower value hands a number that may already be written in marker
+ * back into circulation.
+ */
+describe("the member watermark", () => {
+  const MEMBER = "mem-nathan";
+
+  function memberDoc(over: Record<string, unknown> = {}) {
+    return {
+      moveId: MOVE,
+      uid: NATHAN,
+      displayName: "Nathan",
+      role: "owner",
+      numberRangeStart: 1,
+      numberRangeEnd: 499,
+      ...over,
+    };
+  }
+
+  async function seedMember(over: Record<string, unknown> = {}) {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "moves", MOVE, "members", MEMBER), memberDoc(over));
+    });
+  }
+
+  it("a member can set it where there was none", async () => {
+    await seedMember();
+    const db = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { highestIssued: 7 }));
+  });
+
+  it("a member can raise it, and can update other fields leaving it alone", async () => {
+    await seedMember({ highestIssued: 7 });
+    const db = env.authenticatedContext(SHELLY).firestore();
+    await assertSucceeds(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { highestIssued: 8 }));
+    await assertSucceeds(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { displayName: "Nate" }));
+    await assertSucceeds(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { highestIssued: 8 }));
+  });
+
+  it("a member cannot lower it", async () => {
+    await seedMember({ highestIssued: 7 });
+    const db = env.authenticatedContext(NATHAN).firestore();
+    await assertFails(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { highestIssued: 6 }));
+    await assertFails(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { highestIssued: 0 }));
+  });
+
+  it("a member cannot remove it or replace it with something that is not a number", async () => {
+    await seedMember({ highestIssued: 7 });
+    const db = env.authenticatedContext(NATHAN).firestore();
+    await assertFails(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { highestIssued: deleteField() }));
+    await assertFails(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { highestIssued: "7" }));
+    // A full overwrite that drops the field is the same removal by another route.
+    await assertFails(setDoc(doc(db, "moves", MOVE, "members", MEMBER), memberDoc()));
+  });
+
+  it("a non-member cannot write it", async () => {
+    await seedMember({ highestIssued: 7 });
+    const db = env.authenticatedContext(STRANGER).firestore();
+    await assertFails(updateDoc(doc(db, "moves", MOVE, "members", MEMBER), { highestIssued: 8 }));
+    await assertFails(getDoc(doc(db, "moves", MOVE, "members", MEMBER)));
+  });
+
+  /**
+   * The shape `reserveContainer` actually sends: the container and the
+   * watermark in one batch. The batch has to pass as a whole, and a rule that
+   * refused either half would refuse every reservation in the app.
+   */
+  it("the reservation batch commits for a member and fails whole for a non-member", async () => {
+    await seedMember({ highestIssued: 41 });
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    const ok = writeBatch(nathan);
+    ok.set(doc(nathan, "moves", MOVE, "containers", "c42"), containerDoc({ sequenceNumber: 42 }));
+    ok.update(doc(nathan, "moves", MOVE, "members", MEMBER), { highestIssued: 42 });
+    await assertSucceeds(ok.commit());
+
+    const stranger = env.authenticatedContext(STRANGER).firestore();
+    const denied = writeBatch(stranger);
+    denied.set(doc(stranger, "moves", MOVE, "containers", "c43"), containerDoc({ sequenceNumber: 43, createdBy: STRANGER }));
+    denied.update(doc(stranger, "moves", MOVE, "members", MEMBER), { highestIssued: 43 });
+    await assertFails(denied.commit());
+
+    // A batch whose watermark half goes backwards takes the container with it.
+    const backwards = writeBatch(nathan);
+    backwards.set(doc(nathan, "moves", MOVE, "containers", "c1"), containerDoc({ sequenceNumber: 1 }));
+    backwards.update(doc(nathan, "moves", MOVE, "members", MEMBER), { highestIssued: 1 });
+    await assertFails(backwards.commit());
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const snap = await getDoc(doc(ctx.firestore(), "moves", MOVE, "containers", "c1"));
+      expect(snap.exists()).toBe(false);
+    });
   });
 });
 

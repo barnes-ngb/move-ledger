@@ -11,16 +11,23 @@ import {
   type Zone,
 } from "../domain";
 import { ContainerNotDeletableError } from "../domain/lifecycle";
-import { deleteDoc, deleteField, doc, getDoc, getDocFromCache, updateDoc } from "firebase/firestore";
+import {
+  deleteDoc,
+  deleteField,
+  doc,
+  getDoc,
+  getDocFromCache,
+  updateDoc,
+  writeBatch,
+} from "firebase/firestore";
 import { reportCondition, clearCondition, type ConditionKey } from "../domain/conditions";
-import type { ConditionReport } from "../domain/schemas";
+import { activityEventSchema, type ConditionReport } from "../domain/schemas";
 import { db } from "../lib/firebase";
 import { deleteBlobsFor } from "../photos/db";
 import { logActivity } from "./activity";
 import { photosForContainer, removePhotoWithContainer } from "./photos";
 import {
   allWritten,
-  createValidated,
   moveScoped,
   newId,
   nowIso,
@@ -30,6 +37,8 @@ import {
 } from "./shared";
 
 const containers = (moveId: string) => moveScoped(db, moveId, "containers");
+const members = (moveId: string) => moveScoped(db, moveId, "members");
+const activity = (moveId: string) => moveScoped(db, moveId, "activity");
 
 const NO_FLAGS = {
   fragile: false,
@@ -48,7 +57,17 @@ const NO_FLAGS = {
  * writes on cardboard must never change afterward, so it is claimed first.
  *
  * `knownContainers` is the current subscription state, which the persistent
- * cache keeps complete for this member's own boxes even offline.
+ * cache keeps complete for this member's own boxes even offline. The member's
+ * `highestIssued` goes into the same list as one more used number, so the
+ * count is right even when that list is not: production issued number 1 twice
+ * when the screen reserved before the listener had delivered anything, and an
+ * empty list reads as nothing used. The domain function is unchanged by this;
+ * the watermark is simply a number it already knows how to count past.
+ *
+ * The container, the watermark, and the activity event go in one batch. A
+ * batch queues offline exactly like a single write and lands as a whole, and
+ * it is never two writes: a crash between a container and its watermark is
+ * exactly the hole the watermark exists to close.
  *
  * The number is returned without waiting for the server, because the person
  * holding the marker cannot wait for it and the local cache already has the
@@ -60,9 +79,12 @@ export function reserveContainer(
   knownContainers: readonly Container[],
   actorUid: string
 ): PendingWrite<Container> {
-  const sequenceNumber = nextSequenceNumber(member, knownContainers.map((c) => c.sequenceNumber));
+  const sequenceNumber = nextSequenceNumber(member, [
+    ...knownContainers.map((c) => c.sequenceNumber),
+    member.highestIssued ?? 0,
+  ]);
   const now = nowIso();
-  const created = createValidated(containers(moveId), containerSchema, {
+  const container = containerSchema.parse({
     id: newId(),
     moveId,
     sequenceNumber,
@@ -79,13 +101,21 @@ export function reserveContainer(
     updatedBy: actorUid,
     searchText: toDisplayCode(sequenceNumber),
   });
-  const logged = logActivity(moveId, {
-    containerId: created.value.id,
+  const event = activityEventSchema.parse({
+    id: newId(),
+    moveId,
+    containerId: container.id,
     actorId: actorUid,
     type: "container_created",
+    occurredAt: now,
     payload: { sequenceNumber },
   });
-  return { value: created.value, written: allWritten(created.written, logged.written) };
+
+  const batch = writeBatch(db);
+  batch.set(doc(containers(moveId), container.id), container);
+  batch.update(doc(members(moveId), member.id), { highestIssued: sequenceNumber });
+  batch.set(doc(activity(moveId), event.id), event);
+  return { value: container, written: batch.commit() };
 }
 
 /** General edit path. Recomputes searchText so search never drifts from content. */

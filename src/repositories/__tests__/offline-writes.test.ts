@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { deleteApp, initializeApp, type FirebaseApp } from "firebase/app";
-import { collection, disableNetwork, getFirestore, onSnapshot } from "firebase/firestore";
+import { collection, disableNetwork, doc, getFirestore, onSnapshot, writeBatch } from "firebase/firestore";
 import { z } from "zod";
 import { createValidated, updateValidated } from "../shared";
 
@@ -84,6 +84,34 @@ describe("writes with the network down", () => {
     // what makes not awaiting `written` safe rather than merely faster.
     expect(seen).toContainEqual({ id: "box-2", n: 7 });
     expect(await settledWithin(write.written, 300)).toBe(false);
+  }, 20_000);
+
+  /**
+   * `reserveContainer` writes the container and the member's watermark as one
+   * batch. The claim that lets it do that offline is that a batch queues like
+   * a single write: applied to the cache at once, delivered to listeners at
+   * once, and settled on the server later. Asserted against the real SDK for
+   * the same reason the rest of this file is.
+   */
+  it("applies a batch to the cache as a whole while the server has not seen it", async () => {
+    const ref = await offlineCollection();
+    const seen: string[] = [];
+    const stop = onSnapshot(collection(ref.firestore, "things"), (snap) => {
+      seen.push(snap.docs.map((d) => `${d.id}=${d.data().n}`).sort().join(","));
+    });
+
+    const batch = writeBatch(ref.firestore);
+    batch.set(doc(ref, "box-3"), { n: 3 });
+    batch.set(doc(ref, "member"), { n: 3 });
+    const committed = batch.commit();
+    await new Promise((r) => setTimeout(r, 100));
+    stop();
+
+    // Both documents arrive in one snapshot. There is no delivery with the
+    // container and not the watermark.
+    expect(seen).toContain("box-3=3,member=3");
+    expect(seen.some((s) => s === "box-3=3" || s === "member=3")).toBe(false);
+    expect(await settledWithin(committed, 300)).toBe(false);
   }, 20_000);
 
   it("rejects a document that fails its schema before anything is queued", async () => {

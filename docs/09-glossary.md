@@ -33,6 +33,8 @@ Why the split exists: most containers are boxes, but furniture and appliances ar
 
 **Number range.** The disjoint span of `sequenceNumber` values assigned to one member so two offline phones cannot collide.
 
+**Watermark.** `highestIssued` on a member: the highest box number that member has ever been handed, written in the same batch as the box that took it. It only rises. Not a user-facing word; nothing on screen shows it.
+
 **searchText.** A lowercased concatenation kept on every container for client-side filtering. Not a Firestore index.
 
 **Move Day mode.** The repeat-action interface for loading and unloading. Optimized for one operation performed many times.

@@ -26,6 +26,14 @@ Two Google accounts, one per household member. Google sign-in only. No email/pas
 - Onboarding Shelly is: install the PWA, tap sign in, Nathan adds her uid to the move. That last step is a one-time action that can happen while both phones are on the same couch.
 - Each member gets a disjoint number range at setup: 1 to 499 and 500 to 999.
 
+## Amended 2026-09-07: one member, one active device
+
+The shared-account alternative above lost because two phones on one account are one member, and both offline is the duplicate-number failure mode. Two accounts do not remove that failure mode; they make it a rule of use rather than an architecture. The rule was never written down, and APPLY-13 writes it down.
+
+Offline number reservation is safe for one member on **one active device**. The same Google account signed in on two devices is still one member with one range, and while both are offline each counts from what it can see, which is its own cache and its own copy of the member document. The number watermark `highestIssued` on the member document, added in APPLY-13, narrows the collision to the offline window: once either device syncs, the other's next reservation counts past everything both have issued. It does not eliminate it, and nothing short of a server transaction could, which would need the signal the app is built not to require.
+
+So each person packs from one phone. A second signed-in device may look at the app but should not reserve a box while the first is offline. Recorded as a known limit in `plans/STATUS.md` and in `docs/02-domain-model.md` under Number reservation.
+
 ## Revisit when
 
 A third household member appears, which for this move means never.

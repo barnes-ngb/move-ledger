@@ -25,6 +25,18 @@ service cloud.firestore {
       return request.resource.data[field] == resource.data[field];
     }
 
+    // highestIssued is the highest box number a member has ever reserved.
+    // Once set it can only stay or rise: a client that lowered it, or removed
+    // it, would hand a number that may already be written in marker back
+    // into circulation. Absent on the stored document means nothing has been
+    // reserved yet, so the first value is free.
+    function watermarkNeverFalls() {
+      return !('highestIssued' in resource.data)
+        || ('highestIssued' in request.resource.data
+            && request.resource.data.highestIssued is int
+            && request.resource.data.highestIssued >= resource.data.highestIssued);
+    }
+
     match /moves/{moveId} {
       allow get: if isMember(moveId);
 
@@ -41,7 +53,10 @@ service cloud.firestore {
 
       match /members/{memberId} {
         allow read: if isMember(moveId);
-        allow write: if isMember(moveId);
+        allow create, delete: if isMember(moveId);
+        // The number watermark may stay or rise, never fall. See
+        // docs/02-domain-model.md, Number reservation.
+        allow update: if isMember(moveId) && watermarkNeverFalls();
       }
 
       match /locations/{locationId} {
@@ -93,6 +108,7 @@ Notes on the choices:
 - `list` is a filter on candidates, not a filter on the query. A client still has to send `where('memberUids', 'array-contains', uid)`. An unfiltered list of every move is denied the moment it reaches a document the caller does not belong to. `watchMoves` in `src/repositories/moves.ts` sends that filter and the rule asserts the same thing.
 - `sequenceNumber` is immutable after creation. A renumbered box would break every physical marker in the house.
 - Activity is append-only at the rules level, not just by convention.
+- `highestIssued` on a member document is the number watermark, added 2026-09-07 by APPLY-13. It is written in the same batch as every container reservation, so the member document always records the highest number that member has ever been handed, whether or not the container survives. The rule lets it stay or rise and refuses a lower value or its removal, because either would hand a number back into circulation that may already be written in marker. The rule cannot check the watermark against the container in the same batch: rules evaluate each write on its own, so that agreement is the repository's job and `reserveContainer` is the only writer.
 - `memberUids` on the move document costs one document read per rule evaluation, cached within a request. The alternative is a `get` against the members subcollection, which costs the same and reads worse.
 - Adding the second member requires updating `memberUids`, which any existing member can do. With two people that is the correct trust model.
 
@@ -157,8 +173,11 @@ The general lesson, worth more than the fix: a condition that reads `request.res
 10. The `array-contains` list query on `moves` succeeds against an empty collection, returns the caller's own move, and returns nothing for a caller who belongs to no move.
 11. An unfiltered list of every move is denied.
 12. A member can delete a photo object in their move. A signed-in non-member cannot. A signed-out request cannot.
+13. A member can set `highestIssued` on a member document and raise it. A member cannot lower it or remove it. A non-member cannot write it. The reservation batch, one container create plus one member update, commits for a member and fails as a whole for a non-member.
 
 Cases 10 and 11 are list queries. A rules suite built only from `getDoc` never evaluates the `list` path, which is how the null value error on the move rule reached a deployed build.
+
+Case 13 was added 2026-09-07 with the watermark. The batch case is there because the app never writes a reservation as two requests, and a suite that only tests the member update on its own would pass with a rule that refused the batch.
 
 Case 12 is the delete path, added 2026-08-15 with the rule split above. A suite that only uploads never evaluates a delete, which is how a rule that denied every one of them survived two weeks of passing tests. Cases 8 and 9 stay on `create`, so the split has to keep both halves honest: deletes allowed, oversized and non-image uploads still refused.
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Container, MoveMember, Zone } from "../../domain";
-import { RangeExhaustedError, remainingInRange } from "../../domain";
+import { RangeExhaustedError, canDelete, isVoided, remainingInRange } from "../../domain";
 import {
   deleteContainer,
   reserveContainer,
@@ -45,20 +45,39 @@ interface AnsweredSuggestion {
  * the server acknowledges them, so awaiting one in a basement leaves the
  * number showing "..." and both Save buttons disabled for as long as the phone
  * stays there. The local cache has every document the moment it is written.
+ *
+ * The one thing it does wait for is the containers listener's first delivery.
+ * `containers` starts as an empty array before the listener has said
+ * anything, and reserving against that hands out the bottom of the range,
+ * which is how production issued number 1 twice. The wait is answered from
+ * the cache, so offline it is a tick rather than a spinner.
+ *
+ * `draftId` is the box this screen was standing on when the entry was made,
+ * held in session history by Home. On a reload or a relaunch the screen
+ * takes that draft back rather than reserving another number for it.
  */
 export function AddBox({
   moveId,
   me,
   containers,
+  loaded,
   zones,
   uid,
+  draftId,
+  onDraft,
   onLeave,
 }: {
   moveId: string;
   me: MoveMember;
   containers: readonly Container[];
+  /** The containers listener has delivered at least once. See `useContainers`. */
+  loaded: boolean;
   zones: readonly Zone[];
   uid: string;
+  /** The draft to resume, if this entry was on one. */
+  draftId?: string;
+  /** Called with each box this screen reserves or resumes, so the entry can hold it. */
+  onDraft?: (draftId: string) => void;
   onLeave: () => void;
 }) {
   const [container, setContainer] = useState<Container | null>(null);
@@ -158,10 +177,31 @@ export function AddBox({
     onLeave();
   }
 
-  function reserve() {
+  /**
+   * The draft this entry was on, if it is still a draft. A box that has been
+   * saved, voided, or deleted since is not resumed: the number on screen has
+   * to be one nothing has been written on yet, which is what `canDelete`
+   * reads, and a voided box is out of use whatever its status says.
+   */
+  function resumable(): Container | undefined {
+    if (!draftId) return undefined;
+    const found = containers.find((c) => c.id === draftId);
+    if (!found || found.ownerMemberId !== me.id || isVoided(found) || !canDelete(found)) return undefined;
+    return found;
+  }
+
+  function reserve(resume: boolean) {
     if (reserved.current) return;
     reserved.current = true;
     setError(null);
+
+    const draft = resume ? resumable() : undefined;
+    if (draft) {
+      reservedHere.current = [...reservedHere.current, draft];
+      setContainer(draft);
+      return;
+    }
+
     const known = [
       ...containers,
       ...reservedHere.current.filter((c) => !containers.some((k) => k.id === c.id)),
@@ -170,6 +210,7 @@ export function AddBox({
       const { value, written } = reserveContainer(moveId, me, known, uid);
       reservedHere.current = [...reservedHere.current, value];
       setContainer(value);
+      onDraft?.(value.id);
       writeInBackground(written, () =>
         setError("This box is saved on your phone. It has not reached the other phone yet.")
       );
@@ -183,10 +224,15 @@ export function AddBox({
   }
 
   useEffect(() => {
-    reserve();
-    // Reserve exactly once per mount of this screen.
+    // Not before the listener has spoken. An empty list that means "nothing
+    // yet" and one that means "no boxes" look the same, and only the second
+    // is safe to count from.
+    if (!loaded) return;
+    // Reserve exactly once per mount of this screen. The latch inside makes
+    // the second run under StrictMode a no-op.
+    reserve(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loaded]);
 
   /**
    * Saves the live document rather than the one reserved on mount.
@@ -221,7 +267,9 @@ export function AddBox({
         setRoomId(undefined);
         setNote("");
         reserved.current = false;
-        reserve();
+        // A fresh number, never the draft this entry started on: the box just
+        // saved may still read as a draft in the subscription for a tick.
+        reserve(false);
       } else {
         exit();
       }
@@ -362,12 +410,16 @@ export function AddBox({
       {/* Pinned below the scroll area so the keyboard never covers it. */}
       <div className="flex flex-col gap-3 border-t border-slate-800 p-4">
         {/* A dimmed button with no reason on it is the same as a broken one.
-            There is no number, which is the only thing that disables these,
-            and the reason it failed is on the error line above. */}
-        {container ? null : (
+            There is no number, which is the only thing that disables these.
+            Before the listener has spoken the number is on its way and the
+            line says so; after it, the reason it failed is on the error line
+            above. */}
+        {container ? null : loaded ? (
           <p className="text-sm text-amber-300">
             No box number yet, so there is nothing to save. Go back and open Add box again.
           </p>
+        ) : (
+          <p className="text-sm text-slate-400">Finding your next box number.</p>
         )}
         <Button onClick={() => save(true)} disabled={!container}>
           Save and next
@@ -383,7 +435,9 @@ export function AddBox({
           detail={
             container
               ? `Nothing on this box is saved yet. Number ${container.displayCode} is already reserved for it: delete the draft and the number goes back to your range${photos.length > 0 ? `, along with the ${photos.length} photo${photos.length === 1 ? "" : "s"} on it` : ""}. Keep it and the draft stays in the box list, where you can finish it later.`
-              : "No number was reserved, so there is no draft to decide about."
+              : loaded
+                ? "No number was reserved, so there is no draft to decide about."
+                : "No number has been reserved yet, so there is no draft to decide about."
           }
         >
           {/* No container means the reserve failed, so there is nothing to

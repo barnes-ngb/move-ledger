@@ -18,14 +18,23 @@ import { makeContainer, makeZone } from "../../domain/__tests__/factories";
 const container: Container = makeContainer({ id: "c1", displayCode: "042" });
 
 vi.mock("../../hooks/useContainers", () => ({
-  useContainers: () => ({ containers: [container], failed: false, retry: () => undefined }),
+  useContainers: () => ({ containers: [container], loaded: true, failed: false, retry: () => undefined }),
 }));
 vi.mock("../../hooks/usePhotoCounts", () => ({ usePhotoCounts: () => ({}) }));
 
 vi.mock("../box/AddBox", () => ({
-  AddBox: ({ onLeave }: { onLeave: () => void }) => (
+  AddBox: ({
+    draftId,
+    onDraft,
+    onLeave,
+  }: {
+    draftId?: string;
+    onDraft?: (id: string) => void;
+    onLeave: () => void;
+  }) => (
     <div>
-      <p>on add box</p>
+      <p>on add box{draftId ? `, draft ${draftId}` : ""}</p>
+      <button onClick={() => onDraft?.("c9")}>reserve c9</button>
       <button onClick={onLeave}>leave add box</button>
     </div>
   ),
@@ -165,6 +174,26 @@ describe("the move overview and the screens under it", () => {
     fireEvent.click(screen.getByText("See all boxes"));
     fireEvent.click(screen.getByText("list back"));
     await waitFor(() => expect(screen.getByText("Add a box")).toBeDefined());
+  });
+
+  /**
+   * The draft travels in the history entry so a reload lands back on it. The
+   * entry is replaced rather than pushed: back from Add box must still return
+   * to the move in one press, draft or no draft.
+   */
+  it("holds the draft Add box is on in the history entry, without a new entry", async () => {
+    open();
+    fireEvent.click(screen.getByText("Add a box"));
+    const depthBefore = (window.history.state?.moveLedgerNav?.depth ?? 0) as number;
+
+    fireEvent.click(screen.getByText("reserve c9"));
+
+    expect(screen.getByText("on add box, draft c9")).toBeDefined();
+    expect(window.history.state?.moveLedgerNav?.views?.move).toEqual({ name: "add", draftId: "c9" });
+    expect(window.history.state?.moveLedgerNav?.depth).toBe(depthBefore);
+
+    await pressSystemBack();
+    await waitFor(() => expect(screen.getByText("See all boxes")).toBeDefined());
   });
 
   it("leaves Add box for the move", async () => {

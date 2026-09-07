@@ -111,6 +111,14 @@ The last error line is still owed: a box saved with no photo is saved, and nothi
 
 **The way out.** The back control and the leave question are in section 0.
 
+### What shipped, APPLY-13
+
+Amended 2026-09-07 after production issued box number 1 twice in one move.
+
+**The number waits for the list.** "The number appears before the user does anything" was read as reserve on mount, and on mount the containers listener has not always spoken: reload or relaunch on this screen and the list is empty for a tick, and an empty list reserves the bottom of the range. The screen now reserves on the listener's first delivery. Until then the number reads "..." and the line under the buttons says "Finding your next box number." rather than telling the person to go back. Offline, the first delivery comes from the cache and the wait is not visible. The member's number watermark is the guard behind this one; see `docs/02-domain-model.md`.
+
+**Backgrounding the app preserves the draft, and now so does a reload.** The box this screen is standing on travels in the history entry, so a reload or a relaunch lands on the same draft with its number and its photos rather than reserving a second number for a box that already has one. A draft that has been saved, voided, or deleted in the meantime is not resumed; a fresh number is reserved instead. The room and the note are still component state and still do not survive, per the APPLY-10 entry above.
+
 ### What shipped, APPLY-12
 
 Amended 2026-08-17. **The suggestion block is on this screen now, below the photos.** It was built in APPLY-07 and mounted on box detail only, which was wrong about where a person is standing when a suggestion arrives. A summary is written in the background after the photo uploads, so it usually lands while the same box is still being packed, and this screen did not render `aiSummary` at all. The only way to read one was to save the box, leave, open the box list, find the number, and open it.

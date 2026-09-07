@@ -16,6 +16,18 @@ service cloud.firestore {
       return request.resource.data[field] == resource.data[field];
     }
 
+    // highestIssued is the highest box number a member has ever reserved.
+    // Once set it can only stay or rise: a client that lowered it, or removed
+    // it, would hand a number that may already be written in marker back
+    // into circulation. Absent on the stored document means nothing has been
+    // reserved yet, so the first value is free.
+    function watermarkNeverFalls() {
+      return !('highestIssued' in resource.data)
+        || ('highestIssued' in request.resource.data
+            && request.resource.data.highestIssued is int
+            && request.resource.data.highestIssued >= resource.data.highestIssued);
+    }
+
     match /moves/{moveId} {
       // get and list cannot share a condition. On a list, moveId is unbound,
       // so the get() inside isMember() resolves to null. See docs/10-security-rules.md.
@@ -34,7 +46,10 @@ service cloud.firestore {
 
       match /members/{memberId} {
         allow read: if isMember(moveId);
-        allow write: if isMember(moveId);
+        allow create, delete: if isMember(moveId);
+        // The number watermark may stay or rise, never fall. See
+        // docs/02-domain-model.md, Number reservation.
+        allow update: if isMember(moveId) && watermarkNeverFalls();
       }
 
       match /locations/{locationId} {

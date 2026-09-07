@@ -23,7 +23,12 @@ import { useOfferHome } from "./nav";
  */
 type View =
   | { name: "home" }
-  | { name: "add" }
+  /**
+   * `draftId` is the box Add box is standing on, kept in the history entry
+   * so a reload or a relaunch lands back on the same draft rather than
+   * reserving a second number for a box that already has one.
+   */
+  | { name: "add"; draftId?: string }
   | { name: "find" }
   | { name: "list"; query: string }
   | { name: "detail"; id: string; from: View };
@@ -41,7 +46,7 @@ function backLabel(from: View): string {
 export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onSetup: () => void }) {
   const nav = useHistoryView<View>("move", HOME);
   const view = nav.view;
-  const { containers, failed, retry } = useContainers(ctx.move?.id ?? null);
+  const { containers, loaded, failed, retry } = useContainers(ctx.move?.id ?? null);
   const photoCounts = usePhotoCounts(ctx.move?.id ?? null, view.name === "list");
 
   // Every screen under this one goes home through the header title. Add box
@@ -55,7 +60,8 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
   // Containers are subscribed here rather than in useMove, so the failure is
   // answered here too. Falling through would show a box count of zero and let
   // Add box reserve a number against an empty list, which is the one mistake
-  // in this app that a marker makes permanent.
+  // in this app that a marker makes permanent. `loaded` covers the other way
+  // the list can be empty, which is not having arrived yet.
   if (failed) return <SubscriptionFailed title="Cannot load your boxes" onRetry={retry} />;
 
   if (view.name === "add") {
@@ -64,8 +70,13 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         moveId={moveId}
         me={ctx.me}
         containers={containers}
+        loaded={loaded}
         zones={ctx.zones}
         uid={uid}
+        draftId={view.draftId}
+        // Replaces the entry rather than pushing one: it is the same screen,
+        // and back should still return to wherever Add box was opened from.
+        onDraft={(draftId) => nav.update({ name: "add", draftId })}
         onLeave={nav.home}
       />
     );

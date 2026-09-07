@@ -48,10 +48,13 @@ interface MoveMember {
   role: "owner" | "member";
   numberRangeStart: number;
   numberRangeEnd: number;
+  highestIssued?: number;      // number watermark, absent means 0. See Number reservation.
 }
 ```
 
 Number ranges are assigned once at setup and are not dynamic. Example: 1 to 499 and 500 to 999.
+
+`highestIssued` is the highest `sequenceNumber` this member has ever been handed. It is written in the same batch as the container that took the number, so it cannot lag behind the containers collection on the server, and the rules refuse any write that lowers or removes it.
 
 ## Location
 
@@ -264,6 +267,14 @@ Activity is append-only. Nothing edits or deletes an event.
 
 ## Number reservation
 
-No counter document and no transaction. Each member owns a disjoint range. To get the next number, query the local Firestore cache for the highest `sequenceNumber` within the current member's range and add one. This works offline because the cache holds every container the member has created.
+No counter document and no transaction. Each member owns a disjoint range. To get the next number, take the highest `sequenceNumber` within the current member's range across every container the local cache holds, voided ones included, and the member's own `highestIssued`, and add one. This works offline because the cache holds every container the member has created.
 
-The failure mode this cannot survive is one person signing into the same account on two devices while both are offline. That is a documented limitation, not a bug to fix.
+The watermark exists because the containers list is not always complete when a number is needed. Amended 2026-09-07 after production issued box number 1 twice in one move: the app had reloaded on the Add box screen, the screen reserved before the containers listener had delivered anything, and an empty list yields the bottom of the range. `highestIssued` is one more number in the list `nextSequenceNumber` reads, so a member document alone is enough to keep counting from the right place. The container and the watermark go to Firestore in one `writeBatch`. A batch queues offline exactly like a single write, and it is never two writes, because a crash between them would be the hole the watermark closes.
+
+The screen also waits for the first containers snapshot before it reserves. The watermark is the guard that holds when that wait is not enough, and the wait is what keeps the watermark from being the only guard.
+
+### What reservation cannot survive
+
+Offline reservation is safe for one member on **one active device**. Two devices signed in as the same member can each be handed the same number while both are offline: neither can see the other's containers or the other's watermark until they reconnect. The watermark narrows that to the offline window rather than eliminating it; once either device syncs, the other's next reservation counts past it. There is no server-side check that could close this without a transaction, and a transaction needs a signal, which is the thing the app is designed not to require.
+
+So each person packs from one phone. That is a rule of use, recorded in `plans/STATUS.md` and `decisions/0005-google-sign-in-two-accounts.md`, not a bug to fix.

@@ -72,10 +72,20 @@ const draft: Container = makeContainer({
  * how this screen sees anything written to the box while it is open, which is
  * the whole path a suggestion travels.
  */
-function open(containers: readonly Container[] = []) {
+function open(containers: readonly Container[] = [], extra: { draftId?: string; onDraft?: (id: string) => void } = {}) {
   const onLeave = vi.fn();
   render(
-    <AddBox moveId="m1" me={me} containers={containers} zones={zones} uid="uid-1" onLeave={onLeave} />
+    <AddBox
+      moveId="m1"
+      me={me}
+      containers={containers}
+      loaded
+      zones={zones}
+      uid="uid-1"
+      draftId={extra.draftId}
+      onDraft={extra.onDraft}
+      onLeave={onLeave}
+    />
   );
   return onLeave;
 }
@@ -171,6 +181,97 @@ describe("AddBox", () => {
     expect(mocks.saveContainer).toHaveBeenCalledTimes(1);
     expect(mocks.deleteContainer).not.toHaveBeenCalled();
     expect(onLeave).toHaveBeenCalledTimes(1);
+  });
+});
+
+/**
+ * The incident APPLY-13 was written for. `containers` starts as an empty
+ * array before the listener has delivered anything, and reserving against
+ * that hands out the bottom of the range: production issued number 1 twice
+ * after a reload on this screen. The screen now waits for the first snapshot,
+ * and takes back the draft the entry was on rather than reserving again.
+ */
+describe("before the containers listener has spoken", () => {
+  function openUnloaded(containers: readonly Container[] = [], draftId?: string) {
+    const onDraft = vi.fn();
+    const view = render(
+      <AddBox moveId="m1" me={me} containers={containers} loaded={false} zones={zones} uid="uid-1" draftId={draftId} onDraft={onDraft} onLeave={vi.fn()} />
+    );
+    return { view, onDraft };
+  }
+
+  it("does not reserve, and says the number is on its way", () => {
+    openUnloaded();
+    expect(mocks.reserveContainer).not.toHaveBeenCalled();
+    expect(screen.getByText("...")).toBeDefined();
+    expect(screen.getByText("Finding your next box number.")).toBeDefined();
+    expect(screen.queryByText(/Go back and open Add box again/)).toBeNull();
+    expect((screen.getByText("Save and next") as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("reserves once the first snapshot arrives, against what it delivered", () => {
+    const packed = makeContainer({ id: "c1", sequenceNumber: 41, displayCode: "041", status: "packed" });
+    const { view, onDraft } = openUnloaded();
+    view.rerender(
+      <AddBox moveId="m1" me={me} containers={[packed]} loaded zones={zones} uid="uid-1" onDraft={onDraft} onLeave={vi.fn()} />
+    );
+    expect(mocks.reserveContainer).toHaveBeenCalledTimes(1);
+    expect(mocks.reserveContainer.mock.calls[0]?.[2]).toEqual([packed]);
+    expect(onDraft).toHaveBeenCalledWith("c9");
+    expect(screen.getAllByText("042").length).toBe(2);
+  });
+
+  it("takes back the draft the entry was on rather than reserving again", () => {
+    const mine = makeContainer({
+      id: "c7",
+      sequenceNumber: 7,
+      displayCode: "007",
+      status: "filling",
+      ownerMemberId: "mem1",
+    });
+    const { view } = openUnloaded([], "c7");
+    view.rerender(
+      <AddBox moveId="m1" me={me} containers={[mine]} loaded zones={zones} uid="uid-1" draftId="c7" onLeave={vi.fn()} />
+    );
+    expect(mocks.reserveContainer).not.toHaveBeenCalled();
+    expect(screen.getAllByText("007").length).toBe(2);
+  });
+
+  it("reserves a fresh number when the draft it was on has since been saved", () => {
+    const saved = makeContainer({
+      id: "c7",
+      sequenceNumber: 7,
+      displayCode: "007",
+      status: "packed",
+      ownerMemberId: "mem1",
+      labelConfirmedAt: "2026-09-07T00:00:00.000Z",
+    });
+    open([saved], { draftId: "c7" });
+    expect(mocks.reserveContainer).toHaveBeenCalledTimes(1);
+    expect(screen.getAllByText("042").length).toBe(2);
+  });
+
+  it("reserves a fresh number when the draft it was on is gone", () => {
+    open([], { draftId: "c7" });
+    expect(mocks.reserveContainer).toHaveBeenCalledTimes(1);
+  });
+
+  it("saves the resumed draft and moves on to a fresh number", () => {
+    const mine = makeContainer({
+      id: "c7",
+      sequenceNumber: 7,
+      displayCode: "007",
+      status: "filling",
+      ownerMemberId: "mem1",
+    });
+    open([mine], { draftId: "c7" });
+    expect(mocks.reserveContainer).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText("Save and next"));
+    expect(mocks.saveContainer.mock.calls[0]?.[1]?.id).toBe("c7");
+    // Save and next never resumes: the box just saved still reads as a draft
+    // in the subscription for a tick, and resuming it would be the same box.
+    expect(mocks.reserveContainer).toHaveBeenCalledTimes(1);
+    expect(mocks.reserveContainer.mock.calls[0]?.[2]).toEqual([mine]);
   });
 });
 
@@ -346,7 +447,7 @@ describe("a suggestion arriving while the box is open", () => {
       });
 
       const { rerender } = render(
-        <AddBox moveId="m1" me={me} containers={[suggested]} zones={zones} uid="uid-1" onLeave={vi.fn()} />
+        <AddBox moveId="m1" me={me} containers={[suggested]} loaded zones={zones} uid="uid-1" onLeave={vi.fn()} />
       );
       fireEvent.click(screen.getByText("Dismiss"));
       expect(screen.queryByText("Suggested contents")).toBeNull();
@@ -354,7 +455,7 @@ describe("a suggestion arriving while the box is open", () => {
       // The subscription catches up, then the function writes another one.
       const asked: Container = { ...draft, aiSummary: "A kettle and four mugs" };
       rerender(
-        <AddBox moveId="m1" me={me} containers={[asked]} zones={zones} uid="uid-1" onLeave={vi.fn()} />
+        <AddBox moveId="m1" me={me} containers={[asked]} loaded zones={zones} uid="uid-1" onLeave={vi.fn()} />
       );
 
       expect(screen.getByText("A kettle and four mugs")).toBeDefined();

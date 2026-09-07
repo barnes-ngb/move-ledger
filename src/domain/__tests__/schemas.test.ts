@@ -120,4 +120,22 @@ describe("moveMemberSchema", () => {
     expect(moveMemberSchema.safeParse({ ...base, numberRangeStart: 1, numberRangeEnd: 499 }).success).toBe(true);
     expect(moveMemberSchema.safeParse({ ...base, numberRangeStart: 500, numberRangeEnd: 1 }).success).toBe(false);
   });
+
+  /**
+   * The watermark is optional because every member written before APPLY-13
+   * lacks it, and absent reads as 0. What it can never be is negative or a
+   * fraction: it is a box number or nothing.
+   */
+  it("accepts an absent, zero, or whole-number watermark and nothing else", () => {
+    const member = {
+      id: "mem1", moveId: "m1", uid: "u1", displayName: "Nathan", role: "owner" as const,
+      numberRangeStart: 1, numberRangeEnd: 499,
+    };
+    expect(moveMemberSchema.safeParse(member).success).toBe(true);
+    expect(moveMemberSchema.safeParse({ ...member, highestIssued: 0 }).success).toBe(true);
+    expect(moveMemberSchema.safeParse({ ...member, highestIssued: 42 }).success).toBe(true);
+    expect(moveMemberSchema.safeParse({ ...member, highestIssued: -1 }).success).toBe(false);
+    expect(moveMemberSchema.safeParse({ ...member, highestIssued: 1.5 }).success).toBe(false);
+    expect(moveMemberSchema.safeParse({ ...member, highestIssued: "42" }).success).toBe(false);
+  });
 });

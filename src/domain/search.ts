@@ -1,5 +1,6 @@
 import type { Container, Zone } from "./schemas";
 import { toDisplayCode } from "./numbers";
+import { aiItemsOf, contentsItemsOf } from "./contents";
 
 /**
  * Firestore has no full text search. At a few hundred boxes, filtering the local
@@ -8,17 +9,31 @@ import { toDisplayCode } from "./numbers";
 export function buildSearchText(
   container: Pick<
     Container,
-    "displayCode" | "title" | "notes" | "contentsSummary" | "contentsCategories" | "aiSummary" | "aiCategories"
+    | "displayCode"
+    | "title"
+    | "notes"
+    | "contentsSummary"
+    | "contentsItems"
+    | "contentsCategories"
+    | "aiSummary"
+    | "aiItems"
+    | "aiCategories"
   >,
   destinationZoneName?: string
 ): string {
+  // The items stand in for the joined strings rather than going in beside
+  // them: a trusted list joins to exactly its string, so both would be every
+  // word twice. They go in through the same helpers the screens read them
+  // with, so a list a phone on an older build has left stale beside its
+  // string is not searched for words that are no longer on screen, and a box
+  // from before items is indexed by its split string.
   return [
     container.displayCode,
     container.title,
     container.notes,
-    container.contentsSummary,
+    ...contentsItemsOf(container),
     ...(container.contentsCategories ?? []),
-    container.aiSummary,
+    ...aiItemsOf(container),
     ...(container.aiCategories ?? []),
     destinationZoneName,
   ]
@@ -126,6 +141,7 @@ function fieldsFor(container: Container, query: string, zoneName?: string): Matc
   if (matchesAnyToken(query, container.notes)) fields.push("notes");
   if (
     matchesAnyToken(query, container.contentsSummary) ||
+    matchesAnyToken(query, contentsItemsOf(container).join(" ")) ||
     matchesAnyToken(query, container.contentsCategories?.join(" "))
   ) {
     fields.push("contentsSummary");
@@ -133,6 +149,7 @@ function fieldsFor(container: Container, query: string, zoneName?: string): Matc
   if (matchesAnyToken(query, zoneName)) fields.push("zone");
   if (
     matchesAnyToken(query, container.aiSummary) ||
+    matchesAnyToken(query, aiItemsOf(container).join(" ")) ||
     matchesAnyToken(query, container.aiCategories?.join(" "))
   ) {
     fields.push("aiSummary");

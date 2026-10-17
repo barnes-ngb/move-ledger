@@ -219,7 +219,7 @@ Amended again 2026-08-15 during the APPLY-09 run. The keypad screen shows voided
 
 ### Sources
 
-`displayCode`, title, notes, confirmed contents summary and its categories, AI summary and its categories, destination zone name. A category match is reported as the text it came with, so a suggested category is marked the way a suggested summary is. Categories added 2026-10-17 in APPLY-16.
+`displayCode`, title, notes, confirmed contents items and their categories, suggested items and their categories, destination zone name. Items added 2026-10-17 in APPLY-18; a box from before items is searched by its split string. A category match is reported as the text it came with, so a suggested category is marked the way a suggested summary is. Categories added 2026-10-17 in APPLY-16.
 
 ### Result card
 
@@ -295,7 +295,7 @@ Amended 2026-10-17. **Ask again no longer clears the suggestion first.** It asks
 
 **Write a contents list.** When a box has no suggestion and at least one contents photo has uploaded without a list, because its call failed or because it was taken before the feature was on, the same panel offers this control. It asks for those photos only. It appears on box detail and not on Add box, where a photo has usually just uploaded and its own request is already out, and only while the move has the contents list on.
 
-**Categories show beside the text they came with.** Under a suggestion, and under the confirmed contents list once accepted, as one line: "Kinds of things: kitchen, books". They are searched, so they are shown.
+**Categories show beside the text they came with.** Under a suggestion, and under the confirmed contents list once accepted, as one line: "Kinds of things: kitchen, books". They are searched, so they are shown. Amended 2026-10-17 in APPLY-18: they are small chips under a "Kinds of things" heading now, in the same place.
 
 ### What shipped, APPLY-17
 
@@ -304,6 +304,18 @@ Amended 2026-10-17.
 **Change status.** The Actions line above asks for the legal next transitions as primary buttons and everything else behind an overflow, and until this run there was no everything else: a mis-tap on Mark loaded could not be undone from any screen. Under the forward buttons, a quiet underlined control reads "Change status". It reveals one button for every other move `canTransition` allows, which is every backward one, each reading "Mark packed", "Mark draft", and so on, plus "Keep this status" to put the list away. Choosing one writes it through `setStatus`, which logs it with `backward: true`, and closes the list. A draft has nowhere to go back to and does not show the control. Moving a box back to draft does not make it deletable: its label is still confirmed, and `canDelete` reads that.
 
 **Status words.** A status is never shown raw. `statusLabel` in `src/domain/status.ts` is the one place the word is decided, and every screen that shows a status goes through it: the status line and every Mark button here, the keypad rows on Find box, and the box list. Per doc 09 it reads `filling` as "draft" and every other status as its own name. Box detail and Find box were showing "filling" until this run.
+
+### What shipped, APPLY-18
+
+Amended 2026-10-17. **The contents list is a list.** The suggestion and the confirmed contents both read one item per line as a bulleted list, at the type size the paragraph was set in, with the categories as small chips under it. Doc 07 has the data side: the function returns items, and the joined string is still written beside them.
+
+**Confirmed contents read first and edit second.** The field used to be a text area holding the whole sentence. With a list on the box it is now the list and an **Edit contents** control. Edit opens a text area labelled "Contents, one per line" holding one item per line, with **Save contents** and **Cancel** under it. Save splits on new lines and drops the blank ones after trimming each; it stays disabled until that list differs from the stored one, so a blank line or stray spaces are not a change. A box with nothing listed opens straight on the text area, because Edit would be one tap for nothing. A voided box shows the list and no control.
+
+**The suggestion edits the same way.** Edit on the suggestion opens the same one-per-line field, and **Save and accept** accepts what it holds as items.
+
+**A box from before items reads as a list too.** Its string is split on ", " when the screen reads it, and nothing is written back until a person saves or answers. A list written as a sentence by the old prompt comes apart where its commas were, which is close but not always one thing per line.
+
+**Add box.** The brief named an Add box contents field from APPLY-11. There is none: APPLY-11's contents field is on this screen. Add box shows the suggestion block, which follows the one-per-line rule above, and its own fields are the title and the note, which are unchanged.
 
 ### Adding a photo: two controls, one path
 

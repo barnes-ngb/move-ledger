@@ -86,16 +86,30 @@ describe("Ask again", () => {
 
   it("replaces the suggestion with every answer once all of them arrive", async () => {
     mocks.askForSummary
-      .mockResolvedValueOnce({ summary: "books", categories: ["books"] })
-      .mockResolvedValueOnce({ summary: "a lamp", categories: ["lighting", "books"] });
+      .mockResolvedValueOnce({ items: ["books", "a lamp"], summary: "books, a lamp", categories: ["books"] })
+      .mockResolvedValueOnce({ items: ["A lamp", "tea towels"], categories: ["lighting", "books"] });
     render(<AiSummary moveId="m1" container={suggested} zones={zones} photos={twoPhotos} uid="uid-1" />);
 
     fireEvent.click(screen.getByText("Ask again, 2 photos"));
 
     await waitFor(() => expect(mocks.replaceAiSummary).toHaveBeenCalledTimes(1));
-    const [, , , text, categories] = mocks.replaceAiSummary.mock.calls[0]!;
-    expect(text).toBe("books a lamp");
+    const [, , , items, categories] = mocks.replaceAiSummary.mock.calls[0]!;
+    // The second photo's lamp is the first photo's lamp, so it is listed once.
+    expect(items).toEqual(["books", "a lamp", "tea towels"]);
     expect(categories).toEqual(["books", "lighting"]);
+  });
+
+  /** A function deployed before APPLY-18 answers with a string and nothing else. */
+  it("splits a reply from a function that predates items", async () => {
+    mocks.askForSummary
+      .mockResolvedValueOnce({ summary: "books, a lamp", categories: ["books"] })
+      .mockResolvedValueOnce({ summary: "tea towels." });
+    render(<AiSummary moveId="m1" container={suggested} zones={zones} photos={twoPhotos} uid="uid-1" />);
+
+    fireEvent.click(screen.getByText("Ask again, 2 photos"));
+
+    await waitFor(() => expect(mocks.replaceAiSummary).toHaveBeenCalledTimes(1));
+    expect(mocks.replaceAiSummary.mock.calls[0]![3]).toEqual(["books", "a lamp", "tea towels"]);
   });
 
   /**
@@ -142,7 +156,44 @@ describe("Ask again", () => {
   it("shows the suggested categories beside the text", () => {
     render(<AiSummary moveId="m1" container={suggested} zones={zones} photos={twoPhotos} uid="uid-1" />);
 
-    expect(screen.getByText("Kinds of things: kitchen")).toBeDefined();
+    expect(screen.getByText("Kinds of things")).toBeDefined();
+    expect(screen.getByText("kitchen")).toBeDefined();
+  });
+});
+
+describe("the suggestion as a list", () => {
+  const listed = makeContainer({
+    aiItems: ["white ceramic vase", "blue plastic bin"],
+    aiSummary: "white ceramic vase, blue plastic bin",
+  });
+
+  it("shows one item per line", () => {
+    render(<AiSummary moveId="m1" container={listed} zones={zones} photos={[photo()]} uid="uid-1" />);
+
+    const lines = screen.getAllByRole("listitem").map((li) => li.textContent);
+    expect(lines).toEqual(["white ceramic vase", "blue plastic bin"]);
+  });
+
+  it("accepts the items as they are", () => {
+    mocks.acceptAiSummary.mockReturnValue({ value: listed, written: Promise.resolve() });
+    render(<AiSummary moveId="m1" container={listed} zones={zones} photos={[photo()]} uid="uid-1" />);
+
+    fireEvent.click(screen.getByText("Accept"));
+
+    expect(mocks.acceptAiSummary.mock.calls[0]![3]).toEqual(["white ceramic vase", "blue plastic bin"]);
+  });
+
+  it("edits one item per line and drops the blank ones", () => {
+    mocks.acceptAiSummary.mockReturnValue({ value: listed, written: Promise.resolve() });
+    render(<AiSummary moveId="m1" container={listed} zones={zones} photos={[photo()]} uid="uid-1" />);
+
+    fireEvent.click(screen.getByText("Edit"));
+    const field = screen.getByLabelText("Contents, one per line") as HTMLTextAreaElement;
+    expect(field.value).toBe("white ceramic vase\nblue plastic bin");
+    fireEvent.change(field, { target: { value: "white ceramic vase\n\n  stapler  \n" } });
+    fireEvent.click(screen.getByText("Save and accept"));
+
+    expect(mocks.acceptAiSummary.mock.calls[0]![3]).toEqual(["white ceramic vase", "stapler"]);
   });
 });
 

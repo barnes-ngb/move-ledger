@@ -107,10 +107,16 @@ export const containerSchema = z.object({
   type: z.enum(["box", "plastic_bin", "furniture", "appliance", "bundle", "other"]),
   title: z.string().optional(),
   notes: z.string().optional(),
+  /** The confirmed items joined with ", ". Kept for the export and for a phone on an older build. */
   contentsSummary: z.string().optional(),
+  /** The confirmed contents list, one item each. Shown and searched through `contentsItemsOf`, which handles a box from before items. */
+  contentsItems: z.array(z.string()).optional(),
   /** Categories that came with an accepted suggestion. Confirmed, like `contentsSummary`, and removed with it. */
   contentsCategories: z.array(z.string()).optional(),
+  /** The suggested items joined with ", ". Written by the function beside `aiItems`. */
   aiSummary: z.string().optional(),
+  /** The suggested contents list, one item each. A suggestion until accepted. Shown and searched through `aiItemsOf`. */
+  aiItems: z.array(z.string()).optional(),
   /** Categories the function returned beside `aiSummary`. A suggestion until accepted. */
   aiCategories: z.array(z.string()).optional(),
   ownerMemberId: z.string().min(1),

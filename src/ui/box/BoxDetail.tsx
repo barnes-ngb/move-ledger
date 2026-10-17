@@ -1,13 +1,23 @@
 import { useState } from "react";
 import type { Container, Zone } from "../../domain";
-import { STATUS_ORDER, canDelete, canTransition, hasCondition, isVoided, nextStatuses, statusLabel } from "../../domain";
+import {
+  STATUS_ORDER,
+  canDelete,
+  canTransition,
+  contentsItemsOf,
+  hasCondition,
+  isVoided,
+  nextStatuses,
+  parseItemLines,
+  statusLabel,
+} from "../../domain";
 import type { ConditionKey } from "../../domain/conditions";
 import {
   clearContainerCondition,
   deleteContainer,
   reportContainerCondition,
   saveContainer,
-  setContentsSummary,
+  setContentsItems,
   setStatus,
   setTitle,
   unvoidContainer,
@@ -17,6 +27,7 @@ import {
 import { usePhotos } from "../../hooks/usePhotos";
 import { BackBar, Button, Confirm, ErrorLine, Field, TextArea } from "../kit";
 import { AiSummary } from "./AiSummary";
+import { CategoryChips, ItemList } from "./ContentsList";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 
@@ -52,12 +63,16 @@ export function BoxDetail({
 }) {
   const [title, setTitleText] = useState(container.title ?? "");
   const [note, setNote] = useState(container.notes ?? "");
-  const stored = container.contentsSummary ?? "";
+  // The confirmed items, and the same list as the edit field holds it: one
+  // item per line.
+  const storedItems = contentsItemsOf(container);
+  const stored = storedItems.join("\n");
   const [contents, setContents] = useState(stored);
+  const [editingContents, setEditingContents] = useState(false);
   // What the document said last time this rendered. Accepting a suggestion
-  // writes `contentsSummary` while this screen is open, and the field below has
-  // to show what the box now holds rather than the blank it started as. An
-  // edit in progress is kept: only an untouched field takes the new value.
+  // writes the items while this screen is open, and the field below has to
+  // show what the box now holds rather than the blank it started as. An edit
+  // in progress is kept: only an untouched field takes the new value.
   const [lastStored, setLastStored] = useState(stored);
   if (stored !== lastStored) {
     setLastStored(stored);
@@ -80,10 +95,16 @@ export function BoxDetail({
   const deletable = canDelete(container);
 
   // Accepted with the list and searched with it, so they are shown with it.
-  // Emptying the list removes them; see `setContentsSummary`.
-  const categoriesLine = container.contentsCategories?.length ? (
-    <p className="mt-2 text-sm text-slate-400">Kinds of things: {container.contentsCategories.join(", ")}</p>
-  ) : null;
+  // Emptying the list removes them; see `setContentsItems`.
+  const categoriesLine = (
+    <div className="mt-3">
+      <CategoryChips categories={container.contentsCategories ?? []} />
+    </div>
+  );
+  // A box with nothing listed opens straight on the field, since there is no
+  // list to read and Edit would be one tap for nothing.
+  const showEditor = editingContents || storedItems.length === 0;
+  const edited = parseItemLines(contents).join("\n");
 
   function run(write: () => { written: Promise<unknown> }) {
     setError(null);
@@ -181,24 +202,59 @@ export function BoxDetail({
             screen. A voided box shows it and cannot change it, like everything
             else here. */}
         {voided ? (
-          container.contentsSummary ? (
+          storedItems.length > 0 ? (
             <div>
               <p className="text-sm text-slate-400">Contents</p>
-              <p className="mt-1 text-lg leading-relaxed text-slate-200">{container.contentsSummary}</p>
+              <div className="mt-1">
+                <ItemList items={storedItems} />
+              </div>
               {categoriesLine}
             </div>
           ) : null
-        ) : (
+        ) : showEditor ? (
           <div>
-            <TextArea label="Contents" value={contents} onChange={setContents} />
+            <TextArea label="Contents, one per line" value={contents} onChange={setContents} rows={6} />
             {categoriesLine}
-            <div className="mt-3">
+            <div className="mt-3 flex flex-col gap-2">
               <Button
-                onClick={() => run(() => setContentsSummary(moveId, container, contents, zones, uid))}
-                disabled={contents.trim() === stored}
+                onClick={() => {
+                  setEditingContents(false);
+                  run(() => setContentsItems(moveId, container, parseItemLines(contents), zones, uid));
+                }}
+                disabled={edited === stored}
                 tone="quiet"
               >
                 Save contents
+              </Button>
+              {storedItems.length > 0 ? (
+                <Button
+                  onClick={() => {
+                    setContents(stored);
+                    setEditingContents(false);
+                  }}
+                  tone="quiet"
+                >
+                  Cancel
+                </Button>
+              ) : null}
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p className="text-sm text-slate-400">Contents</p>
+            <div className="mt-1">
+              <ItemList items={storedItems} />
+            </div>
+            {categoriesLine}
+            <div className="mt-3">
+              <Button
+                onClick={() => {
+                  setContents(stored);
+                  setEditingContents(true);
+                }}
+                tone="quiet"
+              >
+                Edit contents
               </Button>
             </div>
           </div>

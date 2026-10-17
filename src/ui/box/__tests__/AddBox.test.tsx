@@ -338,7 +338,11 @@ describe("a suggestion arriving while the box is open", () => {
   it("shows the block when the live box carries one", () => {
     open([suggested]);
     expect(screen.getByText("Suggested contents")).toBeDefined();
-    expect(screen.getByText("Books, a lamp, two mugs")).toBeDefined();
+    // A string with no list beside it, as every box before APPLY-18 has. It
+    // is split for the screen, one item per line.
+    expect(screen.getByText("Books")).toBeDefined();
+    expect(screen.getByText("a lamp")).toBeDefined();
+    expect(screen.getByText("two mugs")).toBeDefined();
     expect(screen.getByText("Accept")).toBeDefined();
     expect(screen.getByText("Dismiss")).toBeDefined();
   });
@@ -353,7 +357,7 @@ describe("a suggestion arriving while the box is open", () => {
     fireEvent.click(screen.getByText("Accept"));
 
     expect(mocks.acceptAiSummary).toHaveBeenCalledTimes(1);
-    expect(mocks.acceptAiSummary.mock.calls[0]?.[3]).toBe("Books, a lamp, two mugs");
+    expect(mocks.acceptAiSummary.mock.calls[0]?.[3]).toEqual(["Books", "a lamp", "two mugs"]);
     // Both are component state on a screen the suggestion writes around
     // rather than through, so neither can be cleared by answering it.
     expect((screen.getByLabelText("Note, optional") as HTMLInputElement).value).toBe(

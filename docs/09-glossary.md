@@ -41,7 +41,9 @@ Why the split exists: most containers are boxes, but furniture and appliances ar
 
 **Open-first.** A box with `unpackPriority` of `immediate` or `first_night`.
 
-**Confirmed text.** Text a person typed or explicitly accepted. Distinct from `aiSummary`, which is a suggestion until accepted. `contentsCategories` is confirmed text: it is what `aiCategories` becomes when the suggestion beside it is accepted.
+**Confirmed text.** Text a person typed or explicitly accepted. Distinct from `aiSummary` and `aiItems`, which are a suggestion until accepted. `contentsItems` and `contentsCategories` are confirmed text: they are what `aiItems` and `aiCategories` become when the suggestion is accepted.
+
+**Item.** One line of a contents list, such as "white ceramic vase". `aiItems` holds the suggested ones and `contentsItems` the confirmed ones. A line of text on a box, not a record: it has no id and no history of its own. See doc 07, APPLY-18. The interface does not use the word; it shows the list under "Contents" and asks for "one per line".
 
 ## Words not to use
 

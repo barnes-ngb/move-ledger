@@ -20,14 +20,15 @@ const MOVE_CAP = 800;
 /**
  * Doc 07's shape. The model is told to return exactly this and nothing else.
  *
- * An empty summary is a valid answer and means nothing worth listing is in
- * the photo. Requiring at least one character left the model no honest reply
- * to a screenshot, so it described the screenshot instead, and that sentence
- * went into the box's search text. Confidence was dropped on 2026-10-17: it
- * was written to an activity event and read nowhere.
+ * One item per thing seen, since APPLY-18. An empty list is a valid answer
+ * and means nothing worth listing is in the photo. Requiring at least one
+ * entry left the model no honest reply to a screenshot, so it described the
+ * screenshot instead, and that sentence went into the box's search text.
+ * Confidence was dropped on 2026-10-17: it was written to an activity event
+ * and read nowhere.
  */
 const modelResponse = z.object({
-  summary: z.string().max(400),
+  items: z.array(z.string().min(1).max(80)).max(40),
   categories: z.array(z.string()).max(6),
 });
 
@@ -48,6 +49,49 @@ function readModelReply(text: string): ModelResponse | null {
   }
   const parsed = modelResponse.safeParse(value);
   return parsed.success ? parsed.data : null;
+}
+
+/**
+ * Copies of `src/domain/contents.ts`, which this package cannot import: its
+ * build includes `functions/src` only. Kept to the three this file needs and
+ * to the same behavior, so a list the function appends to reads the same way
+ * the app reads it.
+ */
+const ITEM_SEPARATOR = ", ";
+
+function cleanItem(text: string): string {
+  return text.trim().replace(/[.,;]+$/, "").trim();
+}
+
+/**
+ * The suggested items already on the box. The stored list is trusted only
+ * while it joins to the string beside it: a phone on the build before items
+ * edits or clears `aiSummary` and leaves `aiItems` untouched, and a box from
+ * before items has no list at all. Either way the string is split.
+ */
+function storedItems(items: unknown, summary: unknown): string[] {
+  const text = typeof summary === "string" ? summary : "";
+  if (Array.isArray(items) && items.every((i) => typeof i === "string") && items.join(ITEM_SEPARATOR) === text) {
+    return items as string[];
+  }
+  return text
+    .split(ITEM_SEPARATOR)
+    .map(cleanItem)
+    .filter((item) => item.length > 0);
+}
+
+/** `existing` plus each of `incoming` whose text, ignoring case, is not there yet. */
+function mergeItems(existing: readonly string[], incoming: readonly string[]): string[] {
+  const seen = new Set(existing.map((item) => item.toLowerCase()));
+  const merged = [...existing];
+  for (const raw of incoming) {
+    const item = cleanItem(raw);
+    const key = item.toLowerCase();
+    if (!item || seen.has(key)) continue;
+    seen.add(key);
+    merged.push(item);
+  }
+  return merged;
 }
 
 export const summarizePhoto = onCall(
@@ -133,13 +177,15 @@ export const summarizePhoto = onCall(
 
     const result = await client.messages.create({
       model: "claude-sonnet-5",
-      max_tokens: 400,
+      // Forty items of up to eighty characters do not fit in 400, and a reply
+      // cut off at the cap fails the parse. The cap is a ceiling, not a charge.
+      max_tokens: 1200,
       // Sonnet 5 thinks by default when this is omitted, and max_tokens caps
       // thinking plus reply together. Listing what is in a photo needs no
       // reasoning, and a truncated reply would fail the parse on every photo.
       thinking: { type: "disabled" },
       system:
-        "You list what is visible in a photo of a partly packed moving box. " +
+        "You list what is visible in a photo of a partly packed moving box, one item per entry. " +
         "Someone will search this list later to find which box a thing ended up in, " +
         "and they will search for the detail they remember. So when a color, a " +
         "material, or a size is plainly visible, put it into the noun: " +
@@ -150,14 +196,16 @@ export const summarizePhoto = onCall(
         'include them: a magazine title, the brand on a product box. Text on documents, ' +
         "paperwork, mail, screens, or anything that is itself a page of writing must " +
         'never be transcribed: name the object, "a stack of papers", and stop. ' +
+        "Each item is a plain noun phrase, not a sentence, with no trailing punctuation, " +
+        'such as "coffee maker" or "stack of paperback books". Name each thing once. ' +
+        "At most 40 items, each under 80 characters. " +
         "If no household items are visible, or the image is a screen, a document, or " +
-        'not a box, reply with an empty summary "" and empty categories. Never describe ' +
+        "not a box, reply with an empty items list and empty categories. Never describe " +
         "what the image is instead. " +
         "Categories are up to six short lowercase words for the kind of things in the " +
         'box, such as "kitchen" or "books". ' +
-        "Keep the summary under 400 characters. " +
         "Reply with JSON only, no preamble and no code fence, matching: " +
-        '{"summary": string, "categories": string[]}',
+        '{"items": string[], "categories": string[]}',
       messages: [
         {
           role: "user",
@@ -191,10 +239,10 @@ export const summarizePhoto = onCall(
       throw new HttpsError("internal", "The reply could not be read.");
     }
 
-    // Nothing to list. The box is left exactly as it was: no line, no search
+    // Nothing to list. The box is left exactly as it was: no items, no search
     // words. `skipped` stops the photo being sent again without a redo.
-    const line = reply.summary.trim();
-    if (!line) {
+    const items = mergeItems([], reply.items);
+    if (items.length === 0) {
       await photoRef.update({
         summaryState: "skipped",
         summaryError: FieldValue.delete(),
@@ -213,24 +261,29 @@ export const summarizePhoto = onCall(
     } else {
       const containerRef = db.doc(`moves/${moveId}/containers/${photo.containerId}`);
 
-      // Accumulate. Each contents photo appends one line, so a box packed in
+      // Accumulate. Each contents photo appends its items, so a box packed in
       // layers ends up with all of its layers searchable rather than only the
-      // bottom one. A transaction because two photos can finish at once. The
-      // categories join the same union, and their words go into searchText
-      // beside the line so the two cannot drift apart.
+      // bottom one, and an item a second photo sees again is not listed
+      // twice. `aiSummary` is written as the joined list for the export and
+      // for a phone on the build before items. A transaction because two
+      // photos can finish at once. The categories join the same union, and
+      // the new words go into searchText beside them so the two cannot drift.
       await db.runTransaction(async (tx) => {
         const snap = await tx.get(containerRef);
-        const existing: string = snap.data()?.aiSummary ?? "";
-        const existingCategories: unknown = snap.data()?.aiCategories;
+        const data = snap.data() ?? {};
+        const existing = storedItems(data.aiItems, data.aiSummary);
+        const next = mergeItems(existing, items);
+        const added = next.slice(existing.length);
+        const existingCategories: unknown = data.aiCategories;
         const known = Array.isArray(existingCategories)
           ? existingCategories.filter((c): c is string => typeof c === "string")
           : [];
-        const next = existing ? `${existing} ${line}` : line;
-        const words = [line, ...categories].join(" ");
+        const words = [...added, ...categories].join(" ");
         tx.update(containerRef, {
-          aiSummary: next,
+          aiItems: next,
+          aiSummary: next.join(ITEM_SEPARATOR),
           aiCategories: [...new Set([...known, ...categories])],
-          searchText: `${snap.data()?.searchText ?? ""} ${words}`.toLowerCase().trim(),
+          searchText: `${data.searchText ?? ""} ${words}`.toLowerCase().trim(),
           updatedAt: new Date().toISOString(),
         });
         tx.update(photoRef, { summaryState: "done", ...settled });
@@ -246,6 +299,8 @@ export const summarizePhoto = onCall(
       payload: { photoId, categories },
     });
 
-    return { summary: line, categories };
+    // `summary` is the same list joined, for a client on the build before
+    // items, which reads nothing else from an Ask again answer.
+    return { items, summary: items.join(ITEM_SEPARATOR), categories };
   }
 );

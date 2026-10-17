@@ -10,6 +10,9 @@ export interface SummarizeRequest {
 }
 
 export interface SummarizeResponse {
+  /** One entry per thing seen. Absent from a function deployed before APPLY-18. */
+  items?: string[];
+  /** The items joined with ", ", or the old single-string reply from a function before items. */
   summary?: string;
   categories?: string[];
   skipped?: string;

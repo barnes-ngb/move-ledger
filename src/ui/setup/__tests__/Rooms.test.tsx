@@ -14,14 +14,14 @@ import { PALETTE } from "../../../lib/palette";
  * `updateZone`, and that two rooms wearing one colour is a note rather than a
  * refusal.
  */
-const mocks = vi.hoisted(() => ({ updateZone: vi.fn(), addZone: vi.fn(), updateMove: vi.fn() }));
+const mocks = vi.hoisted(() => ({ updateZone: vi.fn(), addZone: vi.fn(), setAiEnabled: vi.fn() }));
 
 const pending = { value: undefined, written: Promise.resolve() };
 
 vi.mock("../../../repositories", () => ({
   updateZone: mocks.updateZone,
   addZone: mocks.addZone,
-  updateMove: mocks.updateMove,
+  setAiEnabled: mocks.setAiEnabled,
   writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
 }));
 
@@ -58,7 +58,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mocks.updateZone.mockReturnValue(pending);
   mocks.addZone.mockReturnValue(pending);
-  mocks.updateMove.mockReturnValue(pending);
+  mocks.setAiEnabled.mockReturnValue(pending);
 });
 
 describe("a room's color", () => {
@@ -116,5 +116,31 @@ describe("a room's color", () => {
     fireEvent.click(screen.getByText("Keep BLUE"));
     expect(mocks.updateZone).not.toHaveBeenCalled();
     expect(screen.queryByText("Keep BLUE")).toBeNull();
+  });
+});
+
+/**
+ * First run is held on this screen only while the move has no rooms, so the
+ * first room used to end setup before Members was ever reached. The screen
+ * says when the first one goes in, and first run holds setup open on that.
+ */
+describe("the first room", () => {
+  function add(zones: Zone[], onFirstRoom: () => void) {
+    render(<Rooms move={move} zones={zones} onDone={() => undefined} onBack={null} onFirstRoom={onFirstRoom} />);
+    fireEvent.change(screen.getByLabelText("Add a room"), { target: { value: "Office" } });
+    fireEvent.click(screen.getByText("Add room"));
+  }
+
+  it("is reported, so first run can stay on setup", () => {
+    const onFirstRoom = vi.fn();
+    add([], onFirstRoom);
+    expect(mocks.addZone).toHaveBeenCalledTimes(1);
+    expect(onFirstRoom).toHaveBeenCalledTimes(1);
+  });
+
+  it("is not reported for a later room", () => {
+    const onFirstRoom = vi.fn();
+    add([kitchen], onFirstRoom);
+    expect(onFirstRoom).not.toHaveBeenCalled();
   });
 });

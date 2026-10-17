@@ -18,8 +18,7 @@ import { makeContainer, makeZone } from "../../../domain/__tests__/factories";
 const mocks = vi.hoisted(() => ({
   reserveContainer: vi.fn(),
   deleteContainer: vi.fn(),
-  saveContainer: vi.fn(),
-  setStatus: vi.fn(),
+  packContainer: vi.fn(),
   acceptAiSummary: vi.fn(),
   dismissAiSummary: vi.fn(),
   updatePhotoRecord: vi.fn(),
@@ -30,8 +29,7 @@ const pending = { value: undefined, written: Promise.resolve() };
 vi.mock("../../../repositories", () => ({
   reserveContainer: mocks.reserveContainer,
   deleteContainer: mocks.deleteContainer,
-  saveContainer: mocks.saveContainer,
-  setStatus: mocks.setStatus,
+  packContainer: mocks.packContainer,
   acceptAiSummary: mocks.acceptAiSummary,
   dismissAiSummary: mocks.dismissAiSummary,
   updatePhotoRecord: mocks.updatePhotoRecord,
@@ -94,8 +92,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mocks.reserveContainer.mockReturnValue({ value: draft, written: Promise.resolve() });
   mocks.deleteContainer.mockResolvedValue(pending);
-  mocks.saveContainer.mockReturnValue({ value: draft, written: Promise.resolve() });
-  mocks.setStatus.mockReturnValue({ value: draft, written: Promise.resolve() });
+  mocks.packContainer.mockReturnValue({ value: draft, written: Promise.resolve() });
   mocks.acceptAiSummary.mockReturnValue(pending);
   mocks.dismissAiSummary.mockReturnValue(pending);
   mocks.updatePhotoRecord.mockReturnValue(pending);
@@ -132,7 +129,7 @@ describe("AddBox", () => {
   it("names the number that is at stake", () => {
     open();
     fireEvent.click(screen.getByText("Back"));
-    expect(screen.getByText(/Number 042 is already reserved/)).toBeDefined();
+    expect(screen.getByText(/Number 042 is reserved for this box/)).toBeDefined();
   });
 
   it("deletes the draft when that is the answer, so the number goes back", async () => {
@@ -175,10 +172,36 @@ describe("AddBox", () => {
     expect(screen.queryByText("Leave box 042?")).toBeNull();
   });
 
+  /**
+   * The title is saved with everything else, in the one batch that confirms
+   * the label. Box detail could set it already; Add box is where a person
+   * usually knows it.
+   */
+  it("saves the title with the box", () => {
+    open();
+    fireEvent.change(screen.getByLabelText("Title, optional"), { target: { value: "  winter coats " } });
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer).toHaveBeenCalledTimes(1);
+    expect(mocks.packContainer.mock.calls[0]?.[1]?.title).toBe("winter coats");
+  });
+
+  it("leaves the title out rather than saving a blank one", () => {
+    open();
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer.mock.calls[0]?.[1]).not.toHaveProperty("title");
+  });
+
+  it("clears the title for the next box", () => {
+    open();
+    fireEvent.change(screen.getByLabelText("Title, optional"), { target: { value: "winter coats" } });
+    fireEvent.click(screen.getByText("Save and next"));
+    expect((screen.getByLabelText("Title, optional") as HTMLInputElement).value).toBe("");
+  });
+
   it("saves and finishes without asking about a draft, because there is not one", () => {
     const onLeave = open();
     fireEvent.click(screen.getByText("Save and finish"));
-    expect(mocks.saveContainer).toHaveBeenCalledTimes(1);
+    expect(mocks.packContainer).toHaveBeenCalledTimes(1);
     expect(mocks.deleteContainer).not.toHaveBeenCalled();
     expect(onLeave).toHaveBeenCalledTimes(1);
   });
@@ -219,6 +242,26 @@ describe("before the containers listener has spoken", () => {
     expect(mocks.reserveContainer.mock.calls[0]?.[2]).toEqual([packed]);
     expect(onDraft).toHaveBeenCalledWith("c9");
     expect(screen.getAllByText("042").length).toBe(2);
+  });
+
+  /**
+   * The back guard is live while the number is still being found. Answering
+   * Leave starts the navigation, the pop that unmounts this screen comes a
+   * moment later, and the listener can deliver in between. Reserving then
+   * would write a draft nobody was asked about.
+   */
+  it("does not reserve once Leave has been answered, even if the list arrives after", () => {
+    const onLeave = vi.fn();
+    const view = render(
+      <AddBox moveId="m1" me={me} containers={[]} loaded={false} zones={zones} uid="uid-1" onLeave={onLeave} />
+    );
+    fireEvent.click(screen.getByText("Back"));
+    fireEvent.click(screen.getByText("Leave"));
+    expect(onLeave).toHaveBeenCalledTimes(1);
+    view.rerender(
+      <AddBox moveId="m1" me={me} containers={[]} loaded zones={zones} uid="uid-1" onLeave={onLeave} />
+    );
+    expect(mocks.reserveContainer).not.toHaveBeenCalled();
   });
 
   it("takes back the draft the entry was on rather than reserving again", () => {
@@ -267,7 +310,7 @@ describe("before the containers listener has spoken", () => {
     open([mine], { draftId: "c7" });
     expect(mocks.reserveContainer).not.toHaveBeenCalled();
     fireEvent.click(screen.getByText("Save and next"));
-    expect(mocks.saveContainer.mock.calls[0]?.[1]?.id).toBe("c7");
+    expect(mocks.packContainer.mock.calls[0]?.[1]?.id).toBe("c7");
     // Save and next never resumes: the box just saved still reads as a draft
     // in the subscription for a tick, and resuming it would be the same box.
     expect(mocks.reserveContainer).toHaveBeenCalledTimes(1);
@@ -338,20 +381,19 @@ describe("a suggestion arriving while the box is open", () => {
   it("saves and reserves the next number with a suggestion on screen", () => {
     open([suggested]);
     fireEvent.click(screen.getByText("Save and next"));
-    expect(mocks.saveContainer).toHaveBeenCalledTimes(1);
-    expect(mocks.setStatus).toHaveBeenCalledTimes(1);
+    expect(mocks.packContainer).toHaveBeenCalledTimes(1);
     expect(mocks.reserveContainer).toHaveBeenCalledTimes(2);
   });
 
   /**
-   * `saveContainer` rebuilds `searchText` from what it is handed, so saving the
+   * `packContainer` rebuilds `searchText` from what it is handed, so saving the
    * copy reserved on mount took the summary's own words back out of it and the
    * box stopped answering for them.
    */
   it("saves the live box rather than the one reserved on mount", () => {
     open([suggested]);
     fireEvent.click(screen.getByText("Save and finish"));
-    expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBe("Books, a lamp, two mugs");
+    expect(mocks.packContainer.mock.calls[0]?.[1]?.aiSummary).toBe("Books, a lamp, two mugs");
   });
 
   /**
@@ -382,7 +424,7 @@ describe("a suggestion arriving while the box is open", () => {
       fireEvent.click(screen.getByText("Accept"));
       fireEvent.click(screen.getByText("Save and finish"));
 
-      const saved = mocks.saveContainer.mock.calls[0]?.[1];
+      const saved = mocks.packContainer.mock.calls[0]?.[1];
       expect(saved?.contentsSummary).toBe("Books, a lamp, two mugs");
       expect(saved?.aiSummary).toBeUndefined();
     });
@@ -397,7 +439,7 @@ describe("a suggestion arriving while the box is open", () => {
       fireEvent.click(screen.getByText("Dismiss"));
       fireEvent.click(screen.getByText("Save and finish"));
 
-      expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBeUndefined();
+      expect(mocks.packContainer.mock.calls[0]?.[1]?.aiSummary).toBeUndefined();
     });
 
     it("takes the answer off the screen without waiting for the subscription", () => {
@@ -432,7 +474,7 @@ describe("a suggestion arriving while the box is open", () => {
       fireEvent.click(screen.getByText("Save and finish"));
 
       expect(screen.queryByText("Suggested contents")).toBeNull();
-      expect(mocks.saveContainer.mock.calls[0]?.[1]?.aiSummary).toBeUndefined();
+      expect(mocks.packContainer.mock.calls[0]?.[1]?.aiSummary).toBeUndefined();
     });
 
     /**

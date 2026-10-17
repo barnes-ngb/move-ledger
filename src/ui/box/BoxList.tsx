@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Container, Zone } from "../../domain";
-import { hasCondition, isVoided, search } from "../../domain";
+import { hasCondition, isVoided, search, statusLabel } from "../../domain";
 import { BackBar, Button } from "../kit";
 
 /**
@@ -10,10 +10,14 @@ import { BackBar, Button } from "../kit";
  * kettle in it.
  *
  * Nothing here waits on the network. The list is the local cache, so it is the
- * same list with no signal, which is why there is no loading state to write.
+ * same list with no signal. The one wait is the listener's first delivery,
+ * which the cache answers in a tick: until then the list is empty because
+ * nothing has arrived, not because there are no boxes, and it says Loading
+ * rather than telling somebody with forty boxes that they have none.
  */
 export function BoxList({
   containers,
+  loaded,
   zones,
   photoCounts,
   query,
@@ -22,6 +26,8 @@ export function BoxList({
   onBack,
 }: {
   containers: readonly Container[];
+  /** The containers listener has delivered at least once. See `useContainers`. */
+  loaded: boolean;
   zones: readonly Zone[];
   photoCounts: Record<string, number>;
   query: string;
@@ -155,9 +161,11 @@ export function BoxList({
 
         {rows.length === 0 ? (
           <p className="py-6 text-slate-400">
-            {containers.length === 0
-              ? "No boxes yet. Add one and it appears here."
-              : "No box matches that. Try one word instead of a phrase."}
+            {!loaded
+              ? "Loading"
+              : containers.length === 0
+                ? "No boxes yet. Add one and it appears here."
+                : "No box matches that. Try one word instead of a phrase."}
           </p>
         ) : null}
       </ul>
@@ -181,7 +189,7 @@ export function BoxList({
  */
 function statusWord(container: Container): string {
   if (isVoided(container)) return "voided";
-  return container.status === "filling" ? "draft" : container.status;
+  return statusLabel(container.status);
 }
 
 /**

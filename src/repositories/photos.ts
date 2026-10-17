@@ -39,14 +39,16 @@ const photos = (moveId: string) => moveScoped(db, moveId, "photos");
 export function addPhotoRecord(
   moveId: string,
   photo: Omit<ContainerPhoto, "moveId" | "createdAt" | "createdBy" | "uploadState" | "attempts">,
-  actorUid: string
+  actorUid: string,
+  /** Given by capture so the record and its local blob sort the same way. */
+  createdAt: string = nowIso()
 ): PendingWrite<ContainerPhoto> {
   return createValidated(photos(moveId), containerPhotoSchema, {
     ...photo,
     moveId,
     uploadState: "pending",
     attempts: 0,
-    createdAt: nowIso(),
+    createdAt,
     createdBy: actorUid,
   });
 }

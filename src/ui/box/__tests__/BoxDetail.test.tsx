@@ -20,6 +20,7 @@ const mocks = vi.hoisted(() => ({
   clearContainerCondition: vi.fn(),
   setTitle: vi.fn(),
   setContentsSummary: vi.fn(),
+  setStatus: vi.fn(),
 }));
 
 const pending = { value: undefined, written: Promise.resolve() };
@@ -31,7 +32,7 @@ vi.mock("../../../repositories", () => ({
   reportContainerCondition: mocks.reportContainerCondition,
   clearContainerCondition: mocks.clearContainerCondition,
   saveContainer: vi.fn(() => pending),
-  setStatus: vi.fn(() => pending),
+  setStatus: mocks.setStatus,
   setTitle: mocks.setTitle,
   setContentsSummary: mocks.setContentsSummary,
   writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
@@ -61,6 +62,7 @@ beforeEach(() => {
   mocks.clearContainerCondition.mockReturnValue(pending);
   mocks.setTitle.mockReturnValue(pending);
   mocks.setContentsSummary.mockReturnValue(pending);
+  mocks.setStatus.mockReturnValue(pending);
 });
 
 describe("removing a box", () => {
@@ -269,5 +271,55 @@ describe("the contents list", () => {
     open(makeContainer({ contentsSummary: "kettle, two mugs", voidedAt: NOW, voidedBy: "mem1" }));
     expect(screen.getByText("kettle, two mugs")).toBeDefined();
     expect(screen.queryByText("Save contents")).toBeNull();
+  });
+});
+
+/**
+ * A mis-tap on Mark loaded used to be permanent: only the forward moves were
+ * offered. The backward ones sit behind a quiet control, so the forward
+ * buttons stay the obvious thing on the screen. Doc 04 section 6.
+ */
+describe("changing status", () => {
+  it("offers the forward moves and hides the backward ones until asked", () => {
+    open(makeContainer({ status: "loaded" }));
+    expect(screen.getByText("Mark unloaded")).toBeDefined();
+    expect(screen.queryByText("Mark packed")).toBeNull();
+    expect(screen.getByText("Change status")).toBeDefined();
+  });
+
+  it("reveals every backward move canTransition allows", () => {
+    open(makeContainer({ status: "loaded", labelConfirmedAt: NOW }));
+    fireEvent.click(screen.getByText("Change status"));
+    for (const word of ["Mark draft", "Mark packed", "Mark staged"]) expect(screen.getByText(word)).toBeDefined();
+    // Shown once, above, rather than twice.
+    expect(screen.getAllByText("Mark unloaded")).toHaveLength(1);
+  });
+
+  it("takes a box back a step and closes the control", () => {
+    const box = makeContainer({ status: "loaded", labelConfirmedAt: NOW });
+    open(box);
+    fireEvent.click(screen.getByText("Change status"));
+    fireEvent.click(screen.getByText("Mark packed"));
+    expect(mocks.setStatus).toHaveBeenCalledWith("m1", box, "packed", "uid-1");
+    expect(screen.queryByText("Mark staged")).toBeNull();
+  });
+
+  it("can be put away without changing anything", () => {
+    open(makeContainer({ status: "loaded" }));
+    fireEvent.click(screen.getByText("Change status"));
+    fireEvent.click(screen.getByText("Keep this status"));
+    expect(mocks.setStatus).not.toHaveBeenCalled();
+    expect(screen.queryByText("Mark packed")).toBeNull();
+  });
+
+  it("does not offer it on a draft, which has nowhere to go back to", () => {
+    open(makeContainer({ status: "filling" }));
+    expect(screen.queryByText("Change status")).toBeNull();
+  });
+
+  it("reads a draft as a draft, never as filling", () => {
+    open(makeContainer({ status: "filling" }));
+    expect(screen.getByText("draft")).toBeDefined();
+    expect(screen.queryByText("filling")).toBeNull();
   });
 });

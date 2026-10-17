@@ -32,6 +32,15 @@ export class IllegalTransitionError extends Error {
   }
 }
 
+/**
+ * The word a person reads for a status, everywhere one is shown. Per
+ * docs/09-glossary.md `filling` is not a user-facing word; the interface calls
+ * it a draft. Every other status reads as its own name.
+ */
+export function statusLabel(status: ContainerStatus): string {
+  return status === "filling" ? "draft" : status;
+}
+
 export function statusIndex(status: ContainerStatus): number {
   return STATUS_ORDER.indexOf(status);
 }

@@ -61,4 +61,15 @@ describe("FindBox", () => {
     expect(onOpen).toHaveBeenCalledTimes(1);
     expect(onOpen.mock.calls[0]?.[0]?.id).toBe("b");
   });
+
+  it("reads a draft as a draft, never as filling", () => {
+    const boxes = [
+      box({ id: "a", sequenceNumber: 42, displayCode: "042", status: "filling" }),
+      box({ id: "b", sequenceNumber: 43, displayCode: "043" }),
+    ];
+    render(<FindBox containers={boxes} zones={zones} onOpen={() => undefined} onBack={() => undefined} />);
+    fireEvent.click(screen.getByText("4"));
+    expect(screen.getByText("draft")).toBeDefined();
+    expect(screen.queryByText("filling")).toBeNull();
+  });
 });

@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import type { Move, Zone } from "../../domain";
-import { addZone, updateMove, updateZone, writeInBackground } from "../../repositories";
+import { addZone, setAiEnabled, updateZone, writeInBackground } from "../../repositories";
 import { PALETTE, shortCodeFor, type PaletteEntry } from "../../lib/palette";
 import { Button, ErrorLine, Field, Screen } from "../kit";
 
@@ -20,11 +20,14 @@ export function Rooms({
   zones,
   onDone,
   onBack,
+  onFirstRoom,
   exportPanel,
 }: {
   move: Move;
   zones: Zone[];
   onDone: () => void;
+  /** Called when the move's first room is added, so first run can hold setup open. */
+  onFirstRoom?: () => void;
   /** Null during first run and while the move still has no rooms. */
   onBack: (() => void) | null;
   exportPanel?: ReactNode;
@@ -58,6 +61,7 @@ export function Rooms({
         setError("This room is saved on your phone. It has not reached the server yet.")
       );
       setName("");
+      if (zones.length === 0) onFirstRoom?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not add the room.");
     }
@@ -90,7 +94,7 @@ export function Rooms({
   function toggleAi() {
     setError(null);
     try {
-      writeInBackground(updateMove({ ...move, aiEnabled: move.aiEnabled !== true }).written, () =>
+      writeInBackground(setAiEnabled(move.id, move.aiEnabled !== true).written, () =>
         setError("This setting is saved on your phone. It has not reached the other phone yet.")
       );
     } catch (e) {

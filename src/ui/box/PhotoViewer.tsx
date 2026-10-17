@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { PhotoView } from "../../hooks/usePhotos";
 import { deletePhoto, writeInBackground } from "../../repositories";
 import { Confirm, ErrorLine } from "../kit";
+import { useUnloadable } from "./unloadable";
 
 /**
  * A photo at the size of the screen. The strip is for knowing a box has
@@ -33,6 +34,7 @@ export function PhotoViewer({
   const [index, setIndex] = useState(startIndex);
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const unloadable = useUnloadable();
 
   // Deleting the last photo leaves nothing to look at. The subscription this
   // reads from shortens as soon as the local cache does, so this is the same
@@ -91,11 +93,18 @@ export function PhotoViewer({
       </div>
 
       <div className="flex min-h-0 flex-1 items-center justify-center px-2">
-        {src ? (
+        {src && unloadable.failed(src) ? (
+          // Uploaded, never opened on this phone, and no signal. Doc 04
+          // section 9: a sentence rather than a broken image.
+          <p className="px-6 text-center text-slate-400">
+            Not available offline. This photo is uploaded; it opens here once the phone has signal.
+          </p>
+        ) : src ? (
           <img
             src={src}
             alt=""
             onClick={(e) => e.stopPropagation()}
+            onError={() => unloadable.mark(src)}
             className="max-h-full max-w-full object-contain"
           />
         ) : (

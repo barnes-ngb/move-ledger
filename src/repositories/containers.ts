@@ -118,6 +118,44 @@ export function reserveContainer(
   return { value: container, written: batch.commit() };
 }
 
+/**
+ * Saving a box on Add box: the label is confirmed, the status goes from
+ * `filling` to `packed`, and the `status_changed` event is logged, in one
+ * batch, the same shape `reserveContainer` uses.
+ *
+ * This was two writes, `saveContainer` and then `setStatus`. A phone killed
+ * between them left a draft whose label was confirmed: `canDelete` refused it
+ * because the number was written down, Add box would not resume it for the
+ * same reason, and the next Add box reserved a new number for a box that was
+ * already on cardboard. A batch queues offline like a single write and lands
+ * as a whole.
+ *
+ * `next` is the box with whatever the screen collected applied to it: room,
+ * title, note. `searchText` is rebuilt here, as `saveContainer` does.
+ */
+export function packContainer(
+  moveId: string,
+  next: Container,
+  zones: readonly Zone[],
+  actorUid: string
+): PendingWrite<Container> {
+  const now = nowIso();
+  const confirmed: Container = {
+    ...next,
+    labelConfirmedAt: now,
+    searchText: buildSearchText(next, zones.find((z) => z.id === next.destinationZoneId)?.name),
+  };
+  const { container: packed, event } = transition(confirmed, "packed", actorUid, now);
+  const parsed = containerSchema.parse(packed);
+  const logged = activityEventSchema.parse({ ...event, id: newId() });
+  const { id, ...fields } = parsed;
+
+  const batch = writeBatch(db);
+  batch.update(doc(containers(moveId), id), fields);
+  batch.set(doc(activity(moveId), logged.id), logged);
+  return { value: parsed, written: batch.commit() };
+}
+
 /** General edit path. Recomputes searchText so search never drifts from content. */
 export function saveContainer(
   moveId: string,

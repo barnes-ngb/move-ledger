@@ -134,4 +134,16 @@ describe("PhotoViewer", () => {
     const onClose = open(0, []);
     expect(onClose).toHaveBeenCalled();
   });
+
+  /**
+   * Uploaded, never opened on this phone, and no signal: the download URL
+   * cannot be reached. Doc 04 section 9 asks for a sentence, never a broken
+   * image.
+   */
+  it("says the photo is not available offline when it will not load", () => {
+    open(1);
+    fireEvent.error(document.querySelector("img")!);
+    expect(shownSrc()).toBeUndefined();
+    expect(screen.getByText(/Not available offline/)).toBeDefined();
+  });
 });

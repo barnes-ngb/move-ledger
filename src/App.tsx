@@ -37,6 +37,17 @@ function SignedIn({ user }: { user: User }) {
   // Home rather than back: setup is reached from the move overview, and its
   // second step pushes an entry of its own that leaving should not stop at.
   const leaveSetup = setup.home;
+
+  // First run is held here only while the move has no rooms, so adding the
+  // first one used to drop the person on the overview before they ever saw
+  // Members, and the second phone was never added. Adding it opens setup as
+  // an ordinary entry instead, which stays until Done on Members takes it
+  // home. On a tap rather than on the data, because the rooms listener can
+  // deliver after the members one and read as no rooms for a tick on any
+  // ordinary launch.
+  const holdSetupOpen = () => {
+    if (!setup.view) setup.open(true);
+  };
   useOfferHome(showingSetup && canLeaveSetup, leaveSetup);
 
   // Checked before loading. A listener that stopped has already cleared
@@ -57,6 +68,7 @@ function SignedIn({ user }: { user: User }) {
         ctx={ctx}
         onFinished={leaveSetup}
         onExit={canLeaveSetup ? leaveSetup : null}
+        onFirstRoom={holdSetupOpen}
       />
     );
   }
@@ -75,7 +87,7 @@ function FirstRun({ user, ctx }: { user: User; ctx: ReturnType<typeof useMove> }
     <div>
       <Setup user={user} ctx={ctx} onFinished={() => undefined} onExit={null} />
       <div className="px-6 pb-8">
-        <button onClick={() => setWaiting(true)} className="text-slate-400 underline">
+        <button onClick={() => setWaiting(true)} className="min-h-14 text-slate-400 underline">
           Someone else set up the move
         </button>
       </div>

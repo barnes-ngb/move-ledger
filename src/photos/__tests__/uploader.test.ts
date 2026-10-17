@@ -10,7 +10,7 @@ vi.mock("../../lib/firebase", () => ({ storage: {}, db: {}, auth: {}, app: {} })
 
 import type { PhotoBlob } from "../db";
 
-const { BACKOFF_MS, MAX_ATTEMPTS, MAX_CONCURRENT, drainOnce, __resetUploaderState } = await import(
+const { BACKOFF_MS, MAX_ATTEMPTS, MAX_CONCURRENT, drainOnce, onReconnect, __resetUploaderState } = await import(
   "../uploader"
 );
 
@@ -253,5 +253,89 @@ describe("drainOnce", () => {
     expect(d.calls.uploaded).toEqual(["a"]);
     expect(d.calls.removed).toEqual([]);
     expect(d.failures).toEqual([{ photoId: "a", attempts: 1 }]);
+  });
+
+  /**
+   * An hour offline used to spend the whole ladder. The Storage SDK retries on
+   * its own before it rejects, every rejection counted as an attempt, and five
+   * of them marked a healthy photo failed with Send again under it. Offline is
+   * not a failure of the photo, so nothing is tried and nothing is counted.
+   */
+  it("attempts nothing and counts nothing while offline", async () => {
+    const queue = [blob("a", "2026-08-15T10:00:00.000Z"), blob("b", "2026-08-15T10:00:01.000Z")];
+    let listed = 0;
+    const d = deps({
+      list: async () => {
+        listed += 1;
+        return queue;
+      },
+      online: () => false,
+    });
+
+    for (let i = 0; i < 10; i += 1) await drainOnce(d.deps);
+
+    expect(listed).toBe(0);
+    expect(d.calls.uploaded).toEqual([]);
+    expect(d.failures).toEqual([]);
+  });
+
+  it("starts from the first attempt when the network comes back", async () => {
+    const queue = [blob("a", "2026-08-15T10:00:00.000Z")];
+    let online = false;
+    const d = deps({ list: async () => queue, online: () => online });
+
+    await drainOnce(d.deps);
+    online = true;
+    await drainOnce(d.deps);
+
+    expect(d.calls.uploaded).toEqual(["a"]);
+    expect(d.failures).toEqual([]);
+  });
+
+  /**
+   * The last rung is ten minutes, earned against a network that was not
+   * there. Walking out of the basement should send the photos, not wait.
+   */
+  it("retries at once on reconnect rather than waiting out the back-off", async () => {
+    const queue = [blob("a", "2026-08-15T10:00:00.000Z")];
+    const clock = 0;
+    let failing = true;
+    const d = deps({
+      list: async () => queue,
+      upload: async (b: PhotoBlob) => {
+        if (failing) throw new Error("no signal");
+        d.calls.uploaded.push(b.photoId);
+        return result;
+      },
+      now: () => clock,
+    });
+
+    await drainOnce(d.deps);
+    expect(d.failures).toHaveLength(1);
+
+    failing = false;
+    await drainOnce(d.deps); // still inside the back-off
+    expect(d.calls.uploaded).toEqual([]);
+
+    onReconnect();
+    await drainOnce(d.deps);
+    expect(d.calls.uploaded).toEqual(["a"]);
+  });
+
+  it("keeps the attempt count across a reconnect", async () => {
+    const queue = [blob("a", "2026-08-15T10:00:00.000Z")];
+    const d = deps({
+      list: async () => queue,
+      upload: async () => {
+        throw new Error("rejected");
+      },
+      now: () => 0,
+    });
+
+    await drainOnce(d.deps);
+    onReconnect();
+    await drainOnce(d.deps);
+
+    expect(d.failures.map((f) => f.attempts)).toEqual([1, 2]);
   });
 });

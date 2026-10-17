@@ -27,3 +27,12 @@ export const db = initializeFirestore(app, {
 });
 
 export const storage = getStorage(app);
+
+/**
+ * The Storage SDK retries a failed upload on its own for ten minutes by
+ * default before it rejects. The uploader has its own ladder in doc 06 and
+ * does not start an upload while the browser reports no network, so a real
+ * failure should reach that ladder quickly rather than holding a photo in
+ * flight for ten minutes first.
+ */
+storage.maxUploadRetryTime = 30_000;

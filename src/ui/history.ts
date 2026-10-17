@@ -66,6 +66,11 @@ const slots = new Map<string, Notify>();
 /**
  * The entry the browser was on before the last pop. Only the guard reads it,
  * to put back an entry it refused to leave.
+ *
+ * Nothing here survives a reload, so the guard sets it to its own entry when
+ * it is installed. Left null after a reload on Add box, the first refused pop
+ * rebuilt the entry from the one popped to, which is the move overview's, and
+ * Stay on this box came back without its draft.
  */
 let previous: NavState | null = null;
 
@@ -211,6 +216,8 @@ export function useBackGuard(active: boolean, ask: () => void): () => void {
     const ours = () => latest.current();
     mine.current = ours;
     guard = ours;
+    // The entry being guarded is the one the browser is on now.
+    previous = here();
     return release;
   }, [active, release]);
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Container, Zone } from "../../domain";
-import { canDelete, hasCondition, isVoided, nextStatuses } from "../../domain";
+import { STATUS_ORDER, canDelete, canTransition, hasCondition, isVoided, nextStatuses, statusLabel } from "../../domain";
 import type { ConditionKey } from "../../domain/conditions";
 import {
   clearContainerCondition,
@@ -64,12 +64,18 @@ export function BoxDetail({
     if (contents === lastStored) setContents(stored);
   }
   const [editingRoom, setEditingRoom] = useState(false);
+  const [changingStatus, setChangingStatus] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const photos = usePhotos(moveId, container.id);
 
   const zone = zones.find((z) => z.id === container.destinationZoneId);
   const forward = nextStatuses(container.status);
+  // Every other move `canTransition` allows, which is every backward one. A
+  // mis-tap on Mark loaded used to be permanent, because only the forward
+  // moves were offered. They stay behind a quiet control so the forward
+  // buttons remain the obvious thing on the screen. Doc 04 section 6.
+  const otherStatuses = STATUS_ORDER.filter((s) => canTransition(container.status, s) && !forward.includes(s));
   const voided = isVoided(container);
   const deletable = canDelete(container);
 
@@ -214,7 +220,7 @@ export function BoxDetail({
           <>
             <div>
               <p className="text-sm text-slate-400">Status</p>
-              <p className="text-xl text-slate-100">{container.status}</p>
+              <p className="text-xl text-slate-100">{statusLabel(container.status)}</p>
               <div className="mt-3 flex flex-col gap-2">
                 {forward.map((s) => (
                   <Button
@@ -222,9 +228,40 @@ export function BoxDetail({
                     onClick={() => run(() => setStatus(moveId, container, s, uid))}
                     tone="quiet"
                   >
-                    Mark {s}
+                    Mark {statusLabel(s)}
                   </Button>
                 ))}
+                {otherStatuses.length > 0 ? (
+                  changingStatus ? (
+                    <>
+                      {otherStatuses.map((s) => (
+                        <Button
+                          key={s}
+                          onClick={() => {
+                            setChangingStatus(false);
+                            run(() => setStatus(moveId, container, s, uid));
+                          }}
+                          tone="quiet"
+                        >
+                          Mark {statusLabel(s)}
+                        </Button>
+                      ))}
+                      <button
+                        onClick={() => setChangingStatus(false)}
+                        className="min-h-14 text-slate-400 underline"
+                      >
+                        Keep this status
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setChangingStatus(true)}
+                      className="min-h-14 text-slate-400 underline"
+                    >
+                      Change status
+                    </button>
+                  )
+                ) : null}
               </div>
             </div>
 

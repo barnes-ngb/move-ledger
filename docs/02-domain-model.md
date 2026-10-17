@@ -35,7 +35,7 @@ interface Move {
 }
 ```
 
-`memberUids` exists only so rules can authorize without a second document read per operation. It is written by the same code that writes a member document.
+`memberUids` exists only so rules can authorize without a second document read per operation. It is written by the same code that writes a member document. Nothing else writes it. `updateMove` takes a named set of fields that leaves it out and refuses it at runtime too, because until 2026-10-17 it wrote the whole move back: a contents list toggle queued offline replayed this phone's old copy of the array after a member had been added or removed, which locked a helper out or let a removed one back in. See APPLY-17.
 
 ## MoveMember
 

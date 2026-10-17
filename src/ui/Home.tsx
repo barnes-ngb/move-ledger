@@ -1,4 +1,4 @@
-import type { Container } from "../domain";
+import { isVoided, type Container } from "../domain";
 import type { MoveContext } from "../hooks/useMove";
 import { useContainers } from "../hooks/useContainers";
 import { usePhotoCounts } from "../hooks/usePhotoCounts";
@@ -99,6 +99,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
     return (
       <BoxList
         containers={containers}
+        loaded={loaded}
         zones={ctx.zones}
         photoCounts={photoCounts}
         query={view.query}
@@ -114,6 +115,15 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
 
   if (view.name === "detail") {
     const found = containers.find((c) => c.id === view.id);
+    // Not arrived is not gone. After a reload on this screen the list is empty
+    // for a tick, and saying the box is gone in that tick is false.
+    if (!found && !loaded) {
+      return (
+        <Screen title="Loading" onBack={nav.back}>
+          {null}
+        </Screen>
+      );
+    }
     if (!found) {
       return (
         <Screen title="That box is gone" onBack={nav.back}>
@@ -134,7 +144,10 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
     );
   }
 
-  const mine = containers.filter((c) => c.ownerMemberId === ctx.me!.id).length;
+  // What the box list shows, which leaves voided boxes out. A count that
+  // includes them disagrees with the list one tap away.
+  const inUse = containers.filter((c) => !isVoided(c));
+  const mine = inUse.filter((c) => c.ownerMemberId === ctx.me!.id).length;
 
   return (
     <div className="flex min-h-full flex-col justify-between p-6">
@@ -144,7 +157,12 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
             of zeroes. Three lines explaining the physical system, and the
             route to room setup, because a move with no rooms has no color to
             write on a box. */}
-        {containers.length === 0 ? (
+        {/* Before the first delivery the list is empty because nothing has
+            arrived, and explaining the system to somebody forty boxes in is
+            wrong for that tick. */}
+        {!loaded ? (
+          <p className="text-slate-400">Loading</p>
+        ) : inUse.length === 0 ? (
           <div className="flex flex-col gap-1 text-slate-400">
             <p>Every box gets a number and a room color.</p>
             <p>You write both on the box with a marker.</p>
@@ -152,7 +170,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
           </div>
         ) : (
           <p className="text-slate-400">
-            {containers.length} box{containers.length === 1 ? "" : "es"}, {mine} of them yours.
+            {inUse.length} box{inUse.length === 1 ? "" : "es"}, {mine} of them yours.
           </p>
         )}
       </div>

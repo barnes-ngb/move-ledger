@@ -159,4 +159,27 @@ describe("a screen that has a question to ask first", () => {
     await waitFor(() => expect(showing()).toBe("showing home"));
     expect(asked).not.toHaveBeenCalled();
   });
+
+  /**
+   * After a reload nothing in the module remembers the entry it is on, and
+   * the first refused pop rebuilt it from the one popped to: the move
+   * overview's, so Stay on this box came back without its draft. The entries
+   * here are made with the raw API, as a reload leaves them.
+   */
+  it("puts back the entry it guarded, draft and all, after a reload", async () => {
+    window.history.replaceState({ moveLedgerNav: { depth: 0, views: {} } }, "");
+    window.history.pushState(
+      { moveLedgerNav: { depth: 1, views: { test: { name: "add", query: "draft-c9" } } } },
+      ""
+    );
+    render(<Guarded />);
+    expect(showing()).toBe("showing add");
+
+    window.history.back();
+    await waitFor(() => expect(asked).toHaveBeenCalledTimes(1));
+    expect(window.history.state?.moveLedgerNav).toEqual({
+      depth: 1,
+      views: { test: { name: "add", query: "draft-c9" } },
+    });
+  });
 });

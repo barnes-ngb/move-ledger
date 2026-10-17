@@ -24,28 +24,32 @@ One contents photo, already resized, plus the destination zone name.
 
 ```json
 {
-  "summary": "Coffee maker, blender parts, measuring cups, food storage containers.",
+  "items": ["coffee maker", "blender parts", "measuring cups", "food storage containers"],
   "categories": ["kitchen", "small appliances"]
 }
 ```
 
+One entry per thing seen, a plain noun phrase with any visible color, material, or size folded in. No sentences and no trailing punctuation. At most 40 items, each 1 to 80 characters. Changed from a single `summary` string on 2026-10-17; see the APPLY-18 amendment below.
+
 No confidence score. Removed 2026-10-17; see the amendments below.
 
-An empty `summary` with empty `categories` is a valid reply and means nothing worth listing is visible: a screen, a document, or a photo that is not of a box. The function writes nothing to the box for it and marks the photo `skipped`. The model is told never to describe what the image is instead.
+An empty `items` list is a valid reply and means nothing worth listing is visible: a screen, a document, or a photo that is not of a box. The function writes nothing to the box for it and marks the photo `skipped`. The model is told never to describe what the image is instead.
 
 ### Storage
 
-Written to `container.aiSummary`, with the categories in `container.aiCategories`. Both are included in `searchText` and both are matched by search. Displayed with a suggestion marker; the categories show under the text so that accepting accepts what is on screen.
+Written to `container.aiItems`, with the categories in `container.aiCategories`. `aiSummary` is written beside them as the items joined with ", ", so the export, an older copy of the app, and anything else that reads the string keeps working. All three are included in `searchText` and matched by search. Displayed as a list with a suggestion marker; the categories show under it so that accepting accepts what is on screen.
 
-A second contents photo appends its line to the same `aiSummary` rather than replacing it, per the accumulate amendment below. The write is one Firestore write per photo, not one per attempt, because every write fans out to both phones' subscriptions.
+A second contents photo appends its items to the same `aiItems` rather than replacing them, per the accumulate amendment below. An item already on the list, compared without regard to case, is not added twice. The write is one Firestore write per photo, not one per attempt, because every write fans out to every member's subscription.
 
-When the user taps Accept, the text moves to `contentsSummary`, the categories move to `contentsCategories`, and both suggestion fields are cleared. When the user edits and accepts, the edited text goes to `contentsSummary` and the categories move the same way. When the user dismisses, both suggestion fields are cleared and a flag prevents regeneration for that photo. Emptying the confirmed contents list later removes `contentsCategories` with it, because they describe that list.
+When the user taps Accept, the items move to `contentsItems` with `contentsSummary` written as their joined string, the categories move to `contentsCategories`, and the suggestion fields are cleared. When the user edits and accepts, the edited items go there instead, one per line of the edit field. When the user dismisses, the suggestion fields are cleared and a flag prevents regeneration for that photo. Emptying the confirmed contents list later removes `contentsCategories` with it, because they describe that list.
 
-Asking again reads every contents photo once more and replaces the suggestion only when every call succeeds. Until then the old text stays on screen, and a failure leaves it there with the error under it. A photo whose call failed, or that uploaded before the feature was on, is offered again from box detail with "Write a contents list".
+A box written before items existed has a string and no list. Its items are derived when it is read, by splitting the string on ", ", and the stored data is not rewritten to match. The list is trusted only while it still joins to the string beside it; when the two disagree, the string wins, because an older copy of the app edits the string and cannot see the list.
+
+Asking again reads every contents photo once more and replaces the suggested items only when every call succeeds. Until then the old text stays on screen, and a failure leaves it there with the error under it. A photo whose call failed, or that uploaded before the feature was on, is offered again from box detail with "Write a contents list".
 
 ## Feature 2: Search enrichment
 
-No separate feature to build. It falls out of Feature 1 once `aiSummary` is in `searchText`. The only work is marking results whose match came from an unconfirmed summary.
+No separate feature to build. It falls out of Feature 1 once `aiSummary` and `aiItems` are in `searchText`. The only work is marking results whose match came from an unconfirmed summary.
 
 ## Cut
 
@@ -59,7 +63,7 @@ Each of these was in the earlier draft. None of them beats the three success mea
 
 ## Implementation
 
-One Firebase callable function so the API key stays server-side. It reads the photo from Cloud Storage by path, calls the model, validates the response against a Zod schema, and writes `aiSummary` with Admin SDK credentials.
+One Firebase callable function so the API key stays server-side. It reads the photo from Cloud Storage by path, calls the model, validates the response against a Zod schema, and writes `aiItems` and `aiSummary` with Admin SDK credentials.
 
 It is triggered on demand from the client rather than by a Storage trigger, so that cost stays under explicit control and a re-uploaded photo does not silently re-bill.
 
@@ -80,6 +84,16 @@ It is triggered on demand from the client rather than by a Storage trigger, so t
 - Doc 11 assumes 300 boxes at two photos each, so 600 calls. The cap is 800, which leaves room for a box photographed more than twice without leaving room for a runaway. Amended 2026-08-15; see below.
 
 ## Amendments
+
+### 2026-10-17, APPLY-18
+
+Made before the APPLY-18 code.
+
+**The contents list is a list of items.** It was one prose sentence shown as a paragraph. A person scanning a box for the stapler reads a list faster than a sentence, and one item is the unit somebody corrects. The model now returns `items`, one noun phrase each, and the box stores them as `aiItems` and, once accepted, `contentsItems`. Every earlier rule stands: the printed text rule, no guessing at what cannot be seen, an empty reply for nothing visible, one call per contents photo, the cap.
+
+**The joined string stays.** `aiSummary` and `contentsSummary` are still written, as the items joined with ", ". The export's contents column reads the string, so it does not change. A phone still running the previous build reads the string and never sees the list, so the two copies of the app can share a move while one of them catches up.
+
+**This is not item-level records.** `AGENTS.md` puts a record for every object out of scope. An item here is a line of text on the box: no id, no status, no history, nothing that can be found except by the box it is written on. If an item ever needs any of those, that is the scope change and it needs a decision record.
 
 ### 2026-10-17, APPLY-16
 

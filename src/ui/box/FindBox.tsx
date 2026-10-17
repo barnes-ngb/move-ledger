@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Container, Zone } from "../../domain";
-import { findByNumber, isVoided } from "../../domain";
+import { findByNumber, isVoided, statusLabel } from "../../domain";
 import { BackBar } from "../kit";
 import { appendDigit, deleteDigit } from "./keypad";
 
@@ -66,7 +66,7 @@ export function FindBox({
                     typing a retired number is holding the cardboard it is
                     written on, and an empty result would tell them nothing. */}
                 <span className={isVoided(c) ? "text-sm text-amber-300" : "text-sm text-slate-500"}>
-                  {isVoided(c) ? "voided" : c.status}
+                  {isVoided(c) ? "voided" : statusLabel(c.status)}
                 </span>
               </button>
             </li>

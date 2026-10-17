@@ -1,4 +1,4 @@
-import { collection, deleteDoc, doc, getDoc, getDocFromCache, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocFromCache, updateDoc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { moveSchema, type Move } from "../domain/schemas";
 import {
@@ -6,7 +6,6 @@ import {
   newId,
   nowIso,
   subscribeValidated,
-  updateValidated,
   type PendingWrite,
   type SnapshotOrigin,
 } from "./shared";
@@ -25,8 +24,54 @@ export function createMove(name: string, creatorUid: string): PendingWrite<Move>
   });
 }
 
-export function updateMove(next: Move): PendingWrite<Move> {
-  return updateValidated(moves(), moveSchema, { ...next, updatedAt: nowIso() });
+/**
+ * The fields of a move a screen may change. `memberUids` is not one of them,
+ * and neither are the id or the creation stamp.
+ *
+ * Membership is written only by `addMemberToMove` and `removeMember`, as an
+ * `arrayUnion` or `arrayRemove`. This used to take the whole move and write it
+ * back, so turning the contents list on wrote this phone's copy of
+ * `memberUids` along with it. Offline, that copy could predate a member being
+ * added or removed, and the queued toggle replayed afterward put the old array
+ * back: a helper added on the couch lost access with nothing on any screen to
+ * repair it, and a removed one got it back.
+ */
+export type MoveFields = Partial<Pick<Move, "name" | "status" | "originLocationId" | "destinationLocationId" | "aiEnabled">>;
+
+/**
+ * Strict, so a caller that spreads a whole move in is refused at runtime as
+ * well as by the compiler: `memberUids` is an unknown key here and throws
+ * before anything reaches Firestore.
+ */
+const moveFieldsSchema = moveSchema
+  .pick({ name: true, status: true, originLocationId: true, destinationLocationId: true, aiEnabled: true })
+  .partial()
+  .strict();
+
+/** Writes only the fields it is handed, plus `updatedAt`. */
+export function updateMove(moveId: string, fields: MoveFields): PendingWrite<MoveFields> {
+  const parsed = moveFieldsSchema.parse(fields);
+  return {
+    value: parsed,
+    written: updateDoc(doc(moves(), moveId), { ...parsed, updatedAt: nowIso() }),
+  };
+}
+
+/** The contents list setting. Both answers are written, because absent means unasked. */
+export function setAiEnabled(moveId: string, aiEnabled: boolean): PendingWrite<MoveFields> {
+  return updateMove(moveId, { aiEnabled });
+}
+
+/**
+ * The two places a move runs between, linked once their documents exist. The
+ * first-run flow is the only caller.
+ */
+export function setMoveLocations(
+  moveId: string,
+  originLocationId: string,
+  destinationLocationId: string
+): PendingWrite<MoveFields> {
+  return updateMove(moveId, { originLocationId, destinationLocationId });
 }
 
 /**

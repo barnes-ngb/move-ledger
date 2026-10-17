@@ -59,6 +59,18 @@ Step 2a was "Set uploadState to uploading" until 2026-08-15. It is now an in-mem
 
 The back-off ladder and the in-flight set are held in module memory rather than in Dexie, so closing the tab forgets them. That is intentional. A reopened app should try every pending photo once, immediately, rather than honoring a ten-minute wait recorded before the phone found signal again.
 
+### Offline is not an attempt
+
+Amended 2026-10-17 during the APPLY-17 run. The ladder above counted every rejection, and the Storage SDK retries an upload on its own for ten minutes before it rejects. So a phone with no signal spent one rung roughly every ten minutes on the network rather than on the photo, and an hour in a basement marked healthy photos `failed` with Send again under them. Three changes:
+
+- **No pass runs while the browser reports no network.** `drainOnce` returns before it lists anything, so nothing is attempted and nothing is counted. The `online` event starts the queue again.
+- **Reconnecting clears every next-try time.** The delays were earned against a network that was not there, and the last one is ten minutes. Attempt counts are kept, so a photo that fails with signal still climbs the ladder.
+- **The SDK's own retry is capped at 30 seconds,** with `maxUploadRetryTime` on the Storage instance in `src/lib/firebase.ts`, so a real failure reaches the ladder quickly.
+
+Recording a failure on the record no longer waits for the server either. The local write is made and the acknowledgment goes to `writeInBackground`; awaiting it held the photo in flight, and the pass open, for as long as the network stayed away. Confirming an upload still waits, because the blob is deleted only after Firestore confirms.
+
+The browser's online flag reads true behind a captive portal. In that case uploads are attempted and fail in 30 seconds each, which is the ladder doing its job against a network that is really failing.
+
 ## Failure handling
 
 - `uploadState: "failed"` shows a retry action on the box detail screen and a count in the header.
@@ -77,6 +89,8 @@ The retry action is the marker itself. `PhotoStrip` already drew "Not sent yet" 
 `clearBackoff` in `src/photos/uploader.ts` does the other half, and it is the part this document did not anticipate. The attempt count and the next-try time live in module memory rather than in the record, which is deliberate and is explained above. It means resetting the document alone is not a retry: the uploader would still be holding a ten-minute wait recorded before the person asked, and the next pass would skip the photo. `clearBackoff` drops both maps for one photo id. `deletePhoto` calls it too, so the uploader stops chasing bytes whose document has gone.
 
 The count in the header is still not built. Doc 04 section 9 carries the strings.
+
+Amended 2026-10-17 in APPLY-17. Send again is a 56px control under the tile rather than a strip inside it, and it appears only where this phone holds the photo's bytes. See doc 04 section 6, Adding a photo.
 
 ### Deleting a photo
 

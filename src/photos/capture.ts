@@ -21,10 +21,16 @@ export async function capturePhoto(args: {
   containerId: string;
   actorUid: string;
   kind: PhotoKind;
+  /**
+   * When several photos are chosen at once, the caller hands each one its own
+   * stamp a millisecond apart, so they sort in the order chosen in both
+   * places a photo is listed: the Firestore record and the local blob.
+   */
+  createdAt?: string;
 }): Promise<string> {
   const { blob, width, height } = await resizeForUpload(args.file);
   const photoId = crypto.randomUUID();
-  const createdAt = new Date().toISOString();
+  const createdAt = args.createdAt ?? new Date().toISOString();
 
   // Bytes first. If anything after this fails, the photo still exists.
   await putBlob({
@@ -45,7 +51,8 @@ export async function capturePhoto(args: {
       height,
       bytes: blob.size,
     },
-    args.actorUid
+    args.actorUid,
+    createdAt
   );
   writeInBackground(record.written);
 

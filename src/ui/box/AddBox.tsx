@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Container, MoveMember, Zone } from "../../domain";
 import { RangeExhaustedError, canDelete, isVoided, remainingInRange } from "../../domain";
-import {
-  deleteContainer,
-  reserveContainer,
-  saveContainer,
-  setStatus,
-  writeInBackground,
-} from "../../repositories";
+import { deleteContainer, packContainer, reserveContainer, writeInBackground } from "../../repositories";
 import { useBackGuard } from "../history";
 import { BackBar, Button, ErrorLine, Field, Sheet } from "../kit";
 import { useOfferHome } from "../nav";
@@ -82,6 +76,7 @@ export function AddBox({
 }) {
   const [container, setContainer] = useState<Container | null>(null);
   const [roomId, setRoomId] = useState<string | undefined>(undefined);
+  const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
@@ -94,6 +89,21 @@ export function AddBox({
   // The latch is released deliberately in save(), which is the only place a
   // second number is wanted. Burned numbers never refill.
   const reserved = useRef(false);
+  /**
+   * Set on the way out and on unmount. The back guard is live while the
+   * number is still being found, so Leave can be answered before the listener
+   * has delivered; the view change behind it arrives with the pop, a moment
+   * later, and the listener can land in between. Reserving then would write a
+   * draft for a screen that is already going, and nobody would be asked about
+   * it.
+   */
+  const gone = useRef(false);
+  useEffect(() => {
+    gone.current = false;
+    return () => {
+      gone.current = true;
+    };
+  }, []);
   /**
    * Boxes reserved on this screen, kept because the containers prop arrives
    * through a subscription. Save and next reserves the next number in the same
@@ -173,6 +183,7 @@ export function AddBox({
   const releaseBack = useBackGuard(true, () => setLeaving(true));
 
   function exit() {
+    gone.current = true;
     releaseBack();
     onLeave();
   }
@@ -191,7 +202,7 @@ export function AddBox({
   }
 
   function reserve(resume: boolean) {
-    if (reserved.current) return;
+    if (reserved.current || gone.current) return;
     reserved.current = true;
     setError(null);
 
@@ -246,17 +257,20 @@ export function AddBox({
     if (!live) return;
     setError(null);
     try {
-      const trimmed = note.trim();
+      const trimmedNote = note.trim();
+      const trimmedTitle = title.trim();
       // Conditional spread. An explicit undefined here throws at the write.
       const next: Container = {
         ...live,
         ...(roomId ? { destinationZoneId: roomId } : {}),
-        ...(trimmed ? { notes: trimmed } : {}),
-        labelConfirmedAt: new Date().toISOString(),
+        ...(trimmedTitle ? { title: trimmedTitle } : {}),
+        ...(trimmedNote ? { notes: trimmedNote } : {}),
       };
-      const saved = saveContainer(moveId, next, zones, uid);
-      const packed = setStatus(moveId, saved.value, "packed", uid);
-      writeInBackground(Promise.all([saved.written, packed.written]), () =>
+      // One batch: the confirmed label, the packed status, and the event.
+      // Two writes here could leave a box on cardboard reading as a draft
+      // that can be neither resumed nor deleted. See `packContainer`.
+      const packed = packContainer(moveId, next, zones, uid);
+      writeInBackground(packed.written, () =>
         setError("This box is saved on your phone. It has not reached the other phone yet.")
       );
       reservedHere.current = reservedHere.current.map((c) => (c.id === packed.value.id ? packed.value : c));
@@ -265,6 +279,7 @@ export function AddBox({
         setContainer(null);
         setAnswered(null);
         setRoomId(undefined);
+        setTitle("");
         setNote("");
         reserved.current = false;
         // A fresh number, never the draft this entry started on: the box just
@@ -401,6 +416,10 @@ export function AddBox({
         </div>
 
         <div className="mt-6">
+          <Field label="Title, optional" value={title} onChange={setTitle} placeholder="winter coats" />
+        </div>
+
+        <div className="mt-4">
           <Field label="Note, optional" value={note} onChange={setNote} placeholder="kettle and mugs" />
         </div>
 
@@ -434,7 +453,7 @@ export function AddBox({
           title={container ? `Leave box ${container.displayCode}?` : "Leave without saving?"}
           detail={
             container
-              ? `Nothing on this box is saved yet. Number ${container.displayCode} is already reserved for it: delete the draft and the number goes back to your range${photos.length > 0 ? `, along with the ${photos.length} photo${photos.length === 1 ? "" : "s"} on it` : ""}. Keep it and the draft stays in the box list, where you can finish it later.`
+              ? `Number ${container.displayCode} is reserved for this box${photos.length > 0 ? ` and its ${photos.length} photo${photos.length === 1 ? " is" : "s are"} kept` : ""}. Keep the draft and it stays in the box list, where you can finish it later. Delete it and the number goes back to your range${photos.length > 0 ? ` and the ${photos.length === 1 ? "photo goes" : "photos go"} with it` : ""}.`
               : loaded
                 ? "No number was reserved, so there is no draft to decide about."
                 : "No number has been reserved yet, so there is no draft to decide about."

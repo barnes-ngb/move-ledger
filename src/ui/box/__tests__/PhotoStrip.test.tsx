@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import type { ContainerPhoto } from "../../../domain";
+import type { PhotoView } from "../../../hooks/usePhotos";
 
 /**
  * The two ways a photo gets onto a box.
@@ -24,8 +26,25 @@ vi.mock("../PhotoViewer", () => ({ PhotoViewer: () => null }));
 
 const { PhotoStrip } = await import("../PhotoStrip");
 
-function open() {
-  render(<PhotoStrip moveId="m1" containerId="c1" uid="uid-1" photos={[]} />);
+function open(photos: PhotoView[] = []) {
+  render(<PhotoStrip moveId="m1" containerId="c1" uid="uid-1" photos={photos} />);
+}
+
+function photo(id: string, over: Partial<ContainerPhoto> = {}): ContainerPhoto {
+  return {
+    id,
+    moveId: "m1",
+    containerId: "c1",
+    type: "contents",
+    width: 1600,
+    height: 1200,
+    bytes: 220_000,
+    uploadState: "pending",
+    attempts: 0,
+    createdAt: "2026-10-17T10:00:00.000Z",
+    createdBy: "uid-1",
+    ...over,
+  };
 }
 
 /** The input behind a control, found by the label the control carries. */
@@ -33,12 +52,13 @@ function inputFor(label: string): HTMLInputElement {
   return screen.getByLabelText(label) as HTMLInputElement;
 }
 
-function choose(label: string) {
-  const file = new File(["bytes"], "box.jpg", { type: "image/jpeg" });
-  fireEvent.change(inputFor(label), { target: { files: [file] } });
+function choose(label: string, count = 1) {
+  const files = Array.from({ length: count }, (_, i) => new File([`bytes${i}`], `box${i}.jpg`, { type: "image/jpeg" }));
+  fireEvent.change(inputFor(label), { target: { files } });
 }
 
 beforeEach(() => {
+  vi.restoreAllMocks();
   vi.clearAllMocks();
   mocks.capturePhoto.mockResolvedValue("p1");
 });
@@ -107,5 +127,95 @@ describe("adding a photo", () => {
     await waitFor(() =>
       expect(screen.getByText("Could not add that photo. Try again.")).toBeDefined()
     );
+  });
+});
+
+/**
+ * The library hands back several photos at once; the camera, one. Layers of a
+ * box are often photographed first and attached after.
+ */
+describe("adding several photos at once", () => {
+  it("lets the library hand back several and keeps the camera to one", () => {
+    open();
+    expect(inputFor("Choose a photo").hasAttribute("multiple")).toBe(true);
+    expect(inputFor("Take a photo").hasAttribute("multiple")).toBe(false);
+  });
+
+  it("adds every file, one after another, stamped in the order chosen", async () => {
+    open();
+    choose("Choose a photo", 3);
+    await waitFor(() => expect(mocks.capturePhoto).toHaveBeenCalledTimes(3));
+    const stamps = mocks.capturePhoto.mock.calls.map((c) => (c[0] as { createdAt: string }).createdAt);
+    expect(new Set(stamps).size).toBe(3);
+    expect([...stamps].sort()).toEqual(stamps);
+    expect(Date.parse(stamps[2]!) - Date.parse(stamps[0]!)).toBe(2);
+  });
+
+  it("never starts the next before the last has been written", async () => {
+    const finishes: Array<(id: string) => void> = [];
+    mocks.capturePhoto.mockImplementation(() => new Promise<string>((resolve) => finishes.push(resolve)));
+    open();
+    choose("Choose a photo", 2);
+    await waitFor(() => expect(mocks.capturePhoto).toHaveBeenCalledTimes(1));
+    expect(screen.getByText("Adding 1 of 2")).toBeDefined();
+    expect(screen.getByText("Take a photo").hasAttribute("disabled")).toBe(true);
+    finishes[0]!("p1");
+    await waitFor(() => expect(screen.getByText("Adding 2 of 2")).toBeDefined());
+    expect(mocks.capturePhoto).toHaveBeenCalledTimes(2);
+    finishes[1]!("p2");
+    await waitFor(() => expect(screen.getByText("Choose a photo")).toBeDefined());
+  });
+
+  it("keeps going past one that fails and says how many did", async () => {
+    mocks.capturePhoto
+      .mockResolvedValueOnce("p1")
+      .mockRejectedValueOnce(new Error("too big"))
+      .mockResolvedValueOnce("p3");
+    open();
+    choose("Choose a photo", 3);
+    await waitFor(() =>
+      expect(screen.getByText("Could not add 1 of those 3 photos. Try those again.")).toBeDefined()
+    );
+    expect(mocks.capturePhoto).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe("a photo that has not been sent", () => {
+  it("offers Send again where the bytes are", () => {
+    open([{ photo: photo("p1", { uploadState: "failed" }), localUrl: "blob:p1" }]);
+    expect(screen.getByLabelText("Send photo 1 again")).toBeDefined();
+  });
+
+  /**
+   * The bytes of a photo the other phone took are on that phone. Pressing
+   * this here would reset a record and send nothing.
+   */
+  it("does not offer it for a photo whose bytes are on the other phone", () => {
+    open([{ photo: photo("p1", { uploadState: "failed" }) }]);
+    expect(screen.queryByLabelText("Send photo 1 again")).toBeNull();
+    expect(screen.getByText("Not on this phone yet")).toBeDefined();
+  });
+});
+
+describe("a photo that will not load here", () => {
+  it("says it is not available offline rather than showing a broken image", () => {
+    vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
+    open([{ photo: photo("p1", { uploadState: "uploaded", downloadUrl: "https://example/p1.jpg" }) }]);
+    const img = document.querySelector("img")!;
+    fireEvent.error(img);
+    expect(document.querySelector("img")).toBeNull();
+    expect(screen.getByText("Not available offline")).toBeDefined();
+  });
+
+  /**
+   * A failure while the browser already reports a network raises no online
+   * event to try again on. Raised in review on pull request 27.
+   */
+  it("says it could not load when online, and tries again on a tap", () => {
+    open([{ photo: photo("p1", { uploadState: "uploaded", downloadUrl: "https://example/p1.jpg" }) }]);
+    fireEvent.error(document.querySelector("img")!);
+    expect(screen.getByText("Could not load. Tap to try again")).toBeDefined();
+    fireEvent.click(screen.getByLabelText("Open photo 1"));
+    expect(document.querySelector("img")?.getAttribute("src")).toBe("https://example/p1.jpg");
   });
 });

@@ -64,6 +64,8 @@ Built 2026-08-15 during the APPLY-10 run, having been specified since the doc wa
 
 The counters in **Shows** above are still owed. The overview names the move, counts the boxes, and offers the three actions. Progress by status, the open-first count, boxes by room, and pending photo uploads are not built.
 
+Amended 2026-10-17 during the APPLY-17 run. **The count is what the box list shows,** so voided boxes are left out of it; the overview said 12 where the list one tap away said 11. **Nothing is said about the boxes until the containers listener has delivered.** Before that the list is empty because nothing has arrived, and the screen reads "Loading" rather than explaining the physical system to somebody forty boxes in. The cache answers in a tick, so this is a blink. The same rule holds on box detail, which read "That box is gone" in that tick after a reload, and on the box list, which read "No boxes yet".
+
 ## 2. Add box
 
 ### Purpose
@@ -132,6 +134,20 @@ A third copy exists for one window, and it is the answer to a defect the first t
 **How long it is held is not a question about time.** Ordering the two copies by `updatedAt` was the first answer and it compares two clocks: the answer is stamped by the phone, the suggestion by the function. A phone running slow would discard the answer on the spot and the next save would write the suggestion back, which is the defect wearing a hat. The screen keeps the exact suggestion text that was answered instead, holds the answer while the subscription is still showing that text, and drops it the moment the subscription shows anything else. Dropping it matters as much: Ask again clears the text and asks for another, and an answer held past its own write would suppress every suggestion after it.
 
 What a phone has to check is the shift. The block appears between the photos and the room picker, so a summary arriving while somebody is typing the note moves the field under their thumb. Nothing is lost and no focus changes, and whether the movement is worth answering is not a question jsdom can settle.
+
+### What shipped, APPLY-17
+
+Amended 2026-10-17.
+
+**Title, optional,** sits above the note. It is the same field box detail has had since APPLY-09, and it is saved with everything else.
+
+**Saving is one batch.** The confirmed label, the move from draft to packed, and the activity event go to Firestore together through `packContainer`, the same shape `reserveContainer` uses. They were two writes. A phone killed between them left a box that was on cardboard and still read as a draft: `canDelete` refused it because its label was confirmed, this screen would not resume it for the same reason, and the next Add box reserved a new number for a box that already had one.
+
+**The leave question says what is true.** It used to open "Nothing on this box is saved yet", which was false the moment a photo was taken: photos are written as the shutter closes. It now says the number is reserved for this box and its photos are kept, that keeping the draft leaves it in the box list, and that deleting it returns the number and takes the photos with it.
+
+**Answering Leave before the number arrives reserves nothing.** The back guard is live while the screen reads "Finding your next box number.", and the navigation behind Leave lands a moment after the tap. A listener delivering inside that moment used to reserve a draft for a screen that was already going, which nobody was asked about.
+
+**Stay on this box keeps the draft after a reload.** The guard put back an entry rebuilt from the one the gesture had popped to, which after a reload was the move overview's, so the draft id travelling in the entry was lost and the next reload reserved a second number. The guard now remembers the entry it is guarding from the moment it is installed.
 
 ## 3. Label instruction
 
@@ -281,6 +297,14 @@ Amended 2026-10-17. **Ask again no longer clears the suggestion first.** It asks
 
 **Categories show beside the text they came with.** Under a suggestion, and under the confirmed contents list once accepted, as one line: "Kinds of things: kitchen, books". They are searched, so they are shown.
 
+### What shipped, APPLY-17
+
+Amended 2026-10-17.
+
+**Change status.** The Actions line above asks for the legal next transitions as primary buttons and everything else behind an overflow, and until this run there was no everything else: a mis-tap on Mark loaded could not be undone from any screen. Under the forward buttons, a quiet underlined control reads "Change status". It reveals one button for every other move `canTransition` allows, which is every backward one, each reading "Mark packed", "Mark draft", and so on, plus "Keep this status" to put the list away. Choosing one writes it through `setStatus`, which logs it with `backward: true`, and closes the list. A draft has nowhere to go back to and does not show the control. Moving a box back to draft does not make it deletable: its label is still confirmed, and `canDelete` reads that.
+
+**Status words.** A status is never shown raw. `statusLabel` in `src/domain/status.ts` is the one place the word is decided, and every screen that shows a status goes through it: the status line and every Mark button here, the keypad rows on Find box, and the box list. Per doc 09 it reads `filling` as "draft" and every other status as its own name. Box detail and Find box were showing "filling" until this run.
+
 ### Adding a photo: two controls, one path
 
 Amended 2026-08-16 during the APPLY-11 run, and this is the settled pattern for anywhere a photo is added. The line above was half right and cost the camera. Removing `capture` did not make one input offer both the camera and the library; on the phone this app is built for, it made that input offer files only. `capture` is a hint, and a browser is free to read it as "camera only", "camera first", or to ignore it. Neither state of one attribute gets both.
@@ -293,6 +317,10 @@ So the strip stops asking one input for two jobs and asks the person instead:
 Both 56px, both feeding the same `capturePhoto` call, so nothing downstream knows or cares which one was pressed. The control that was pressed says "Adding" while the photo is resized and written, and the other is disabled meanwhile. The `+` tile is gone: two labelled controls say what the tile only implied, and the thumbnails are the strip now.
 
 A test can prove which input asks for what. It cannot prove what Android offers in answer, which is the half that has to be checked on a phone.
+
+Amended 2026-10-17 during the APPLY-17 run, which carried the scope of APPLY-14. **Choose a photo takes several at once.** Its input carries `multiple`; Take a photo stays single, because a camera hands back one. The files are added one after another rather than at once, since each is resized on a canvas, and each is stamped a millisecond after the one before so they list in the order chosen rather than in whichever order the resizes finished. Both controls are disabled while any are being added, and the one pressed counts: "Adding 2 of 5". One that fails does not stop the rest, and the line under the controls says how many could not be added.
+
+**Send again is its own 56px control under the tile,** not a strip across the bottom of it, which measured about 24px. It is offered only when this phone holds the photo's bytes. A photo the other phone took has its bytes there, and Send again here reset a record and sent nothing anyone could see.
 
 ## 7. Rooms
 
@@ -387,6 +415,16 @@ Never present local data that has not been copied to the server as lost, invalid
 
 Amended 2026-08-15 during the APPLY-10 run. The rule reaches further than the header. A photo the other phone took, whose bytes have not arrived here, drew as an empty grey square on the photo strip, which reads as broken rather than as pending. That tile now says "Not on this phone yet". The full-screen viewer already said it and the strip did not.
 
+### Photos offline
+
+Added 2026-10-17 during the APPLY-17 run. An uploaded photo's local blob is deleted once Storage has it, per doc 06, so offline the only copy this phone could show was the download URL, which needs the network. Every uploaded photo drew as a broken image in a basement.
+
+**A photo viewed once stays viewable.** The service worker caches photo bytes from `firebasestorage.googleapis.com` on first view, cache first, up to 600 photos, in its own cache named `photos`. Only image requests for an object's bytes (`alt=media`) are matched, so the Storage SDK's own traffic to that host, the upload and the metadata read behind `getDownloadURL`, is never answered from the cache. The responses are opaque, because an `<img>` from another origin is fetched without CORS, and a browser counts an opaque response at a padded size against the origin's quota; the cache gives way on a quota error rather than failing the page. A download URL names one object and one token, so the bytes behind it never change and cache first cannot serve a stale photo.
+
+**A photo that will not load says so.** One never viewed on this phone, asked for with no signal, has nothing to come from. The strip's tile then reads "Not available offline" and the viewer says the photo is uploaded and opens once the phone has signal. Never a broken image. Both try again when the network comes back. A photo that fails while the phone reports a network, behind a captive portal or on a passing Storage error, gets no such event, so the tile reads "Could not load. Tap to try again" and opening it tries again; the viewer tries afresh each time it opens. Raised in review on pull request 27.
+
+**The queue does not count time offline against a photo.** See doc 06. A photo kept in the queue for an hour with no signal used to be marked failed with Send again under it, which is this rule broken by the queue itself.
+
 ### Naming
 
 This section previously read "Synced" and "Offline, changes held locally". `docs/09-glossary.md` arbitrated on 2026-08-02 during the APPLY-03 run: sync is not a user-facing word, and the offline string is the one doc 09 already wrote. The online state also reports connectivity rather than write confirmation, because `useOnline` reads `navigator.onLine` and the Firestore SDK does not expose a sync state.
@@ -400,6 +438,8 @@ Every screen was walked against this doc on 2026-08-15. Recorded here because th
 The floor is 56px for anything a thumb lands on, `min-h-14` in the shared kit, and 64px on Move Day per section 8. Written down here for the first time in this run: the kit had been citing this doc for a number this doc never carried.
 
 Fixed: four controls at 48px. The route to Rooms and members on the move overview, the show and hide voided boxes control on the box list, and both controls on the account screen. Back and the title in the header are new and are 56px and 44px, the title being a title first.
+
+Fixed 2026-10-17 in APPLY-17: Send again on the photo strip, which was about 24px laid across the bottom of a tile, and "Someone else set up the move" on the first-run screen, which had no minimum at all. Both are 56px.
 
 Already compliant: every `Button` in the kit, the keypad, the box list rows, the room chips, the photo strip tiles and the add tile, which are 96px. Section 8's Move Day controls do not exist yet and are not a finding.
 

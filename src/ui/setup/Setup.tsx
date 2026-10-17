@@ -20,11 +20,14 @@ export function Setup({
   ctx,
   onFinished,
   onExit,
+  onFirstRoom,
 }: {
   user: User;
   ctx: MoveContext;
   onFinished: () => void;
   onExit: (() => void) | null;
+  /** See `Rooms`. First run passes this so the first room does not end setup. */
+  onFirstRoom?: () => void;
 }) {
   // The second step is a screen change, so it takes an entry too. Without one
   // the back gesture on Members left setup entirely rather than returning to
@@ -40,6 +43,7 @@ export function Setup({
         zones={ctx.zones}
         onDone={() => stage.open("members")}
         onBack={onExit}
+        {...(onFirstRoom ? { onFirstRoom } : {})}
         exportPanel={
           <ExportPanel
             move={move}

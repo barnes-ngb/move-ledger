@@ -8,6 +8,7 @@ const zones = [makeZone(), makeZone({ id: "z2", name: "Garage", colorName: "RED"
 function renderList(over: Partial<Parameters<typeof BoxList>[0]> = {}) {
   const props = {
     containers: [],
+    loaded: true,
     zones,
     photoCounts: {},
     query: "",
@@ -231,5 +232,11 @@ describe("BoxList", () => {
       fireEvent.click(screen.getByText("Show 1 voided box"));
       expect(screen.getByText("Matched a suggestion nobody has confirmed")).toBeDefined();
     });
+  });
+
+  it("says Loading rather than no boxes before the listener has delivered", () => {
+    renderList({ loaded: false });
+    expect(screen.getByText("Loading")).toBeDefined();
+    expect(screen.queryByText(/No boxes yet/)).toBeNull();
   });
 });

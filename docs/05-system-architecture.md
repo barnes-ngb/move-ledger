@@ -32,7 +32,7 @@ Cloud Functions are not used in Phase 1 or Phase 2. If AI summaries are built in
 - Zustand for UI state only
 - Zod for every persisted shape
 - Firebase JS SDK v12 modular
-- `vite-plugin-pwa` for the service worker and install prompt
+- `vite-plugin-pwa` for the service worker and install prompt. The service worker precaches the app shell and caches one thing at runtime: photo bytes from Cloud Storage, so a photo viewed once opens offline. Firestore and the Storage SDK's own requests are never intercepted. See doc 04 section 9, Photos offline.
 - Dexie for the photo blob store
 
 No TanStack Query. Firestore's `onSnapshot` already provides caching, invalidation, and reactivity. Adding a second cache layer over it creates two sources of truth.

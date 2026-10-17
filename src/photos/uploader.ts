@@ -4,6 +4,7 @@ import { storage } from "../lib/firebase";
 // calls back into this file for retry, and naming the one module keeps that
 // cycle to two files that only reach each other at call time.
 import { getPhotoRecord, updatePhotoRecord } from "../repositories/photos";
+import { writeInBackground } from "../repositories/background";
 import type { ContainerPhoto } from "../domain";
 import { deleteBlob, pendingBlobs, type PhotoBlob } from "./db";
 import { requestSummary } from "./summary";
@@ -29,6 +30,12 @@ export interface UploaderDeps {
    */
   afterUpload?: (b: PhotoBlob) => void;
   now?: () => number;
+  /** Whether the browser thinks it has a network. Defaults to `navigator.onLine`. */
+  online?: () => boolean;
+}
+
+function browserOnline(): boolean {
+  return typeof navigator === "undefined" || navigator.onLine !== false;
 }
 
 const attemptsById = new Map<string, number>();
@@ -42,6 +49,13 @@ const inFlight = new Set<string>();
  */
 export async function drainOnce(deps: UploaderDeps): Promise<void> {
   const now = deps.now ?? Date.now;
+  // Offline, nothing is attempted and nothing is counted. The Storage SDK
+  // retries an upload internally before it rejects, so an attempt made with no
+  // network spends a rung of the ladder on the network rather than on the
+  // photo, and an hour in a basement used to turn healthy photos "failed" with
+  // Send again under them. Doc 04 section 9: bytes that have not been copied
+  // yet are not a failure. The `online` event starts the queue again.
+  if (!(deps.online ?? browserOnline)()) return;
   const all = await deps.list();
   const ready = all.filter((b) => !inFlight.has(b.photoId) && (nextTryById.get(b.photoId) ?? 0) <= now());
   const batch = ready.slice(0, Math.max(0, MAX_CONCURRENT - inFlight.size));
@@ -89,18 +103,24 @@ function liveDeps(): UploaderDeps {
       return { storagePath, downloadUrl: await getDownloadURL(objectRef) };
     },
     confirm: async (b, result) => {
-      await patchPhoto(b, {
+      const patched = await patchPhoto(b, {
         storagePath: result.storagePath,
         downloadUrl: result.downloadUrl,
         uploadState: "uploaded",
       });
+      await patched.written;
     },
+    // Not awaited past the local write. A Firestore write promise settles on
+    // server acknowledgment, and an upload that just failed is the moment the
+    // server is least likely to answer, so waiting here held the photo in
+    // flight and the queue's pass open for as long as the network stayed away.
     fail: async (b, attempts, error) => {
-      await patchPhoto(b, {
+      const patched = await patchPhoto(b, {
         uploadState: attempts >= MAX_ATTEMPTS ? "failed" : "pending",
         attempts,
         lastError: error instanceof Error ? error.message : String(error),
       });
+      writeInBackground(patched.written);
     },
     remove: deleteBlob,
     afterUpload: (b) => void requestSummary(b.moveId, b.photoId),
@@ -113,15 +133,21 @@ function liveDeps(): UploaderDeps {
  * fields arrive already spread into the patch; an explicit undefined is
  * rejected by Firestore at the write.
  *
- * This is the one write in the app that waits for the server. Doc 06 deletes
- * the blob only after Firestore confirms the metadata update, not merely
- * after the Storage upload returns, and the uploader is online by definition
- * at the moment it gets here.
+ * Resolves once the local write is made, with the server's acknowledgment as
+ * its value, so each caller decides whether to wait for that. `confirm` does:
+ * it is the one write in the app that waits for the server, because doc 06
+ * deletes the blob only after Firestore confirms the metadata update, not
+ * merely after the Storage upload returns, and the uploader is online by
+ * definition at the moment it gets there. `fail` does not.
+ *
+ * The acknowledgment is wrapped in an object because an async function that
+ * returns a bare promise adopts it, and awaiting this would then await the
+ * server too.
  */
-async function patchPhoto(b: PhotoBlob, patch: Partial<ContainerPhoto>): Promise<void> {
+async function patchPhoto(b: PhotoBlob, patch: Partial<ContainerPhoto>): Promise<{ written: Promise<void> }> {
   const current = await getPhotoRecord(b.moveId, b.photoId);
-  if (!current) return;
-  await updatePhotoRecord(b.moveId, { ...current, ...patch }).written;
+  if (!current) return { written: Promise.resolve() };
+  return { written: updatePhotoRecord(b.moveId, { ...current, ...patch }).written };
 }
 
 let running = false;
@@ -147,9 +173,23 @@ export function kickUploader(deps: UploaderDeps = liveDeps()): void {
     });
 }
 
+/**
+ * The network is back, so every photo waiting out a delay is tried now. The
+ * delays were earned against a network that was not there, and the last rung
+ * is ten minutes: a person walking out of the basement should see their photos
+ * go, not wait that out. Attempt counts are kept, so a photo that fails with
+ * signal still climbs the ladder.
+ */
+export function onReconnect(): void {
+  nextTryById.clear();
+}
+
 export function startUploader(): () => void {
   kickUploader();
-  const onOnline = () => kickUploader();
+  const onOnline = () => {
+    onReconnect();
+    kickUploader();
+  };
   window.addEventListener("online", onOnline);
   return () => {
     window.removeEventListener("online", onOnline);

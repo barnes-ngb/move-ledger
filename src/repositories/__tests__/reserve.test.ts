@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Container, MoveMember } from "../../domain";
-import { makeContainer } from "../../domain/__tests__/factories";
+import { makeContainer, makeZone } from "../../domain/__tests__/factories";
 
 /**
  * The reservation, stubbed at the SDK boundary. Two things here are invisible
@@ -44,7 +44,7 @@ vi.mock("../../lib/firebase", () => ({ db: {}, storage: {} }));
 vi.mock("../../photos/db", () => ({ deleteBlob: vi.fn(), deleteBlobsFor: vi.fn() }));
 vi.mock("../../photos/uploader", () => ({ clearBackoff: vi.fn(), kickUploader: vi.fn() }));
 
-const { reserveContainer } = await import("../containers");
+const { packContainer, reserveContainer } = await import("../containers");
 
 const nathan: MoveMember = {
   id: "mem-nathan",
@@ -128,5 +128,64 @@ describe("reserveContainer", () => {
     expect(() => reserveContainer("m1", narrow, [], "uid-nathan")).toThrow();
     expect(mocks.batches).toBe(0);
     expect(mocks.commit).not.toHaveBeenCalled();
+  });
+});
+
+/**
+ * Saving a box on Add box. It was two writes, and a phone killed between them
+ * left a box on cardboard reading as a draft that could be neither resumed nor
+ * deleted, with a fresh number reserved for it on the next Add box.
+ */
+describe("packContainer", () => {
+  const zone = makeZone();
+  const draft = makeContainer({ id: "c42", sequenceNumber: 42, displayCode: "042", status: "filling" });
+
+  it("confirms the label, packs the box, and logs it in one batch", () => {
+    const { value, written } = packContainer(
+      "m1",
+      { ...draft, destinationZoneId: zone.id, title: "winter coats", notes: "scarves too" },
+      [zone],
+      "uid-nathan"
+    );
+
+    expect(mocks.batches).toBe(1);
+    expect(mocks.commit).toHaveBeenCalledTimes(1);
+    expect(value.status).toBe("packed");
+    expect(value.labelConfirmedAt).toBeDefined();
+    expect(value.updatedBy).toBe("uid-nathan");
+
+    expect(mocks.update).toHaveBeenCalledTimes(1);
+    const [path, fields] = mocks.update.mock.calls[0]!;
+    expect(path).toBe("moves/m1/containers/c42");
+    expect(fields).toMatchObject({ status: "packed", labelConfirmedAt: value.labelConfirmedAt, title: "winter coats" });
+    expect(fields).not.toHaveProperty("id");
+
+    expect(mocks.set).toHaveBeenCalledTimes(1);
+    const [eventPath, event] = mocks.set.mock.calls[0]!;
+    expect(String(eventPath).startsWith("moves/m1/activity/")).toBe(true);
+    expect(event).toMatchObject({
+      type: "status_changed",
+      containerId: "c42",
+      actorId: "uid-nathan",
+      payload: { from: "filling", to: "packed", backward: false },
+    });
+    return expect(written).resolves.toBeUndefined();
+  });
+
+  it("rebuilds searchText from the title, the note, and the room", () => {
+    const { value } = packContainer(
+      "m1",
+      { ...draft, destinationZoneId: zone.id, title: "winter coats", notes: "scarves" },
+      [zone],
+      "uid-nathan"
+    );
+    expect(value.searchText).toContain("winter coats");
+    expect(value.searchText).toContain("scarves");
+    expect(value.searchText).toContain(zone.name.toLowerCase());
+  });
+
+  it("refuses a box that is already packed before any batch is opened", () => {
+    expect(() => packContainer("m1", { ...draft, status: "packed" }, [zone], "uid-nathan")).toThrow();
+    expect(mocks.batches).toBe(0);
   });
 });

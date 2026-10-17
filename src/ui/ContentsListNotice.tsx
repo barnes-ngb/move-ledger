@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Move } from "../domain";
-import { updateMove, writeInBackground } from "../repositories";
+import { setAiEnabled, writeInBackground } from "../repositories";
 import { Button, ErrorLine, Screen } from "./kit";
 
 /**
@@ -18,7 +18,7 @@ export function ContentsListNotice({ move, onAnswered }: { move: Move; onAnswere
   function answer(aiEnabled: boolean) {
     setError(null);
     try {
-      writeInBackground(updateMove({ ...move, aiEnabled }).written, () =>
+      writeInBackground(setAiEnabled(move.id, aiEnabled).written, () =>
         setError("Your answer is saved on this phone. It has not reached the other phone yet.")
       );
       onAnswered();

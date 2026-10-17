@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { User } from "firebase/auth";
-import { addLocation, addMember, createMove, updateMove, writeInBackground } from "../../repositories";
+import { addLocation, addMember, createMove, setMoveLocations, writeInBackground } from "../../repositories";
 import { Button, ErrorLine, Field, Screen } from "../kit";
 
 /**
@@ -26,12 +26,7 @@ export function CreateMove({ user }: { user: User }) {
       const move = createMove(name.trim(), user.uid);
       const from = addLocation(move.value.id, { name: origin.trim(), type: "home" });
       const to = addLocation(move.value.id, { name: destination.trim(), type: "home" });
-      // Conditional spread rather than explicit undefined. See the hazard note.
-      const linked = updateMove({
-        ...move.value,
-        originLocationId: from.value.id,
-        destinationLocationId: to.value.id,
-      });
+      const linked = setMoveLocations(move.value.id, from.value.id, to.value.id);
       const member = addMember(
         move.value.id,
         {

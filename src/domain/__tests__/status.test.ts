@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { IllegalTransitionError, canTransition, nextStatuses, transition } from "../status";
+import { IllegalTransitionError, STATUS_ORDER, canTransition, nextStatuses, statusLabel, transition } from "../status";
 import { makeContainer } from "./factories";
 
 describe("canTransition", () => {
@@ -64,5 +64,15 @@ describe("transition", () => {
 
   it("throws on an illegal forward jump", () => {
     expect(() => transition(makeContainer(), "opened", "mem1", now)).toThrow(IllegalTransitionError);
+  });
+});
+
+describe("statusLabel", () => {
+  it("reads filling as a draft, per doc 09", () => {
+    expect(statusLabel("filling")).toBe("draft");
+  });
+
+  it("reads every other status as its own name", () => {
+    for (const s of STATUS_ORDER.filter((x) => x !== "filling")) expect(statusLabel(s)).toBe(s);
   });
 });

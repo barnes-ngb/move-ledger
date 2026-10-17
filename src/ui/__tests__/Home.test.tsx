@@ -17,8 +17,11 @@ import { makeContainer, makeZone } from "../../domain/__tests__/factories";
  */
 const container: Container = makeContainer({ id: "c1", displayCode: "042" });
 
+/** What the containers hook hands back. Reset before every test. */
+const listener: { containers: Container[]; loaded: boolean } = { containers: [container], loaded: true };
+
 vi.mock("../../hooks/useContainers", () => ({
-  useContainers: () => ({ containers: [container], loaded: true, failed: false, retry: () => undefined }),
+  useContainers: () => ({ ...listener, failed: false, retry: () => undefined }),
 }));
 vi.mock("../../hooks/usePhotoCounts", () => ({ usePhotoCounts: () => ({}) }));
 
@@ -125,6 +128,8 @@ async function pressSystemBack() {
 
 beforeEach(() => {
   window.history.replaceState(null, "");
+  listener.containers = [container];
+  listener.loaded = true;
 });
 
 describe("the move overview and the screens under it", () => {
@@ -205,5 +210,54 @@ describe("the move overview and the screens under it", () => {
 
     fireEvent.click(screen.getByText("leave add box"));
     await waitFor(() => expect(screen.getByText("See all boxes")).toBeDefined());
+  });
+});
+
+/**
+ * Before the containers listener has delivered, an empty list means nothing
+ * has arrived, not that there are no boxes. After a reload the cache answers
+ * in a tick, and in that tick the overview explained the system to somebody
+ * forty boxes in and box detail said the box was gone.
+ */
+describe("before the containers listener has spoken", () => {
+  it("says Loading rather than showing the empty overview", () => {
+    listener.containers = [];
+    listener.loaded = false;
+    open();
+    expect(screen.getByText("Loading")).toBeDefined();
+    expect(screen.queryByText(/Every box gets a number/)).toBeNull();
+  });
+
+  it("says Loading on box detail rather than that the box is gone", () => {
+    window.history.replaceState(
+      { moveLedgerNav: { depth: 1, views: { move: { name: "detail", id: "c1", from: { name: "home" } } } } },
+      ""
+    );
+    listener.containers = [];
+    listener.loaded = false;
+    open();
+    expect(screen.getByText("Loading")).toBeDefined();
+    expect(screen.queryByText("That box is gone")).toBeNull();
+  });
+
+  it("says the box is gone once the listener has delivered without it", () => {
+    window.history.replaceState(
+      { moveLedgerNav: { depth: 1, views: { move: { name: "detail", id: "c1", from: { name: "home" } } } } },
+      ""
+    );
+    listener.containers = [];
+    open();
+    expect(screen.getByText("That box is gone")).toBeDefined();
+  });
+});
+
+describe("the overview count", () => {
+  it("counts what the box list shows, which leaves voided boxes out", () => {
+    listener.containers = [
+      container,
+      makeContainer({ id: "c2", sequenceNumber: 2, displayCode: "002", voidedAt: "2026-10-17T00:00:00.000Z" }),
+    ];
+    open();
+    expect(screen.getByText("1 box, 1 of them yours.")).toBeDefined();
   });
 });

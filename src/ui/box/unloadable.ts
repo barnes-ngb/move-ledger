@@ -12,9 +12,16 @@ import { useOnline } from "../../hooks/useOnline";
  *
  * Keyed by source rather than by photo, so a photo whose source changes is
  * tried again. Forgotten when the network comes back, so a photo that failed
- * in the basement is tried again in the driveway.
+ * in the basement is tried again in the driveway. A failure with the browser
+ * already reporting a network, behind a captive portal or on a passing Storage
+ * error, raises no such event, so `retry` forgets one source on a tap.
  */
-export function useUnloadable(): { failed: (src: string) => boolean; mark: (src: string) => void } {
+export function useUnloadable(): {
+  failed: (src: string) => boolean;
+  mark: (src: string) => void;
+  retry: (src: string) => void;
+  online: boolean;
+} {
   const online = useOnline();
   const [sources, setSources] = useState<ReadonlySet<string>>(() => new Set());
   const [wasOnline, setWasOnline] = useState(online);
@@ -26,5 +33,13 @@ export function useUnloadable(): { failed: (src: string) => boolean; mark: (src:
   const mark = useCallback((src: string) => {
     setSources((prev) => (prev.has(src) ? prev : new Set(prev).add(src)));
   }, []);
-  return { failed, mark };
+  const retry = useCallback((src: string) => {
+    setSources((prev) => {
+      if (!prev.has(src)) return prev;
+      const next = new Set(prev);
+      next.delete(src);
+      return next;
+    });
+  }, []);
+  return { failed, mark, retry, online };
 }

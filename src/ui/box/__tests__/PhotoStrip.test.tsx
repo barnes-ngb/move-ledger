@@ -58,6 +58,7 @@ function choose(label: string, count = 1) {
 }
 
 beforeEach(() => {
+  vi.restoreAllMocks();
   vi.clearAllMocks();
   mocks.capturePhoto.mockResolvedValue("p1");
 });
@@ -198,10 +199,23 @@ describe("a photo that has not been sent", () => {
 
 describe("a photo that will not load here", () => {
   it("says it is not available offline rather than showing a broken image", () => {
+    vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
     open([{ photo: photo("p1", { uploadState: "uploaded", downloadUrl: "https://example/p1.jpg" }) }]);
     const img = document.querySelector("img")!;
     fireEvent.error(img);
     expect(document.querySelector("img")).toBeNull();
     expect(screen.getByText("Not available offline")).toBeDefined();
+  });
+
+  /**
+   * A failure while the browser already reports a network raises no online
+   * event to try again on. Raised in review on pull request 27.
+   */
+  it("says it could not load when online, and tries again on a tap", () => {
+    open([{ photo: photo("p1", { uploadState: "uploaded", downloadUrl: "https://example/p1.jpg" }) }]);
+    fireEvent.error(document.querySelector("img")!);
+    expect(screen.getByText("Could not load. Tap to try again")).toBeDefined();
+    fireEvent.click(screen.getByLabelText("Open photo 1"));
+    expect(document.querySelector("img")?.getAttribute("src")).toBe("https://example/p1.jpg");
   });
 });

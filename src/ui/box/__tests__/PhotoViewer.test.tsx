@@ -141,9 +141,11 @@ describe("PhotoViewer", () => {
    * image.
    */
   it("says the photo is not available offline when it will not load", () => {
+    const offline = vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
     open(1);
     fireEvent.error(document.querySelector("img")!);
     expect(shownSrc()).toBeUndefined();
     expect(screen.getByText(/Not available offline/)).toBeDefined();
+    offline.mockRestore();
   });
 });

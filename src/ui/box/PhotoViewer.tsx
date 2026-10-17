@@ -97,7 +97,9 @@ export function PhotoViewer({
           // Uploaded, never opened on this phone, and no signal. Doc 04
           // section 9: a sentence rather than a broken image.
           <p className="px-6 text-center text-slate-400">
-            Not available offline. This photo is uploaded; it opens here once the phone has signal.
+            {unloadable.online
+              ? "Could not load this photo. Close it and open it again to retry."
+              : "Not available offline. This photo is uploaded; it opens here once the phone has signal."}
           </p>
         ) : src ? (
           <img

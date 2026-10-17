@@ -116,7 +116,15 @@ export function PhotoStrip({
               // control of its own and a button inside a button is not markup a
               // browser will keep.
               <div key={v.photo.id} className="flex w-24 shrink-0 flex-col gap-2">
-                <button onClick={() => setViewing(i)} aria-label={`Open photo ${i + 1}`}>
+                <button
+                  onClick={() => {
+                    // Opening a photo is also how one that would not load is
+                    // tried again, here and in the viewer.
+                    if (src) unloadable.retry(src);
+                    setViewing(i);
+                  }}
+                  aria-label={`Open photo ${i + 1}`}
+                >
                   {src && !unloadable.failed(src) ? (
                     <img
                       src={src}
@@ -132,7 +140,11 @@ export function PhotoStrip({
                     // copied here, so the tile says that rather than showing a
                     // blank that reads as broken.
                     <div className="flex size-24 items-center justify-center rounded-xl bg-slate-800 p-2 text-center text-xs leading-snug text-slate-400">
-                      {src ? "Not available offline" : "Not on this phone yet"}
+                      {!src
+                        ? "Not on this phone yet"
+                        : unloadable.online
+                          ? "Could not load. Tap to try again"
+                          : "Not available offline"}
                     </div>
                   )}
                 </button>

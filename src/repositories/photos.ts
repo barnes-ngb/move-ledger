@@ -203,24 +203,25 @@ export function retryUpload(moveId: string, photo: ContainerPhoto): PendingWrite
 }
 
 /**
- * The contents list's state on one photo, written by the client on either
- * side of a call: `queued` before it, `failed` with the reason if it throws.
- * The function writes `done` and `skipped` itself.
+ * The client's marks on either side of a contents list call. Partial writes
+ * of the fields named and nothing else, because the uploader owns the rest of
+ * this document and may be writing it at the same moment.
  *
- * Two fields and nothing else, rather than the whole record, because the
- * uploader owns the rest of this document and may be writing it at the same
- * moment. `summaryError` is removed for any state but `failed`, so a reason
- * never sits under a photo that is being asked again.
+ * Asking writes `summaryRequestedAt` and never `summaryState`. That field is
+ * the function's: it reads `done` and `skipped` to refuse paying for an image
+ * twice, and a second phone writing a transient state over either would take
+ * that refusal down. A failure does write `failed`, and the caller checks
+ * first that the photo has not already settled.
  */
-export function setSummaryState(
-  moveId: string,
-  photoId: string,
-  state: "queued" | "failed",
-  error?: string
-): Promise<void> {
+export function markSummaryRequested(moveId: string, photoId: string): Promise<void> {
+  return updateDoc(doc(photos(moveId), photoId), { summaryRequestedAt: nowIso() });
+}
+
+export function markSummaryFailed(moveId: string, photoId: string, error: string): Promise<void> {
   return updateDoc(doc(photos(moveId), photoId), {
-    summaryState: state,
-    summaryError: state === "failed" && error ? error : deleteField(),
+    summaryState: "failed",
+    summaryError: error,
+    summaryRequestedAt: deleteField(),
   });
 }
 

@@ -10,10 +10,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const summarizePhoto = vi.fn(async (_data: unknown) => ({ data: { summary: "a lamp" } as Record<string, unknown> }));
 const getPhotoRecord = vi.fn();
 const isSummaryEnabled = vi.fn(async (_moveId: string) => false);
-const setSummaryState = vi.fn(async (..._args: unknown[]) => undefined);
+const markSummaryRequested = vi.fn(async (..._args: unknown[]) => undefined);
+const markSummaryFailed = vi.fn(async (..._args: unknown[]) => undefined);
 
 vi.mock("../../lib/functions", () => ({ summarizePhoto }));
-vi.mock("../../repositories", () => ({ getPhotoRecord, isSummaryEnabled, setSummaryState }));
+vi.mock("../../repositories", () => ({
+  getPhotoRecord,
+  isSummaryEnabled,
+  markSummaryFailed,
+  markSummaryRequested,
+}));
 
 const { askForSummary, requestSummary } = await import("../summary");
 
@@ -26,7 +32,8 @@ beforeEach(() => {
   getPhotoRecord.mockReset();
   isSummaryEnabled.mockReset();
   isSummaryEnabled.mockResolvedValue(false);
-  setSummaryState.mockClear();
+  markSummaryRequested.mockClear();
+  markSummaryFailed.mockClear();
   vi.spyOn(console, "error").mockImplementation(() => undefined);
 });
 
@@ -39,7 +46,7 @@ describe("requestSummary", () => {
     // Absent means unasked, and unasked is not consent. A photo of someone's
     // home must not leave the device on a default.
     expect(summarizePhoto).not.toHaveBeenCalled();
-    expect(setSummaryState).not.toHaveBeenCalled();
+    expect(markSummaryRequested).not.toHaveBeenCalled();
   });
 
   it("sends a contents photo once the feature is on", async () => {
@@ -86,25 +93,25 @@ describe("requestSummary", () => {
     await expect(requestSummary("m1", "p1")).resolves.toBeUndefined();
   });
 
-  it("marks the photo queued before the call and failed with the reason after one throws", async () => {
+  it("marks the request before the call and failed with the reason after one throws", async () => {
     isSummaryEnabled.mockResolvedValue(true);
     getPhotoRecord.mockResolvedValue(photo());
     summarizePhoto.mockRejectedValueOnce(new Error("deadline-exceeded"));
 
     await requestSummary("m1", "p1");
 
-    expect(setSummaryState.mock.calls).toEqual([
-      ["m1", "p1", "queued"],
-      ["m1", "p1", "failed", "deadline-exceeded"],
-    ]);
+    expect(markSummaryRequested).toHaveBeenCalledWith("m1", "p1");
+    await vi.waitFor(() =>
+      expect(markSummaryFailed).toHaveBeenCalledWith("m1", "p1", "deadline-exceeded")
+    );
   });
 });
 
 describe("askForSummary", () => {
-  it("writes queued before the call goes out", async () => {
+  it("marks the request before the call goes out", async () => {
     const order: string[] = [];
-    setSummaryState.mockImplementationOnce(async (...args: unknown[]) => {
-      order.push(`state:${String(args[2])}`);
+    markSummaryRequested.mockImplementationOnce(async () => {
+      order.push("mark");
       return undefined;
     });
     summarizePhoto.mockImplementationOnce(async () => {
@@ -114,7 +121,7 @@ describe("askForSummary", () => {
 
     await askForSummary("m1", "p1");
 
-    expect(order).toEqual(["state:queued", "call"]);
+    expect(order).toEqual(["mark", "call"]);
   });
 
   it("passes redo and returnOnly through and hands back the answer", async () => {
@@ -127,27 +134,35 @@ describe("askForSummary", () => {
   });
 
   it("rethrows so a screen can say what went wrong", async () => {
+    getPhotoRecord.mockResolvedValue(photo());
     summarizePhoto.mockRejectedValueOnce(new Error("resource-exhausted"));
 
     await expect(askForSummary("m1", "p1")).rejects.toThrow("resource-exhausted");
-    expect(setSummaryState).toHaveBeenLastCalledWith("m1", "p1", "failed", "resource-exhausted");
+    await vi.waitFor(() =>
+      expect(markSummaryFailed).toHaveBeenCalledWith("m1", "p1", "resource-exhausted")
+    );
   });
 
   /**
-   * Offline a write promise never settles. The head start is bounded so the
-   * call still goes out, and fails on its own terms, rather than hanging the
-   * panel on "Asking" forever.
+   * Another phone may have asked for the same photo and got its answer while
+   * this call was failing. Writing `failed` over that `done` would let the
+   * next ask pay for the image again.
    */
-  it("does not wait on a queued mark that never settles", async () => {
-    vi.useFakeTimers();
-    try {
-      setSummaryState.mockImplementationOnce(() => new Promise<undefined>(() => undefined));
-      const pending = askForSummary("m1", "p1");
-      await vi.advanceTimersByTimeAsync(3_000);
-      await pending;
-      expect(summarizePhoto).toHaveBeenCalledTimes(1);
-    } finally {
-      vi.useRealTimers();
-    }
+  it("does not mark failed over a photo that has already settled", async () => {
+    getPhotoRecord.mockResolvedValue(photo({ summaryState: "done" }));
+    summarizePhoto.mockRejectedValueOnce(new Error("deadline-exceeded"));
+
+    await expect(askForSummary("m1", "p1")).rejects.toThrow();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(markSummaryFailed).not.toHaveBeenCalled();
+  });
+
+  /** Offline a write promise never settles, and the call must not wait on it. */
+  it("does not wait on a request mark that never settles", async () => {
+    markSummaryRequested.mockImplementationOnce(() => new Promise<undefined>(() => undefined));
+
+    await askForSummary("m1", "p1");
+
+    expect(summarizePhoto).toHaveBeenCalledTimes(1);
   });
 });

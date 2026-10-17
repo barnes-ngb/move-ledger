@@ -226,6 +226,7 @@ interface ContainerPhoto {
   lastError?: string;
   summaryState?: "none" | "queued" | "done" | "skipped" | "failed"; // the contents list call
   summaryError?: string;       // why the last contents list call failed
+  summaryRequestedAt?: string; // the client's mark when it asks; the function clears it when it settles
   attempts: number;
   createdAt: string;
   createdBy: string;

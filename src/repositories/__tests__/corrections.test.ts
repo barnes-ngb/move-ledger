@@ -86,7 +86,7 @@ const {
   unvoidContainer,
   voidContainer,
 } = await import("../containers");
-const { deletePhoto, retryUpload, setSummaryState } = await import("../photos");
+const { deletePhoto, markSummaryFailed, markSummaryRequested, retryUpload } = await import("../photos");
 const { ContainerNotDeletableError } = await import("../../domain/lifecycle");
 
 const NOW = "2026-08-15T12:00:00.000Z";
@@ -576,22 +576,33 @@ describe("replaceAiSummary", () => {
   });
 });
 
-describe("setSummaryState", () => {
-  it("writes the reason with failed", async () => {
-    await setSummaryState("m1", "p1", "failed", "deadline-exceeded");
+describe("summary marks", () => {
+  it("marks a request with the time and nothing else", async () => {
+    await markSummaryRequested("m1", "p1");
 
-    expect(lastUpdate()).toEqual({ summaryState: "failed", summaryError: "deadline-exceeded" });
+    const fields = lastUpdate();
+    expect(Object.keys(fields)).toEqual(["summaryRequestedAt"]);
+    expect(typeof fields.summaryRequestedAt).toBe("string");
   });
 
-  it("removes a stale reason when the photo is queued again", async () => {
-    await setSummaryState("m1", "p1", "queued");
+  /**
+   * The function reads `done` and `skipped` to refuse paying for an image
+   * twice. A request mark written into `summaryState` by a second phone would
+   * overwrite either, so asking never touches that field.
+   */
+  it("never writes summaryState when asking", async () => {
+    await markSummaryRequested("m1", "p1");
 
-    expect(lastUpdate()).toEqual({ summaryState: "queued", summaryError: DELETE_FIELD });
+    expect("summaryState" in lastUpdate()).toBe(false);
   });
 
-  it("writes only the two fields it owns, because the uploader owns the rest", async () => {
-    await setSummaryState("m1", "p1", "queued");
+  it("writes failed with the reason and drops the request mark", async () => {
+    await markSummaryFailed("m1", "p1", "deadline-exceeded");
 
-    expect(Object.keys(lastUpdate()).sort()).toEqual(["summaryError", "summaryState"]);
+    expect(lastUpdate()).toEqual({
+      summaryState: "failed",
+      summaryError: "deadline-exceeded",
+      summaryRequestedAt: DELETE_FIELD,
+    });
   });
 });

@@ -170,10 +170,10 @@ describe("Write a contents list", () => {
     expect(screen.getByText("Write a contents list")).toBeDefined();
   });
 
-  it("is not offered for a photo that has not uploaded, is queued, done, or dismissed", () => {
+  it("is not offered for a photo that has not uploaded, was just asked for, is done, or dismissed", () => {
     const photos = [
       photo({ id: "a", storagePath: undefined }),
-      photo({ id: "b", summaryState: "queued" }),
+      photo({ id: "b", summaryRequestedAt: new Date().toISOString() }),
       photo({ id: "c", summaryState: "done" }),
       photo({ id: "d", summaryState: "skipped" }),
       photo({ id: "e", type: "damage" }),
@@ -191,6 +191,27 @@ describe("Write a contents list", () => {
     );
 
     expect(container.textContent).toBe("");
+  });
+
+  /**
+   * A request mark from a page that was closed before its call settled. The
+   * function never answered, so nothing will clear it, and without the lease
+   * the photo would never be offered again.
+   */
+  it("is offered again once a request mark is older than the lease", () => {
+    const stale = new Date(Date.now() - 3 * 60_000).toISOString();
+    render(
+      <AiSummary
+        moveId="m1"
+        container={bare}
+        zones={zones}
+        photos={[photo({ summaryRequestedAt: stale })]}
+        uid="uid-1"
+        offerAsk
+      />
+    );
+
+    expect(screen.getByText("Write a contents list")).toBeDefined();
   });
 
   it("asks for exactly the unasked photos with ordinary calls", async () => {
@@ -212,13 +233,13 @@ describe("Write a contents list", () => {
     );
 
     fireEvent.click(screen.getByText("Write a contents list"));
-    // The photo is marked queued while the call is out and stops counting as unasked.
+    // The photo is marked requested while the call is out and stops counting as unasked.
     rerender(
       <AiSummary
         moveId="m1"
         container={bare}
         zones={zones}
-        photos={[photo({ summaryState: "queued" })]}
+        photos={[photo({ summaryRequestedAt: new Date().toISOString() })]}
         uid="uid-1"
         offerAsk
       />

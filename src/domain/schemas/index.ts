@@ -151,6 +151,8 @@ export const containerPhotoSchema = z.object({
   summaryState: z.enum(["none", "queued", "done", "skipped", "failed"]).optional(),
   /** Why the last contents list call failed. Written by the client with `failed`, removed by the function on success. */
   summaryError: z.string().optional(),
+  /** When a phone last asked for this photo's list. The client's mark, kept out of `summaryState` so it can never overwrite a settled state. */
+  summaryRequestedAt: isoString.optional(),
   lastError: z.string().optional(),
   attempts: z.number().int().nonnegative(),
   createdAt: isoString,

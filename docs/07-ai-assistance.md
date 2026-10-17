@@ -93,7 +93,7 @@ Made before the APPLY-16 code, for the same reason as the two below.
 
 **Confidence was removed.** It was requested on every call, written to the `summary_generated` activity payload, and read nowhere: no screen, no threshold, no export column. A number nobody acts on is output tokens and a schema field that can fail a parse. If a threshold is ever wanted it comes back with its consumer.
 
-**A failed call is visible and can be asked again.** The client marks a photo `queued` before calling and `failed` with the message if the call throws. Asking again no longer clears the old suggestion first, so a failure no longer destroys the text it was meant to replace.
+**A failed call is visible and can be asked again.** The client stamps `summaryRequestedAt` before calling and writes `failed` with the message if the call throws, unless the photo has settled meanwhile. It never writes `queued` into `summaryState`: that field is what the function reads to refuse paying for an image twice, and a second phone writing a transient value over `done` or `skipped` would take the refusal down. A request mark older than two minutes, from a page closed before its call settled, no longer holds the photo back. Asking again no longer clears the old suggestion first, so a failure no longer destroys the text it was meant to replace.
 
 ### 2026-08-15, APPLY-07
 

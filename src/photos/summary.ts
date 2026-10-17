@@ -1,42 +1,51 @@
 import { summarizePhoto, type SummarizeResponse } from "../lib/functions";
-import { getPhotoRecord, isSummaryEnabled, setSummaryState } from "../repositories";
-
-/**
- * How long the `queued` mark is given to reach the server before the call goes
- * out anyway. The wait exists so the function's own `done` cannot land first
- * and then be overwritten by a late `queued`; a model call takes seconds, so a
- * short head start is enough. It is bounded because a write promise offline
- * never settles, and nothing in this app waits on the network open-ended.
- */
-const QUEUED_HEAD_START_MS = 3_000;
+import {
+  getPhotoRecord,
+  isSummaryEnabled,
+  markSummaryFailed,
+  markSummaryRequested,
+} from "../repositories";
 
 function messageOf(e: unknown): string {
   return e instanceof Error ? e.message : String(e);
 }
 
 /**
- * One call for one photo, with its state written on either side of it:
- * `queued` before, `failed` and the reason if the call throws. The function
- * writes `done` and `skipped` itself. Throws, so a screen can say what went
- * wrong; the uploader goes through `requestSummary`, which never does.
+ * A call that threw is recorded as `failed`, unless the photo has settled in
+ * the meantime. Another phone may have asked for the same photo and got its
+ * answer, and overwriting that `done` would let the next ask pay again.
+ */
+async function markFailedUnlessSettled(moveId: string, photoId: string, error: string): Promise<void> {
+  const current = await getPhotoRecord(moveId, photoId);
+  if (current?.summaryState === "done" || current?.summaryState === "skipped") return;
+  await markSummaryFailed(moveId, photoId, error);
+}
+
+/**
+ * One call for one photo, with the client's marks on either side of it: the
+ * request time before, `failed` and the reason if the call throws. The
+ * function writes `done` and `skipped` itself. Throws, so a screen can say
+ * what went wrong; the uploader goes through `requestSummary`, which never
+ * does.
+ *
+ * Neither mark is awaited. They are separate fields from the ones the
+ * function settles, so the order they land in does not matter, and a write
+ * promise offline never settles.
  */
 export async function askForSummary(
   moveId: string,
   photoId: string,
   options: { redo?: boolean; returnOnly?: boolean } = {}
 ): Promise<SummarizeResponse> {
-  const queued = setSummaryState(moveId, photoId, "queued").catch((e) =>
-    console.error("Could not mark the photo queued", e)
+  void markSummaryRequested(moveId, photoId).catch((e) =>
+    console.error("Could not mark the photo requested", e)
   );
-  await Promise.race([queued, new Promise((resolve) => setTimeout(resolve, QUEUED_HEAD_START_MS))]);
 
   try {
     const result = await summarizePhoto({ moveId, photoId, ...options });
     return result.data;
   } catch (e) {
-    // Not awaited: the caller wants the error now, and the mark queues
-    // offline like every other write.
-    void setSummaryState(moveId, photoId, "failed", messageOf(e)).catch((err) =>
+    void markFailedUnlessSettled(moveId, photoId, messageOf(e)).catch((err) =>
       console.error("Could not mark the photo failed", err)
     );
     throw e;

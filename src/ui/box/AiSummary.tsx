@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactNode } from "react";
-import type { Container, ContainerPhoto, Zone } from "../../domain";
+import { isUnaskedForSummary, type Container, type ContainerPhoto, type Zone } from "../../domain";
 import {
   acceptAiSummary,
   dismissAiSummary,
@@ -100,13 +100,8 @@ export function AiSummary({
   const suggestion = container.aiSummary?.trim() ?? "";
   const categories = container.aiCategories ?? [];
   const contentsPhotos = photos.filter((p) => p.type === "contents");
-  const unasked = offerAsk
-    ? contentsPhotos.filter(
-        (p) =>
-          p.storagePath !== undefined &&
-          (p.summaryState === undefined || p.summaryState === "none" || p.summaryState === "failed")
-      )
-    : [];
+  const now = Date.now();
+  const unasked = offerAsk ? contentsPhotos.filter((p) => isUnaskedForSummary(p, now)) : [];
   /** Returns the written document, which is available before the server has it. */
   function run<T>(write: () => { value: T; written: Promise<unknown> }): T | null {
     setError(null);
@@ -203,7 +198,7 @@ export function AiSummary({
 
   if (!suggestion) {
     // Kept on screen while it is asking or has something to say, because the
-    // photos stop counting as unasked the moment they are marked queued.
+    // photos stop counting as unasked the moment they are marked requested.
     if (unasked.length === 0 && !asking && error === null && notice === null) return null;
     const count = unasked.length;
     return (

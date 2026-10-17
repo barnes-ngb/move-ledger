@@ -183,7 +183,11 @@ export const summarizePhoto = onCall(
 
     const reply = readModelReply(text);
     if (!reply) {
-      await photoRef.update({ summaryState: "failed", summaryError: "The reply could not be read." });
+      await photoRef.update({
+        summaryState: "failed",
+        summaryError: "The reply could not be read.",
+        summaryRequestedAt: FieldValue.delete(),
+      });
       throw new HttpsError("internal", "The reply could not be read.");
     }
 
@@ -191,13 +195,21 @@ export const summarizePhoto = onCall(
     // words. `skipped` stops the photo being sent again without a redo.
     const line = reply.summary.trim();
     if (!line) {
-      await photoRef.update({ summaryState: "skipped", summaryError: FieldValue.delete() });
+      await photoRef.update({
+        summaryState: "skipped",
+        summaryError: FieldValue.delete(),
+        summaryRequestedAt: FieldValue.delete(),
+      });
       return { skipped: "nothing visible" };
     }
     const categories = [...new Set(reply.categories.map((c) => c.trim().toLowerCase()).filter(Boolean))];
 
+    // The client's request mark goes with every settled state, so a photo it
+    // was asked for never looks like one still waiting.
+    const settled = { summaryError: FieldValue.delete(), summaryRequestedAt: FieldValue.delete() };
+
     if (returnOnly && redo) {
-      await photoRef.update({ summaryState: "done", summaryError: FieldValue.delete() });
+      await photoRef.update({ summaryState: "done", ...settled });
     } else {
       const containerRef = db.doc(`moves/${moveId}/containers/${photo.containerId}`);
 
@@ -221,7 +233,7 @@ export const summarizePhoto = onCall(
           searchText: `${snap.data()?.searchText ?? ""} ${words}`.toLowerCase().trim(),
           updatedAt: new Date().toISOString(),
         });
-        tx.update(photoRef, { summaryState: "done", summaryError: FieldValue.delete() });
+        tx.update(photoRef, { summaryState: "done", ...settled });
       });
     }
 

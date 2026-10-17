@@ -77,10 +77,16 @@ vi.mock("../../photos/uploader", () => ({
   kickUploader: mocks.kickUploader,
 }));
 
-const { deleteContainer, setContentsSummary, unvoidContainer, voidContainer } = await import(
-  "../containers"
-);
-const { deletePhoto, retryUpload } = await import("../photos");
+const {
+  acceptAiSummary,
+  deleteContainer,
+  dismissAiSummary,
+  replaceAiSummary,
+  setContentsSummary,
+  unvoidContainer,
+  voidContainer,
+} = await import("../containers");
+const { deletePhoto, retryUpload, setSummaryState } = await import("../photos");
 const { ContainerNotDeletableError } = await import("../../domain/lifecycle");
 
 const NOW = "2026-08-15T12:00:00.000Z";
@@ -447,5 +453,145 @@ describe("setContentsSummary", () => {
     const result = setContentsSummary("m1", box, "winter boots", zones, "uid-9");
 
     expect(result.value.updatedBy).toBe("uid-9");
+  });
+});
+
+/**
+ * Categories travel with the text they came beside. A suggestion's go where
+ * the suggestion goes: into the confirmed fields on accept, nowhere on
+ * dismiss. Every path rebuilds `searchText`, and every removal reaches
+ * Firestore as a delete sentinel for the reason the other removals do.
+ */
+describe("categories", () => {
+  const zones = [
+    {
+      id: "z1",
+      moveId: "m1",
+      locationId: "l1",
+      name: "Kitchen",
+      shortCode: "KIT",
+      colorName: "BLUE",
+      colorValue: "#2563c9",
+      sortOrder: 0,
+    },
+  ];
+
+  const suggested = makeContainer({
+    destinationZoneId: "z1",
+    aiSummary: "kettle and two mugs",
+    aiCategories: ["kitchen", "small appliances"],
+  });
+
+  it("moves the suggested categories into the confirmed field on accept", () => {
+    const result = acceptAiSummary("m1", suggested, zones, "kettle and two mugs", "uid-1");
+
+    expect(result.value.contentsCategories).toEqual(["kitchen", "small appliances"]);
+    expect("aiCategories" in result.value).toBe(false);
+    expect(result.value.searchText).toBe("042 kettle and two mugs kitchen small appliances kitchen");
+    const fields = lastUpdate();
+    expect(fields.aiSummary).toBe(DELETE_FIELD);
+    expect(fields.aiCategories).toBe(DELETE_FIELD);
+    expect(fields.contentsCategories).toEqual(["kitchen", "small appliances"]);
+  });
+
+  it("carries them across an edited accept too", () => {
+    const result = acceptAiSummary("m1", suggested, zones, "kettle, mugs, tea", "uid-1");
+
+    expect(result.value.contentsSummary).toBe("kettle, mugs, tea");
+    expect(result.value.contentsCategories).toEqual(["kitchen", "small appliances"]);
+  });
+
+  it("replaces the categories of an earlier list, because the accepted text replaces that list", () => {
+    const earlier = makeContainer({
+      contentsSummary: "books",
+      contentsCategories: ["books"],
+      aiSummary: "a lamp",
+    });
+
+    const result = acceptAiSummary("m1", earlier, zones, "a lamp", "uid-1");
+
+    expect("contentsCategories" in result.value).toBe(false);
+    expect(lastUpdate().contentsCategories).toBe(DELETE_FIELD);
+  });
+
+  it("clears them on dismiss and leaves confirmed categories alone", () => {
+    const both = makeContainer({ ...suggested, contentsSummary: "books", contentsCategories: ["books"] });
+
+    const result = dismissAiSummary("m1", both, zones, "uid-1");
+
+    expect("aiCategories" in result.value).toBe(false);
+    expect(result.value.contentsCategories).toEqual(["books"]);
+    expect(result.value.searchText).not.toContain("appliances");
+    const fields = lastUpdate();
+    expect(fields.aiCategories).toBe(DELETE_FIELD);
+    expect(fields.contentsCategories).toEqual(["books"]);
+  });
+
+  it("removes the confirmed categories when the confirmed list is emptied", () => {
+    const confirmed = makeContainer({ contentsSummary: "books", contentsCategories: ["books"] });
+
+    const result = setContentsSummary("m1", confirmed, "", zones, "uid-1");
+
+    expect("contentsCategories" in result.value).toBe(false);
+    expect(lastUpdate().contentsCategories).toBe(DELETE_FIELD);
+  });
+});
+
+/**
+ * Ask again's answer. The function returns each photo's result rather than
+ * writing it, and this is the one write that lands them, after every photo
+ * has answered.
+ */
+describe("replaceAiSummary", () => {
+  const old = makeContainer({
+    aiSummary: "This is a screenshot of a messaging app",
+    aiCategories: ["screenshot"],
+    searchText: "042 this is a screenshot of a messaging app screenshot",
+  });
+
+  it("replaces the text and categories rather than appending to them", () => {
+    const result = replaceAiSummary("m1", old, [], "a kettle and four mugs", ["kitchen"], "uid-1");
+
+    expect(result.value.aiSummary).toBe("a kettle and four mugs");
+    expect(result.value.aiCategories).toEqual(["kitchen"]);
+    expect(result.value.searchText).toBe("042 a kettle and four mugs kitchen");
+  });
+
+  it("removes stored categories when the new answer has none", () => {
+    const result = replaceAiSummary("m1", old, [], "a kettle", [], "uid-1");
+
+    expect("aiCategories" in result.value).toBe(false);
+    expect(result.value.searchText).not.toContain("screenshot");
+    expect(lastUpdate().aiCategories).toBe(DELETE_FIELD);
+  });
+
+  it("clears the suggestion when every photo came back with nothing to list", () => {
+    const result = replaceAiSummary("m1", old, [], "  ", [], "uid-1");
+
+    expect("aiSummary" in result.value).toBe(false);
+    expect(result.value.searchText).toBe("042");
+    const fields = lastUpdate();
+    expect(fields.aiSummary).toBe(DELETE_FIELD);
+    expect(fields.aiCategories).toBe(DELETE_FIELD);
+  });
+});
+
+describe("setSummaryState", () => {
+  it("writes the reason with failed", async () => {
+    await setSummaryState("m1", "p1", "failed", "deadline-exceeded");
+
+    expect(lastUpdate()).toEqual({ summaryState: "failed", summaryError: "deadline-exceeded" });
+  });
+
+  it("removes a stale reason when the photo is queued again", async () => {
+    await setSummaryState("m1", "p1", "queued");
+
+    expect(lastUpdate()).toEqual({ summaryState: "queued", summaryError: DELETE_FIELD });
+  });
+
+  it("writes only the two fields it owns, because the uploader owns the rest", async () => {
+    await setSummaryState("m1", "p1", "queued");
+
+    expect(Object.keys(lastUpdate()).sort()).toEqual(["summaryError", "summaryState"]);
   });
 });

@@ -188,6 +188,8 @@ export function setTitle(
  * the key left out leaves the stored value alone, so the old list would
  * survive being cleared and keep matching searches. That path removes the
  * field the way `setTitle` does and rebuilds `searchText` around its absence.
+ * `contentsCategories` goes with it, because they were accepted as part of
+ * that list and would otherwise keep finding a box whose list is gone.
  *
  * No activity event. A person correcting a list is editing the same box they
  * are looking at, which is what the note and the room change do too.
@@ -202,7 +204,7 @@ export function setContentsSummary(
   const trimmed = text.trim();
   if (trimmed) return saveContainer(moveId, { ...container, contentsSummary: trimmed }, zones, actorUid);
 
-  const { contentsSummary: _cleared, ...rest } = container;
+  const { contentsSummary: _cleared, contentsCategories: _categories, ...rest } = container;
   const parsed = containerSchema.parse({
     ...rest,
     searchText: buildSearchText(rest, zones.find((z) => z.id === rest.destinationZoneId)?.name),
@@ -212,21 +214,28 @@ export function setContentsSummary(
   const { id, ...fields } = parsed;
   return {
     value: parsed,
-    written: updateDoc(doc(containers(moveId), id), { ...fields, contentsSummary: deleteField() }),
+    written: updateDoc(doc(containers(moveId), id), {
+      ...fields,
+      contentsSummary: deleteField(),
+      contentsCategories: deleteField(),
+    }),
   };
 }
 
 /**
- * Clears `aiSummary` and rebuilds `searchText` around its absence.
+ * Clears `aiSummary` and `aiCategories` and rebuilds `searchText` around
+ * their absence.
  *
- * `aiSummary` has to be deleted rather than written as undefined. Firestore
- * rejects an explicit undefined outright, and a key merely left out of an
- * update leaves the stored value in place, so the suggestion would survive its
- * own acceptance and keep matching searches after the person dismissed it.
+ * Both have to be deleted rather than written as undefined. Firestore rejects
+ * an explicit undefined outright, and a key merely left out of an update
+ * leaves the stored value in place, so the suggestion would survive its own
+ * acceptance and keep matching searches after the person dismissed it.
  *
  * `contentsSummary` is passed only by Accept. Dismiss leaves whatever the
  * person typed themselves alone, per doc 07: AI output never overwrites
- * confirmed text.
+ * confirmed text. Accept carries the suggested categories into
+ * `contentsCategories` beside the text, replacing any that came with an
+ * earlier list, because the accepted text replaces that list too.
  */
 function withoutAiSummary(
   moveId: string,
@@ -235,10 +244,18 @@ function withoutAiSummary(
   actorUid: string,
   contentsSummary?: string
 ): PendingWrite<Container> {
-  const { aiSummary: _cleared, ...rest } = container;
+  const {
+    aiSummary: _cleared,
+    aiCategories: suggested,
+    contentsCategories: confirmed,
+    ...rest
+  } = container;
+  const accepting = Boolean(contentsSummary);
+  const categories = accepting ? (suggested ?? []) : (confirmed ?? []);
   const next: Container = {
     ...rest,
     ...(contentsSummary ? { contentsSummary } : {}),
+    ...(categories.length > 0 ? { contentsCategories: categories } : {}),
     updatedAt: nowIso(),
     updatedBy: actorUid,
   };
@@ -250,7 +267,56 @@ function withoutAiSummary(
   const { id, ...fields } = parsed;
   return {
     value: parsed,
-    written: updateDoc(doc(containers(moveId), id), { ...fields, aiSummary: deleteField() }),
+    written: updateDoc(doc(containers(moveId), id), {
+      ...fields,
+      aiSummary: deleteField(),
+      aiCategories: deleteField(),
+      ...(categories.length > 0 ? {} : { contentsCategories: deleteField() }),
+    }),
+  };
+}
+
+/**
+ * Ask again's answer, written once every photo has replied. The function
+ * hands the results back rather than writing them so that a failure part way
+ * through leaves the old suggestion standing; this is where they land.
+ *
+ * Every photo coming back empty is an answer too: nothing in them is worth
+ * listing, so the old suggestion goes. That is a dismissal of the text only.
+ * The photos are already marked by the function and nothing here touches
+ * them, so a later Ask again still works.
+ */
+export function replaceAiSummary(
+  moveId: string,
+  container: Container,
+  zones: readonly Zone[],
+  summary: string,
+  categories: readonly string[],
+  actorUid: string
+): PendingWrite<Container> {
+  const text = summary.trim();
+  if (!text) return withoutAiSummary(moveId, container, zones, actorUid);
+
+  const { aiCategories: _old, ...rest } = container;
+  const next: Container = {
+    ...rest,
+    aiSummary: text,
+    ...(categories.length > 0 ? { aiCategories: [...categories] } : {}),
+  };
+  if (categories.length > 0) return saveContainer(moveId, next, zones, actorUid);
+
+  // Same reason as above: a key left out of an update keeps its old value.
+  const zoneName = zones.find((z) => z.id === next.destinationZoneId)?.name;
+  const parsed = containerSchema.parse({
+    ...next,
+    searchText: buildSearchText(next, zoneName),
+    updatedAt: nowIso(),
+    updatedBy: actorUid,
+  });
+  const { id, ...fields } = parsed;
+  return {
+    value: parsed,
+    written: updateDoc(doc(containers(moveId), id), { ...fields, aiCategories: deleteField() }),
   };
 }
 

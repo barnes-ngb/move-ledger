@@ -203,7 +203,7 @@ Amended again 2026-08-15 during the APPLY-09 run. The keypad screen shows voided
 
 ### Sources
 
-`displayCode`, title, notes, confirmed contents summary, AI summary, destination zone name.
+`displayCode`, title, notes, confirmed contents summary and its categories, AI summary and its categories, destination zone name. A category match is reported as the text it came with, so a suggested category is marked the way a suggested summary is. Categories added 2026-10-17 in APPLY-16.
 
 ### Result card
 
@@ -272,6 +272,14 @@ The save goes through `setContentsSummary`, which goes through `saveContainer`, 
 Neither happens on the first press. A voided box says so at the top, hides everything that edits it, keeps its photos and its number on screen because those are what somebody came to check, and offers **Put this box back**, which needs no confirmation because it takes nothing away.
 
 **Photo delete and retry.** Delete is in the full-screen viewer rather than on the strip, because at 96px a person cannot tell which photo they are about to lose. It confirms first, and the viewer closes itself when the last photo goes. The strip's "not sent" marker is now the retry control, per doc 06. The file input no longer carries `capture="environment"`, which was forcing the camera on Android and hiding the library.
+
+### What shipped, APPLY-16
+
+Amended 2026-10-17. **Ask again no longer clears the suggestion first.** It asks every contents photo, keeps the old text on screen while it waits, and replaces it only once every photo has answered. If any call fails, the old text stays and the reason shows inside the panel. If every photo comes back with nothing worth listing, the suggestion is removed and the panel says so.
+
+**Write a contents list.** When a box has no suggestion and at least one contents photo has uploaded without a list, because its call failed or because it was taken before the feature was on, the same panel offers this control. It asks for those photos only. It appears on box detail and not on Add box, where a photo has usually just uploaded and its own request is already out, and only while the move has the contents list on.
+
+**Categories show beside the text they came with.** Under a suggestion, and under the confirmed contents list once accepted, as one line: "Kinds of things: kitchen, books". They are searched, so they are shown.
 
 ### Adding a photo: two controls, one path
 

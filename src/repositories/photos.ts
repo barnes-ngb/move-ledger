@@ -202,6 +202,28 @@ export function retryUpload(moveId: string, photo: ContainerPhoto): PendingWrite
   return { value: next, written };
 }
 
+/**
+ * The contents list's state on one photo, written by the client on either
+ * side of a call: `queued` before it, `failed` with the reason if it throws.
+ * The function writes `done` and `skipped` itself.
+ *
+ * Two fields and nothing else, rather than the whole record, because the
+ * uploader owns the rest of this document and may be writing it at the same
+ * moment. `summaryError` is removed for any state but `failed`, so a reason
+ * never sits under a photo that is being asked again.
+ */
+export function setSummaryState(
+  moveId: string,
+  photoId: string,
+  state: "queued" | "failed",
+  error?: string
+): Promise<void> {
+  return updateDoc(doc(photos(moveId), photoId), {
+    summaryState: state,
+    summaryError: state === "failed" && error ? error : deleteField(),
+  });
+}
+
 export function watchPhotos(
   moveId: string,
   onData: (p: ContainerPhoto[]) => void,

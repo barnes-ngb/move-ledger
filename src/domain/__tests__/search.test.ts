@@ -19,6 +19,20 @@ describe("buildSearchText", () => {
     expect(text).toBe("042 coffee gear kettle and mugs measuring cups kitchen");
   });
 
+  it("carries confirmed and suggested categories", () => {
+    const text = buildSearchText(
+      {
+        displayCode: "042",
+        contentsSummary: "kettle",
+        contentsCategories: ["Kitchen"],
+        aiSummary: "a lamp",
+        aiCategories: ["lighting", "decor"],
+      },
+      "Office"
+    );
+    expect(text).toBe("042 kettle kitchen a lamp lighting decor office");
+  });
+
   it("drops fields that are absent rather than leaving gaps", () => {
     const text = buildSearchText({ displayCode: "007", title: undefined, notes: undefined, contentsSummary: undefined, aiSummary: undefined });
     expect(text).toBe("007");
@@ -49,6 +63,21 @@ describe("search", () => {
   it("prefers confirmed text over a suggestion when both could match", () => {
     const both = makeContainer({ id: "c9", notes: "lamp", aiSummary: "lamp" });
     expect(search([both], "lamp").at(0)?.field).toBe("notes");
+  });
+
+  it("finds a box by a suggested category and marks it as a suggestion", () => {
+    const box = makeContainer({ id: "c7", aiSummary: "a kettle", aiCategories: ["small appliances"] });
+    const hits = search([box], "appliances");
+    expect(hits).toHaveLength(1);
+    expect(hits[0]!.field).toBe("aiSummary");
+    expect(hits[0]!.suggestionOnly).toBe(true);
+  });
+
+  it("finds a box by a confirmed category as confirmed text", () => {
+    const box = makeContainer({ id: "c8", contentsSummary: "a kettle", contentsCategories: ["kitchen"] });
+    const hits = search([box], "kitchen");
+    expect(hits[0]!.field).toBe("contentsSummary");
+    expect(hits[0]!.suggestionOnly).toBe(false);
   });
 
   it("searches the destination room name", () => {

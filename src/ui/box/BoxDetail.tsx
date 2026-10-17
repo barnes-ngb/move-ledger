@@ -37,12 +37,15 @@ export function BoxDetail({
   zones,
   uid,
   backLabel = "Back",
+  contentsListOn = false,
   onBack,
 }: {
   moveId: string;
   container: Container;
   zones: readonly Zone[];
   uid: string;
+  /** The move's `aiEnabled`. Decides whether the panel offers to write a list for unasked photos. */
+  contentsListOn?: boolean;
   /** Names where back goes, since this screen is opened from three places. */
   backLabel?: string;
   onBack: () => void;
@@ -69,6 +72,12 @@ export function BoxDetail({
   const forward = nextStatuses(container.status);
   const voided = isVoided(container);
   const deletable = canDelete(container);
+
+  // Accepted with the list and searched with it, so they are shown with it.
+  // Emptying the list removes them; see `setContentsSummary`.
+  const categoriesLine = container.contentsCategories?.length ? (
+    <p className="mt-2 text-sm text-slate-400">Kinds of things: {container.contentsCategories.join(", ")}</p>
+  ) : null;
 
   function run(write: () => { written: Promise<unknown> }) {
     setError(null);
@@ -170,11 +179,13 @@ export function BoxDetail({
             <div>
               <p className="text-sm text-slate-400">Contents</p>
               <p className="mt-1 text-lg leading-relaxed text-slate-200">{container.contentsSummary}</p>
+              {categoriesLine}
             </div>
           ) : null
         ) : (
           <div>
             <TextArea label="Contents" value={contents} onChange={setContents} />
+            {categoriesLine}
             <div className="mt-3">
               <Button
                 onClick={() => run(() => setContentsSummary(moveId, container, contents, zones, uid))}
@@ -193,6 +204,7 @@ export function BoxDetail({
           zones={zones}
           photos={photos.map((v) => v.photo)}
           uid={uid}
+          offerAsk={contentsListOn && !voided}
         />
 
         {/* A voided box keeps its photos and its number on screen, because those

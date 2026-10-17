@@ -1,13 +1,46 @@
-import { useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import type { Container, ContainerPhoto, Zone } from "../../domain";
 import {
   acceptAiSummary,
   dismissAiSummary,
+  replaceAiSummary,
   updatePhotoRecord,
   writeInBackground,
 } from "../../repositories";
-import { summarizePhoto } from "../../lib/functions";
+import type { SummarizeResponse } from "../../lib/functions";
+import { askForSummary } from "../../photos/summary";
 import { Button, ErrorLine, TextArea } from "../kit";
+
+function reasonOf(results: readonly PromiseSettledResult<unknown>[]): string | null {
+  const failed = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
+  if (!failed) return null;
+  return failed.reason instanceof Error ? failed.reason.message : String(failed.reason);
+}
+
+/**
+ * The frame both states share, so the ask control on box detail is this
+ * panel with different contents rather than a second component that drifts.
+ */
+function Panel({
+  heading,
+  lead,
+  error,
+  children,
+}: {
+  heading: string;
+  lead: string;
+  error: string | null;
+  children: ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-700 p-4">
+      <p className="text-sm text-slate-400">{heading}</p>
+      <p className="mt-1 text-xs text-slate-500">{lead}</p>
+      <div className="mt-3 flex flex-col gap-3">{children}</div>
+      <ErrorLine message={error} />
+    </div>
+  );
+}
 
 /**
  * The suggestion, and the four things a person can do with it.
@@ -18,6 +51,10 @@ import { Button, ErrorLine, TextArea } from "../kit";
  *
  * The text is stored as plain prose because it is searched word by word.
  * Nothing in this component adds bullets, punctuation, or markup to it.
+ *
+ * With no suggestion, and `offerAsk` set, the same panel offers to write one
+ * for contents photos that uploaded and never got a list: a call that failed,
+ * or a photo taken before the feature was turned on.
  */
 export function AiSummary({
   moveId,
@@ -25,6 +62,7 @@ export function AiSummary({
   zones,
   photos,
   uid,
+  offerAsk = false,
   onAnswered,
 }: {
   moveId: string;
@@ -33,8 +71,13 @@ export function AiSummary({
   photos: readonly ContainerPhoto[];
   uid: string;
   /**
-   * The box as it stands the moment a suggestion is answered, for a screen that
-   * is also holding an edit of the same document.
+   * Box detail passes the move's setting. Add box does not: a photo there has
+   * usually just uploaded and its own request is already on the way.
+   */
+  offerAsk?: boolean;
+  /**
+   * The box as it stands the moment a suggestion is answered or replaced, for
+   * a screen that is also holding an edit of the same document.
    *
    * Every write here settles on server acknowledgment, so the subscription
    * delivers the answered box a moment after the tap rather than during it. Add
@@ -47,13 +90,23 @@ export function AiSummary({
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [asking, setAsking] = useState(false);
+  // Ask again settles seconds after the tap, and by then the subscription may
+  // have delivered a newer copy of the box. The write is based on that one.
+  const latest = useRef(container);
+  latest.current = container;
 
   const suggestion = container.aiSummary?.trim() ?? "";
+  const categories = container.aiCategories ?? [];
   const contentsPhotos = photos.filter((p) => p.type === "contents");
-
-  if (!suggestion) return null;
-
+  const unasked = offerAsk
+    ? contentsPhotos.filter(
+        (p) =>
+          p.storagePath !== undefined &&
+          (p.summaryState === undefined || p.summaryState === "none" || p.summaryState === "failed")
+      )
+    : [];
   /** Returns the written document, which is available before the server has it. */
   function run<T>(write: () => { value: T; written: Promise<unknown> }): T | null {
     setError(null);
@@ -90,37 +143,98 @@ export function AiSummary({
   }
 
   /**
-   * Redo clears the current text first, so a fresh answer replaces the old one
-   * rather than being appended to it. Every contents photo is asked again,
-   * because the list accumulates across layers and re-asking only the last
-   * photo would silently drop the earlier ones.
+   * Asks every contents photo again, because the list accumulates across
+   * layers and re-asking only the last photo would silently drop the earlier
+   * ones. Nothing is cleared first. The function hands each answer back
+   * instead of writing it, and the suggestion is replaced only once every
+   * photo has replied, so a call that fails leaves the old text on screen with
+   * the reason under it rather than an empty panel.
    */
-  function redo() {
+  async function redo() {
+    const asked = suggestion;
     setAsking(true);
     setError(null);
-    const cleared = run(() => dismissAiSummary(moveId, container, zones, uid));
-    if (cleared) onAnswered?.(cleared);
-    void Promise.allSettled(
-      contentsPhotos.map((p) => summarizePhoto({ moveId, photoId: p.id, redo: true }))
-    )
-      .then((results) => {
-        if (results.some((r) => r.status === "rejected")) {
-          setError("Could not ask again. The old list is cleared; try once more when you have signal.");
-        }
-      })
-      .finally(() => setAsking(false));
+    const results = await Promise.allSettled(
+      contentsPhotos.map((p) => askForSummary(moveId, p.id, { redo: true, returnOnly: true }))
+    );
+    setAsking(false);
+
+    const reason = reasonOf(results);
+    if (reason !== null) {
+      setError(`Could not ask again, so the list above is unchanged. ${reason}`);
+      return;
+    }
+    // Answered while the calls were out. The person's answer stands.
+    if ((latest.current.aiSummary?.trim() ?? "") !== asked) return;
+
+    const answers = results.map((r) => (r as PromiseFulfilledResult<SummarizeResponse>).value);
+    const text = answers
+      .map((a) => a.summary?.trim() ?? "")
+      .filter((t) => t.length > 0)
+      .join(" ");
+    const found = [...new Set(answers.flatMap((a) => a.categories ?? []))];
+    const replaced = run(() => replaceAiSummary(moveId, latest.current, zones, text, found, uid));
+    if (replaced) onAnswered?.(replaced);
+    if (!text) setNotice("Nothing in these photos was worth listing.");
+  }
+
+  /**
+   * The ask control. Ordinary calls, not redo: the function appends each
+   * answer to the box itself, exactly as it does after an upload, and skips
+   * any photo it has already read.
+   */
+  async function writeList() {
+    setAsking(true);
+    setError(null);
+    setNotice(null);
+    const results = await Promise.allSettled(unasked.map((p) => askForSummary(moveId, p.id)));
+    setAsking(false);
+
+    const reason = reasonOf(results);
+    if (reason !== null) {
+      setError(`Could not write the list for every photo. ${reason}`);
+      return;
+    }
+    const wrote = results.some(
+      (r) => r.status === "fulfilled" && (r.value as SummarizeResponse).summary !== undefined
+    );
+    if (!wrote) setNotice("Nothing in these photos was worth listing.");
+  }
+
+  if (!suggestion) {
+    // Kept on screen while it is asking or has something to say, because the
+    // photos stop counting as unasked the moment they are marked queued.
+    if (unasked.length === 0 && !asking && error === null && notice === null) return null;
+    const count = unasked.length;
+    return (
+      <Panel
+        heading="Contents list"
+        lead="No list has been written from these photos yet. A list is a suggestion until you accept it."
+        error={error}
+      >
+        {notice ? <p className="text-sm text-slate-300">{notice}</p> : null}
+        {count > 0 || asking ? (
+          <>
+            <Button onClick={() => void writeList()} disabled={asking || count === 0} tone="quiet">
+              {asking ? "Writing" : "Write a contents list"}
+            </Button>
+            <p className="text-xs text-slate-500">
+              It reads {count} photo{count === 1 ? "" : "s"} and costs a call for each.
+            </p>
+          </>
+        ) : null}
+      </Panel>
+    );
   }
 
   return (
-    <div className="rounded-2xl border border-slate-700 p-4">
-      <p className="text-sm text-slate-400">Suggested contents</p>
-      <p className="mt-1 text-xs text-slate-500">
-        Written from the photos. Nobody has confirmed it yet, so it is not part of this box until you
-        accept it.
-      </p>
-
+    <Panel
+      heading="Suggested contents"
+      lead="Written from the photos. Nobody has confirmed it yet, so it is not part of this box until you accept it."
+      error={error}
+    >
       {editing ? (
-        <div className="mt-3 flex flex-col gap-3">
+        <>
           <TextArea label="Contents" value={draft} onChange={setDraft} />
           <Button onClick={() => accept(draft)} disabled={!draft.trim()}>
             Save and accept
@@ -128,10 +242,13 @@ export function AiSummary({
           <Button onClick={() => setEditing(false)} tone="quiet">
             Cancel
           </Button>
-        </div>
+        </>
       ) : (
-        <div className="mt-3 flex flex-col gap-3">
+        <>
           <p className="text-lg leading-relaxed text-slate-200">{suggestion}</p>
+          {categories.length > 0 ? (
+            <p className="text-sm text-slate-400">Kinds of things: {categories.join(", ")}</p>
+          ) : null}
           <Button onClick={() => accept(suggestion)}>Accept</Button>
           <Button
             onClick={() => {
@@ -145,19 +262,17 @@ export function AiSummary({
           <Button onClick={dismiss} tone="quiet">
             Dismiss
           </Button>
-          <Button onClick={redo} disabled={asking || contentsPhotos.length === 0} tone="quiet">
+          <Button onClick={() => void redo()} disabled={asking || contentsPhotos.length === 0} tone="quiet">
             {asking
               ? "Asking"
               : `Ask again, ${contentsPhotos.length} photo${contentsPhotos.length === 1 ? "" : "s"}`}
           </Button>
           <p className="text-xs text-slate-500">
-            Asking again reads the photos once more and replaces this text. It costs another call for
-            each photo.
+            Asking again reads the photos once more and replaces this text once every photo has
+            answered. It costs another call for each photo.
           </p>
-        </div>
+        </>
       )}
-
-      <ErrorLine message={error} />
-    </div>
+    </Panel>
   );
 }

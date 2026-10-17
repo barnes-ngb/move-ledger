@@ -41,7 +41,7 @@ Why the split exists: most containers are boxes, but furniture and appliances ar
 
 **Open-first.** A box with `unpackPriority` of `immediate` or `first_night`.
 
-**Confirmed text.** Text a person typed or explicitly accepted. Distinct from `aiSummary`, which is a suggestion until accepted.
+**Confirmed text.** Text a person typed or explicitly accepted. Distinct from `aiSummary`, which is a suggestion until accepted. `contentsCategories` is confirmed text: it is what `aiCategories` becomes when the suggestion beside it is accepted.
 
 ## Words not to use
 

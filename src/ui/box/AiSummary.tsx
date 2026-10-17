@@ -1,5 +1,15 @@
 import { useRef, useState, type ReactNode } from "react";
-import { isUnaskedForSummary, type Container, type ContainerPhoto, type Zone } from "../../domain";
+import {
+  aiItemsOf,
+  isUnaskedForSummary,
+  joinItems,
+  mergeItems,
+  parseItemLines,
+  splitSummary,
+  type Container,
+  type ContainerPhoto,
+  type Zone,
+} from "../../domain";
 import {
   acceptAiSummary,
   dismissAiSummary,
@@ -10,6 +20,7 @@ import {
 import type { SummarizeResponse } from "../../lib/functions";
 import { askForSummary } from "../../photos/summary";
 import { Button, ErrorLine, TextArea } from "../kit";
+import { CategoryChips, ItemList } from "./ContentsList";
 
 function reasonOf(results: readonly PromiseSettledResult<unknown>[]): string | null {
   const failed = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
@@ -49,8 +60,10 @@ function Panel({
  * happens on its own. The heading follows doc 09: this is not confirmed text
  * until someone accepts it, and the screen says so rather than implying it.
  *
- * The text is stored as plain prose because it is searched word by word.
- * Nothing in this component adds bullets, punctuation, or markup to it.
+ * The suggestion is a list of items, shown one per line and edited one per
+ * line. A box from before items has only a string, which `aiItemsOf` splits
+ * when it is read; nothing here writes that split back unless the person
+ * answers the suggestion.
  *
  * With no suggestion, and `offerAsk` set, the same panel offers to write one
  * for contents photos that uploaded and never got a list: a call that failed,
@@ -97,7 +110,10 @@ export function AiSummary({
   const latest = useRef(container);
   latest.current = container;
 
-  const suggestion = container.aiSummary?.trim() ?? "";
+  const items = aiItemsOf(container);
+  // What the person is answering, as one string, so a copy of the box that
+  // arrives while Ask again is out can be compared against it.
+  const suggestion = joinItems(items);
   const categories = container.aiCategories ?? [];
   const contentsPhotos = photos.filter((p) => p.type === "contents");
   const now = Date.now();
@@ -117,10 +133,10 @@ export function AiSummary({
     }
   }
 
-  function accept(text: string) {
-    if (!text.trim()) return;
+  function accept(accepted: readonly string[]) {
+    if (accepted.length === 0) return;
     setEditing(false);
-    const answered = run(() => acceptAiSummary(moveId, container, zones, text, uid));
+    const answered = run(() => acceptAiSummary(moveId, container, zones, accepted, uid));
     if (answered) onAnswered?.(answered);
   }
 
@@ -160,17 +176,19 @@ export function AiSummary({
       return;
     }
     // Answered while the calls were out. The person's answer stands.
-    if ((latest.current.aiSummary?.trim() ?? "") !== asked) return;
+    if (joinItems(aiItemsOf(latest.current)) !== asked) return;
 
+    // A function deployed before items answers with `summary` alone, and that
+    // string is split the way a stored one would be.
     const answers = results.map((r) => (r as PromiseFulfilledResult<SummarizeResponse>).value);
-    const text = answers
-      .map((a) => a.summary?.trim() ?? "")
-      .filter((t) => t.length > 0)
-      .join(" ");
-    const found = [...new Set(answers.flatMap((a) => a.categories ?? []))];
-    const replaced = run(() => replaceAiSummary(moveId, latest.current, zones, text, found, uid));
+    const found = answers.reduce<string[]>(
+      (list, a) => mergeItems(list, a.items ?? splitSummary(a.summary)),
+      []
+    );
+    const kinds = [...new Set(answers.flatMap((a) => a.categories ?? []))];
+    const replaced = run(() => replaceAiSummary(moveId, latest.current, zones, found, kinds, uid));
     if (replaced) onAnswered?.(replaced);
-    if (!text) setNotice("Nothing in these photos was worth listing.");
+    if (found.length === 0) setNotice("Nothing in these photos was worth listing.");
   }
 
   /**
@@ -191,12 +209,15 @@ export function AiSummary({
       return;
     }
     const wrote = results.some(
-      (r) => r.status === "fulfilled" && (r.value as SummarizeResponse).summary !== undefined
+      (r) =>
+        r.status === "fulfilled" &&
+        ((r.value as SummarizeResponse).items !== undefined ||
+          (r.value as SummarizeResponse).summary !== undefined)
     );
     if (!wrote) setNotice("Nothing in these photos was worth listing.");
   }
 
-  if (!suggestion) {
+  if (items.length === 0) {
     // Kept on screen while it is asking or has something to say, because the
     // photos stop counting as unasked the moment they are marked requested.
     if (unasked.length === 0 && !asking && error === null && notice === null) return null;
@@ -230,8 +251,8 @@ export function AiSummary({
     >
       {editing ? (
         <>
-          <TextArea label="Contents" value={draft} onChange={setDraft} />
-          <Button onClick={() => accept(draft)} disabled={!draft.trim()}>
+          <TextArea label="Contents, one per line" value={draft} onChange={setDraft} rows={6} />
+          <Button onClick={() => accept(parseItemLines(draft))} disabled={parseItemLines(draft).length === 0}>
             Save and accept
           </Button>
           <Button onClick={() => setEditing(false)} tone="quiet">
@@ -240,14 +261,12 @@ export function AiSummary({
         </>
       ) : (
         <>
-          <p className="text-lg leading-relaxed text-slate-200">{suggestion}</p>
-          {categories.length > 0 ? (
-            <p className="text-sm text-slate-400">Kinds of things: {categories.join(", ")}</p>
-          ) : null}
-          <Button onClick={() => accept(suggestion)}>Accept</Button>
+          <ItemList items={items} />
+          <CategoryChips categories={categories} />
+          <Button onClick={() => accept(items)}>Accept</Button>
           <Button
             onClick={() => {
-              setDraft(suggestion);
+              setDraft(items.join("\n"));
               setEditing(true);
             }}
             tone="quiet"
@@ -263,7 +282,7 @@ export function AiSummary({
               : `Ask again, ${contentsPhotos.length} photo${contentsPhotos.length === 1 ? "" : "s"}`}
           </Button>
           <p className="text-xs text-slate-500">
-            Asking again reads the photos once more and replaces this text once every photo has
+            Asking again reads the photos once more and replaces this list once every photo has
             answered. It costs another call for each photo.
           </p>
         </>

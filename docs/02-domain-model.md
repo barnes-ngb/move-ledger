@@ -139,9 +139,11 @@ interface Container {
 
   title?: string;
   notes?: string;
-  contentsSummary?: string;    // human-confirmed
-  contentsCategories?: string[]; // accepted with contentsSummary, removed with it
-  aiSummary?: string;          // never promoted without confirmation
+  contentsSummary?: string;    // human-confirmed; contentsItems joined with ", "
+  contentsItems?: string[];    // human-confirmed, one item each
+  contentsCategories?: string[]; // accepted with the items, removed with them
+  aiSummary?: string;          // never promoted without confirmation; aiItems joined with ", "
+  aiItems?: string[];          // the suggestion, one item each
   aiCategories?: string[];     // returned beside aiSummary, a suggestion until accepted
 
   ownerMemberId: string;
@@ -207,7 +209,7 @@ Voiding is reversible. Unvoiding removes both stamps, which has to reach Firesto
 
 Firestore has no full-text search. For a few hundred boxes, client-side filtering over the local cache is sufficient and costs nothing.
 
-`searchText` is maintained on every write as the lowercased concatenation of `displayCode`, `title`, `notes`, `contentsSummary`, `contentsCategories`, `aiSummary`, `aiCategories`, and the destination zone name. Search itself matches word by word against those same fields, with each set of categories reported as the text it travels with. Categories added 2026-10-17 in APPLY-16. Search filters the local collection with `includes()`. Do not add Algolia or a Cloud Function search index.
+`searchText` is maintained on every write as the lowercased concatenation of `displayCode`, `title`, `notes`, the confirmed items, `contentsCategories`, the suggested items, `aiCategories`, and the destination zone name. The items are read through `contentsItemsOf` and `aiItemsOf` in `src/domain/contents.ts`: the stored list while it joins to exactly the string beside it, otherwise the string split on ", ". That covers a box from before items, and a list an older build left stale when it edited the string it can see. Stored data is never rewritten on read. Items added 2026-10-17 in APPLY-18. Search itself matches word by word against those same fields, with each set of categories reported as the text it travels with. Categories added 2026-10-17 in APPLY-16. Search filters the local collection with `includes()`. Do not add Algolia or a Cloud Function search index.
 
 ## ContainerPhoto
 

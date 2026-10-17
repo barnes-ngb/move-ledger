@@ -37,6 +37,26 @@ describe("buildSearchText", () => {
     const text = buildSearchText({ displayCode: "007", title: undefined, notes: undefined, contentsSummary: undefined, aiSummary: undefined });
     expect(text).toBe("007");
   });
+
+  it("indexes the items of both lists", () => {
+    const text = buildSearchText({
+      displayCode: "042",
+      contentsItems: ["kettle", "two mugs"],
+      contentsSummary: "kettle, two mugs",
+      aiItems: ["white ceramic vase"],
+      aiSummary: "white ceramic vase",
+    });
+    expect(text).toBe("042 kettle two mugs white ceramic vase");
+  });
+
+  it("indexes the string, not a list an older build left stale beside it", () => {
+    const text = buildSearchText({
+      displayCode: "042",
+      contentsItems: ["stapler"],
+      contentsSummary: "kettle, two mugs",
+    });
+    expect(text).toBe("042 kettle two mugs");
+  });
 });
 
 describe("search", () => {
@@ -78,6 +98,17 @@ describe("search", () => {
     const hits = search([box], "kitchen");
     expect(hits[0]!.field).toBe("contentsSummary");
     expect(hits[0]!.suggestionOnly).toBe(false);
+  });
+
+  it("finds a box by a word in one of its items", () => {
+    const listed = makeContainer({
+      id: "c9",
+      aiItems: ["red stapler", "pencils"],
+      aiSummary: "red stapler, pencils",
+    });
+    const hits = search([listed], "stapler");
+    expect(hits.map((h) => h.container.id)).toEqual(["c9"]);
+    expect(hits[0]?.suggestionOnly).toBe(true);
   });
 
   it("searches the destination room name", () => {

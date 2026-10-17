@@ -82,7 +82,7 @@ const {
   deleteContainer,
   dismissAiSummary,
   replaceAiSummary,
-  setContentsSummary,
+  setContentsItems,
   unvoidContainer,
   voidContainer,
 } = await import("../containers");
@@ -405,7 +405,7 @@ describe("retryUpload", () => {
  * nothing else, so a write that skipped the rebuild would leave a box coming
  * back for words it no longer holds, or not coming back for the ones it does.
  */
-describe("setContentsSummary", () => {
+describe("setContentsItems", () => {
   const zones = [
     {
       id: "z1",
@@ -425,32 +425,49 @@ describe("setContentsSummary", () => {
     searchText: "042 kettle and two mugs kitchen",
   });
 
-  it("rebuilds searchText around the new text", () => {
-    const result = setContentsSummary("m1", box, "kettle, two mugs, tea towels", zones, "uid-1");
+  it("rebuilds searchText around the new items", () => {
+    const result = setContentsItems("m1", box, ["kettle", "two mugs", "tea towels"], zones, "uid-1");
 
-    expect(result.value.contentsSummary).toBe("kettle, two mugs, tea towels");
-    expect(result.value.searchText).toBe("042 kettle, two mugs, tea towels kitchen");
+    expect(result.value.contentsItems).toEqual(["kettle", "two mugs", "tea towels"]);
+    expect(result.value.searchText).toBe("042 kettle two mugs tea towels kitchen");
     expect(result.value.searchText).not.toContain("and two mugs kitchen");
   });
 
+  it("writes the joined string beside the items, for the export and an older build", () => {
+    const result = setContentsItems("m1", box, ["kettle", "two mugs"], zones, "uid-1");
+
+    expect(result.value.contentsSummary).toBe("kettle, two mugs");
+    const fields = lastUpdate();
+    expect(fields.contentsItems).toEqual(["kettle", "two mugs"]);
+    expect(fields.contentsSummary).toBe("kettle, two mugs");
+  });
+
+  it("drops blank items", () => {
+    const result = setContentsItems("m1", box, ["kettle", "  ", ""], zones, "uid-1");
+
+    expect(result.value.contentsItems).toEqual(["kettle"]);
+  });
+
   it("keeps the room name in searchText, since the room is one of the things searched", () => {
-    const result = setContentsSummary("m1", box, "winter boots", zones, "uid-1");
+    const result = setContentsItems("m1", box, ["winter boots"], zones, "uid-1");
 
     expect(result.value.searchText).toContain("kitchen");
   });
 
   it("sends a delete sentinel when the list is emptied, because an absent key leaves it stored", () => {
-    const result = setContentsSummary("m1", box, "   ", zones, "uid-1");
+    const result = setContentsItems("m1", box, ["   "], zones, "uid-1");
 
     expect("contentsSummary" in result.value).toBe(false);
+    expect("contentsItems" in result.value).toBe(false);
     expect(result.value.searchText).toBe("042 kitchen");
     const fields = lastUpdate();
     expect(fields.contentsSummary).toBe(DELETE_FIELD);
+    expect(fields.contentsItems).toBe(DELETE_FIELD);
     expect(Object.values(fields)).not.toContain(undefined);
   });
 
   it("stamps who changed it", () => {
-    const result = setContentsSummary("m1", box, "winter boots", zones, "uid-9");
+    const result = setContentsItems("m1", box, ["winter boots"], zones, "uid-9");
 
     expect(result.value.updatedBy).toBe("uid-9");
   });
@@ -483,20 +500,22 @@ describe("categories", () => {
   });
 
   it("moves the suggested categories into the confirmed field on accept", () => {
-    const result = acceptAiSummary("m1", suggested, zones, "kettle and two mugs", "uid-1");
+    const result = acceptAiSummary("m1", suggested, zones, ["kettle and two mugs"], "uid-1");
 
     expect(result.value.contentsCategories).toEqual(["kitchen", "small appliances"]);
     expect("aiCategories" in result.value).toBe(false);
     expect(result.value.searchText).toBe("042 kettle and two mugs kitchen small appliances kitchen");
     const fields = lastUpdate();
     expect(fields.aiSummary).toBe(DELETE_FIELD);
+    expect(fields.aiItems).toBe(DELETE_FIELD);
     expect(fields.aiCategories).toBe(DELETE_FIELD);
     expect(fields.contentsCategories).toEqual(["kitchen", "small appliances"]);
   });
 
   it("carries them across an edited accept too", () => {
-    const result = acceptAiSummary("m1", suggested, zones, "kettle, mugs, tea", "uid-1");
+    const result = acceptAiSummary("m1", suggested, zones, ["kettle", "mugs", "tea"], "uid-1");
 
+    expect(result.value.contentsItems).toEqual(["kettle", "mugs", "tea"]);
     expect(result.value.contentsSummary).toBe("kettle, mugs, tea");
     expect(result.value.contentsCategories).toEqual(["kitchen", "small appliances"]);
   });
@@ -508,7 +527,7 @@ describe("categories", () => {
       aiSummary: "a lamp",
     });
 
-    const result = acceptAiSummary("m1", earlier, zones, "a lamp", "uid-1");
+    const result = acceptAiSummary("m1", earlier, zones, ["a lamp"], "uid-1");
 
     expect("contentsCategories" in result.value).toBe(false);
     expect(lastUpdate().contentsCategories).toBe(DELETE_FIELD);
@@ -530,7 +549,7 @@ describe("categories", () => {
   it("removes the confirmed categories when the confirmed list is emptied", () => {
     const confirmed = makeContainer({ contentsSummary: "books", contentsCategories: ["books"] });
 
-    const result = setContentsSummary("m1", confirmed, "", zones, "uid-1");
+    const result = setContentsItems("m1", confirmed, [], zones, "uid-1");
 
     expect("contentsCategories" in result.value).toBe(false);
     expect(lastUpdate().contentsCategories).toBe(DELETE_FIELD);
@@ -549,16 +568,17 @@ describe("replaceAiSummary", () => {
     searchText: "042 this is a screenshot of a messaging app screenshot",
   });
 
-  it("replaces the text and categories rather than appending to them", () => {
-    const result = replaceAiSummary("m1", old, [], "a kettle and four mugs", ["kitchen"], "uid-1");
+  it("replaces the items and categories rather than appending to them", () => {
+    const result = replaceAiSummary("m1", old, [], ["a kettle", "four mugs"], ["kitchen"], "uid-1");
 
-    expect(result.value.aiSummary).toBe("a kettle and four mugs");
+    expect(result.value.aiItems).toEqual(["a kettle", "four mugs"]);
+    expect(result.value.aiSummary).toBe("a kettle, four mugs");
     expect(result.value.aiCategories).toEqual(["kitchen"]);
-    expect(result.value.searchText).toBe("042 a kettle and four mugs kitchen");
+    expect(result.value.searchText).toBe("042 a kettle four mugs kitchen");
   });
 
   it("removes stored categories when the new answer has none", () => {
-    const result = replaceAiSummary("m1", old, [], "a kettle", [], "uid-1");
+    const result = replaceAiSummary("m1", old, [], ["a kettle"], [], "uid-1");
 
     expect("aiCategories" in result.value).toBe(false);
     expect(result.value.searchText).not.toContain("screenshot");
@@ -566,12 +586,13 @@ describe("replaceAiSummary", () => {
   });
 
   it("clears the suggestion when every photo came back with nothing to list", () => {
-    const result = replaceAiSummary("m1", old, [], "  ", [], "uid-1");
+    const result = replaceAiSummary("m1", old, [], ["  "], [], "uid-1");
 
     expect("aiSummary" in result.value).toBe(false);
     expect(result.value.searchText).toBe("042");
     const fields = lastUpdate();
     expect(fields.aiSummary).toBe(DELETE_FIELD);
+    expect(fields.aiItems).toBe(DELETE_FIELD);
     expect(fields.aiCategories).toBe(DELETE_FIELD);
   });
 });

@@ -1,6 +1,7 @@
 import {
   buildSearchText,
   canDelete,
+  joinItems,
   containerSchema,
   nextSequenceNumber,
   toDisplayCode,
@@ -222,27 +223,43 @@ export function setTitle(
  * rebuilt there, and a direct field write would leave search answering for
  * text that is no longer on the screen.
  *
+ * The items and their joined string are written together, every time, so a
+ * phone on the earlier build reads the same list as a string and the two
+ * never disagree because of this write. See `contentsItemsOf`.
+ *
  * Emptying it is the one case `saveContainer` cannot express. An update with
  * the key left out leaves the stored value alone, so the old list would
  * survive being cleared and keep matching searches. That path removes the
- * field the way `setTitle` does and rebuilds `searchText` around its absence.
- * `contentsCategories` goes with it, because they were accepted as part of
- * that list and would otherwise keep finding a box whose list is gone.
+ * fields the way `setTitle` does and rebuilds `searchText` around their
+ * absence. `contentsCategories` goes with them, because they were accepted as
+ * part of that list and would otherwise keep finding a box whose list is gone.
  *
  * No activity event. A person correcting a list is editing the same box they
  * are looking at, which is what the note and the room change do too.
  */
-export function setContentsSummary(
+export function setContentsItems(
   moveId: string,
   container: Container,
-  text: string,
+  items: readonly string[],
   zones: readonly Zone[],
   actorUid: string
 ): PendingWrite<Container> {
-  const trimmed = text.trim();
-  if (trimmed) return saveContainer(moveId, { ...container, contentsSummary: trimmed }, zones, actorUid);
+  const kept = items.map((item) => item.trim()).filter((item) => item.length > 0);
+  if (kept.length > 0) {
+    return saveContainer(
+      moveId,
+      { ...container, contentsItems: kept, contentsSummary: joinItems(kept) },
+      zones,
+      actorUid
+    );
+  }
 
-  const { contentsSummary: _cleared, contentsCategories: _categories, ...rest } = container;
+  const {
+    contentsSummary: _cleared,
+    contentsItems: _items,
+    contentsCategories: _categories,
+    ...rest
+  } = container;
   const parsed = containerSchema.parse({
     ...rest,
     searchText: buildSearchText(rest, zones.find((z) => z.id === rest.destinationZoneId)?.name),
@@ -255,44 +272,48 @@ export function setContentsSummary(
     written: updateDoc(doc(containers(moveId), id), {
       ...fields,
       contentsSummary: deleteField(),
+      contentsItems: deleteField(),
       contentsCategories: deleteField(),
     }),
   };
 }
 
 /**
- * Clears `aiSummary` and `aiCategories` and rebuilds `searchText` around
- * their absence.
+ * Clears `aiItems`, `aiSummary`, and `aiCategories` and rebuilds `searchText`
+ * around their absence.
  *
- * Both have to be deleted rather than written as undefined. Firestore rejects
- * an explicit undefined outright, and a key merely left out of an update
- * leaves the stored value in place, so the suggestion would survive its own
- * acceptance and keep matching searches after the person dismissed it.
+ * All three have to be deleted rather than written as undefined. Firestore
+ * rejects an explicit undefined outright, and a key merely left out of an
+ * update leaves the stored value in place, so the suggestion would survive
+ * its own acceptance and keep matching searches after the person dismissed it.
  *
- * `contentsSummary` is passed only by Accept. Dismiss leaves whatever the
- * person typed themselves alone, per doc 07: AI output never overwrites
- * confirmed text. Accept carries the suggested categories into
- * `contentsCategories` beside the text, replacing any that came with an
- * earlier list, because the accepted text replaces that list too.
+ * `items` is passed only by Accept. Dismiss leaves whatever the person typed
+ * themselves alone, per doc 07: AI output never overwrites confirmed text.
+ * Accept writes the items to `contentsItems` with their joined string in
+ * `contentsSummary`, and carries the suggested categories into
+ * `contentsCategories` beside them, replacing any that came with an earlier
+ * list, because the accepted items replace that list too.
  */
 function withoutAiSummary(
   moveId: string,
   container: Container,
   zones: readonly Zone[],
   actorUid: string,
-  contentsSummary?: string
+  items?: readonly string[]
 ): PendingWrite<Container> {
   const {
     aiSummary: _cleared,
+    aiItems: _items,
     aiCategories: suggested,
     contentsCategories: confirmed,
     ...rest
   } = container;
-  const accepting = Boolean(contentsSummary);
+  const accepted = (items ?? []).map((item) => item.trim()).filter((item) => item.length > 0);
+  const accepting = accepted.length > 0;
   const categories = accepting ? (suggested ?? []) : (confirmed ?? []);
   const next: Container = {
     ...rest,
-    ...(contentsSummary ? { contentsSummary } : {}),
+    ...(accepting ? { contentsItems: accepted, contentsSummary: joinItems(accepted) } : {}),
     ...(categories.length > 0 ? { contentsCategories: categories } : {}),
     updatedAt: nowIso(),
     updatedBy: actorUid,
@@ -308,6 +329,7 @@ function withoutAiSummary(
     written: updateDoc(doc(containers(moveId), id), {
       ...fields,
       aiSummary: deleteField(),
+      aiItems: deleteField(),
       aiCategories: deleteField(),
       ...(categories.length > 0 ? {} : { contentsCategories: deleteField() }),
     }),
@@ -319,6 +341,10 @@ function withoutAiSummary(
  * hands the results back rather than writing them so that a failure part way
  * through leaves the old suggestion standing; this is where they land.
  *
+ * The items replace the old ones outright rather than joining them, because
+ * every contents photo was asked, and `aiSummary` is written as their joined
+ * string beside them.
+ *
  * Every photo coming back empty is an answer too: nothing in them is worth
  * listing, so the old suggestion goes. That is a dismissal of the text only.
  * The photos are already marked by the function and nothing here touches
@@ -328,17 +354,18 @@ export function replaceAiSummary(
   moveId: string,
   container: Container,
   zones: readonly Zone[],
-  summary: string,
+  items: readonly string[],
   categories: readonly string[],
   actorUid: string
 ): PendingWrite<Container> {
-  const text = summary.trim();
-  if (!text) return withoutAiSummary(moveId, container, zones, actorUid);
+  const kept = items.map((item) => item.trim()).filter((item) => item.length > 0);
+  if (kept.length === 0) return withoutAiSummary(moveId, container, zones, actorUid);
 
   const { aiCategories: _old, ...rest } = container;
   const next: Container = {
     ...rest,
-    aiSummary: text,
+    aiItems: kept,
+    aiSummary: joinItems(kept),
     ...(categories.length > 0 ? { aiCategories: [...categories] } : {}),
   };
   if (categories.length > 0) return saveContainer(moveId, next, zones, actorUid);
@@ -363,10 +390,10 @@ export function acceptAiSummary(
   moveId: string,
   container: Container,
   zones: readonly Zone[],
-  text: string,
+  items: readonly string[],
   actorUid: string
 ): PendingWrite<Container> {
-  return withoutAiSummary(moveId, container, zones, actorUid, text.trim());
+  return withoutAiSummary(moveId, container, zones, actorUid, items);
 }
 
 /** The suggestion is thrown away. Stopping regeneration is the caller's job, on the photos. */

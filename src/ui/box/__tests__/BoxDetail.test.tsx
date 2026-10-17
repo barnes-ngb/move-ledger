@@ -19,7 +19,7 @@ const mocks = vi.hoisted(() => ({
   reportContainerCondition: vi.fn(),
   clearContainerCondition: vi.fn(),
   setTitle: vi.fn(),
-  setContentsSummary: vi.fn(),
+  setContentsItems: vi.fn(),
   setStatus: vi.fn(),
 }));
 
@@ -34,7 +34,7 @@ vi.mock("../../../repositories", () => ({
   saveContainer: vi.fn(() => pending),
   setStatus: mocks.setStatus,
   setTitle: mocks.setTitle,
-  setContentsSummary: mocks.setContentsSummary,
+  setContentsItems: mocks.setContentsItems,
   writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
 }));
 
@@ -61,7 +61,7 @@ beforeEach(() => {
   mocks.reportContainerCondition.mockReturnValue(pending);
   mocks.clearContainerCondition.mockReturnValue(pending);
   mocks.setTitle.mockReturnValue(pending);
-  mocks.setContentsSummary.mockReturnValue(pending);
+  mocks.setContentsItems.mockReturnValue(pending);
   mocks.setStatus.mockReturnValue(pending);
 });
 
@@ -204,55 +204,89 @@ describe("title", () => {
 });
 
 /**
- * Until this run the contents list could be corrected only in the moment a
+ * Until APPLY-11 the contents list could be corrected only in the moment a
  * suggestion was accepted. Once it was confirmed text, nothing edited it.
+ * Since APPLY-18 it is a list, read one item per line and edited one per line.
  *
- * The save goes through `setContentsSummary` rather than a field write, and
+ * The save goes through `setContentsItems` rather than a field write, and
  * that is the point of these: `searchText` is rebuilt in there, so what a
  * search answers for stays what the screen shows.
  */
 describe("the contents list", () => {
   function field(): HTMLTextAreaElement {
-    return screen.getByLabelText("Contents") as HTMLTextAreaElement;
+    return screen.getByLabelText("Contents, one per line") as HTMLTextAreaElement;
   }
 
-  it("shows what the box already holds, ready to correct", () => {
+  function lines(): (string | null)[] {
+    return screen.getAllByRole("listitem").map((li) => li.textContent);
+  }
+
+  const listed = { contentsItems: ["kettle", "two mugs"], contentsSummary: "kettle, two mugs" };
+
+  it("shows what the box holds one item per line", () => {
+    open(makeContainer(listed));
+    expect(lines()).toEqual(["kettle", "two mugs"]);
+    expect(screen.queryByLabelText("Contents, one per line")).toBeNull();
+  });
+
+  it("splits a list from before items without writing anything", () => {
     open(makeContainer({ contentsSummary: "kettle, two mugs" }));
-    expect(field().value).toBe("kettle, two mugs");
+    expect(lines()).toEqual(["kettle", "two mugs"]);
+    expect(mocks.setContentsItems).not.toHaveBeenCalled();
+  });
+
+  it("opens the field with one item per line, ready to correct", () => {
+    open(makeContainer(listed));
+    fireEvent.click(screen.getByText("Edit contents"));
+    expect(field().value).toBe("kettle\ntwo mugs");
   });
 
   it("saves a correction through the path that rebuilds searchText", () => {
-    open(makeContainer({ contentsSummary: "kettle, two mugs" }));
-    fireEvent.change(field(), { target: { value: "kettle, two mugs, tea towels" } });
+    open(makeContainer(listed));
+    fireEvent.click(screen.getByText("Edit contents"));
+    fireEvent.change(field(), { target: { value: "kettle\n two mugs \n\ntea towels" } });
     fireEvent.click(screen.getByText("Save contents"));
-    expect(mocks.setContentsSummary).toHaveBeenCalledWith(
+    expect(mocks.setContentsItems).toHaveBeenCalledWith(
       "m1",
       expect.objectContaining({ id: "c1" }),
-      "kettle, two mugs, tea towels",
+      ["kettle", "two mugs", "tea towels"],
       zones,
       "uid-1"
     );
   });
 
-  it("takes a list on a box that never had one", () => {
+  it("puts the list back unchanged on Cancel", () => {
+    open(makeContainer(listed));
+    fireEvent.click(screen.getByText("Edit contents"));
+    fireEvent.change(field(), { target: { value: "something else" } });
+    fireEvent.click(screen.getByText("Cancel"));
+    expect(lines()).toEqual(["kettle", "two mugs"]);
+    expect(mocks.setContentsItems).not.toHaveBeenCalled();
+  });
+
+  it("takes a list on a box that never had one, straight into the field", () => {
     open(makeContainer());
     fireEvent.change(field(), { target: { value: "winter boots" } });
     fireEvent.click(screen.getByText("Save contents"));
-    expect(mocks.setContentsSummary).toHaveBeenCalledWith(
+    expect(mocks.setContentsItems).toHaveBeenCalledWith(
       "m1",
       expect.anything(),
-      "winter boots",
+      ["winter boots"],
       zones,
       "uid-1"
     );
   });
 
-  it("stays disabled until the text changes", () => {
-    open(makeContainer({ contentsSummary: "kettle, two mugs" }));
+  it("stays disabled until an item changes", () => {
+    open(makeContainer(listed));
+    fireEvent.click(screen.getByText("Edit contents"));
+    expect(screen.getByText("Save contents").hasAttribute("disabled")).toBe(true);
+    // A blank line and stray spaces are not a change.
+    fireEvent.change(field(), { target: { value: " kettle\n\ntwo mugs " } });
     expect(screen.getByText("Save contents").hasAttribute("disabled")).toBe(true);
   });
 
-  it("takes the accepted suggestion into the field, so it is not saved back empty", () => {
+  it("shows the accepted suggestion as the list, so it is not saved back empty", () => {
     const before = makeContainer();
     const { rerender } = render(
       <BoxDetail moveId="m1" container={before} zones={zones} uid="uid-1" onBack={() => undefined} />
@@ -260,17 +294,26 @@ describe("the contents list", () => {
     expect(field().value).toBe("");
 
     // What accepting a suggestion does to this screen while it is open.
-    const after = makeContainer({ contentsSummary: "two lamps and a rug" });
+    const after = makeContainer({ contentsItems: ["two lamps", "a rug"], contentsSummary: "two lamps, a rug" });
     rerender(
       <BoxDetail moveId="m1" container={after} zones={zones} uid="uid-1" onBack={() => undefined} />
     );
-    expect(field().value).toBe("two lamps and a rug");
+    expect(lines()).toEqual(["two lamps", "a rug"]);
+    fireEvent.click(screen.getByText("Edit contents"));
+    expect(field().value).toBe("two lamps\na rug");
+  });
+
+  it("shows the categories as chips under the list", () => {
+    open(makeContainer({ ...listed, contentsCategories: ["kitchen"] }));
+    expect(screen.getByText("Kinds of things")).toBeDefined();
+    expect(lines()).toContain("kitchen");
   });
 
   it("is read-only on a voided box, like everything else on it", () => {
-    open(makeContainer({ contentsSummary: "kettle, two mugs", voidedAt: NOW, voidedBy: "mem1" }));
-    expect(screen.getByText("kettle, two mugs")).toBeDefined();
+    open(makeContainer({ ...listed, voidedAt: NOW, voidedBy: "mem1" }));
+    expect(lines()).toEqual(["kettle", "two mugs"]);
     expect(screen.queryByText("Save contents")).toBeNull();
+    expect(screen.queryByText("Edit contents")).toBeNull();
   });
 });
 

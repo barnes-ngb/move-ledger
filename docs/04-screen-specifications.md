@@ -195,7 +195,7 @@ Search itself changed underneath both. It compares word to word rather than test
 
 Row contents are in section 5's amendment.
 
-Amended 2026-10-17 during the APPLY-15 run. Matches are listed with the exact number first and the rest ascending. A third member numbers from 1000, so typing 12 also matches 120 to 129 and 1200 to 1299, and in the order they used to arrive box 12 could fall off the end of the twelve rows. See `docs/02-domain-model.md`, Four-digit numbers.
+Amended 2026-10-17 during the APPLY-15 run. Matches are listed with the exact number first and the rest ascending. A third member numbers from 1000, so typing 12 also matches 120 to 129 and 1200 to 1299, and in the order they used to arrive box 12 could fall off the end of the twelve rows. See `docs/02-domain-model.md`, Four-digit numbers. The rule for opening a box outright is unchanged, by decision on pull request 25: it opens when one match remains, not on an exact match. Opening on an exact match would open box 1 on the way to typing 12 and box 100 on the way to 1000, because the keypad is read one digit at a time. A short number with longer ones behind it is the top row instead, one tap away.
 
 Amended again 2026-08-15 during the APPLY-09 run. The keypad screen shows voided boxes, where the box list hides them. That is not an oversight: a person typing a retired number is holding the cardboard it is written on, and an empty result would tell them nothing about why. The row reads "voided" in amber where the status sits.
 

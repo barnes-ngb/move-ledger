@@ -202,6 +202,29 @@ export function retryUpload(moveId: string, photo: ContainerPhoto): PendingWrite
   return { value: next, written };
 }
 
+/**
+ * The client's marks on either side of a contents list call. Partial writes
+ * of the fields named and nothing else, because the uploader owns the rest of
+ * this document and may be writing it at the same moment.
+ *
+ * Asking writes `summaryRequestedAt` and never `summaryState`. That field is
+ * the function's: it reads `done` and `skipped` to refuse paying for an image
+ * twice, and a second phone writing a transient state over either would take
+ * that refusal down. A failure does write `failed`, and the caller checks
+ * first that the photo has not already settled.
+ */
+export function markSummaryRequested(moveId: string, photoId: string): Promise<void> {
+  return updateDoc(doc(photos(moveId), photoId), { summaryRequestedAt: nowIso() });
+}
+
+export function markSummaryFailed(moveId: string, photoId: string, error: string): Promise<void> {
+  return updateDoc(doc(photos(moveId), photoId), {
+    summaryState: "failed",
+    summaryError: error,
+    summaryRequestedAt: deleteField(),
+  });
+}
+
 export function watchPhotos(
   moveId: string,
   onData: (p: ContainerPhoto[]) => void,

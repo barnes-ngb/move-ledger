@@ -6,7 +6,10 @@ import { toDisplayCode } from "./numbers";
  * cache costs nothing and works offline, so `searchText` is maintained on write.
  */
 export function buildSearchText(
-  container: Pick<Container, "displayCode" | "title" | "notes" | "contentsSummary" | "aiSummary">,
+  container: Pick<
+    Container,
+    "displayCode" | "title" | "notes" | "contentsSummary" | "contentsCategories" | "aiSummary" | "aiCategories"
+  >,
   destinationZoneName?: string
 ): string {
   return [
@@ -14,7 +17,9 @@ export function buildSearchText(
     container.title,
     container.notes,
     container.contentsSummary,
+    ...(container.contentsCategories ?? []),
     container.aiSummary,
+    ...(container.aiCategories ?? []),
     destinationZoneName,
   ]
     .filter((part): part is string => typeof part === "string" && part.length > 0)
@@ -106,15 +111,32 @@ function matchesNumber(container: Container, query: string): boolean {
   return container.displayCode.includes(query) || String(container.sequenceNumber).startsWith(query);
 }
 
-/** Every field one query word reached, so the caller can rank and label the hit. */
+/**
+ * Every field one query word reached, so the caller can rank and label the hit.
+ *
+ * Categories report as the text they travel with. A confirmed category is as
+ * trustworthy as the confirmed list it was accepted beside, and a suggested
+ * one is exactly as unconfirmed as the suggestion, so the marker that says a
+ * match came only from a suggestion stays true either way.
+ */
 function fieldsFor(container: Container, query: string, zoneName?: string): MatchField[] {
   const fields: MatchField[] = [];
   if (matchesNumber(container, query)) fields.push("number");
   if (matchesAnyToken(query, container.title)) fields.push("title");
   if (matchesAnyToken(query, container.notes)) fields.push("notes");
-  if (matchesAnyToken(query, container.contentsSummary)) fields.push("contentsSummary");
+  if (
+    matchesAnyToken(query, container.contentsSummary) ||
+    matchesAnyToken(query, container.contentsCategories?.join(" "))
+  ) {
+    fields.push("contentsSummary");
+  }
   if (matchesAnyToken(query, zoneName)) fields.push("zone");
-  if (matchesAnyToken(query, container.aiSummary)) fields.push("aiSummary");
+  if (
+    matchesAnyToken(query, container.aiSummary) ||
+    matchesAnyToken(query, container.aiCategories?.join(" "))
+  ) {
+    fields.push("aiSummary");
+  }
   return fields;
 }
 

@@ -108,7 +108,11 @@ export const containerSchema = z.object({
   title: z.string().optional(),
   notes: z.string().optional(),
   contentsSummary: z.string().optional(),
+  /** Categories that came with an accepted suggestion. Confirmed, like `contentsSummary`, and removed with it. */
+  contentsCategories: z.array(z.string()).optional(),
   aiSummary: z.string().optional(),
+  /** Categories the function returned beside `aiSummary`. A suggestion until accepted. */
+  aiCategories: z.array(z.string()).optional(),
   ownerMemberId: z.string().min(1),
   originZoneId: z.string().optional(),
   currentLocationId: z.string().optional(),
@@ -145,6 +149,10 @@ export const containerPhotoSchema = z.object({
   uploadState: z.enum(["pending", "uploading", "uploaded", "failed"]),
   /** `none` and absent mean the same thing; absent is what existing documents have. `skipped` is what dismissal writes and is what stops regeneration for that photo. */
   summaryState: z.enum(["none", "queued", "done", "skipped", "failed"]).optional(),
+  /** Why the last contents list call failed. Written by the client with `failed`, removed by the function on success. */
+  summaryError: z.string().optional(),
+  /** When a phone last asked for this photo's list. The client's mark, kept out of `summaryState` so it can never overwrite a settled state. */
+  summaryRequestedAt: isoString.optional(),
   lastError: z.string().optional(),
   attempts: z.number().int().nonnegative(),
   createdAt: isoString,

@@ -1,4 +1,4 @@
-import { collection, deleteDoc, doc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocFromCache, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { moveSchema, type Move } from "../domain/schemas";
 import {
@@ -51,6 +51,30 @@ export function watchMoves(
     { onError, watchMetadata: true },
     where("memberUids", "array-contains", uid)
   );
+}
+
+/**
+ * Whether this move has the contents list turned on, read from the local
+ * cache first. The uploader asks after every upload and must not pay a server
+ * read to do it; `watchMoves` keeps this document in the cache, including a
+ * Turn it on tapped a moment ago that the server has not acknowledged yet.
+ *
+ * Absent means nobody has been asked, which is not consent, so anything but
+ * an explicit true reads as off. So does a move this phone cannot read.
+ */
+export async function isSummaryEnabled(moveId: string): Promise<boolean> {
+  const ref = doc(moves(), moveId);
+  let snap;
+  try {
+    snap = await getDocFromCache(ref);
+  } catch {
+    try {
+      snap = await getDoc(ref);
+    } catch {
+      return false;
+    }
+  }
+  return snap.exists() && snap.data().aiEnabled === true;
 }
 
 export async function deleteMove(moveId: string): Promise<void> {

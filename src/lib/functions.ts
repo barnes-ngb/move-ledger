@@ -5,10 +5,13 @@ export interface SummarizeRequest {
   moveId: string;
   photoId: string;
   redo?: boolean;
+  /** With `redo`: mark the photo and return the result without writing to the box. */
+  returnOnly?: boolean;
 }
 
 export interface SummarizeResponse {
   summary?: string;
+  categories?: string[];
   skipped?: string;
 }
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { startUploader } from "./photos/uploader";
-import { setSummaryEnabled } from "./photos/summary";
 import { useAuth } from "./hooks/useAuth";
 import { useHasAnyPhoto } from "./hooks/useHasAnyPhoto";
 import { useMove } from "./hooks/useMove";
@@ -23,10 +22,9 @@ function SignedIn({ user }: { user: User }) {
   const setup = useHistoryView<boolean>("setup", false);
   const [noticeAnswered, setNoticeAnswered] = useState(false);
 
-  // Absent means unasked, which is not consent. The uploader defaults to off
-  // and only this line ever turns it on.
+  // Absent means unasked, which is not consent. The uploader reads the move
+  // document itself before every request, so nothing here hands it a flag.
   const aiEnabled = ctx.move?.aiEnabled;
-  useEffect(() => setSummaryEnabled(aiEnabled === true), [aiEnabled]);
 
   const unasked = ctx.move !== null && aiEnabled === undefined;
   const hasPhoto = useHasAnyPhoto(ctx.move?.id ?? null, unasked);

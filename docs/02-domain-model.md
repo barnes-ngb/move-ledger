@@ -140,7 +140,9 @@ interface Container {
   title?: string;
   notes?: string;
   contentsSummary?: string;    // human-confirmed
+  contentsCategories?: string[]; // accepted with contentsSummary, removed with it
   aiSummary?: string;          // never promoted without confirmation
+  aiCategories?: string[];     // returned beside aiSummary, a suggestion until accepted
 
   ownerMemberId: string;
 
@@ -205,7 +207,7 @@ Voiding is reversible. Unvoiding removes both stamps, which has to reach Firesto
 
 Firestore has no full-text search. For a few hundred boxes, client-side filtering over the local cache is sufficient and costs nothing.
 
-`searchText` is maintained on every write as the lowercased concatenation of `displayCode`, `title`, `notes`, `contentsSummary`, `aiSummary`, and the destination zone name. Search filters the local collection with `includes()`. Do not add Algolia or a Cloud Function search index.
+`searchText` is maintained on every write as the lowercased concatenation of `displayCode`, `title`, `notes`, `contentsSummary`, `contentsCategories`, `aiSummary`, `aiCategories`, and the destination zone name. Search itself matches word by word against those same fields, with each set of categories reported as the text it travels with. Categories added 2026-10-17 in APPLY-16. Search filters the local collection with `includes()`. Do not add Algolia or a Cloud Function search index.
 
 ## ContainerPhoto
 
@@ -222,6 +224,9 @@ interface ContainerPhoto {
   bytes: number;
   uploadState: "pending" | "uploading" | "uploaded" | "failed";
   lastError?: string;
+  summaryState?: "none" | "queued" | "done" | "skipped" | "failed"; // the contents list call
+  summaryError?: string;       // why the last contents list call failed
+  summaryRequestedAt?: string; // the client's mark when it asks; the function clears it when it settles
   attempts: number;
   createdAt: string;
   createdBy: string;

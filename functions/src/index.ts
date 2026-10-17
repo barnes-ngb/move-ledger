@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
@@ -17,11 +17,18 @@ const ANTHROPIC_API_KEY = defineSecret("ANTHROPIC_API_KEY");
  */
 const MOVE_CAP = 800;
 
-/** Doc 07's shape. The model is told to return exactly this and nothing else. */
+/**
+ * Doc 07's shape. The model is told to return exactly this and nothing else.
+ *
+ * An empty summary is a valid answer and means nothing worth listing is in
+ * the photo. Requiring at least one character left the model no honest reply
+ * to a screenshot, so it described the screenshot instead, and that sentence
+ * went into the box's search text. Confidence was dropped on 2026-10-17: it
+ * was written to an activity event and read nowhere.
+ */
 const modelResponse = z.object({
-  summary: z.string().min(1).max(400),
+  summary: z.string().max(400),
   categories: z.array(z.string()).max(6),
-  confidence: z.number().min(0).max(1),
 });
 
 type ModelResponse = z.infer<typeof modelResponse>;
@@ -49,8 +56,19 @@ export const summarizePhoto = onCall(
     const uid = request.auth?.uid;
     if (!uid) throw new HttpsError("unauthenticated", "Sign in first.");
 
-    const { moveId, photoId, redo } = z
-      .object({ moveId: z.string().min(1), photoId: z.string().min(1), redo: z.boolean().optional() })
+    // `returnOnly` is for Ask again. The client asks every contents photo at
+    // once and replaces the suggestion only when all of them answer, so a
+    // failure part way through leaves the old text standing. That cannot be
+    // done if each call writes its own line as it lands, so with this set the
+    // function marks the photo and hands the result back without touching the
+    // box. Older clients never send it and keep the append behavior.
+    const { moveId, photoId, redo, returnOnly } = z
+      .object({
+        moveId: z.string().min(1),
+        photoId: z.string().min(1),
+        redo: z.boolean().optional(),
+        returnOnly: z.boolean().optional(),
+      })
       .parse(request.data);
 
     const db = getFirestore();
@@ -128,9 +146,18 @@ export const summarizePhoto = onCall(
         '"white ceramic vase", "small wooden figure", "blue plastic bin". ' +
         "Do not guess at an adjective you cannot see, and do not guess at items you " +
         "cannot see. Do not describe the room, the box itself, or the packing materials. " +
+        "Brand names, titles, and labels printed on objects help someone find them, so " +
+        'include them: a magazine title, the brand on a product box. Text on documents, ' +
+        "paperwork, mail, screens, or anything that is itself a page of writing must " +
+        'never be transcribed: name the object, "a stack of papers", and stop. ' +
+        "If no household items are visible, or the image is a screen, a document, or " +
+        'not a box, reply with an empty summary "" and empty categories. Never describe ' +
+        "what the image is instead. " +
+        "Categories are up to six short lowercase words for the kind of things in the " +
+        'box, such as "kitchen" or "books". ' +
         "Keep the summary under 400 characters. " +
         "Reply with JSON only, no preamble and no code fence, matching: " +
-        '{"summary": string, "categories": string[], "confidence": number}',
+        '{"summary": string, "categories": string[]}',
       messages: [
         {
           role: "user",
@@ -156,27 +183,59 @@ export const summarizePhoto = onCall(
 
     const reply = readModelReply(text);
     if (!reply) {
-      await photoRef.update({ summaryState: "failed" });
+      await photoRef.update({
+        summaryState: "failed",
+        summaryError: "The reply could not be read.",
+        summaryRequestedAt: FieldValue.delete(),
+      });
       throw new HttpsError("internal", "The reply could not be read.");
     }
 
-    const containerRef = db.doc(`moves/${moveId}/containers/${photo.containerId}`);
-
-    // Accumulate. Each contents photo appends one line, so a box packed in
-    // layers ends up with all of its layers searchable rather than only the
-    // bottom one. A transaction because two photos can finish at once.
-    await db.runTransaction(async (tx) => {
-      const snap = await tx.get(containerRef);
-      const existing: string = snap.data()?.aiSummary ?? "";
-      const line = reply.summary.trim();
-      const next = existing ? `${existing} ${line}` : line;
-      tx.update(containerRef, {
-        aiSummary: next,
-        searchText: `${snap.data()?.searchText ?? ""} ${line}`.toLowerCase().trim(),
-        updatedAt: new Date().toISOString(),
+    // Nothing to list. The box is left exactly as it was: no line, no search
+    // words. `skipped` stops the photo being sent again without a redo.
+    const line = reply.summary.trim();
+    if (!line) {
+      await photoRef.update({
+        summaryState: "skipped",
+        summaryError: FieldValue.delete(),
+        summaryRequestedAt: FieldValue.delete(),
       });
-      tx.update(photoRef, { summaryState: "done" });
-    });
+      return { skipped: "nothing visible" };
+    }
+    const categories = [...new Set(reply.categories.map((c) => c.trim().toLowerCase()).filter(Boolean))];
+
+    // The client's request mark goes with every settled state, so a photo it
+    // was asked for never looks like one still waiting.
+    const settled = { summaryError: FieldValue.delete(), summaryRequestedAt: FieldValue.delete() };
+
+    if (returnOnly && redo) {
+      await photoRef.update({ summaryState: "done", ...settled });
+    } else {
+      const containerRef = db.doc(`moves/${moveId}/containers/${photo.containerId}`);
+
+      // Accumulate. Each contents photo appends one line, so a box packed in
+      // layers ends up with all of its layers searchable rather than only the
+      // bottom one. A transaction because two photos can finish at once. The
+      // categories join the same union, and their words go into searchText
+      // beside the line so the two cannot drift apart.
+      await db.runTransaction(async (tx) => {
+        const snap = await tx.get(containerRef);
+        const existing: string = snap.data()?.aiSummary ?? "";
+        const existingCategories: unknown = snap.data()?.aiCategories;
+        const known = Array.isArray(existingCategories)
+          ? existingCategories.filter((c): c is string => typeof c === "string")
+          : [];
+        const next = existing ? `${existing} ${line}` : line;
+        const words = [line, ...categories].join(" ");
+        tx.update(containerRef, {
+          aiSummary: next,
+          aiCategories: [...new Set([...known, ...categories])],
+          searchText: `${snap.data()?.searchText ?? ""} ${words}`.toLowerCase().trim(),
+          updatedAt: new Date().toISOString(),
+        });
+        tx.update(photoRef, { summaryState: "done", ...settled });
+      });
+    }
 
     await db.collection(`moves/${moveId}/activity`).add({
       moveId,
@@ -184,9 +243,9 @@ export const summarizePhoto = onCall(
       actorId: uid,
       type: "summary_generated",
       occurredAt: new Date().toISOString(),
-      payload: { photoId, confidence: reply.confidence, categories: reply.categories },
+      payload: { photoId, categories },
     });
 
-    return { summary: reply.summary };
+    return { summary: line, categories };
   }
 );

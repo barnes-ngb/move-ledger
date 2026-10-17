@@ -127,6 +127,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         container={found as Container}
         zones={ctx.zones}
         uid={uid}
+        contentsListOn={ctx.move?.aiEnabled === true}
         backLabel={backLabel(view.from)}
         onBack={nav.back}
       />

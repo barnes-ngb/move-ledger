@@ -16,12 +16,15 @@ import { Button, Confirm, ErrorLine, Field, Screen } from "../kit";
 export function Members({
   move,
   members,
+  movePending,
   uid: myUid,
   onDone,
   onBack,
 }: {
   move: Move;
   members: MoveMember[];
+  /** The move document holds a write the server has not acknowledged. See `useMove`. */
+  movePending: boolean;
   /** The signed-in person, who can remove others but not themselves. */
   uid: string;
   onDone: () => void;
@@ -31,10 +34,6 @@ export function Members({
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [removing, setRemoving] = useState<MoveMember | null>(null);
-  // A removal this phone has made and the server has not confirmed. Offline a
-  // write promise neither resolves nor rejects, so this is the only honest
-  // signal that the person still has access, and it clears itself on signal.
-  const [unconfirmed, setUnconfirmed] = useState<string | null>(null);
 
   const range = nextMemberRange(members);
 
@@ -77,14 +76,9 @@ export function Members({
     setError(null);
     try {
       const removed = removeMember(move.id, member, myUid);
-      setUnconfirmed(member.displayName);
-      const confirmed = removed.written.then(() =>
-        setUnconfirmed((name) => (name === member.displayName ? null : name))
+      writeInBackground(removed.written, () =>
+        setError(`Could not remove ${member.displayName}. They still have access.`)
       );
-      writeInBackground(confirmed, () => {
-        setUnconfirmed(null);
-        setError(`Could not remove ${member.displayName}. They still have access.`);
-      });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not remove that person.");
     }
@@ -131,9 +125,14 @@ export function Members({
         Their boxes will be numbered {range.numberRangeStart} to {range.numberRangeEnd}.
       </p>
       <ErrorLine message={error} />
-      {unconfirmed ? (
+      {/* Derived, not remembered. Offline a write promise never settles, and
+          component state would not survive leaving the screen or a reload,
+          while the unsent removal does. The move document's own pending flag
+          is what says the server has not yet taken anyone out. */}
+      {movePending && members.some(isRemoved) ? (
         <p className="text-sm text-amber-300">
-          {unconfirmed} is removed on this phone. They keep access until this phone reaches the server.
+          This phone has changes to the move the server has not seen yet. Until it does, anyone removed
+          here may still have access.
         </p>
       ) : null}
       <Button onClick={add} disabled={!uid.trim() || !name.trim()} tone="quiet">

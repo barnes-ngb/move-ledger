@@ -105,6 +105,7 @@ const ctx: MoveContext = {
   failed: false,
   retry: () => undefined,
   move,
+  movePending: false,
   members: [me],
   zones: [makeZone()],
   locations: [],

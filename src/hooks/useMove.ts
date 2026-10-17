@@ -14,6 +14,14 @@ export interface MoveContext {
   /** Tears down every listener in this hook and subscribes again. */
   retry: () => void;
   move: Move | null;
+  /**
+   * The move document holds a write this phone made and the server has not
+   * acknowledged. Firestore keeps unsent writes in the persistent cache, so
+   * this survives a reload and stays true offline until the phone reaches the
+   * server. The Members screen reads it: a removal is not real until the move
+   * document's `memberUids` has landed.
+   */
+  movePending: boolean;
   members: MoveMember[];
   zones: Zone[];
   locations: Location[];
@@ -102,6 +110,7 @@ function subscribeWithRetry<A extends unknown[]>(
  */
 export function useMove(uid: string): MoveContext {
   const [move, setMove] = useState<Move | null>(null);
+  const [movePending, setMovePending] = useState(false);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [members, setMembers] = useState<MoveMember[]>([]);
@@ -123,6 +132,7 @@ export function useMove(uid: string): MoveContext {
       (moves, origin) => {
         const next = moves[0] ?? null;
         setMove(next);
+        setMovePending(next !== null && origin.hasPendingWrites);
         if (next && serverConfirmed(origin)) setReadyMoveId(next.id);
         setLoading(false);
       },
@@ -174,6 +184,7 @@ export function useMove(uid: string): MoveContext {
     failed,
     retry,
     move,
+    movePending,
     members,
     zones,
     locations,

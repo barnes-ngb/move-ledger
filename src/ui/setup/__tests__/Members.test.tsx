@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { Move, MoveMember } from "../../../domain";
 
 /**
@@ -52,8 +52,17 @@ const nathan = member({ id: "mem-n", uid: "u-nathan", displayName: "Nathan", rol
 const shelly = member({ id: "mem-s", uid: "u-shelly", displayName: "Shelly", numberRangeStart: 500, numberRangeEnd: 999 });
 const alex = member({ id: "mem-a", uid: "u-alex", displayName: "Alex", numberRangeStart: 1000, numberRangeEnd: 1499 });
 
-function open(members: MoveMember[], uid = "u-nathan", m: Move = move) {
-  render(<Members move={m} members={members} uid={uid} onDone={() => undefined} onBack={() => undefined} />);
+function open(members: MoveMember[], uid = "u-nathan", m: Move = move, movePending = false) {
+  render(
+    <Members
+      move={m}
+      members={members}
+      movePending={movePending}
+      uid={uid}
+      onDone={() => undefined}
+      onBack={() => undefined}
+    />
+  );
 }
 
 function fill(name: string, uid: string) {
@@ -137,20 +146,23 @@ describe("removing a member", () => {
   });
 
   /**
-   * Offline a Firestore write promise never settles, so an error callback is
-   * never called and cannot be what tells a person the removal has not landed.
-   * The line shows from the tap until the write is confirmed.
+   * Offline a Firestore write promise never settles, and the screen can be left
+   * or the app reloaded before it does. So the warning is not remembered by the
+   * screen: it is derived from the move document's pending-write flag, which
+   * Firestore keeps in the persistent cache. A fresh mount with the flag set is
+   * exactly the remount case.
    */
-  it("says they keep access until the removal reaches the server, and stops saying it once it has", async () => {
-    let land: () => void = () => undefined;
-    mocks.removeMember.mockReturnValue({ value: undefined, written: new Promise<void>((r) => (land = r)) });
-    open([nathan, shelly, alex]);
-    const buttons = screen.getAllByText("Remove");
-    fireEvent.click(buttons[buttons.length - 1]!);
-    fireEvent.click(screen.getByText("Remove Alex"));
-    expect(screen.getByText(/Alex is removed on this phone. They keep access until this phone reaches the server./)).toBeTruthy();
-    await act(async () => land());
-    expect(screen.queryByText(/keep access until/)).toBeNull();
+  it("warns that a removed person may still have access while the move has unsent writes", () => {
+    open([nathan, shelly, { ...alex, removedAt: NOW }], "u-nathan", move, true);
+    expect(screen.getByText(/anyone removed here may still have access/)).toBeTruthy();
+  });
+
+  it("drops the warning once the move has nothing unsent, and never shows it with nobody removed", () => {
+    open([nathan, shelly, { ...alex, removedAt: NOW }], "u-nathan", move, false);
+    expect(screen.queryByText(/may still have access/)).toBeNull();
+    cleanup();
+    open([nathan, shelly, alex], "u-nathan", move, true);
+    expect(screen.queryByText(/may still have access/)).toBeNull();
   });
 
   it("says plainly when the removal was refused", async () => {
@@ -160,7 +172,6 @@ describe("removing a member", () => {
     fireEvent.click(buttons[buttons.length - 1]!);
     await act(async () => fireEvent.click(screen.getByText("Remove Alex")));
     expect(screen.getByText("Could not remove Alex. They still have access.")).toBeTruthy();
-    expect(screen.queryByText(/keep access until/)).toBeNull();
   });
 
   it("does nothing when the question is answered with keep", () => {

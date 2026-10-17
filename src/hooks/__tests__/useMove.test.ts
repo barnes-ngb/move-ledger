@@ -100,6 +100,18 @@ describe("useMove", () => {
     expect(result.current.move?.id).toBe("m1");
   });
 
+  it("reports whether the move holds a write the server has not seen", () => {
+    const { result } = renderHook(() => useMove("u1"));
+    act(() => spy.sendMoves?.([{ id: "m1" }], CONFIRMED));
+    expect(result.current.movePending).toBe(false);
+
+    act(() => spy.sendMoves?.([{ id: "m1" }], { fromCache: false, hasPendingWrites: true }));
+    expect(result.current.movePending).toBe(true);
+
+    act(() => spy.sendMoves?.([{ id: "m1" }], CONFIRMED));
+    expect(result.current.movePending).toBe(false);
+  });
+
   it("reads an unconfirmed move anyway once the wait runs out", () => {
     const { result } = renderHook(() => useMove("u1"));
     act(() => spy.sendMoves?.([{ id: "m1" }], PENDING));

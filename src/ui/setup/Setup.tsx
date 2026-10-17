@@ -57,6 +57,7 @@ export function Setup({
     <Members
       move={move}
       members={ctx.members}
+      uid={user.uid}
       onDone={onFinished}
       onBack={stage.back}
     />

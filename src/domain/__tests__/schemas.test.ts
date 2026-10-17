@@ -138,4 +138,19 @@ describe("moveMemberSchema", () => {
     expect(moveMemberSchema.safeParse({ ...member, highestIssued: 1.5 }).success).toBe(false);
     expect(moveMemberSchema.safeParse({ ...member, highestIssued: "42" }).success).toBe(false);
   });
+
+  /**
+   * Optional because every member written before APPLY-15 lacks it, and absent
+   * means still on the move. Present, it is a timestamp like every other one.
+   */
+  it("accepts an absent or ISO removedAt and nothing else", () => {
+    const member = {
+      id: "mem3", moveId: "m1", uid: "u3", displayName: "Alex", role: "member" as const,
+      numberRangeStart: 1000, numberRangeEnd: 1499,
+    };
+    expect(moveMemberSchema.safeParse(member).success).toBe(true);
+    expect(moveMemberSchema.safeParse({ ...member, removedAt: NOW }).success).toBe(true);
+    expect(moveMemberSchema.safeParse({ ...member, removedAt: "yesterday" }).success).toBe(false);
+    expect(moveMemberSchema.safeParse({ ...member, removedAt: 0 }).success).toBe(false);
+  });
 });

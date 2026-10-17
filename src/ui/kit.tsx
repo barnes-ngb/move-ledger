@@ -130,9 +130,9 @@ export function BackBar({ onBack, label = "Back" }: { onBack: () => void; label?
 
 /**
  * The stop before something that cannot be taken back. Deleting a box, voiding
- * a box, and deleting a photo are the only three, and all three are reached
- * one-handed while holding cardboard, so the panel sits at the bottom of the
- * screen where a thumb already is.
+ * a box, deleting a photo, and removing a member from the move. The first three
+ * are reached one-handed while holding cardboard, so the panel sits at the
+ * bottom of the screen where a thumb already is.
  *
  * It does not dismiss on a tap outside. Cancelling by accident is harmless;
  * this exists to make confirming by accident hard. The tap is stopped rather

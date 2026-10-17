@@ -1,4 +1,7 @@
-/** Four digits is past the top of any range this move will use. */
+/**
+ * Four digits covers twenty ranges of 500. A third member numbers from 1000,
+ * so four is now in use rather than headroom. See nextMemberRange.
+ */
 export const MAX_DIGITS = 4;
 
 export function appendDigit(typed: string, digit: string): string {

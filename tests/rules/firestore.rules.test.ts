@@ -240,6 +240,95 @@ describe("the member watermark", () => {
 });
 
 /**
+ * Doc 10 case 14. Removing a member is an update to `memberUids` by somebody
+ * still on the move, and no rule changed to allow it. What this proves is the
+ * whole of the feature as far as the server is concerned: the update commits,
+ * the removed uid is shut out of the move and everything under it at once,
+ * and the member record can still be stamped rather than deleted.
+ */
+describe("removing a member", () => {
+  const HELPER = "uid-helper";
+
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const fs = ctx.firestore();
+      await setDoc(doc(fs, "moves", MOVE), {
+        name: "KC to DFW",
+        status: "packing",
+        memberUids: [NATHAN, SHELLY, HELPER],
+        createdAt: NOW,
+        updatedAt: NOW,
+      });
+      await setDoc(doc(fs, "moves", MOVE, "members", "mem-helper"), {
+        moveId: MOVE,
+        uid: HELPER,
+        displayName: "Alex",
+        role: "member",
+        numberRangeStart: 1000,
+        numberRangeEnd: 1499,
+        highestIssued: 1003,
+      });
+      await setDoc(doc(fs, "moves", MOVE, "containers", "c1003"), containerDoc({
+        sequenceNumber: 1003,
+        displayCode: "1003",
+        ownerMemberId: "mem-helper",
+        createdBy: HELPER,
+        updatedBy: HELPER,
+      }));
+    });
+  });
+
+  it("the helper can read the move before anything happens", async () => {
+    const helper = env.authenticatedContext(HELPER).firestore();
+    await assertSucceeds(getDoc(doc(helper, "moves", MOVE)));
+  });
+
+  it("a member can take another member's uid out of memberUids, and the removed uid is shut out", async () => {
+    const shelly = env.authenticatedContext(SHELLY).firestore();
+    await assertSucceeds(updateDoc(doc(shelly, "moves", MOVE), { memberUids: [NATHAN, SHELLY], updatedAt: NOW }));
+
+    const helper = env.authenticatedContext(HELPER).firestore();
+    await assertFails(getDoc(doc(helper, "moves", MOVE)));
+    await assertFails(getDoc(doc(helper, "moves", MOVE, "containers", "c1003")));
+    await assertFails(getDocs(collection(helper, "moves", MOVE, "containers")));
+    await assertFails(getDocs(collection(helper, "moves", MOVE, "members")));
+    await assertFails(
+      setDoc(doc(helper, "moves", MOVE, "containers", "c1004"), containerDoc({
+        sequenceNumber: 1004,
+        displayCode: "1004",
+        ownerMemberId: "mem-helper",
+        createdBy: HELPER,
+        updatedBy: HELPER,
+      }))
+    );
+    // The list query watchMoves sends no longer returns the move at all.
+    const listed = await assertSucceeds(
+      getDocs(query(collection(helper, "moves"), where("memberUids", "array-contains", HELPER)))
+    );
+    expect(listed.empty).toBe(true);
+  });
+
+  it("the remaining member can stamp removedAt on the removed member's record, which keeps its range", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: [NATHAN, SHELLY], updatedAt: NOW }));
+    await assertSucceeds(
+      updateDoc(doc(nathan, "moves", MOVE, "members", "mem-helper"), { removedAt: "2026-11-01T12:00:00.000Z" })
+    );
+    const snap = await getDoc(doc(nathan, "moves", MOVE, "members", "mem-helper"));
+    expect(snap.data()).toMatchObject({ numberRangeStart: 1000, numberRangeEnd: 1499, highestIssued: 1003 });
+    // Their box is still in the move for everybody who is.
+    await assertSucceeds(getDoc(doc(nathan, "moves", MOVE, "containers", "c1003")));
+  });
+
+  it("the removed uid cannot put itself back", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: [NATHAN, SHELLY], updatedAt: NOW }));
+    const helper = env.authenticatedContext(HELPER).firestore();
+    await assertFails(updateDoc(doc(helper, "moves", MOVE), { memberUids: [NATHAN, SHELLY, HELPER], updatedAt: NOW }));
+  });
+});
+
+/**
  * These are list queries, not document gets. They are the shape watchMoves
  * actually sends: collection("moves") filtered on memberUids array-contains.
  */

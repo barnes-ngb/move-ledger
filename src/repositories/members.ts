@@ -1,4 +1,4 @@
-import { arrayRemove, collection, doc, writeBatch } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, writeBatch } from "firebase/firestore";
 import { activityEventSchema, moveMemberSchema, rangesOverlap, removalRefusal, type MoveMember } from "../domain";
 import { db } from "../lib/firebase";
 import { createValidated, moveScoped, newId, nowIso, subscribeValidated, type PendingWrite } from "./shared";
@@ -14,6 +14,11 @@ export function addMember(
   member: Omit<MoveMember, "id" | "moveId">,
   existing: readonly MoveMember[]
 ): PendingWrite<MoveMember> {
+  refuseOverlap(member, existing);
+  return createValidated(members(moveId), moveMemberSchema, { ...member, id: newId(), moveId });
+}
+
+function refuseOverlap(member: Omit<MoveMember, "id" | "moveId">, existing: readonly MoveMember[]): void {
   for (const other of existing) {
     if (rangesOverlap(member, other)) {
       throw new Error(
@@ -21,7 +26,31 @@ export function addMember(
       );
     }
   }
-  return createValidated(members(moveId), moveMemberSchema, { ...member, id: newId(), moveId });
+}
+
+/**
+ * Puts somebody on an existing move: their uid into `memberUids`, then their
+ * member record, in one batch. Separately, the uid could land and the record be
+ * refused, for instance if the person adding was removed by another phone in
+ * between, which leaves somebody with access and no record: their phone waits
+ * for an invite it already has, and the range assignment cannot see their
+ * range. The uid goes in as an `arrayUnion`, never a whole new array, so a
+ * removal another phone made is not undone.
+ *
+ * `addMember` stays for the move's first member, whose uid is already in
+ * `memberUids` from the move's own creation.
+ */
+export function addMemberToMove(
+  moveId: string,
+  member: Omit<MoveMember, "id" | "moveId">,
+  existing: readonly MoveMember[]
+): PendingWrite<MoveMember> {
+  refuseOverlap(member, existing);
+  const value = moveMemberSchema.parse({ ...member, id: newId(), moveId });
+  const batch = writeBatch(db);
+  batch.update(doc(collection(db, "moves"), moveId), { memberUids: arrayUnion(value.uid), updatedAt: nowIso() });
+  batch.set(doc(members(moveId), value.id), value);
+  return { value, written: batch.commit() };
 }
 
 /**

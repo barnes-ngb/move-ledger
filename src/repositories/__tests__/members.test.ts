@@ -47,7 +47,7 @@ vi.mock("firebase/firestore", () => ({
 
 vi.mock("../../lib/firebase", () => ({ db: {} }));
 
-const { removeMember } = await import("../members");
+const { addMemberToMove, removeMember } = await import("../members");
 
 const NOW = "2026-10-17T12:00:00.000Z";
 
@@ -131,6 +131,33 @@ describe("removeMember", () => {
 
   it("refuses removing somebody already removed before opening a batch", () => {
     expect(() => removeMember("m1", member({ removedAt: NOW }), "u-nathan")).toThrow("already removed");
+    expect(mocks.batches).toBe(0);
+  });
+});
+
+describe("addMemberToMove", () => {
+  const nathan = member({ id: "mem-nathan", uid: "u-nathan", displayName: "Nathan", role: "owner", numberRangeStart: 1, numberRangeEnd: 499 });
+  const shelly = member({ id: "mem-shelly", uid: "u-shelly", displayName: "Shelly", numberRangeStart: 500, numberRangeEnd: 999 });
+  const helper = { uid: "u-alex", displayName: "Alex", role: "member" as const, numberRangeStart: 1000, numberRangeEnd: 1499 };
+
+  it("writes their uid and their record in one batch, access first", async () => {
+    const result = addMemberToMove("m1", helper, [nathan, shelly]);
+    expect(mocks.batches).toBe(1);
+    expect(mocks.ops.map(([op, ref]) => [op, ref.replace(/members\/.*/, "members/*")])).toEqual([
+      ["update", "moves/m1"],
+      ["set", "moves/m1/members/*"],
+    ]);
+    expect((mocks.ops[0]![2] as { memberUids: unknown }).memberUids).toEqual({ __arrayUnion: ["u-alex"] });
+    expect(mocks.ops[1]![2]).toMatchObject({ ...helper, moveId: "m1", id: result.value.id });
+    await expect(result.written).resolves.toBeUndefined();
+    expect(mocks.updateDoc).not.toHaveBeenCalled();
+    expect(mocks.setDoc).not.toHaveBeenCalled();
+  });
+
+  it("refuses an overlapping range before opening a batch", () => {
+    expect(() => addMemberToMove("m1", { ...helper, numberRangeStart: 900, numberRangeEnd: 1399 }, [nathan, shelly])).toThrow(
+      "overlaps Shelly's range"
+    );
     expect(mocks.batches).toBe(0);
   });
 });

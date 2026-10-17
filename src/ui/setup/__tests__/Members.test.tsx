@@ -9,14 +9,13 @@ import type { Move, MoveMember } from "../../../domain";
  * the wording names nobody's gender, and that removal asks first and is offered
  * only where the domain allows it.
  */
-const mocks = vi.hoisted(() => ({ addMember: vi.fn(), removeMember: vi.fn(), addMemberUid: vi.fn() }));
+const mocks = vi.hoisted(() => ({ addMemberToMove: vi.fn(), removeMember: vi.fn() }));
 
 const pending = { value: undefined, written: Promise.resolve() };
 
 vi.mock("../../../repositories", () => ({
-  addMember: mocks.addMember,
+  addMemberToMove: mocks.addMemberToMove,
   removeMember: mocks.removeMember,
-  addMemberUid: mocks.addMemberUid,
   // Calls the error callback as the real one does, so a refused write can be asserted.
   writeInBackground: (work: Promise<unknown>, onError?: (e: unknown) => void) =>
     void work.catch((e) => onError?.(e)),
@@ -83,8 +82,7 @@ afterEach(() => {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mocks.addMember.mockReturnValue(pending);
-  mocks.addMemberUid.mockReturnValue(Promise.resolve());
+  mocks.addMemberToMove.mockReturnValue(pending);
   mocks.removeMember.mockReturnValue(pending);
 });
 
@@ -92,20 +90,19 @@ describe("adding a member", () => {
   it("shows the range a third person will get before anything is added", () => {
     open([nathan, shelly]);
     expect(screen.getByText("Their boxes will be numbered 1000 to 1499.")).toBeTruthy();
-    expect(mocks.addMember).not.toHaveBeenCalled();
+    expect(mocks.addMemberToMove).not.toHaveBeenCalled();
   });
 
-  it("adds them with that range, memberUids first and by uid rather than a whole array", () => {
+  it("adds them with that range, in the one call that writes their access and their record together", () => {
     open([nathan, shelly]);
     fill("Alex", " u-alex ");
     fireEvent.click(screen.getByText("Add this person"));
-    expect(mocks.addMemberUid).toHaveBeenCalledWith("m1", "u-alex");
-    expect(mocks.addMember).toHaveBeenCalledWith(
+    expect(mocks.addMemberToMove).toHaveBeenCalledTimes(1);
+    expect(mocks.addMemberToMove).toHaveBeenCalledWith(
       "m1",
       { uid: "u-alex", displayName: "Alex", role: "member", numberRangeStart: 1000, numberRangeEnd: 1499 },
       [nathan, shelly]
     );
-    expect(mocks.addMemberUid.mock.invocationCallOrder[0]).toBeLessThan(mocks.addMember.mock.invocationCallOrder[0]!);
   });
 
   it("still gives the second person 500 to 999", () => {
@@ -126,8 +123,8 @@ describe("adding a member", () => {
     fill("Alex", "u-alex");
     fireEvent.click(screen.getByText("Add this person"));
     expect(screen.getByText(/was removed from this move/)).toBeTruthy();
-    expect(mocks.addMember).not.toHaveBeenCalled();
-    expect(mocks.addMemberUid).not.toHaveBeenCalled();
+    expect(mocks.addMemberToMove).not.toHaveBeenCalled();
+    expect(mocks.addMemberToMove).not.toHaveBeenCalled();
   });
 
   it("refuses to add anyone once every typeable range is given out", () => {
@@ -154,8 +151,8 @@ describe("adding a member", () => {
     const button = screen.getByText("Add this person") as HTMLButtonElement;
     expect(button.disabled).toBe(true);
     fireEvent.click(button);
-    expect(mocks.addMember).not.toHaveBeenCalled();
-    expect(mocks.addMemberUid).not.toHaveBeenCalled();
+    expect(mocks.addMemberToMove).not.toHaveBeenCalled();
+    expect(mocks.addMemberToMove).not.toHaveBeenCalled();
   });
 
   /** Behind a captive portal the browser says online while Firestore reaches nothing. */

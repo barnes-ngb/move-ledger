@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { isRemoved, nextMemberRange, removalRefusal, type Move, type MoveMember } from "../../domain";
 import { useOnline } from "../../hooks/useOnline";
-import { addMember, addMemberUid, removeMember, writeInBackground } from "../../repositories";
+import { addMemberToMove, removeMember, writeInBackground } from "../../repositories";
 import { Button, Confirm, ErrorLine, Field, Screen } from "../kit";
 
 /**
@@ -67,12 +67,9 @@ export function Members({
         throw new Error("That account was removed from this move and cannot be added again here.");
       }
       if (existing || move.memberUids.includes(trimmed)) throw new Error("That person is already on the move.");
-      // memberUids first, so their device can read the move the moment it
-      // reaches the server. Both writes are ordered by Firestore's own queue.
-      // arrayUnion rather than a new array, so a removal another phone made
-      // from its own copy is not undone by this one.
-      const updated = addMemberUid(move.id, trimmed);
-      const added = addMember(
+      // One batch: their uid into memberUids, then their record, so neither
+      // can land without the other. See addMemberToMove.
+      const added = addMemberToMove(
         move.id,
         {
           uid: trimmed,
@@ -82,7 +79,7 @@ export function Members({
         },
         members
       );
-      writeInBackground(Promise.all([updated, added.written]), () =>
+      writeInBackground(added.written, () =>
         setError("They are saved on this phone. Their phone will not see the move until this one has signal.")
       );
       setUid("");

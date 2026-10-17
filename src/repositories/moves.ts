@@ -1,4 +1,4 @@
-import { arrayUnion, collection, deleteDoc, doc, updateDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { moveSchema, type Move } from "../domain/schemas";
 import {
@@ -27,19 +27,6 @@ export function createMove(name: string, creatorUid: string): PendingWrite<Move>
 
 export function updateMove(next: Move): PendingWrite<Move> {
   return updateValidated(moves(), moveSchema, { ...next, updatedAt: nowIso() });
-}
-
-/**
- * Membership changes are written as array operations, never as a whole new
- * `memberUids`. Removal sends its `arrayRemove` from `removeMember`, inside the
- * batch that also stamps the member record. Two phones changing membership from their own cached copy
- * would otherwise each send the full array they last saw, and the later write
- * would put back a uid the earlier one removed: a person marked removed whom
- * the rules still let in. `arrayUnion` and `arrayRemove` merge on the server,
- * and queue offline like any other write.
- */
-export function addMemberUid(moveId: string, uid: string): Promise<void> {
-  return updateDoc(doc(moves(), moveId), { memberUids: arrayUnion(uid), updatedAt: nowIso() });
 }
 
 /**

@@ -360,6 +360,39 @@ describe("removing a member", () => {
     });
   });
 
+  /** The shape addMemberToMove sends: the arrayUnion and the new member record in one batch. */
+  it("the add batch commits as a whole, and lets the new uid read the move", async () => {
+    const shelly = env.authenticatedContext(SHELLY).firestore();
+    const batch = writeBatch(shelly);
+    batch.update(doc(shelly, "moves", MOVE), { memberUids: arrayUnion("uid-second-helper"), updatedAt: NOW });
+    batch.set(doc(shelly, "moves", MOVE, "members", "mem-second"), {
+      moveId: MOVE,
+      uid: "uid-second-helper",
+      displayName: "Sam",
+      role: "member",
+      numberRangeStart: 1500,
+      numberRangeEnd: 1999,
+    });
+    await assertSucceeds(batch.commit());
+    const second = env.authenticatedContext("uid-second-helper").firestore();
+    await assertSucceeds(getDoc(doc(second, "moves", MOVE)));
+  });
+
+  /** An add batch from somebody already removed lands nothing: no uid with no record behind it. */
+  it("an add batch from a removed uid fails as a whole", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW }));
+    const helper = env.authenticatedContext(HELPER).firestore();
+    const batch = writeBatch(helper);
+    batch.update(doc(helper, "moves", MOVE), { memberUids: arrayUnion("uid-friend"), updatedAt: NOW });
+    batch.set(doc(helper, "moves", MOVE, "members", "mem-friend"), { moveId: MOVE, uid: "uid-friend" });
+    await assertFails(batch.commit());
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const move = await getDoc(doc(ctx.firestore(), "moves", MOVE));
+      expect(move.data()?.memberUids).toEqual([NATHAN, SHELLY]);
+    });
+  });
+
   /** A removed uid's own batch is refused whole: no stamp, no event, no change to the array. */
   it("a removal batch from somebody no longer on the move fails as a whole", async () => {
     const nathan = env.authenticatedContext(NATHAN).firestore();

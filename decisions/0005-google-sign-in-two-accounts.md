@@ -34,6 +34,19 @@ Offline number reservation is safe for one member on **one active device**. The 
 
 So each person packs from one phone. A second signed-in device may look at the app but should not reserve a box while the first is offline. Recorded as a known limit in `plans/STATUS.md` and in `docs/02-domain-model.md` under Number reservation.
 
+## Amended 2026-10-17: a third member, and taking one off
+
+The Revisit line below said a third member would never appear. One has: a helper will pack on their own phone alongside Shelly, and should lose access once the move is done. The decision above stands. One Google account per person, Google sign-in only, and each person packs from one phone.
+
+What the line got wrong was where the limit lived. The data layer never had one. `memberUids` is an array, the rules authorize on membership in it whatever its length, ranges are checked for overlap against every existing member, and number reservation reads the signed-in member's own range. The two-person limit was the Members screen, which hardcoded a single second person at 500 to 999. APPLY-15 generalizes that screen and adds the one thing a helper needs and the household did not: a way off the move.
+
+- **Ranges are assigned, not typed.** The next whole block of 500 above the highest `numberRangeEnd` any member has ever held. Nathan 1 to 499, Shelly 500 to 999, the helper 1000 to 1499. Box numbers reach four digits.
+- **Removing a member takes their uid out of `memberUids` and stamps `removedAt` on their member record.** The record is never deleted. It holds their range and their watermark, and deleting it would let the next range assignment hand their numbers out again, which is the duplicate-number collision APPLY-13 closed. Their boxes keep `ownerMemberId` and stay in the move. A removed member's range is retired for the life of the move.
+- **The owner cannot be removed, and nobody can remove themselves.** The app refuses both. The rules do not, for the reason recorded in `docs/10-security-rules.md`.
+- **The helper is a member, not a role.** `AGENTS.md` keeps helper and viewer roles out of scope, and this does not add one: the helper has exactly the permissions Shelly has, for as long as they are on the move. A role would be a second authorization model, and the household does not need one to hand somebody a box of tape for a month.
+
+The one-phone rule above now applies to three people instead of two, and a helper needs a Google account of their own to be added at all.
+
 ## Revisit when
 
-A third household member appears, which for this move means never.
+A member needs less than full access to the move, such as somebody who should see the boxes but not add them. That is a role, which this decision does not cover and `AGENTS.md` keeps out of scope.

@@ -334,6 +334,47 @@ describe("removing a member", () => {
     });
   });
 
+  /**
+   * The shape removeMember sends: the arrayRemove, the stamp, and the event in
+   * one batch. Every write in it is judged against the move as it stood before
+   * the batch, so the remover is still a member for all three.
+   */
+  it("the removal batch commits as a whole and shuts the removed uid out", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    const batch = writeBatch(nathan);
+    batch.update(doc(nathan, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW });
+    batch.update(doc(nathan, "moves", MOVE, "members", "mem-helper"), { removedAt: NOW });
+    batch.set(doc(nathan, "moves", MOVE, "activity", "e-batch"), {
+      moveId: MOVE,
+      actorId: NATHAN,
+      type: "member_removed",
+      occurredAt: NOW,
+      payload: { memberId: "mem-helper", uid: HELPER },
+    });
+    await assertSucceeds(batch.commit());
+    const helper = env.authenticatedContext(HELPER).firestore();
+    await assertFails(getDoc(doc(helper, "moves", MOVE)));
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const member = await getDoc(doc(ctx.firestore(), "moves", MOVE, "members", "mem-helper"));
+      expect(member.data()).toMatchObject({ removedAt: NOW, numberRangeStart: 1000, highestIssued: 1003 });
+    });
+  });
+
+  /** A removed uid's own batch is refused whole: no stamp, no event, no change to the array. */
+  it("a removal batch from somebody no longer on the move fails as a whole", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW }));
+    const helper = env.authenticatedContext(HELPER).firestore();
+    const batch = writeBatch(helper);
+    batch.update(doc(helper, "moves", MOVE), { memberUids: arrayRemove(SHELLY), updatedAt: NOW });
+    batch.update(doc(helper, "moves", MOVE, "members", "mem-helper"), { removedAt: NOW });
+    await assertFails(batch.commit());
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const move = await getDoc(doc(ctx.firestore(), "moves", MOVE));
+      expect(move.data()?.memberUids).toEqual([NATHAN, SHELLY]);
+    });
+  });
+
   it("the member_removed activity event can be written by the person who removed them", async () => {
     const nathan = env.authenticatedContext(NATHAN).firestore();
     await assertSucceeds(

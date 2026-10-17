@@ -22,6 +22,13 @@ export interface MoveContext {
    * document's `memberUids` has landed.
    */
   movePending: boolean;
+  /**
+   * The latest move snapshot came from the server, not from this phone's
+   * cache. The browser's online flag can read true behind a captive portal
+   * while Firestore reaches nothing; this cannot, because the listener
+   * watches metadata and drops back to the cache the moment the server goes.
+   */
+  moveFromServer: boolean;
   members: MoveMember[];
   zones: Zone[];
   locations: Location[];
@@ -111,6 +118,7 @@ function subscribeWithRetry<A extends unknown[]>(
 export function useMove(uid: string): MoveContext {
   const [move, setMove] = useState<Move | null>(null);
   const [movePending, setMovePending] = useState(false);
+  const [moveFromServer, setMoveFromServer] = useState(false);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [members, setMembers] = useState<MoveMember[]>([]);
@@ -133,6 +141,7 @@ export function useMove(uid: string): MoveContext {
         const next = moves[0] ?? null;
         setMove(next);
         setMovePending(next !== null && origin.hasPendingWrites);
+        setMoveFromServer(next !== null && !origin.fromCache);
         if (next && serverConfirmed(origin)) setReadyMoveId(next.id);
         setLoading(false);
       },
@@ -185,6 +194,7 @@ export function useMove(uid: string): MoveContext {
     retry,
     move,
     movePending,
+    moveFromServer,
     members,
     zones,
     locations,

@@ -18,6 +18,7 @@ export function Members({
   move,
   members,
   movePending,
+  moveFromServer,
   uid: myUid,
   onDone,
   onBack,
@@ -26,6 +27,8 @@ export function Members({
   members: MoveMember[];
   /** The move document holds a write the server has not acknowledged. See `useMove`. */
   movePending: boolean;
+  /** The latest move snapshot came from the server. See `useMove`. */
+  moveFromServer: boolean;
   /** The signed-in person, who can remove others but not themselves. */
   uid: string;
   onDone: () => void;
@@ -45,7 +48,9 @@ export function Members({
   // packing, so it waits for the server rather than guessing: no adding while
   // offline, or while this phone holds a change to the move the server has
   // not seen. "One person adds members" covers the window that is left.
-  const addBlocked = !online
+  // Online means the server answered, not only the browser's flag, which
+  // reads true behind a captive portal.
+  const addBlocked = !online || !moveFromServer
     ? "Connect to wifi or signal to add someone. Adding a person checks the server so two phones cannot give out the same box numbers."
     : movePending
       ? "This phone has changes the server has not seen yet. Add the person once they have sent."

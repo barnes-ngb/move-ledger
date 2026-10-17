@@ -52,12 +52,19 @@ const nathan = member({ id: "mem-n", uid: "u-nathan", displayName: "Nathan", rol
 const shelly = member({ id: "mem-s", uid: "u-shelly", displayName: "Shelly", numberRangeStart: 500, numberRangeEnd: 999 });
 const alex = member({ id: "mem-a", uid: "u-alex", displayName: "Alex", numberRangeStart: 1000, numberRangeEnd: 1499 });
 
-function open(members: MoveMember[], uid = "u-nathan", m: Move = move, movePending = false) {
+function open(
+  members: MoveMember[],
+  uid = "u-nathan",
+  m: Move = move,
+  movePending = false,
+  moveFromServer = true
+) {
   render(
     <Members
       move={m}
       members={members}
       movePending={movePending}
+      moveFromServer={moveFromServer}
       uid={uid}
       onDone={() => undefined}
       onBack={() => undefined}
@@ -149,6 +156,15 @@ describe("adding a member", () => {
     fireEvent.click(button);
     expect(mocks.addMember).not.toHaveBeenCalled();
     expect(mocks.addMemberUid).not.toHaveBeenCalled();
+  });
+
+  /** Behind a captive portal the browser says online while Firestore reaches nothing. */
+  it("refuses to add anyone while the move has not been heard from the server, whatever the browser says", () => {
+    open([nathan, shelly], "u-nathan", move, false, false);
+    expect(navigator.onLine).toBe(true);
+    expect(screen.getByText(/Connect to wifi or signal to add someone/)).toBeTruthy();
+    fill("Alex", "u-alex");
+    expect((screen.getByText("Add this person") as HTMLButtonElement).disabled).toBe(true);
   });
 
   it("refuses to add anyone while the move has unsent changes", () => {

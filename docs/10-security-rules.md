@@ -177,7 +177,7 @@ The general lesson, worth more than the fix: a condition that reads `request.res
 12. A member can delete a photo object in their move. A signed-in non-member cannot. A signed-out request cannot.
 13. A member can set `highestIssued` on a member document and raise it. A member cannot lower it or remove it. A non-member cannot write it. The reservation batch, one container create plus one member update, commits for a member and fails as a whole for a non-member.
 
-14. A member can update `memberUids` with `arrayRemove` to remove another member's uid. Once removed, that uid can no longer read the move, list it, read or create anything under it, or put itself back, and the remaining member can still stamp `removedAt` on the removed member's document. A removal and an add from two members both land. The `member_removed` activity event can be written by the member who removed them.
+14. A member can update `memberUids` with `arrayRemove` to remove another member's uid, alone or in the batch `removeMember` sends with the stamp and the activity event; a batch from a uid already removed fails as a whole. Once removed, that uid can no longer read the move, list it, read or create anything under it, or put itself back, and the remaining member can still stamp `removedAt` on the removed member's document. A removal and an add from two members both land. The `member_removed` activity event can be written by the member who removed them.
 
 Cases 10 and 11 are list queries. A rules suite built only from `getDoc` never evaluates the `list` path, which is how the null value error on the move rule reached a deployed build.
 

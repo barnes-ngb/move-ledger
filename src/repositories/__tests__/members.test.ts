@@ -5,22 +5,24 @@ import type { ActivityEvent, MoveMember } from "../../domain";
  * Removing a member, stubbed at the SDK boundary. What matters is what reaches
  * Firestore, which a test reading back the returned object cannot see:
  *
+ * - all three writes go in ONE batch, so they land together or not at all;
  * - their uid leaves `memberUids` as an `arrayRemove`, never as a whole new
  *   array, so a membership change another phone made survives;
  * - the member record is updated with `removedAt` alone and never deleted,
  *   because it holds the range and the watermark that keep their numbers from
  *   being handed out again;
  * - a `member_removed` activity event names who removed them;
- * - the refusals happen before anything is written.
+ * - the refusals happen before any batch is opened.
  */
 const mocks = vi.hoisted(() => ({
-  order: [] as string[],
+  batches: 0,
+  ops: [] as Array<[string, string, unknown]>,
+  commit: vi.fn(),
+  deleteDoc: vi.fn(),
   setDoc: vi.fn(),
   updateDoc: vi.fn(),
-  deleteDoc: vi.fn(),
 }));
 
-/** Stand-ins for the array sentinels. Shape is all the assertions need. */
 vi.mock("firebase/firestore", () => ({
   arrayRemove: (...values: unknown[]) => ({ __arrayRemove: values }),
   arrayUnion: (...values: unknown[]) => ({ __arrayUnion: values }),
@@ -28,17 +30,19 @@ vi.mock("firebase/firestore", () => ({
   doc: (ref: string, id: string) => `${ref}/${id}`,
   deleteDoc: mocks.deleteDoc,
   onSnapshot: vi.fn(),
-  query: (ref: unknown) => ref,
-  setDoc: (ref: string, data: unknown) => {
-    mocks.order.push(ref.split("/").slice(0, 3).join("/"));
-    return mocks.setDoc(ref, data);
-  },
   orderBy: vi.fn(),
-  updateDoc: (ref: string, fields: unknown) => {
-    mocks.order.push(ref);
-    return mocks.updateDoc(ref, fields);
-  },
+  query: (ref: unknown) => ref,
+  setDoc: mocks.setDoc,
+  updateDoc: mocks.updateDoc,
   where: vi.fn(),
+  writeBatch: () => {
+    mocks.batches += 1;
+    return {
+      set: (ref: string, data: unknown) => void mocks.ops.push(["set", ref, data]),
+      update: (ref: string, data: unknown) => void mocks.ops.push(["update", ref, data]),
+      commit: mocks.commit,
+    };
+  },
 }));
 
 vi.mock("../../lib/firebase", () => ({ db: {} }));
@@ -63,25 +67,43 @@ function member(over: Partial<MoveMember>): MoveMember {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mocks.order.length = 0;
-  mocks.updateDoc.mockResolvedValue(undefined);
-  mocks.setDoc.mockResolvedValue(undefined);
+  mocks.batches = 0;
+  mocks.ops.length = 0;
+  mocks.commit.mockResolvedValue(undefined);
 });
 
 describe("removeMember", () => {
-  it("takes their uid out of memberUids with arrayRemove rather than a whole array", async () => {
+  it("sends all three writes in one batch and hands back its commit", async () => {
     const result = removeMember("m1", member({}), "u-nathan");
-    await result.written;
-    const [ref, fields] = mocks.updateDoc.mock.calls[0]!;
-    expect(ref).toBe("moves/m1");
+    expect(mocks.batches).toBe(1);
+    expect(mocks.commit).toHaveBeenCalledTimes(1);
+    expect(mocks.ops.map(([op, ref]) => [op, ref.replace(/activity\/.*/, "activity/*")])).toEqual([
+      ["update", "moves/m1"],
+      ["update", "moves/m1/members/mem-alex"],
+      ["set", "moves/m1/activity/*"],
+    ]);
+    await expect(result.written).resolves.toBeUndefined();
+    // Nothing goes outside the batch.
+    expect(mocks.updateDoc).not.toHaveBeenCalled();
+    expect(mocks.setDoc).not.toHaveBeenCalled();
+    expect(mocks.deleteDoc).not.toHaveBeenCalled();
+  });
+
+  it("takes their uid out of memberUids with arrayRemove rather than a whole array", () => {
+    removeMember("m1", member({}), "u-nathan");
+    const [, , fields] = mocks.ops[0]!;
     expect((fields as { memberUids: unknown }).memberUids).toEqual({ __arrayRemove: ["u-alex"] });
   });
 
-  it("logs who removed them, with their range", async () => {
+  it("stamps removedAt as the only field on the member record", () => {
+    removeMember("m1", member({}), "u-nathan");
+    const [, , fields] = mocks.ops[1]!;
+    expect(Object.keys(fields as object)).toEqual(["removedAt"]);
+  });
+
+  it("logs who removed them, with their range", () => {
     const result = removeMember("m1", member({}), "u-shelly");
-    await result.written;
-    const [ref, event] = mocks.setDoc.mock.calls[0]!;
-    expect(ref).toMatch(/^moves\/m1\/activity\//);
+    const [, , event] = mocks.ops[2]!;
     expect(event as ActivityEvent).toMatchObject({
       actorId: "u-shelly",
       type: "member_removed",
@@ -90,44 +112,25 @@ describe("removeMember", () => {
     });
   });
 
-  it("stamps removedAt as the only field on the member record, and deletes nothing", async () => {
-    const result = removeMember("m1", member({}), "u-nathan");
-    await result.written;
-    const [ref, fields] = mocks.updateDoc.mock.calls[1]!;
-    expect(ref).toBe("moves/m1/members/mem-alex");
-    expect(Object.keys(fields as object)).toEqual(["removedAt"]);
-    expect(mocks.deleteDoc).not.toHaveBeenCalled();
-    // The only document created is the activity event, never a member record.
-    expect(mocks.setDoc.mock.calls.map(([r]) => r).every((r) => String(r).startsWith("moves/m1/activity/"))).toBe(true);
-  });
-
-  it("removes access before it stamps the record", () => {
-    removeMember("m1", member({}), "u-nathan");
-    expect(mocks.order).toEqual(["moves/m1", "moves/m1/members/mem-alex", "moves/m1/activity"]);
-  });
-
   it("hands back the record with its range and watermark intact", () => {
     const { value } = removeMember("m1", member({}), "u-shelly");
     expect(value.removedAt).toBeDefined();
     expect(value).toMatchObject({ numberRangeStart: 1000, numberRangeEnd: 1499, highestIssued: 1012 });
   });
 
-  it("refuses removing yourself and writes nothing", () => {
+  it("refuses removing yourself before opening a batch", () => {
     expect(() => removeMember("m1", member({}), "u-alex")).toThrow("You cannot remove yourself");
-    expect(mocks.updateDoc).not.toHaveBeenCalled();
-    expect(mocks.setDoc).not.toHaveBeenCalled();
+    expect(mocks.batches).toBe(0);
   });
 
-  it("refuses removing the owner and writes nothing", () => {
+  it("refuses removing the owner before opening a batch", () => {
     const owner = member({ id: "mem-nathan", uid: "u-nathan", displayName: "Nathan", role: "owner" });
     expect(() => removeMember("m1", owner, "u-shelly")).toThrow("cannot be removed");
-    expect(mocks.updateDoc).not.toHaveBeenCalled();
-    expect(mocks.setDoc).not.toHaveBeenCalled();
+    expect(mocks.batches).toBe(0);
   });
 
-  it("refuses removing somebody already removed and writes nothing", () => {
+  it("refuses removing somebody already removed before opening a batch", () => {
     expect(() => removeMember("m1", member({ removedAt: NOW }), "u-nathan")).toThrow("already removed");
-    expect(mocks.updateDoc).not.toHaveBeenCalled();
-    expect(mocks.setDoc).not.toHaveBeenCalled();
+    expect(mocks.batches).toBe(0);
   });
 });

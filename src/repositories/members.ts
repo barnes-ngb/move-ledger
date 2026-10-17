@@ -1,9 +1,7 @@
-import { doc, updateDoc } from "firebase/firestore";
-import { moveMemberSchema, rangesOverlap, removalRefusal, type MoveMember } from "../domain";
+import { arrayRemove, collection, doc, writeBatch } from "firebase/firestore";
+import { activityEventSchema, moveMemberSchema, rangesOverlap, removalRefusal, type MoveMember } from "../domain";
 import { db } from "../lib/firebase";
-import { logActivity } from "./activity";
-import { removeMemberUid } from "./moves";
-import { allWritten, createValidated, moveScoped, newId, nowIso, subscribeValidated, type PendingWrite } from "./shared";
+import { createValidated, moveScoped, newId, nowIso, subscribeValidated, type PendingWrite } from "./shared";
 
 const members = (moveId: string) => moveScoped(db, moveId, "members");
 
@@ -27,7 +25,12 @@ export function addMember(
 }
 
 /**
- * Takes a member off the move. Three writes, in this order:
+ * Takes a member off the move. Three writes in one batch, so they land
+ * together or not at all. Separately, a removal that reached the server
+ * between two of them could leave the rest refused: two members removing each
+ * other at once would each lose the authority to finish, and the record would
+ * show somebody active who has no access. A batch is evaluated against the
+ * move as it stood before it, and queues offline like a single write.
  *
  * 1. Their uid leaves `memberUids`, as an `arrayRemove` rather than a new
  *    array, so a membership change another phone made is not overwritten.
@@ -43,6 +46,9 @@ export function addMember(
  * copy this phone holds can be behind the server's, and a full write would
  * carry a stale `highestIssued` that the rules refuse for going down, which
  * would take the stamp with it.
+ *
+ * 3. A `member_removed` activity event, so the history says who took them off
+ *    and when.
  */
 export function removeMember(
   moveId: string,
@@ -53,9 +59,9 @@ export function removeMember(
   if (refusal) throw new Error(refusal);
   const removedAt = nowIso();
   const value = moveMemberSchema.parse({ ...member, removedAt });
-  const access = removeMemberUid(moveId, member.uid);
-  const stamp = updateDoc(doc(members(moveId), member.id), { removedAt });
-  const logged = logActivity(moveId, {
+  const event = activityEventSchema.parse({
+    id: newId(),
+    moveId,
     actorId: actorUid,
     type: "member_removed",
     occurredAt: removedAt,
@@ -67,7 +73,11 @@ export function removeMember(
       numberRangeEnd: member.numberRangeEnd,
     },
   });
-  return { value, written: allWritten(access, stamp, logged.written) };
+  const batch = writeBatch(db);
+  batch.update(doc(collection(db, "moves"), moveId), { memberUids: arrayRemove(member.uid), updatedAt: removedAt });
+  batch.update(doc(members(moveId), member.id), { removedAt });
+  batch.set(doc(moveScoped(db, moveId, "activity"), event.id), event);
+  return { value, written: batch.commit() };
 }
 
 export function watchMembers(

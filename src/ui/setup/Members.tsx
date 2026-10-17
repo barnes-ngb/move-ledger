@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { isRemoved, nextMemberRange, removalRefusal, type Move, type MoveMember } from "../../domain";
+import { useOnline } from "../../hooks/useOnline";
 import { addMember, addMemberUid, removeMember, writeInBackground } from "../../repositories";
 import { Button, Confirm, ErrorLine, Field, Screen } from "../kit";
 
@@ -35,11 +36,25 @@ export function Members({
   const [error, setError] = useState<string | null>(null);
   const [removing, setRemoving] = useState<MoveMember | null>(null);
 
+  const online = useOnline();
   const range = nextMemberRange(members);
+  // The range is worked out from this phone's copy of the members. Two phones
+  // adding at once from copies that have not seen each other would hand out
+  // the same block, and nothing on the server can stop that without a
+  // transaction. Adding a person is done on a couch with wifi, not while
+  // packing, so it waits for the server rather than guessing: no adding while
+  // offline, or while this phone holds a change to the move the server has
+  // not seen. "One person adds members" covers the window that is left.
+  const addBlocked = !online
+    ? "Connect to wifi or signal to add someone. Adding a person checks the server so two phones cannot give out the same box numbers."
+    : movePending
+      ? "This phone has changes the server has not seen yet. Add the person once they have sent."
+      : null;
 
   function add() {
     setError(null);
     try {
+      if (addBlocked) throw new Error(addBlocked);
       if (!range) throw new Error("Every range of box numbers has been given out. Nobody else can be added.");
       const trimmed = uid.trim();
       const existing = members.find((m) => m.uid === trimmed);
@@ -127,6 +142,7 @@ export function Members({
           ? `Their boxes will be numbered ${range.numberRangeStart} to ${range.numberRangeEnd}.`
           : "Every range of box numbers has been given out. Nobody else can be added."}
       </p>
+      {addBlocked ? <p className="text-sm text-amber-300">{addBlocked}</p> : null}
       <ErrorLine message={error} />
       {/* Derived, not remembered. Offline a write promise never settles, and
           component state would not survive leaving the screen or a reload,
@@ -138,7 +154,7 @@ export function Members({
           here may still have access.
         </p>
       ) : null}
-      <Button onClick={add} disabled={!range || !uid.trim() || !name.trim()} tone="quiet">
+      <Button onClick={add} disabled={addBlocked !== null || !range || !uid.trim() || !name.trim()} tone="quiet">
         Add this person
       </Button>
       <Button onClick={onDone}>Done</Button>

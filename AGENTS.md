@@ -51,7 +51,7 @@ Do not add the following unless a decision record approves it:
 
 ## Copy rules
 
-These apply to every user-facing string, every doc, and every commit message.
+These apply to every user-facing string, every doc, and every commit message. The one exception is `plans/APPLY-*.md`: a plan is saved verbatim as the record of what was asked, so these rules do not apply to it.
 
 - No em dashes. Use periods, colons, semicolons, or spaced hyphens.
 - No AI-tell vocabulary: leverage, seamless, streamline, robust, effortless, powerful, delightful.

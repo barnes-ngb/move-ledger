@@ -213,6 +213,25 @@ describe("findByNumber", () => {
     expect(findByNumber(containers, "42")).toHaveLength(1);
   });
 
+  /**
+   * Four-digit numbers exist once a member numbers from 1000, so a short number
+   * is also the start of longer ones. The listener delivers boxes in no useful
+   * order; the exact box has to come first or Find's twelve rows can hide it.
+   */
+  it("puts the exact match first, then the rest ascending, with 12, 120 and 1200 present", () => {
+    const shuffled = [1205, 1200, 129, 120, 12, 1201, 125].map((n) =>
+      makeContainer({ id: `c${n}`, sequenceNumber: n, displayCode: String(n).padStart(3, "0") })
+    );
+    expect(findByNumber(shuffled, "12").map((c) => c.sequenceNumber)).toEqual([12, 120, 125, 129, 1200, 1201, 1205]);
+    expect(findByNumber(shuffled, "120").map((c) => c.sequenceNumber)).toEqual([120, 1200, 1201, 1205]);
+    expect(findByNumber(shuffled, "1200").map((c) => c.sequenceNumber)).toEqual([1200]);
+  });
+
+  it("orders ascending when nothing matches exactly", () => {
+    const boxes = [1203, 1201].map((n) => makeContainer({ id: `c${n}`, sequenceNumber: n, displayCode: String(n) }));
+    expect(findByNumber(boxes, "120").map((c) => c.sequenceNumber)).toEqual([1201, 1203]);
+  });
+
   it("resolves 42 to box 042", () => {
     expect(exactByNumber(containers, "42")?.displayCode).toBe("042");
   });

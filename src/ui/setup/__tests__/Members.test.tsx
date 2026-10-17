@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { Move, MoveMember } from "../../../domain";
 
@@ -70,6 +70,10 @@ function fill(name: string, uid: string) {
   fireEvent.change(screen.getByLabelText("Their account id"), { target: { value: uid } });
 }
 
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.addMember.mockReturnValue(pending);
@@ -127,6 +131,38 @@ describe("adding a member", () => {
     expect(screen.getByText(/Every range of box numbers has been given out/)).toBeTruthy();
     fill("Twenty-one", "u-21");
     expect((screen.getByText("Add this person") as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  /**
+   * The range is computed from this phone's copy, so two phones adding at
+   * once could hand out the same block. Adding is a couch-with-wifi action, so
+   * it waits for the server: refused offline, and refused while the move has
+   * a change the server has not seen.
+   */
+  it("refuses to add anyone while the phone is offline", () => {
+    vi.spyOn(navigator, "onLine", "get").mockReturnValue(false);
+    open([nathan, shelly]);
+    expect(screen.getByText(/Connect to wifi or signal to add someone/)).toBeTruthy();
+    fill("Alex", "u-alex");
+    const button = screen.getByText("Add this person") as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    fireEvent.click(button);
+    expect(mocks.addMember).not.toHaveBeenCalled();
+    expect(mocks.addMemberUid).not.toHaveBeenCalled();
+  });
+
+  it("refuses to add anyone while the move has unsent changes", () => {
+    open([nathan, shelly], "u-nathan", move, true);
+    expect(screen.getByText(/changes the server has not seen yet. Add the person once they have sent/)).toBeTruthy();
+    fill("Alex", "u-alex");
+    expect((screen.getByText("Add this person") as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("allows adding once online with nothing unsent", () => {
+    open([nathan, shelly]);
+    expect(screen.queryByText(/Connect to wifi/)).toBeNull();
+    fill("Alex", "u-alex");
+    expect((screen.getByText("Add this person") as HTMLButtonElement).disabled).toBe(false);
   });
 
   it("uses no gendered pronouns", () => {

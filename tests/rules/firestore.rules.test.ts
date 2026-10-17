@@ -23,6 +23,8 @@ import {
   where,
   writeBatch,
   deleteField,
+  arrayRemove,
+  arrayUnion,
 } from "firebase/firestore";
 
 let env: RulesTestEnvironment;
@@ -284,8 +286,9 @@ describe("removing a member", () => {
   });
 
   it("a member can take another member's uid out of memberUids, and the removed uid is shut out", async () => {
+    // The write removeMember sends: arrayRemove, not a whole new array.
     const shelly = env.authenticatedContext(SHELLY).firestore();
-    await assertSucceeds(updateDoc(doc(shelly, "moves", MOVE), { memberUids: [NATHAN, SHELLY], updatedAt: NOW }));
+    await assertSucceeds(updateDoc(doc(shelly, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW }));
 
     const helper = env.authenticatedContext(HELPER).firestore();
     await assertFails(getDoc(doc(helper, "moves", MOVE)));
@@ -318,6 +321,30 @@ describe("removing a member", () => {
     expect(snap.data()).toMatchObject({ numberRangeStart: 1000, numberRangeEnd: 1499, highestIssued: 1003 });
     // Their box is still in the move for everybody who is.
     await assertSucceeds(getDoc(doc(nathan, "moves", MOVE, "containers", "c1003")));
+  });
+
+  it("a removal and an add from two phones both land, neither undoing the other", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    const shelly = env.authenticatedContext(SHELLY).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW }));
+    await assertSucceeds(updateDoc(doc(shelly, "moves", MOVE), { memberUids: arrayUnion("uid-second-helper"), updatedAt: NOW }));
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const snap = await getDoc(doc(ctx.firestore(), "moves", MOVE));
+      expect(snap.data()?.memberUids).toEqual([NATHAN, SHELLY, "uid-second-helper"]);
+    });
+  });
+
+  it("the member_removed activity event can be written by the person who removed them", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(
+      setDoc(doc(nathan, "moves", MOVE, "activity", "e-removed"), {
+        moveId: MOVE,
+        actorId: NATHAN,
+        type: "member_removed",
+        occurredAt: NOW,
+        payload: { memberId: "mem-helper", uid: HELPER, displayName: "Alex" },
+      })
+    );
   });
 
   it("the removed uid cannot put itself back", async () => {

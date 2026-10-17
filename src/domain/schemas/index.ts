@@ -171,6 +171,7 @@ export const activityEventSchema = z.object({
     "container_deleted",
     "photo_deleted",
     "title_changed",
+    "member_removed",
   ]),
   occurredAt: isoString,
   payload: z.record(z.string(), z.unknown()),

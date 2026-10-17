@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { isRemoved, nextMemberRange, removalRefusal, type Move, type MoveMember } from "../../domain";
-import { addMember, removeMember, updateMove, writeInBackground } from "../../repositories";
+import { addMember, addMemberUid, removeMember, writeInBackground } from "../../repositories";
 import { Button, Confirm, ErrorLine, Field, Screen } from "../kit";
 
 /**
@@ -31,6 +31,10 @@ export function Members({
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [removing, setRemoving] = useState<MoveMember | null>(null);
+  // A removal this phone has made and the server has not confirmed. Offline a
+  // write promise neither resolves nor rejects, so this is the only honest
+  // signal that the person still has access, and it clears itself on signal.
+  const [unconfirmed, setUnconfirmed] = useState<string | null>(null);
 
   const range = nextMemberRange(members);
 
@@ -45,7 +49,9 @@ export function Members({
       if (existing || move.memberUids.includes(trimmed)) throw new Error("That person is already on the move.");
       // memberUids first, so their device can read the move the moment it
       // reaches the server. Both writes are ordered by Firestore's own queue.
-      const updated = updateMove({ ...move, memberUids: [...move.memberUids, trimmed] });
+      // arrayUnion rather than a new array, so a removal another phone made
+      // from its own copy is not undone by this one.
+      const updated = addMemberUid(move.id, trimmed);
       const added = addMember(
         move.id,
         {
@@ -56,7 +62,7 @@ export function Members({
         },
         members
       );
-      writeInBackground(Promise.all([updated.written, added.written]), () =>
+      writeInBackground(Promise.all([updated, added.written]), () =>
         setError("They are saved on this phone. Their phone will not see the move until this one has signal.")
       );
       setUid("");
@@ -70,12 +76,15 @@ export function Members({
     setRemoving(null);
     setError(null);
     try {
-      const removed = removeMember(move.id, member, move, myUid);
-      writeInBackground(removed.written, () =>
-        setError(
-          `The removal is saved on this phone. ${member.displayName} keeps access until this phone has signal.`
-        )
+      const removed = removeMember(move.id, member, myUid);
+      setUnconfirmed(member.displayName);
+      const confirmed = removed.written.then(() =>
+        setUnconfirmed((name) => (name === member.displayName ? null : name))
       );
+      writeInBackground(confirmed, () => {
+        setUnconfirmed(null);
+        setError(`Could not remove ${member.displayName}. They still have access.`);
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not remove that person.");
     }
@@ -122,6 +131,11 @@ export function Members({
         Their boxes will be numbered {range.numberRangeStart} to {range.numberRangeEnd}.
       </p>
       <ErrorLine message={error} />
+      {unconfirmed ? (
+        <p className="text-sm text-amber-300">
+          {unconfirmed} is removed on this phone. They keep access until this phone reaches the server.
+        </p>
+      ) : null}
       <Button onClick={add} disabled={!uid.trim() || !name.trim()} tone="quiet">
         Add this person
       </Button>
@@ -130,7 +144,7 @@ export function Members({
       {removing ? (
         <Confirm
           title={`Remove ${removing.displayName}?`}
-          detail={`${removing.displayName} loses access to the move at once. Their boxes stay in the move with their numbers, and ${removing.numberRangeStart} to ${removing.numberRangeEnd} will not be given to anyone else. Anything their phone has not sent yet will not arrive.`}
+          detail={`${removing.displayName} loses access to the move as soon as this phone reaches the server, which with signal is at once. Their boxes stay in the move with their numbers, and ${removing.numberRangeStart} to ${removing.numberRangeEnd} will not be given to anyone else. Anything their phone has not sent yet will not arrive.`}
           confirmLabel={`Remove ${removing.displayName}`}
           cancelLabel={`Keep ${removing.displayName}`}
           onConfirm={() => remove(removing)}

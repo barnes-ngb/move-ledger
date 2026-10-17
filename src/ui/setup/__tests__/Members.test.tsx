@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import type { Move, MoveMember } from "../../../domain";
 
 /**
@@ -9,15 +9,17 @@ import type { Move, MoveMember } from "../../../domain";
  * the wording names nobody's gender, and that removal asks first and is offered
  * only where the domain allows it.
  */
-const mocks = vi.hoisted(() => ({ addMember: vi.fn(), removeMember: vi.fn(), updateMove: vi.fn() }));
+const mocks = vi.hoisted(() => ({ addMember: vi.fn(), removeMember: vi.fn(), addMemberUid: vi.fn() }));
 
 const pending = { value: undefined, written: Promise.resolve() };
 
 vi.mock("../../../repositories", () => ({
   addMember: mocks.addMember,
   removeMember: mocks.removeMember,
-  updateMove: mocks.updateMove,
-  writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
+  addMemberUid: mocks.addMemberUid,
+  // Calls the error callback as the real one does, so a refused write can be asserted.
+  writeInBackground: (work: Promise<unknown>, onError?: (e: unknown) => void) =>
+    void work.catch((e) => onError?.(e)),
 }));
 
 const { Members } = await import("../Members");
@@ -62,7 +64,7 @@ function fill(name: string, uid: string) {
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.addMember.mockReturnValue(pending);
-  mocks.updateMove.mockReturnValue(pending);
+  mocks.addMemberUid.mockReturnValue(Promise.resolve());
   mocks.removeMember.mockReturnValue(pending);
 });
 
@@ -73,17 +75,17 @@ describe("adding a member", () => {
     expect(mocks.addMember).not.toHaveBeenCalled();
   });
 
-  it("adds them with that range, memberUids first", () => {
+  it("adds them with that range, memberUids first and by uid rather than a whole array", () => {
     open([nathan, shelly]);
     fill("Alex", " u-alex ");
     fireEvent.click(screen.getByText("Add this person"));
-    expect(mocks.updateMove.mock.calls[0]![0].memberUids).toEqual(["u-nathan", "u-shelly", "u-alex"]);
+    expect(mocks.addMemberUid).toHaveBeenCalledWith("m1", "u-alex");
     expect(mocks.addMember).toHaveBeenCalledWith(
       "m1",
       { uid: "u-alex", displayName: "Alex", role: "member", numberRangeStart: 1000, numberRangeEnd: 1499 },
       [nathan, shelly]
     );
-    expect(mocks.updateMove.mock.invocationCallOrder[0]).toBeLessThan(mocks.addMember.mock.invocationCallOrder[0]!);
+    expect(mocks.addMemberUid.mock.invocationCallOrder[0]).toBeLessThan(mocks.addMember.mock.invocationCallOrder[0]!);
   });
 
   it("still gives the second person 500 to 999", () => {
@@ -105,7 +107,7 @@ describe("adding a member", () => {
     fireEvent.click(screen.getByText("Add this person"));
     expect(screen.getByText(/was removed from this move/)).toBeTruthy();
     expect(mocks.addMember).not.toHaveBeenCalled();
-    expect(mocks.updateMove).not.toHaveBeenCalled();
+    expect(mocks.addMemberUid).not.toHaveBeenCalled();
   });
 
   it("uses no gendered pronouns", () => {
@@ -122,16 +124,43 @@ describe("removing a member", () => {
     expect(screen.getAllByText("Remove")).toHaveLength(1);
   });
 
-  it("asks first, says they lose access and their boxes stay, then removes", () => {
+  it("asks first, says when they lose access and that their boxes stay, then removes", () => {
     open([nathan, shelly, alex]);
     const buttons = screen.getAllByText("Remove");
     fireEvent.click(buttons[buttons.length - 1]!);
     expect(mocks.removeMember).not.toHaveBeenCalled();
-    const detail = screen.getByText(/loses access to the move at once/).textContent ?? "";
+    const detail = screen.getByText(/loses access to the move as soon as this phone reaches the server/).textContent ?? "";
     expect(detail).toContain("Their boxes stay in the move");
     expect(detail).toContain("1000 to 1499 will not be given to anyone else");
     fireEvent.click(screen.getByText("Remove Alex"));
-    expect(mocks.removeMember).toHaveBeenCalledWith("m1", alex, move, "u-nathan");
+    expect(mocks.removeMember).toHaveBeenCalledWith("m1", alex, "u-nathan");
+  });
+
+  /**
+   * Offline a Firestore write promise never settles, so an error callback is
+   * never called and cannot be what tells a person the removal has not landed.
+   * The line shows from the tap until the write is confirmed.
+   */
+  it("says they keep access until the removal reaches the server, and stops saying it once it has", async () => {
+    let land: () => void = () => undefined;
+    mocks.removeMember.mockReturnValue({ value: undefined, written: new Promise<void>((r) => (land = r)) });
+    open([nathan, shelly, alex]);
+    const buttons = screen.getAllByText("Remove");
+    fireEvent.click(buttons[buttons.length - 1]!);
+    fireEvent.click(screen.getByText("Remove Alex"));
+    expect(screen.getByText(/Alex is removed on this phone. They keep access until this phone reaches the server./)).toBeTruthy();
+    await act(async () => land());
+    expect(screen.queryByText(/keep access until/)).toBeNull();
+  });
+
+  it("says plainly when the removal was refused", async () => {
+    mocks.removeMember.mockReturnValue({ value: undefined, written: Promise.reject(new Error("denied")) });
+    open([nathan, shelly, alex]);
+    const buttons = screen.getAllByText("Remove");
+    fireEvent.click(buttons[buttons.length - 1]!);
+    await act(async () => fireEvent.click(screen.getByText("Remove Alex")));
+    expect(screen.getByText("Could not remove Alex. They still have access.")).toBeTruthy();
+    expect(screen.queryByText(/keep access until/)).toBeNull();
   });
 
   it("does nothing when the question is answered with keep", () => {

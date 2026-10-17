@@ -53,9 +53,9 @@ interface MoveMember {
 }
 ```
 
-Number ranges are assigned once, when the member is added, and are not dynamic. The first member gets 1 to 499. Every member after that gets the next whole block of 500 above the highest `numberRangeEnd` any member has ever held: 500 to 999, then 1000 to 1499, and so on. `nextMemberRange` in `src/domain/numbers.ts` computes it and the Members screen shows it before anyone is added. `addMember` still refuses an overlapping range, so the assignment and the guard are two separate checks on the same rule.
+Number ranges are assigned once, when the member is added, and are not dynamic. The first member gets 1 to 499. Every member after that gets the next whole block of 500 above the highest `numberRangeEnd` any member has ever held: 500 to 999, then 1000 to 1499, and so on. `nextMemberRange` in `src/domain/numbers.ts` computes it and the Members screen shows it before anyone is added. `addMember` still refuses an overlapping range, so the assignment and the guard are two separate checks on the same rule. Both read this phone's copy of the members, so two members adding two different people at the same moment, from copies that have not seen each other's add, would both pick the same block. Nothing on the server stops that, and nothing can without a transaction, which needs the signal the app is built not to require. Recorded as a known limit in `plans/STATUS.md`; the rule of use is that one person adds members.
 
-`removedAt` marks a member who has been taken off the move. Added 2026-10-17 by APPLY-15, for a helper who packs for a few weeks and should not keep access afterward. Removing a member is two writes: their uid leaves `Move.memberUids`, which is what actually ends their access, and `removedAt` is stamped on this record as a single-field update. **The record is never deleted.** It carries the range and the watermark, and the range assignment reads every member record, removed ones included, so a removed member's range is retired for the life of the move rather than freed. Deleting the record would let the next member be given numbers that are already written in marker on boxes still in the move, which is the collision APPLY-13 closed. Their containers keep `ownerMemberId` and stay where they are. The owner cannot be removed and nobody can remove themselves; `removalRefusal` in `src/domain/members.ts` holds both refusals.
+`removedAt` marks a member who has been taken off the move. Added 2026-10-17 by APPLY-15, for a helper who packs for a few weeks and should not keep access afterward. Removing a member is three writes: their uid leaves `Move.memberUids` as an `arrayRemove`, which is what actually ends their access; `removedAt` is stamped on this record as a single-field update; and a `member_removed` activity event records who removed them and when. Adding a member writes its uid as an `arrayUnion` for the same reason the removal uses `arrayRemove`: two phones each sending the whole array they last saw would let the later write put back a uid the earlier one took out. **The record is never deleted.** It carries the range and the watermark, and the range assignment reads every member record, removed ones included, so a removed member's range is retired for the life of the move rather than freed. Deleting the record would let the next member be given numbers that are already written in marker on boxes still in the move, which is the collision APPLY-13 closed. Their containers keep `ownerMemberId` and stay where they are. The owner cannot be removed and nobody can remove themselves; `removalRefusal` in `src/domain/members.ts` holds both refusals.
 
 `highestIssued` is the highest `sequenceNumber` this member has ever been handed. It is written in the same batch as the container that took the number, so it cannot lag behind the containers collection on the server, and the rules refuse any write that lowers or removes it.
 
@@ -252,7 +252,8 @@ interface ActivityEvent {
     | "container_unvoided"
     | "container_deleted"
     | "photo_deleted"
-    | "title_changed";
+    | "title_changed"
+    | "member_removed";        // payload: memberId, uid, displayName, the range
   occurredAt: string;
   payload: Record<string, unknown>;
 }

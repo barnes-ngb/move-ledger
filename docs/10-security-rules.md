@@ -1,6 +1,6 @@
 # Security Rules
 
-Two people, one move. The entire authorization model is: are you a member of this move.
+One household, one move, as many members as are packing. The entire authorization model is: are you a member of this move.
 
 Rules changes require a matching test in `tests/rules/`. This is enforced by `AGENTS.md` and is not optional. Security rules are the only place in a client-only architecture where a mistake exposes data.
 
@@ -110,7 +110,9 @@ Notes on the choices:
 - Activity is append-only at the rules level, not just by convention.
 - `highestIssued` on a member document is the number watermark, added 2026-09-07 by APPLY-13. It is written in the same batch as every container reservation, so the member document always records the highest number that member has ever been handed, whether or not the container survives. The rule lets it stay or rise and refuses a lower value or its removal, because either would hand a number back into circulation that may already be written in marker. The rule cannot check the watermark against the container in the same batch: rules evaluate each write on its own, so that agreement is the repository's job and `reserveContainer` is the only writer.
 - `memberUids` on the move document costs one document read per rule evaluation, cached within a request. The alternative is a `get` against the members subcollection, which costs the same and reads worse.
-- Adding the second member requires updating `memberUids`, which any existing member can do. With two people that is the correct trust model.
+- Adding a member requires updating `memberUids`, which any existing member can do. With two people that was the correct trust model, and with a helper added for the packing it still is: everyone on the move is somebody the household chose to hand the boxes to.
+- Removing a member is the same update in the other direction, added 2026-10-17 by APPLY-15. Their uid leaves `memberUids` and every rule in this file stops matching them at once: the move, every subcollection, and every Storage object under it. No rule changed to make that true; `allow update` on the move already permits any member to rewrite the array as long as `createdAt` stays. The app sends the removal as an `arrayRemove` and an add as an `arrayUnion`, so two phones changing membership from their own copies merge on the server instead of the later write restoring a uid the earlier one took out; the rule sees the merged array either way. Their member document is updated with `removedAt` rather than deleted, and the watermark rule does not stand in the way because the stamp is written as that one field.
+- The rules do not refuse removing the owner, or removing yourself. The app refuses both, in `removalRefusal`. Repeating them here would mean comparing the old and new `memberUids` against the members subcollection inside a rule, which is two extra reads on every move update to guard against a member of the household writing a client of their own. That is outside this file's threat model, which is people who are not on the move. Recorded so nobody reads the absence as an oversight.
 
 ## Cloud Storage
 
@@ -175,9 +177,13 @@ The general lesson, worth more than the fix: a condition that reads `request.res
 12. A member can delete a photo object in their move. A signed-in non-member cannot. A signed-out request cannot.
 13. A member can set `highestIssued` on a member document and raise it. A member cannot lower it or remove it. A non-member cannot write it. The reservation batch, one container create plus one member update, commits for a member and fails as a whole for a non-member.
 
+14. A member can update `memberUids` with `arrayRemove` to remove another member's uid, alone or in the batch `removeMember` sends with the stamp and the activity event; a batch from a uid already removed fails as a whole. The add batch `addMemberToMove` sends, an `arrayUnion` plus the new member record, commits as a whole and fails as a whole the same way. Once removed, that uid can no longer read the move, list it, read or create anything under it, or put itself back, and the remaining member can still stamp `removedAt` on the removed member's document. A removal and an add from two members both land. The `member_removed` activity event can be written by the member who removed them.
+
 Cases 10 and 11 are list queries. A rules suite built only from `getDoc` never evaluates the `list` path, which is how the null value error on the move rule reached a deployed build.
 
 Case 13 was added 2026-09-07 with the watermark. The batch case is there because the app never writes a reservation as two requests, and a suite that only tests the member update on its own would pass with a rule that refused the batch.
+
+Case 14 was added 2026-10-17 with member removal. It needed no rule change, and the case is there to prove it: the first time anyone is taken off a move is not the time to find out the array update is refused or that the removed uid can still read.
 
 Case 12 is the delete path, added 2026-08-15 with the rule split above. A suite that only uploads never evaluates a delete, which is how a rule that denied every one of them survived two weeks of passing tests. Cases 8 and 9 stay on `create`, so the split has to keep both halves honest: deletes allowed, oversized and non-image uploads still refused.
 

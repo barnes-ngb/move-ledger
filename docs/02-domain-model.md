@@ -49,10 +49,13 @@ interface MoveMember {
   numberRangeStart: number;
   numberRangeEnd: number;
   highestIssued?: number;      // number watermark, absent means 0. See Number reservation.
+  removedAt?: string;          // ISO timestamp, set when the member is taken off the move
 }
 ```
 
-Number ranges are assigned once at setup and are not dynamic. Example: 1 to 499 and 500 to 999.
+Number ranges are assigned once, when the member is added, and are not dynamic. The first member gets 1 to 499. Every member after that gets the next whole block of 500 above the highest `numberRangeEnd` any member has ever held: 500 to 999, then 1000 to 1499, and so on. `nextMemberRange` in `src/domain/numbers.ts` computes it and the Members screen shows it before anyone is added. `addMember` still refuses an overlapping range, so the assignment and the guard are two separate checks on the same rule. Both read this phone's copy of the members, so two members adding two different people at the same moment, from copies that have not seen each other's add, would both pick the same block. Nothing on the server stops that without a transaction. Adding a member is a setup step done with wifi rather than packing, so it is the one write in the app that waits for signal: the Members screen refuses to add anyone unless the move was last heard from the server, not only the browser saying it is online, which it does behind a captive portal, and refuses while the move holds a change the server has not seen. The rule of use, one person adds members, covers the window that leaves. Recorded in `plans/STATUS.md`.
+
+`removedAt` marks a member who has been taken off the move. Added 2026-10-17 by APPLY-15, for a helper who packs for a few weeks and should not keep access afterward. Removing a member is three writes in one batch, so they land together or not at all: their uid leaves `Move.memberUids` as an `arrayRemove`, which is what actually ends their access; `removedAt` is stamped on this record as a single-field update; and a `member_removed` activity event records who removed them and when. Adding a member writes its uid as an `arrayUnion`, in one batch with the new member record so neither lands without the other, for the same reason the removal uses `arrayRemove`: two phones each sending the whole array they last saw would let the later write put back a uid the earlier one took out. **The record is never deleted.** It carries the range and the watermark, and the range assignment reads every member record, removed ones included, so a removed member's range is retired for the life of the move rather than freed. Deleting the record would let the next member be given numbers that are already written in marker on boxes still in the move, which is the collision APPLY-13 closed. Their containers keep `ownerMemberId` and stay where they are. The owner cannot be removed and nobody can remove themselves; `removalRefusal` in `src/domain/members.ts` holds both refusals.
 
 `highestIssued` is the highest `sequenceNumber` this member has ever been handed. It is written in the same batch as the container that took the number, so it cannot lag behind the containers collection on the server, and the rules refuse any write that lowers or removes it.
 
@@ -130,7 +133,7 @@ interface Container {
   moveId: string;
 
   sequenceNumber: number;      // unique per move
-  displayCode: string;         // "042", derived from sequenceNumber
+  displayCode: string;         // "042", or "1042" past 999, derived from sequenceNumber
 
   type: "box" | "plastic_bin" | "furniture" | "appliance" | "bundle" | "other";
 
@@ -249,7 +252,8 @@ interface ActivityEvent {
     | "container_unvoided"
     | "container_deleted"
     | "photo_deleted"
-    | "title_changed";
+    | "title_changed"
+    | "member_removed";        // payload: memberId, uid, displayName, the range
   occurredAt: string;
   payload: Record<string, unknown>;
 }
@@ -261,7 +265,7 @@ Activity is append-only. Nothing edits or deletes an event.
 
 - Every entity uses a Firestore auto-ID.
 - `sequenceNumber` is unique within a move and is drawn from the creating member's assigned range.
-- `displayCode` is `sequenceNumber` zero-padded to three digits.
+- `displayCode` is `sequenceNumber` zero-padded to three digits, and wider when the number is. A third member numbers from 1000, so four-digit codes exist as of APPLY-15: `toDisplayCode(1000)` is `"1000"`, the schema accepts three digits or more, and the Find keypad's `MAX_DIGITS` is four.
 - A zone name, color, or short code may change without affecting container identity.
 - A deleted number is never reused.
 
@@ -278,3 +282,15 @@ The screen also waits for the first containers snapshot before it reserves. The 
 Offline reservation is safe for one member on **one active device**. Two devices signed in as the same member can each be handed the same number while both are offline: neither can see the other's containers or the other's watermark until they reconnect. The watermark narrows that to the offline window rather than eliminating it; once either device syncs, the other's next reservation counts past it. There is no server-side check that could close this without a transaction, and a transaction needs a signal, which is the thing the app is designed not to require.
 
 So each person packs from one phone. That is a rule of use, recorded in `plans/STATUS.md` and `decisions/0005-google-sign-in-two-accounts.md`, not a bug to fix.
+
+### Four-digit numbers
+
+A third member numbers from 1000, so four-digit box numbers exist as of APPLY-15. Checked 2026-10-17 for anything that assumed three:
+
+- `toDisplayCode` pads to three and widens past it, and has a test for 1042. The container schema accepts `^\d{3,}$`.
+- The Find keypad's `MAX_DIGITS` was already four. It is now derived from `MAX_BOX_NUMBER` (9999) in `src/domain/numbers.ts`, and `nextMemberRange` refuses a range that would pass it, so the twentieth range, 9500 to 9999, is the last one issued and the Members screen says so instead of creating boxes nobody can type into Find. Found in review on pull request 25.
+- The box list and the CSV export sort on `sequenceNumber`, a number, never on `displayCode`, so 1000 sorts after 999 rather than between 100 and 101. Search ranks ties the same way.
+- The label instruction prints `displayCode` as it is, so a four-digit box reads `1000  BLUE`.
+- Text search matches a number as a prefix of `sequenceNumber` or a substring of `displayCode`, which needs no width.
+
+One behavior had to change, and it is on Find rather than in the data. Find lists at most twelve rows, and once 1000 to 1499 are in use a short number is also the prefix of four-digit ones: typing 12 matches 12, 120 to 129, and 1200 to 1299. They used to come in whatever order the listener delivered them, so box 12 could be off the end. `findByNumber` now puts the exact match first and the rest ascending by number, fixed in APPLY-15 alongside the change that made four-digit numbers exist.

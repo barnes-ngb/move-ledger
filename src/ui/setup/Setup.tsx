@@ -57,6 +57,9 @@ export function Setup({
     <Members
       move={move}
       members={ctx.members}
+      movePending={ctx.movePending}
+      moveFromServer={ctx.moveFromServer}
+      uid={user.uid}
       onDone={onFinished}
       onBack={stage.back}
     />

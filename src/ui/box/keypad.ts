@@ -1,5 +1,11 @@
-/** Four digits is past the top of any range this move will use. */
-export const MAX_DIGITS = 4;
+import { MAX_BOX_NUMBER } from "../../domain/numbers";
+
+/**
+ * As many digits as the highest box number the app will issue, which is four.
+ * A third member numbers from 1000, so four is in use rather than headroom,
+ * and nextMemberRange refuses any range past it. See MAX_BOX_NUMBER.
+ */
+export const MAX_DIGITS = String(MAX_BOX_NUMBER).length;
 
 export function appendDigit(typed: string, digit: string): string {
   if (!/^[0-9]$/.test(digit)) return typed;

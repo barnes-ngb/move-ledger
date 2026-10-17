@@ -51,6 +51,13 @@ export const moveMemberSchema = z.object({
    * a lower value. See docs/02-domain-model.md, Number reservation.
    */
   highestIssued: z.number().int().nonnegative().optional(),
+  /**
+   * When this member was taken off the move. Their uid is gone from
+   * `memberUids`, so they can no longer read or write anything in it, but the
+   * record stays: it holds their range and their watermark, and deleting it
+   * would make their numbers reissuable. See docs/02-domain-model.md, MoveMember.
+   */
+  removedAt: isoString.optional(),
 }).refine((m) => m.numberRangeEnd >= m.numberRangeStart, {
   message: "numberRangeEnd must not be below numberRangeStart",
   path: ["numberRangeEnd"],
@@ -164,6 +171,7 @@ export const activityEventSchema = z.object({
     "container_deleted",
     "photo_deleted",
     "title_changed",
+    "member_removed",
   ]),
   occurredAt: isoString,
   payload: z.record(z.string(), z.unknown()),

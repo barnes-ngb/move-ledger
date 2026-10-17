@@ -5,8 +5,8 @@ import { Button, ErrorLine, Field, Screen } from "../kit";
 
 /**
  * Creates everything a move needs to exist: the move, both places, and the
- * creator's own member record holding numbers 1 to 499. The second member is
- * added later, on the Members screen, because her uid does not exist yet.
+ * creator's own member record holding numbers 1 to 499. Everyone else is
+ * added later, on the Members screen, because their uid does not exist yet.
  *
  * Every id this chain needs comes from the local write, so the whole sequence
  * runs with no network. Waiting on the server here used to leave the button
@@ -68,8 +68,8 @@ export function CreateMove({ user }: { user: User }) {
         {busy ? "Creating" : "Create the move"}
       </Button>
       <p className="text-sm text-slate-400">
-        Your boxes will be numbered 1 to 499. The second person gets 500 to 999, so two phones can
-        number boxes at the same time without a collision.
+        Your boxes will be numbered 1 to 499. Each person added after you gets the next 500, so
+        several phones can number boxes at the same time without a collision.
       </p>
     </Screen>
   );

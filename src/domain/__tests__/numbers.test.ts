@@ -6,6 +6,8 @@ import {
   rangesOverlap,
   remainingInRange,
   toDisplayCode,
+  nextMemberRange,
+  MAX_BOX_NUMBER,
 } from "../numbers";
 
 const nathan = { numberRangeStart: 1, numberRangeEnd: 499 };
@@ -91,5 +93,55 @@ describe("rangesOverlap", () => {
   it("catches an overlap that would let two boxes share a number", () => {
     expect(rangesOverlap(nathan, shelly)).toBe(false);
     expect(rangesOverlap(nathan, { numberRangeStart: 400, numberRangeEnd: 700 })).toBe(true);
+  });
+});
+
+describe("nextMemberRange", () => {
+  const range = (start: number, end: number) => ({ numberRangeStart: start, numberRangeEnd: end });
+
+  it("gives a third member 1000 to 1499 after 1 to 499 and 500 to 999", () => {
+    expect(nextMemberRange([range(1, 499), range(500, 999)])).toEqual(range(1000, 1499));
+  });
+
+  it("gives the second member 500 to 999, which is what the screen used to hardcode", () => {
+    expect(nextMemberRange([range(1, 499)])).toEqual(range(500, 999));
+  });
+
+  it("starts at 1 for a move with nobody on it", () => {
+    expect(nextMemberRange([])).toEqual(range(1, 499));
+  });
+
+  it("counts from the highest end, whatever order the members arrive in", () => {
+    expect(nextMemberRange([range(1000, 1499), range(1, 499), range(500, 999)])).toEqual(range(1500, 1999));
+  });
+
+  it("rounds an odd range up to the next whole block rather than starting mid-block", () => {
+    expect(nextMemberRange([range(1, 499), range(500, 700)])).toEqual(range(1000, 1499));
+  });
+
+  /**
+   * The caller passes removed members in with everyone else. The function has
+   * no way to tell them apart, and that is the point: a range is retired, not
+   * freed, so it is never the top of anything a new member can be given.
+   */
+  it("never hands out a range a removed member held", () => {
+    const removedHelper = { ...range(1000, 1499), removedAt: "2026-11-01T00:00:00.000Z" };
+    const next = nextMemberRange([range(1, 499), range(500, 999), removedHelper])!;
+    expect(next).toEqual(range(1500, 1999));
+    expect(rangesOverlap(next, removedHelper)).toBe(false);
+  });
+
+  it("issues the twentieth range, 9500 to 9999, and refuses a twenty-first that the keypad could not type", () => {
+    const taken = Array.from({ length: 19 }, (_, i) => range(i === 0 ? 1 : i * 500, i * 500 + 499));
+    expect(nextMemberRange(taken)).toEqual(range(9500, 9999));
+    expect(nextMemberRange([...taken, range(9500, 9999)])).toBeNull();
+    expect(MAX_BOX_NUMBER).toBe(9999);
+  });
+
+  it("produces four-digit display codes, which the keypad can type", () => {
+    const next = nextMemberRange([range(1, 499), range(500, 999)])!;
+    expect(toDisplayCode(next.numberRangeStart)).toBe("1000");
+    expect(toDisplayCode(next.numberRangeEnd)).toBe("1499");
+    expect(nextSequenceNumber(next, [])).toBe(1000);
   });
 });

@@ -169,11 +169,24 @@ export function search(
 /**
  * Numeric lookup. Typing 42 finds 042. The Find screen opens the box outright
  * when exactly one container matches the digits entered so far.
+ *
+ * Ordered: the box whose number is exactly what was typed comes first, then
+ * the rest ascending by number. Once a member numbers from 1000, a short
+ * number is also the start of four-digit ones, so typing 12 matches 12, 120
+ * to 129 and 1200 to 1299. Find shows twelve rows, and in the order the
+ * listener happened to deliver them box 12 could be off the end.
  */
 export function findByNumber(containers: readonly Container[], typed: string): Container[] {
   const digits = typed.replace(/\D/g, "");
   if (!digits) return [];
-  return containers.filter((c) => String(c.sequenceNumber).startsWith(digits));
+  const exact = Number(digits);
+  return containers
+    .filter((c) => String(c.sequenceNumber).startsWith(digits))
+    .sort(
+      (a, b) =>
+        Number(b.sequenceNumber === exact) - Number(a.sequenceNumber === exact) ||
+        a.sequenceNumber - b.sequenceNumber
+    );
 }
 
 export function exactByNumber(containers: readonly Container[], typed: string): Container | null {

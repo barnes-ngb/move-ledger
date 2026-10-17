@@ -23,6 +23,8 @@ import {
   where,
   writeBatch,
   deleteField,
+  arrayRemove,
+  arrayUnion,
 } from "firebase/firestore";
 
 let env: RulesTestEnvironment;
@@ -236,6 +238,194 @@ describe("the member watermark", () => {
       const snap = await getDoc(doc(ctx.firestore(), "moves", MOVE, "containers", "c1"));
       expect(snap.exists()).toBe(false);
     });
+  });
+});
+
+/**
+ * Doc 10 case 14. Removing a member is an update to `memberUids` by somebody
+ * still on the move, and no rule changed to allow it. What this proves is the
+ * whole of the feature as far as the server is concerned: the update commits,
+ * the removed uid is shut out of the move and everything under it at once,
+ * and the member record can still be stamped rather than deleted.
+ */
+describe("removing a member", () => {
+  const HELPER = "uid-helper";
+
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const fs = ctx.firestore();
+      await setDoc(doc(fs, "moves", MOVE), {
+        name: "KC to DFW",
+        status: "packing",
+        memberUids: [NATHAN, SHELLY, HELPER],
+        createdAt: NOW,
+        updatedAt: NOW,
+      });
+      await setDoc(doc(fs, "moves", MOVE, "members", "mem-helper"), {
+        moveId: MOVE,
+        uid: HELPER,
+        displayName: "Alex",
+        role: "member",
+        numberRangeStart: 1000,
+        numberRangeEnd: 1499,
+        highestIssued: 1003,
+      });
+      await setDoc(doc(fs, "moves", MOVE, "containers", "c1003"), containerDoc({
+        sequenceNumber: 1003,
+        displayCode: "1003",
+        ownerMemberId: "mem-helper",
+        createdBy: HELPER,
+        updatedBy: HELPER,
+      }));
+    });
+  });
+
+  it("the helper can read the move before anything happens", async () => {
+    const helper = env.authenticatedContext(HELPER).firestore();
+    await assertSucceeds(getDoc(doc(helper, "moves", MOVE)));
+  });
+
+  it("a member can take another member's uid out of memberUids, and the removed uid is shut out", async () => {
+    // The write removeMember sends: arrayRemove, not a whole new array.
+    const shelly = env.authenticatedContext(SHELLY).firestore();
+    await assertSucceeds(updateDoc(doc(shelly, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW }));
+
+    const helper = env.authenticatedContext(HELPER).firestore();
+    await assertFails(getDoc(doc(helper, "moves", MOVE)));
+    await assertFails(getDoc(doc(helper, "moves", MOVE, "containers", "c1003")));
+    await assertFails(getDocs(collection(helper, "moves", MOVE, "containers")));
+    await assertFails(getDocs(collection(helper, "moves", MOVE, "members")));
+    await assertFails(
+      setDoc(doc(helper, "moves", MOVE, "containers", "c1004"), containerDoc({
+        sequenceNumber: 1004,
+        displayCode: "1004",
+        ownerMemberId: "mem-helper",
+        createdBy: HELPER,
+        updatedBy: HELPER,
+      }))
+    );
+    // The list query watchMoves sends no longer returns the move at all.
+    const listed = await assertSucceeds(
+      getDocs(query(collection(helper, "moves"), where("memberUids", "array-contains", HELPER)))
+    );
+    expect(listed.empty).toBe(true);
+  });
+
+  it("the remaining member can stamp removedAt on the removed member's record, which keeps its range", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: [NATHAN, SHELLY], updatedAt: NOW }));
+    await assertSucceeds(
+      updateDoc(doc(nathan, "moves", MOVE, "members", "mem-helper"), { removedAt: "2026-11-01T12:00:00.000Z" })
+    );
+    const snap = await getDoc(doc(nathan, "moves", MOVE, "members", "mem-helper"));
+    expect(snap.data()).toMatchObject({ numberRangeStart: 1000, numberRangeEnd: 1499, highestIssued: 1003 });
+    // Their box is still in the move for everybody who is.
+    await assertSucceeds(getDoc(doc(nathan, "moves", MOVE, "containers", "c1003")));
+  });
+
+  it("a removal and an add from two phones both land, neither undoing the other", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    const shelly = env.authenticatedContext(SHELLY).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW }));
+    await assertSucceeds(updateDoc(doc(shelly, "moves", MOVE), { memberUids: arrayUnion("uid-second-helper"), updatedAt: NOW }));
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const snap = await getDoc(doc(ctx.firestore(), "moves", MOVE));
+      expect(snap.data()?.memberUids).toEqual([NATHAN, SHELLY, "uid-second-helper"]);
+    });
+  });
+
+  /**
+   * The shape removeMember sends: the arrayRemove, the stamp, and the event in
+   * one batch. Every write in it is judged against the move as it stood before
+   * the batch, so the remover is still a member for all three.
+   */
+  it("the removal batch commits as a whole and shuts the removed uid out", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    const batch = writeBatch(nathan);
+    batch.update(doc(nathan, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW });
+    batch.update(doc(nathan, "moves", MOVE, "members", "mem-helper"), { removedAt: NOW });
+    batch.set(doc(nathan, "moves", MOVE, "activity", "e-batch"), {
+      moveId: MOVE,
+      actorId: NATHAN,
+      type: "member_removed",
+      occurredAt: NOW,
+      payload: { memberId: "mem-helper", uid: HELPER },
+    });
+    await assertSucceeds(batch.commit());
+    const helper = env.authenticatedContext(HELPER).firestore();
+    await assertFails(getDoc(doc(helper, "moves", MOVE)));
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const member = await getDoc(doc(ctx.firestore(), "moves", MOVE, "members", "mem-helper"));
+      expect(member.data()).toMatchObject({ removedAt: NOW, numberRangeStart: 1000, highestIssued: 1003 });
+    });
+  });
+
+  /** The shape addMemberToMove sends: the arrayUnion and the new member record in one batch. */
+  it("the add batch commits as a whole, and lets the new uid read the move", async () => {
+    const shelly = env.authenticatedContext(SHELLY).firestore();
+    const batch = writeBatch(shelly);
+    batch.update(doc(shelly, "moves", MOVE), { memberUids: arrayUnion("uid-second-helper"), updatedAt: NOW });
+    batch.set(doc(shelly, "moves", MOVE, "members", "mem-second"), {
+      moveId: MOVE,
+      uid: "uid-second-helper",
+      displayName: "Sam",
+      role: "member",
+      numberRangeStart: 1500,
+      numberRangeEnd: 1999,
+    });
+    await assertSucceeds(batch.commit());
+    const second = env.authenticatedContext("uid-second-helper").firestore();
+    await assertSucceeds(getDoc(doc(second, "moves", MOVE)));
+  });
+
+  /** An add batch from somebody already removed lands nothing: no uid with no record behind it. */
+  it("an add batch from a removed uid fails as a whole", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW }));
+    const helper = env.authenticatedContext(HELPER).firestore();
+    const batch = writeBatch(helper);
+    batch.update(doc(helper, "moves", MOVE), { memberUids: arrayUnion("uid-friend"), updatedAt: NOW });
+    batch.set(doc(helper, "moves", MOVE, "members", "mem-friend"), { moveId: MOVE, uid: "uid-friend" });
+    await assertFails(batch.commit());
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const move = await getDoc(doc(ctx.firestore(), "moves", MOVE));
+      expect(move.data()?.memberUids).toEqual([NATHAN, SHELLY]);
+    });
+  });
+
+  /** A removed uid's own batch is refused whole: no stamp, no event, no change to the array. */
+  it("a removal batch from somebody no longer on the move fails as a whole", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: arrayRemove(HELPER), updatedAt: NOW }));
+    const helper = env.authenticatedContext(HELPER).firestore();
+    const batch = writeBatch(helper);
+    batch.update(doc(helper, "moves", MOVE), { memberUids: arrayRemove(SHELLY), updatedAt: NOW });
+    batch.update(doc(helper, "moves", MOVE, "members", "mem-helper"), { removedAt: NOW });
+    await assertFails(batch.commit());
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const move = await getDoc(doc(ctx.firestore(), "moves", MOVE));
+      expect(move.data()?.memberUids).toEqual([NATHAN, SHELLY]);
+    });
+  });
+
+  it("the member_removed activity event can be written by the person who removed them", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(
+      setDoc(doc(nathan, "moves", MOVE, "activity", "e-removed"), {
+        moveId: MOVE,
+        actorId: NATHAN,
+        type: "member_removed",
+        occurredAt: NOW,
+        payload: { memberId: "mem-helper", uid: HELPER, displayName: "Alex" },
+      })
+    );
+  });
+
+  it("the removed uid cannot put itself back", async () => {
+    const nathan = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(updateDoc(doc(nathan, "moves", MOVE), { memberUids: [NATHAN, SHELLY], updatedAt: NOW }));
+    const helper = env.authenticatedContext(HELPER).firestore();
+    await assertFails(updateDoc(doc(helper, "moves", MOVE), { memberUids: [NATHAN, SHELLY, HELPER], updatedAt: NOW }));
   });
 });
 

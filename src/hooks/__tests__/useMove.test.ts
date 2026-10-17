@@ -100,6 +100,31 @@ describe("useMove", () => {
     expect(result.current.move?.id).toBe("m1");
   });
 
+  it("reports whether the move holds a write the server has not seen", () => {
+    const { result } = renderHook(() => useMove("u1"));
+    act(() => spy.sendMoves?.([{ id: "m1" }], CONFIRMED));
+    expect(result.current.movePending).toBe(false);
+
+    act(() => spy.sendMoves?.([{ id: "m1" }], { fromCache: false, hasPendingWrites: true }));
+    expect(result.current.movePending).toBe(true);
+
+    act(() => spy.sendMoves?.([{ id: "m1" }], CONFIRMED));
+    expect(result.current.movePending).toBe(false);
+  });
+
+  it("reports whether the move was last heard from the server or only from the cache", () => {
+    const { result } = renderHook(() => useMove("u1"));
+    act(() => spy.sendMoves?.([{ id: "m1" }], { fromCache: true, hasPendingWrites: false }));
+    expect(result.current.moveFromServer).toBe(false);
+
+    act(() => spy.sendMoves?.([{ id: "m1" }], CONFIRMED));
+    expect(result.current.moveFromServer).toBe(true);
+
+    // The server going away arrives as a metadata change back to the cache.
+    act(() => spy.sendMoves?.([{ id: "m1" }], { fromCache: true, hasPendingWrites: false }));
+    expect(result.current.moveFromServer).toBe(false);
+  });
+
   it("reads an unconfirmed move anyway once the wait runs out", () => {
     const { result } = renderHook(() => useMove("u1"));
     act(() => spy.sendMoves?.([{ id: "m1" }], PENDING));

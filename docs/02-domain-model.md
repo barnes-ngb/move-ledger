@@ -288,7 +288,7 @@ So each person packs from one phone. That is a rule of use, recorded in `plans/S
 A third member numbers from 1000, so four-digit box numbers exist as of APPLY-15. Checked 2026-10-17 for anything that assumed three:
 
 - `toDisplayCode` pads to three and widens past it, and has a test for 1042. The container schema accepts `^\d{3,}$`.
-- The Find keypad's `MAX_DIGITS` was already four.
+- The Find keypad's `MAX_DIGITS` was already four. It is now derived from `MAX_BOX_NUMBER` (9999) in `src/domain/numbers.ts`, and `nextMemberRange` refuses a range that would pass it, so the twentieth range, 9500 to 9999, is the last one issued and the Members screen says so instead of creating boxes nobody can type into Find. Found in review on pull request 25.
 - The box list and the CSV export sort on `sequenceNumber`, a number, never on `displayCode`, so 1000 sorts after 999 rather than between 100 and 101. Search ranks ties the same way.
 - The label instruction prints `displayCode` as it is, so a four-digit box reads `1000  BLUE`.
 - Text search matches a number as a prefix of `sequenceNumber` or a substring of `displayCode`, which needs no width.

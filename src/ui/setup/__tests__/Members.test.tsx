@@ -119,6 +119,16 @@ describe("adding a member", () => {
     expect(mocks.addMemberUid).not.toHaveBeenCalled();
   });
 
+  it("refuses to add anyone once every typeable range is given out", () => {
+    const full = Array.from({ length: 20 }, (_, i) =>
+      member({ id: `mem-${i}`, uid: `u-${i}`, numberRangeStart: i === 0 ? 1 : i * 500, numberRangeEnd: i * 500 + 499 })
+    );
+    open(full);
+    expect(screen.getByText(/Every range of box numbers has been given out/)).toBeTruthy();
+    fill("Twenty-one", "u-21");
+    expect((screen.getByText("Add this person") as HTMLButtonElement).disabled).toBe(true);
+  });
+
   it("uses no gendered pronouns", () => {
     open([nathan, shelly]);
     const text = document.body.textContent ?? "";

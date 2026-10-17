@@ -40,6 +40,7 @@ export function Members({
   function add() {
     setError(null);
     try {
+      if (!range) throw new Error("Every range of box numbers has been given out. Nobody else can be added.");
       const trimmed = uid.trim();
       const existing = members.find((m) => m.uid === trimmed);
       if (existing && isRemoved(existing)) {
@@ -122,7 +123,9 @@ export function Members({
       <Field label="Their name" value={name} onChange={setName} />
       <Field label="Their account id" value={uid} onChange={setUid} />
       <p className="text-sm text-slate-400">
-        Their boxes will be numbered {range.numberRangeStart} to {range.numberRangeEnd}.
+        {range
+          ? `Their boxes will be numbered ${range.numberRangeStart} to ${range.numberRangeEnd}.`
+          : "Every range of box numbers has been given out. Nobody else can be added."}
       </p>
       <ErrorLine message={error} />
       {/* Derived, not remembered. Offline a write promise never settles, and
@@ -135,7 +138,7 @@ export function Members({
           here may still have access.
         </p>
       ) : null}
-      <Button onClick={add} disabled={!uid.trim() || !name.trim()} tone="quiet">
+      <Button onClick={add} disabled={!range || !uid.trim() || !name.trim()} tone="quiet">
         Add this person
       </Button>
       <Button onClick={onDone}>Done</Button>

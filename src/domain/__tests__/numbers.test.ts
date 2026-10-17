@@ -7,6 +7,7 @@ import {
   remainingInRange,
   toDisplayCode,
   nextMemberRange,
+  MAX_BOX_NUMBER,
 } from "../numbers";
 
 const nathan = { numberRangeStart: 1, numberRangeEnd: 499 };
@@ -125,13 +126,20 @@ describe("nextMemberRange", () => {
    */
   it("never hands out a range a removed member held", () => {
     const removedHelper = { ...range(1000, 1499), removedAt: "2026-11-01T00:00:00.000Z" };
-    const next = nextMemberRange([range(1, 499), range(500, 999), removedHelper]);
+    const next = nextMemberRange([range(1, 499), range(500, 999), removedHelper])!;
     expect(next).toEqual(range(1500, 1999));
     expect(rangesOverlap(next, removedHelper)).toBe(false);
   });
 
+  it("issues the twentieth range, 9500 to 9999, and refuses a twenty-first that the keypad could not type", () => {
+    const taken = Array.from({ length: 19 }, (_, i) => range(i === 0 ? 1 : i * 500, i * 500 + 499));
+    expect(nextMemberRange(taken)).toEqual(range(9500, 9999));
+    expect(nextMemberRange([...taken, range(9500, 9999)])).toBeNull();
+    expect(MAX_BOX_NUMBER).toBe(9999);
+  });
+
   it("produces four-digit display codes, which the keypad can type", () => {
-    const next = nextMemberRange([range(1, 499), range(500, 999)]);
+    const next = nextMemberRange([range(1, 499), range(500, 999)])!;
     expect(toDisplayCode(next.numberRangeStart)).toBe("1000");
     expect(toDisplayCode(next.numberRangeEnd)).toBe("1499");
     expect(nextSequenceNumber(next, [])).toBe(1000);

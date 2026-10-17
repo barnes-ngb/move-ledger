@@ -29,7 +29,7 @@ One contents photo, already resized, plus the destination zone name.
 }
 ```
 
-One entry per thing seen, a plain noun phrase with any visible color, material, or size folded in. No sentences and no trailing punctuation. At most 40 items, each 1 to 80 characters. Changed from a single `summary` string on 2026-10-17; see the APPLY-18 amendment below.
+One entry per thing seen, a plain noun phrase that carries what can be seen of it, such as its color or what it is made of. No sentences and no trailing punctuation. At most 40 items, each 1 to 80 characters. Changed from a single `summary` string on 2026-10-17; see the APPLY-18 amendment below.
 
 No confidence score. Removed 2026-10-17; see the amendments below.
 
@@ -37,11 +37,11 @@ An empty `items` list is a valid reply and means nothing worth listing is visibl
 
 ### Storage
 
-Written to `container.aiItems`, with the categories in `container.aiCategories`. `aiSummary` is written beside them as the items joined with ", ", so the export, an older copy of the app, and anything else that reads the string keeps working. All three are included in `searchText` and matched by search. Displayed as a list with a suggestion marker; the categories show under it so that accepting accepts what is on screen.
+Written to `container.aiItems`, with the categories in `container.aiCategories`. `aiSummary` is written beside them as the items joined with ", ", so the export and an older copy of the app keep working. All three are included in `searchText` and matched by search. Displayed as a list with a suggestion marker; the categories show under it so that accepting accepts what is on screen.
 
 A second contents photo appends its items to the same `aiItems` rather than replacing them, per the accumulate amendment below. An item already on the list, compared without regard to case, is not added twice. The write is one Firestore write per photo, not one per attempt, because every write fans out to every member's subscription.
 
-When the user taps Accept, the items move to `contentsItems` with `contentsSummary` written as their joined string, the categories move to `contentsCategories`, and the suggestion fields are cleared. When the user edits and accepts, the edited items go there instead, one per line of the edit field. When the user dismisses, the suggestion fields are cleared and a flag prevents regeneration for that photo. Emptying the confirmed contents list later removes `contentsCategories` with it, because they describe that list.
+When the user taps Accept, the items move to `contentsItems` with `contentsSummary` written as their joined string, and the categories go to `contentsCategories`. The suggestion fields are cleared. When the user edits and accepts, the edited items go there instead, one per line of the edit field. When the user dismisses, the suggestion fields are cleared and a flag prevents regeneration for that photo. Emptying the confirmed contents list later removes `contentsCategories` with it, because they describe that list.
 
 A box written before items existed has a string and no list. Its items are derived when it is read, by splitting the string on ", ", and the stored data is not rewritten to match. The list is trusted only while it still joins to the string beside it; when the two disagree, the string wins, because an older copy of the app edits the string and cannot see the list.
 
@@ -93,7 +93,7 @@ Made before the APPLY-18 code.
 
 **The joined string stays.** `aiSummary` and `contentsSummary` are still written, as the items joined with ", ". The export's contents column reads the string, so it does not change. A phone still running the previous build reads the string and never sees the list, so the two copies of the app can share a move while one of them catches up.
 
-**This is not item-level records.** `AGENTS.md` puts a record for every object out of scope. An item here is a line of text on the box: no id, no status, no history, nothing that can be found except by the box it is written on. If an item ever needs any of those, that is the scope change and it needs a decision record.
+**This is not item-level records.** `AGENTS.md` puts a record for every object out of scope. An item here is a line of text on the box, with no id and no history of its own; it can be found only through the box it is written on. If an item ever needs any of those, that is the scope change and it needs a decision record.
 
 ### 2026-10-17, APPLY-16
 

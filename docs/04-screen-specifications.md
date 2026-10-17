@@ -326,6 +326,18 @@ Nothing caches a color. Every screen that draws one reads it from the zone it wa
 
 The other actions above are still owed. This screen adds a room, shows the list, and changes a color. Renaming a room, viewing the boxes in one, and the full-screen color chart are not built.
 
+### Members
+
+The second step of setup, reached from Rooms with Done and titled "Who else is packing". Specified here for the first time on 2026-10-17 by APPLY-15; until then it was the ADR-0005 couch step for exactly one second person, hardcoded to 500 to 999 and worded throughout as "her".
+
+**Shows.** Every member of the move, the person holding the phone included: their name and "Boxes 1000 to 1499". A removed member stays in the list, greyed, marked "removed", with their range followed by "retired", because the range is never given to anyone else and the list is where somebody would look to find out why the next person starts where they do.
+
+**Adding.** One line of instruction, "On their phone: install the app, sign in with a Google account, then read the account id off their own screen", then two fields, "Their name" and "Their account id". No pronoun anywhere on the screen, which a test asserts. Under the fields, before anything is written: "Their boxes will be numbered 1000 to 1499." The range is assigned rather than typed, from `nextMemberRange`, so the person adding cannot get it wrong and is told what it is before it is spent. The button is "Add this person". The writes are unchanged from APPLY-04: `memberUids` first, then the member record, both into Firestore's local queue, and the same line if they have not reached the server. An account already on the move is refused in one sentence; an account that was removed is refused in its own sentence, because adding it back is not built and a silent "already on the move" would be wrong.
+
+**Removing.** A "Remove" button, 56px, on every member row this person may remove: not their own row, not the owner's, and not a removed member's. It opens the same bottom confirmation sheet used to void or delete a box, because removal cannot be taken back from this screen either. The sheet says what happens in plain words: the person loses access to the move at once, their boxes stay in the move with their numbers, their range will not be given to anyone else, and anything their phone has not sent yet will not arrive. The two answers are "Remove Alex" and "Keep Alex". Removing writes `memberUids` without their uid and stamps `removedAt`; offline, the sheet closes, the row shows removed from the local cache, and a line says they keep access until this phone has signal, because that is true.
+
+**What the removed person sees.** Their uid is gone from `memberUids`, so the moves list query on their phone stops returning the move. The app then has no move to show and falls through to the first-run screen, the same one a person who has never been added sees, with "Someone else set up the move" leading to the waiting screen. It is not the `SubscriptionFailed` screen: the subcollection listeners are denied, but the move vanishing from the list arrives in the same moment and unmounts everything that was listening. Offline, their phone keeps showing the cached move until it next reaches the server.
+
 ## 8. Move Day
 
 ### Controls
@@ -413,4 +425,5 @@ Each of these is a feature rather than a polish, and is recorded in `plans/STATU
 - The room and the note on Add box do not survive the screen unmounting, per section 2.
 - Three lines of section 5's result card are still owed, unchanged since APPLY-08 recorded them.
 - Section 7's edit, view boxes in room, and color chart are not built. Half of the first one closed on 2026-08-16: a room's color can be changed, its name still cannot.
+- Find can hide a short number behind four-digit ones. Added 2026-10-17 by APPLY-15: with a third member numbering from 1000, typing 12 also matches 1200 to 1299, the twelve rows shown are in no particular order, and typing 100 never auto-opens box 100 while box 1000 exists. See `docs/02-domain-model.md`, Four-digit numbers.
 - `src/ui/Account.tsx` is reachable from nowhere. It was APPLY-03's screen for reading a uid and the waiting screen took that job. Its targets were raised with the rest and it is still dead code.

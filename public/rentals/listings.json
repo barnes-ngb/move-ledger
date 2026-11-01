@@ -1,6 +1,6 @@
 {
-  "edition": "2026-11-01",
-  "note": "Published from Nathan and Shelly's Texas house shortlist. Ratings and rents are reference values, not live offers.",
+  "edition": "2026-11-01 · Flour Mill Run added",
+  "note": "Published from Nathan and Shelly's Texas house shortlist. Ratings, checkpoints, prices and pet statuses are references, not live guaranteed offers. Flour Mill Run estimated and needs Shelly photo review.",
   "homes": [
     {
       "id": "hearthstone",
@@ -105,6 +105,19 @@
       "priceNote": "$2,275 advertised; additional costs and deposit apply.",
       "fit": "Fenced yard, garage, multiple living spaces; kitchen/flooring and hot-tub upkeep lower confidence.",
       "status": "Photos and pets require confirmation."
+    },
+    {
+      "id": "flourmill",
+      "name": "6312 Flour Mill Run",
+      "city": "Fort Worth",
+      "rent": 2200,
+      "rating": 3.8,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-20",
+      "url": "https://www.realtor.com/rentals/details/6312-Flour-Mill-Run_Fort-Worth_TX_76179_M92136-49892",
+      "priceNote": "Current MLS-linked asking rent $2,200, down $200 on Oct 26. Last published security deposit $2,400, $50 per adult application; pet rent/fees, other mandatory costs and 12-month lease quote unverified. Some portals still show $2,300–$2,400.",
+      "fit": "Strong basics for Shelly: detached, single-story, built 2022, 4BR/2BA, 1,870 sq ft, 2-car garage; fourth bedroom can be an office. Photo-level kitchen openness, hard flooring vs carpet, usable grassy fenced yard, primary bathtub and vanity NOT verified. Predicted 3.8/5 with high uncertainty; below Hearthstone and Clarks Mill until Shelly reviews.",
+      "status": "MLS active in current sources Nov 1, 2026. Pet policy has number/size/HOA restrictions; specific golden retriever and regular cat approval not established. Northern Fort Worth commute to Irving may be a tradeoff; exact route unchecked."
     }
   ]
 }

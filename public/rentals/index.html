@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#112837">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Texas House Decision Board</title>
+<style>
+:root{--navy:#122c3c;--muted:#607483;--line:#d8e2e8;--green:#22765c;--gold:#a7782d;--bg:#f4f7f8;--white:#fff;--ink:#1a303f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.48 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{width:min(1150px,calc(100% - 24px));margin:auto;padding:18px 0 55px}
+header{background:linear-gradient(115deg,#142d40,#28576b);color:white;padding:25px;border-radius:18px;margin-bottom:15px}
+h1{font-size:clamp(23px,3.3vw,38px);line-height:1.15;margin:6px 0 8px;letter-spacing:-.5px}h2{font-size:19px;margin:0 0 9px}h3{margin:0;font-size:15px}
+header .sub{color:#dbebf0;max-width:800px}header .kicker{font-weight:700;color:#bce5cc;font-size:12px;letter-spacing:1.8px;text-transform:uppercase}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+button,.btn{border:1px solid #b4c7d2;background:#fff;color:#163448;cursor:pointer;border-radius:9px;padding:10px 13px;font-size:14px;font-weight:650;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button:hover,.btn:hover{filter:brightness(.96)}button.primary{background:#226d58;color:white;border-color:#226d58}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #e4b65a;outline-offset:2px}
+button.muted{background:#eef4f4}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:19px;margin:15px 0;box-shadow:0 3px 16px rgba(17,40,54,.035)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.subhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.small{font-size:12px;color:var(--muted)}.hint{color:var(--muted);margin:2px 0 12px;font-size:13px}
+.pill{display:inline-block;padding:3px 9px;border-radius:16px;background:#e2efe9;color:#246c53;font-size:11px;font-weight:800}
+.pill.amber{background:#fff1d6;color:#996722}.pill.neutral{background:#e9eff3;color:#52677a}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.stat{border:1px solid var(--line);border-radius:12px;background:#fff;padding:13px}
+.stat strong{font-size:23px;display:block;line-height:1.25}.stat span{color:#657782;font-size:12px}
+svg.chart{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.chart a{cursor:pointer}.chart a:focus{outline:none}.chart a:focus circle.dot{stroke:#243e64;stroke-width:4}
+.legend{display:flex;gap:15px;flex-wrap:wrap;color:#586d7b;font-size:12px;margin:9px 0}
+.legend b{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px;background:#19866c}
+.legend b.pred{background:#c18a34;border-radius:2px}
+.zo{display:flex;gap:8px;flex-wrap:wrap}.zo span{font-size:12px;padding:5px 9px;border:1px solid #d9e4e7;border-radius:8px;background:#f2f6f5}
+.homes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.home{border:1px solid var(--line);padding:14px;border-radius:13px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.home .row{display:flex;justify-content:space-between;gap:9px;align-items:start}
+.home .price{font-weight:800;font-size:18px;white-space:nowrap}
+.home p{font-size:13px;margin:0;color:#556a77}
+.home .actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+.home .actions a{color:#176b5e;font-weight:700;text-decoration:underline;text-underline-offset:2px}
+form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+label{font-size:12px;color:#526a77;font-weight:700;display:flex;flex-direction:column;gap:4px}
+input,select,textarea{width:100%;font:inherit;padding:10px 11px;border:1px solid #b8cbd4;border-radius:8px;color:#17364b;background:white;min-width:0}
+.wide{grid-column:1/-1}.inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#status{margin-top:8px;font-size:12px;color:#376d5b;min-height:20px}
+.notice{font-size:12px;color:#607583;background:#eaf1f5;border-radius:10px;padding:12px;margin-top:14px}
+footer{font-size:12px;color:#617584;padding:12px 3px 22px}
+@media(max-width:750px){.two,.homes{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}main{width:calc(100% - 18px)}.panel{padding:13px}.home{padding:13px}form{grid-template-columns:1fr}header{padding:18px}.stat strong{font-size:18px}}
+@media(max-width:400px){.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="kicker">Texas move · shared decision workspace</div>
+<h1>Find the house we'll be happy to call home.</h1>
+<p class="sub">A live published shortlist, combining Shelly's house ratings, cost tradeoffs and the November explore → exploit plan. Tap any chart dot or listing to open its property page.</p>
+<div class="toolbar">
+  <button id="share" class="primary">Share this link</button>
+  <button id="refresh" type="button">Refresh published houses</button>
+  <a class="btn" href="#add">Add a house</a>
+</div>
+</header>
+<div class="stats">
+ <div class="stat"><strong id="n-homes">8</strong><span>Houses on the board</span></div>
+ <div class="stat"><strong>$2,500</strong><span>Maximum advertised base rent</span></div>
+ <div class="stat"><strong id="edition">Nov 1, 2026</strong><span>Last published shortlist update</span></div>
+</div>
+<div class="panel">
+ <div class="subhead"><h2>Explore → exploit: cost against rating</h2><span class="pill">Tap a dot to open listing</span></div>
+ <p class="hint">Top-left is strongest value. The green zone favors strong homes at lower rent; peach means a higher price needs a truly loved house. Ratings marked "predicted" are only estimates.</p>
+ <svg class="chart" id="fitChart" viewBox="0 0 760 365" role="img" aria-label="Interactive scatter plot of base rent versus house rating"></svg>
+ <div class="legend"><span><b></b>Rated by Shelly</span><span><b class="pred"></b>Predicted by ChatGPT</span></div>
+</div>
+<div class="panel">
+ <div class="subhead"><h2>When to shift from searching to choosing</h2><span class="pill amber">Planning dates, not availability dates</span></div>
+ <p class="hint">Nov 10–26: lean toward <strong>lower rent</strong> for a high-fit house. From Nov 27: consider <strong>higher rent</strong> for an excellent match. The date of a dot is a discussion checkpoint, not a listing's move-in date.</p>
+ <svg class="chart" id="dateChart" viewBox="0 0 760 365" role="img" aria-label="Interactive chart of base rent against suggested planning date"></svg>
+ <div class="zo"><span>Nov 1–9 · explore unless exceptional</span><span>Nov 10–26 · value-first opportunity</span><span>Nov 27–Dec 10 · higher-price fallback</span><span>Dec 11–18 · execute the move</span></div>
+</div>
+<div class="panel">
+ <div class="subhead"><h2>Houses & clickable galleries</h2><span class="small" id="count">Updated when published</span></div>
+ <p class="hint">Published prices may be stale; confirm pet fees, property availability and 12-month rental quotes before any decision. The board shows base rent, not the complete monthly cost.</p>
+ <div class="homes" id="homes"></div>
+</div>
+<div class="panel" id="add">
+ <h2>Add a house or update a rating</h2>
+ <p class="hint">Changes made here save on <strong>this device only</strong>. Use “Copy changes” to send them to Nathan/ChatGPT for the next public republish; publishing then updates this same link for everyone.</p>
+ <form id="newHome">
+   <label>House / street address<input id="f-address" required placeholder="123 Street, City"></label>
+   <label>Advertised base rent ($)<input id="f-rent" type="number" required min="1" step="1" placeholder="2200"></label>
+   <label>Likely fit (1–5)<input id="f-rating" type="number" required min="1" max="5" step=".1" value="4.0"></label>
+   <label>Rating basis<select id="f-basis"><option value="Estimated">Estimate</option><option value="Shelly">Shelly rated</option></select></label>
+   <label>Review checkpoint<input id="f-date" type="date" value="2026-11-20"></label>
+   <label>Property URL<input id="f-url" placeholder="https://..." type="url"></label>
+   <label class="wide">Why it stands out / concerns<input id="f-fit" placeholder="Open kitchen, no carpet, grassy yard..."></label>
+   <div class="wide inline"><button class="primary" type="submit">+ Add to my board</button><button type="button" id="copyChanges">Copy changes for republishing</button><button type="button" id="clearChanges">Clear my local changes</button></div>
+ </form>
+ <div id="status" role="status"></div>
+ <div class="notice">This page is viewable by anyone with its URL; it is not password-protected. Do not add private family details, medical information or personal documents. No login is needed to browse. Local edits are not synchronized until republished.</div>
+</div>
+<footer><span id="footerEdition"></span> · Housing comparisons are for discussion, not promises of live availability or approved pet accommodations. Published at an unlisted page of the Move Ledger website.</footer>
+</main>
+<script>
+(function(){
+"use strict";
+var NS="http://www.w3.org/2000/svg",KEY="texas-rental-board-v1",base=[],overrides={},extra=[],latestEdition="Nov 1, 2026";
+var fallback=[
+{id:"hearthstone",name:"1305 Hearthstone Dr",city:"Burleson",rent:2500,rating:5,basis:"Shelly",checkpoint:"2026-11-08",url:"https://www.apartments.com/1305-hearthstone-dr-burleson-tx/sczjcc6/",fit:"Shelly's ideal home."},
+{id:"clarks",name:"2533 Clarks Mill Ln",city:"Fort Worth",rent:2265,rating:4.4,basis:"Shelly",checkpoint:"2026-11-14",url:"https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",fit:"Shelly's second favorite."}
+];
+function byId(id){return document.getElementById(id)}
+function el(parent,tag,attrs,text){
+ var e=document.createElementNS(NS,tag);Object.keys(attrs||{}).forEach(function(k){e.setAttribute(k,attrs[k])});if(text!==undefined)e.textContent=text;parent.appendChild(e);return e;
+}
+function tx(s,x,y,t,anc,size,col,bold){return el(s,"text",{x:x,y:y,"text-anchor":anc||"middle","font-family":"system-ui, sans-serif","font-size":size||12,fill:col||"#536b7b","font-weight":bold||"normal"},t)}
+function rect(s,x,y,w,h,col){el(s,"rect",{x:x,y:y,width:w,height:h,fill:col})}
+function line(s,x1,y1,x2,y2,dash){el(s,"line",{x1:x1,y1:y1,x2:x2,y2:y2,stroke:"#c7d2d8","stroke-width":"1",...(dash?{"stroke-dasharray":"4,4"}:{})})}
+function money(n){return "$"+Number(n).toLocaleString("en-US",{maximumFractionDigits:0})}
+function parseDay(day){return Date.parse((day||"2026-11-20")+"T12:00:00Z")}
+function houses(){return base.map(function(h){return Object.assign({},h,overrides[h.id]||{})}).concat(extra)}
+function safeUrl(x){try{var a=new URL(x,location.href);return a.protocol==="https:"||a.protocol==="http:"?a.href:"#"}catch(e){return"#"}}
+function snap(){try{localStorage.setItem(KEY,JSON.stringify({overrides:overrides,extra:extra}))}catch(e){}}
+function loadSaved(){try{var q=JSON.parse(localStorage.getItem(KEY)||"{}");if(q&&typeof q==="object"){overrides=q.overrides||{};extra=Array.isArray(q.extra)?q.extra:[]}}catch(e){}}
+function show(msg){byId("status").textContent=msg}
+function addDot(s,x,y,h){
+ if(!Number.isFinite(x)||!Number.isFinite(y))return;
+ var link=el(s,"a",{href:safeUrl(h.url),target:"_blank",rel:"noopener noreferrer"});
+ var group=el(link,"g",{"aria-label":"Open listing: "+h.name,role:"link",tabindex:"0"});
+ el(group,"circle",{cx:x,cy:y,r:19,fill:"transparent"});
+ el(group,"circle",{cx:x,cy:y,r:9,fill:h.basis==="Shelly"?"#19866c":"#c18a34",stroke:"#fff","stroke-width":2,class:"dot"});
+ el(group,"title",{},h.name+" — "+money(h.rent)+" — "+Number(h.rating).toFixed(1)+"/5");
+}
+function drawFit(all){
+ var s=byId("fitChart");s.replaceChildren();
+ var P={x:57,y:25,w:660,h:284};var X=function(r){return P.x+(r-1700)/900*P.w};
+ var Y=function(r){return P.y+(5.25-r)/2.75*P.h};
+ rect(s,P.x,P.y,P.w,P.h,"#f2f6f7");rect(s,P.x,P.y,X(2300)-P.x,Y(4.2)-P.y,"#daf0e3");
+ rect(s,P.x,Y(4.2),X(2300)-P.x,Y(3.9)-Y(4.2),"#e9f3ec");
+ rect(s,X(2300),P.y,X(2500)-X(2300),Y(4.5)-P.y,"#fff0d8");
+ rect(s,X(2500),P.y,X(2600)-X(2500),P.h,"#f9e8e9");
+ for(var v=1800;v<=2600;v+=200){line(s,X(v),P.y,X(v),P.y+P.h);tx(s,X(v),P.y+P.h+18,money(v),"middle",11)}
+ [3,3.5,4,4.5,5].forEach(function(v){line(s,P.x,Y(v),P.x+P.w,Y(v));tx(s,P.x-12,Y(v)+4,v.toFixed(1),"end",11)});
+ tx(s,190,41,"Strong fit + better value","middle",13,"#246e52","700");
+ tx(s,610,41,"Higher rent: must love it","middle",12,"#a07732","650");
+ tx(s,381,359,"Advertised base rent per month","middle",12);
+ tx(s,15,18,"5 / 5 ↑","start",10);
+ all.forEach(function(h){addDot(s,X(Number(h.rent)),Y(Number(h.rating)),h)});
+}
+function drawDate(all){
+ var s=byId("dateChart");s.replaceChildren();var P={x:57,y:25,w:660,h:284};
+ var start=parseDay("2026-11-01"),end=parseDay("2026-12-18");
+ var X=function(day){return P.x+(parseDay(day)-start)/(end-start)*P.w};
+ var Y=function(n){return P.y+(2600-n)/1000*P.h};
+ rect(s,P.x,P.y,P.w,P.h,"#f3f6f7");
+ rect(s,X("2026-11-10"),Y(2350),X("2026-11-27")-X("2026-11-10"),Y(1600)-Y(2350),"#ddefe5");
+ rect(s,X("2026-11-27"),Y(2500),X("2026-12-11")-X("2026-11-27"),Y(2350)-Y(2500),"#ffebc8");
+ rect(s,X("2026-12-11"),P.y,X("2026-12-18")-X("2026-12-11"),P.h,"#f8e6e7");
+ ["2026-11-01","2026-11-10","2026-11-20","2026-11-27","2026-12-05","2026-12-11","2026-12-18"].forEach(function(d){line(s,X(d),P.y,X(d),P.y+P.h);tx(s,X(d),P.y+P.h+18,d.slice(5).replace("-","/"),"middle",10)});
+ [1800,2000,2200,2350,2500].forEach(function(r){line(s,P.x,Y(r),P.x+P.w,Y(r));tx(s,P.x-10,Y(r)+4,money(r),"end",11)});
+ tx(s,X("2026-11-18"),Y(1910),"Nov 10–26: lower rent","middle",13,"#267258","700");
+ tx(s,X("2026-12-04"),Y(2420),"Higher rent if loved","middle",11,"#926b20","700");
+ tx(s,X("2026-12-14"),Y(2150),"Execute","middle",11,"#a25b58","700");
+ tx(s,380,359,"Decision checkpoint — NOT rental availability","middle",12);
+ all.forEach(function(h){addDot(s,X(h.checkpoint),Y(Number(h.rent)),h)});
+}
+function card(h){
+ var d=document.createElement("div");d.className="home";
+ var top=document.createElement("div");top.className="row";d.appendChild(top);
+ var name=document.createElement("div"),title=document.createElement("h3");title.textContent=h.name;name.appendChild(title);
+ var city=document.createElement("div");city.className="small";city.textContent=h.city||"";name.appendChild(city);top.appendChild(name);
+ var price=document.createElement("div");price.className="price";price.textContent=money(h.rent);top.appendChild(price);
+ var rating=document.createElement("div");rating.className="inline";var tag=document.createElement("span");
+ tag.className="pill"+(h.basis==="Shelly"?"":" amber");
+ tag.textContent=Number(h.rating).toFixed(1)+" / 5 · "+(h.basis==="Shelly"?"Shelly rated":"Predicted");rating.appendChild(tag);d.appendChild(rating);
+ var p=document.createElement("p");p.textContent=h.fit||"";d.appendChild(p);
+ if(h.priceNote){var note=document.createElement("p");note.textContent=h.priceNote;d.appendChild(note)}
+ if(h.status){var st=document.createElement("p");st.className="small";st.textContent=h.status;d.appendChild(st)}
+ var actions=document.createElement("div");actions.className="actions";d.appendChild(actions);
+ var a=document.createElement("a");a.href=safeUrl(h.url);a.target="_blank";a.rel="noopener noreferrer";a.textContent="Open listing ↗";actions.appendChild(a);
+ var b=document.createElement("button");b.type="button";b.textContent="Edit rating";b.addEventListener("click",function(){
+  var v=prompt("Rating for "+h.name+" (1–5):",h.rating);
+  if(v===null)return;var n=Number(v);if(!Number.isFinite(n)||n<1||n>5)return alert("Use a number between 1 and 5.");
+  var bs=confirm("Is this Shelly's own rating?\nOK = Shelly rated; Cancel = prediction");
+  if(base.some(function(i){return i.id===h.id})){overrides[h.id]=Object.assign({},overrides[h.id]||{},{rating:Math.round(n*10)/10,basis:bs?"Shelly":"Estimated"})}
+  else{extra=extra.map(function(a){return a.id===h.id?Object.assign({},a,{rating:Math.round(n*10)/10,basis:bs?"Shelly":"Estimated"}):a})}
+  snap();render();show("Saved locally. Copy changes to republish for both devices.");
+ });actions.appendChild(b);
+ return d;
+}
+function render(){
+ var a=houses();byId("n-homes").textContent=a.length;byId("count").textContent=a.length+" houses · published "+latestEdition;
+ drawFit(a);drawDate(a);var root=byId("homes");root.replaceChildren();a.slice().sort(function(x,y){return y.rating-x.rating||x.rent-y.rent}).forEach(function(h){root.appendChild(card(h))});
+}
+function copyText(text,msg){
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){show(msg)}).catch(function(){window.prompt("Copy this text:",text)})}
+ else{window.prompt("Copy this text:",text)}
+}
+byId("share").addEventListener("click",function(){copyText(location.href,"Share link copied! Send it to Shelly.")});
+byId("refresh").addEventListener("click",function(){sync(true)});
+byId("copyChanges").addEventListener("click",function(){copyText("Please republish these Texas rental board edits to the shared page:\n"+JSON.stringify({overrides:overrides,extra:extra},null,2),"Changes copied. Paste them into ChatGPT to republish for both devices.")});
+byId("clearChanges").addEventListener("click",function(){if(confirm("Clear locally added houses and rating edits on this device?")){overrides={};extra=[];snap();render();show("Local changes cleared.")}});
+byId("newHome").addEventListener("submit",function(event){
+ event.preventDefault();
+ var name=byId("f-address").value.trim(),rent=Number(byId("f-rent").value),rating=Number(byId("f-rating").value);
+ if(!name||!Number.isFinite(rent)||rent<=0||!Number.isFinite(rating)||rating<1||rating>5)return show("Check address, price and rating.");
+ var u=byId("f-url").value.trim();
+ if(!u)u="https://www.google.com/search?q="+encodeURIComponent(name+" house for rent");
+ extra.push({id:"local-"+Date.now(),name:name,city:"Local addition",rent:rent,rating:rating,basis:byId("f-basis").value,checkpoint:byId("f-date").value||"2026-11-20",url:safeUrl(u),fit:byId("f-fit").value.trim(),priceNote:"User-added; price and pet terms unverified.",status:"Local to this browser until republished."});
+ snap();render();event.target.reset();byId("f-date").value="2026-11-20";
+ show("Added to this device. Use 'Copy changes' to include it in the shared published board.");
+});
+loadSaved();
+function sync(userInitiated){
+ fetch("./listings.json?_="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).then(function(d){
+   if(!d||!Array.isArray(d.homes))throw Error("Invalid data");
+   base=d.homes;latestEdition=d.edition||"Recently";byId("edition").textContent=latestEdition;byId("footerEdition").textContent="Published data "+latestEdition;
+   render();if(userInitiated)show("Published list refreshed.");
+ }).catch(function(){if(!base.length)base=fallback;render();show("Using offline snapshot; published data could not be loaded right now.")});
+}
+base=fallback;render();sync(false);
+})();
+</script>
+</body>
+</html>

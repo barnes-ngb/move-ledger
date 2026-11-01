@@ -1,0 +1,110 @@
+{
+  "edition": "2026-11-01",
+  "note": "Published from Nathan and Shelly's Texas house shortlist. Ratings and rents are reference values, not live offers.",
+  "homes": [
+    {
+      "id": "hearthstone",
+      "name": "1305 Hearthstone Dr",
+      "city": "Burleson",
+      "rent": 2500,
+      "rating": 5,
+      "basis": "Shelly",
+      "checkpoint": "2026-11-08",
+      "url": "https://www.apartments.com/1305-hearthstone-dr-burleson-tx/sczjcc6/",
+      "priceNote": "At the advertised base-rent ceiling; extra pet/mandatory fees not yet verified.",
+      "fit": "Her ideal: single story, no carpet, open kitchen, separate study, soaking tub, grassy yard.",
+      "status": "Status and specific pet approval need checking."
+    },
+    {
+      "id": "clarks",
+      "name": "2533 Clarks Mill Ln",
+      "city": "Fort Worth",
+      "rent": 2265,
+      "rating": 4.4,
+      "basis": "Shelly",
+      "checkpoint": "2026-11-14",
+      "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
+      "priceNote": "Earlier price appeared around $2,265; fees and 12-month quote need confirming.",
+      "fit": "Shelly's second-favorite. Hard floors and comfortable layout; painted cabinets and complete fencing need review.",
+      "status": "Live listing status unverified."
+    },
+    {
+      "id": "castle",
+      "name": "1416 Castle Ridge Rd",
+      "city": "Fort Worth",
+      "rent": 1849,
+      "rating": 4.2,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-12",
+      "url": "https://www.realtor.com/rentals/details/1416-Castle-Ridge-Rd_Fort-Worth_TX_76140_M86131-47825",
+      "priceNote": "$1,849 previously advertised for a 23-month lease, NOT confirmed for 12 months.",
+      "fit": "Strong liked example: bright white interior, hard floors, nice kitchen, grassy yard.",
+      "status": "Price/lease term and availability must be checked."
+    },
+    {
+      "id": "trecini",
+      "name": "9545 Trecini Dr",
+      "city": "Fort Worth",
+      "rent": 2500,
+      "rating": 4,
+      "basis": "Shelly",
+      "checkpoint": "2026-12-01",
+      "url": "https://www.realtor.com/rentals/details/9545-Trecini-Dr_Fort-Worth_TX_76179_M95032-33197",
+      "priceNote": "At base-rent limit; extra costs may exceed the target.",
+      "fit": "Potential but carpet, bathroom and commute are concerns.",
+      "status": "Exact interior/status not verified."
+    },
+    {
+      "id": "cathy",
+      "name": "829 Cathy Dr",
+      "city": "Burleson",
+      "rent": 2325,
+      "rating": 4,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-23",
+      "url": "https://www.invitationhomes.com/houses-for-rent/829-cathy-dr-76028-4964",
+      "priceNote": "Previously displayed for an 18-month lease; 12-month quote unknown.",
+      "fit": "Promising layout; availability and Shelly's actual rating unresolved.",
+      "status": "Conflicting availability."
+    },
+    {
+      "id": "wolcott",
+      "name": "603 Wolcott Ln",
+      "city": "Grand Prairie",
+      "rent": 2375,
+      "rating": 4,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-28",
+      "url": "https://www.realtor.com/rentals/details/603-Wolcott-Ln_Grand-Prairie_TX_75052_M74211-56117",
+      "priceNote": "Portal rents differ (~$2,350–$2,450); price point is comparison midpoint, not a quote.",
+      "fit": "One story, open plan and hard flooring; grass, staged photos and pet rule conflict need checking.",
+      "status": "Manager and portal conflict; likely above $2,500 with regular two-pet fees."
+    },
+    {
+      "id": "crestwood",
+      "name": "2601 Crestwood Dr",
+      "city": "Burleson",
+      "rent": 2300,
+      "rating": 3.6,
+      "basis": "Estimated",
+      "checkpoint": "2026-12-04",
+      "url": "https://www.zumper.com/address/2601-crestwood-dr-burleson-tx-76028-usa",
+      "priceNote": "Advertised $2,300; fees/lease terms unknown.",
+      "fit": "Spacious one-story with an open kitchen; photos mainly show earlier sale condition.",
+      "status": "Current aesthetic and pet eligibility unverified."
+    },
+    {
+      "id": "parkvillage",
+      "name": "4221 Park Village Ct",
+      "city": "Fort Worth",
+      "rent": 2275,
+      "rating": 3.2,
+      "basis": "Estimated",
+      "checkpoint": "2026-12-06",
+      "url": "https://www.zillow.com/homedetails/4221-Park-Village-Ct-Fort-Worth-TX-76137/54046210_zpid/",
+      "priceNote": "$2,275 advertised; additional costs and deposit apply.",
+      "fit": "Fenced yard, garage, multiple living spaces; kitchen/flooring and hot-tub upkeep lower confidence.",
+      "status": "Photos and pets require confirmation."
+    }
+  ]
+}

@@ -163,13 +163,14 @@
       "basis": "Estimated",
       "checkpoint": "2026-11-24",
       "trackedOn": "2026-11-04",
-      "url": "https://www.dfwurbanrealty.com/listing/21379740-729-watson-way-crowley-texas-76036-3737-crescent-spgs-ranch-ph-3/",
+      "url": "https://www.coldwellbankerhomes.com/tx/crowley/729-watson-way/pid_74009865/",
       "priceBasis": "MLS-linked advertised base rent",
       "petGate": "Small-dog restriction in one portal; Sunny NOT APPROVED",
       "petBlocked": true,
       "priceNote": "MLS-linked asking $2,299 base for a stated 12-month lease; some older copies still show $2,399. Deposit advertised around $2,400. Required fees and pet costs unverified. A small-dog-only listing conflicts with generic 'pet friendly' labels.",
       "fit": "New Nov 4 discovery. One-story 4 bedrooms PLUS fifth study/flex room, 2 baths, 1,822 sq ft, tile and LVP with no carpet advertised, open living, two-car garage, covered patio and private yard. Yard is small, with hardscape/rock paths reducing grass. 4.1/5 is a low-confidence predicted visual fit, not Shelly's rating.",
-      "status": "VISUAL STUDY ONLY: golden retriever not approved under the size-limited portal; do not treat as actionable until the owner explicitly confirms both Sunny and the cat are accepted in writing."
+      "status": "PUBLIC PHOTO LINK REPLACED Nov 4: DFW Urban Realty was prompting for Google sign-in. The Coldwell Banker listing shows 16 photos and current $2,299 base without requiring Google sign-in to read the listing. The serious unresolved issue is ordinary approval for Sunny; a third-party property-specific listing says small dogs only.",
+      "photoSource": "Coldwell Banker: publicly accessible 16-photo gallery; no Google account connection needed for viewing."
     }
   ],
   "updates": [
@@ -185,7 +186,7 @@
       "tag": "NEW • Pet restriction",
       "houseId": "watson",
       "title": "Watson Way, Crowley",
-      "detail": "$2,299 base; four bedrooms plus flex/study, no carpet claimed. Provisional 4.1/5, but a small-dog-only policy conflicts with Sunny; not an actionable finalist."
+      "detail": "$2,299 base; four bedrooms plus study, no carpet claimed. Public photo gallery link changed to Coldwell Banker because the previous site pushed a Google sign-in. Published small-dog-only policy conflicts with Sunny; not an actionable finalist until written approval."
     },
     {
       "date": "Nov 4",

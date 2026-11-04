@@ -1,6 +1,6 @@
 {
-  "edition": "November 4, 2026",
-  "note": "Published Nov 4. 11 homes tracked; 2 are new older-inventory discoveries. Stars and fit estimates are distinct from Shelly's ratings. Monthly comparison values are BASE except Northview's $2,228 including mandatory fees. Advertised pet-friendly never guarantees household pet approval.",
+  "edition": "November 4, 2026 — afternoon Northview rating update",
+  "note": "Shelly's Nov 4 provisional ~4.5/5 Northview rating is now charted as hers, NOT ChatGPT's earlier 3.8 prediction. Northview's $2,228 represents an advertised monthly total including required fees BEFORE pets; other chart rents are generally base. All pet and availability gates remain separate.",
   "homes": [
     {
       "id": "hearthstone",
@@ -143,16 +143,18 @@
       "name": "236 Northview Ter",
       "city": "Burleson",
       "rent": 2228,
-      "rating": 3.8,
-      "basis": "Estimated",
+      "rating": 4.5,
+      "basis": "Shelly",
       "checkpoint": "2026-11-20",
       "trackedOn": "2026-11-04",
       "url": "https://www.zillow.com/homedetails/236-Northview-Ter-Burleson-TX-76028/71275291_zpid/",
       "priceBasis": "ADVERTISED TOTAL incl. required fees, BEFORE pets (not base rent)",
       "petGate": "Cats and large dogs listed; screening pending",
       "priceNote": "Nov 4 Zillow advertised monthly total $2,228 INCLUDING required fees (not comparable directly with base rent figures). 15-month promotion requires signing/moving in by Nov 15; 12-month quote and both-pet costs still need verification. Realtor displays $2,230 base, but its marketing copy refers to an expired Oct 15 promotion.",
-      "fit": "New Nov 4 discovery. One-story 4BR/2BA, 1,798 sq ft. Open island kitchen, granite, light walls, LVP main rooms, grassy backyard advertised, two-car garage. Floor-plan photo/3D tour on Zillow. Cabinets dark, kitchen island moderate; bathtub and bedroom floors unconfirmed. 3.8/5 is ChatGPT's provisional midpoint of 3.5–4.0, not Shelly's rating.",
-      "status": "Promising practical option. Listings expressly say visual imagery and floor plans may be illustrative; confirm actual interior and pet fees. Possible fit but not yet better than favorites."
+      "fit": "Shelly reviewed 236 Northview Terrace on Nov 4 and said she likes it, tentatively about 4.5/5. This supersedes the earlier assistant-predicted 3.8/5; she has NOT explicitly ranked it ahead of Clarks Mill. One-story 4BR/2BA, 1,798 sq ft; open island kitchen, granite, light walls and LVP in main spaces are advertised/visible in listing material. Actual backyard grass/fencing, bathtub location, bedroom floors and laundry-to-primary proximity remain incompletely verified; listing imagery and plans may be illustrative.",
+      "status": "Shelly-confirmed provisional 4.5/5 HOME FIT, not leasing clearance. Large dog and cat are generally listed but individual screening, full recurring costs, live condition, exact off-peak commute and advertised Nov 15 promotion requirements remain outstanding.",
+      "ratingStatus": "tentative",
+      "ratingUpdatedOn": "2026-11-04"
     },
     {
       "id": "watson",
@@ -176,10 +178,10 @@
   "updates": [
     {
       "date": "Nov 4",
-      "tag": "NEW • Photo review",
+      "tag": "SHELLY • Tentative 4.5/5",
       "houseId": "northview",
-      "title": "Northview Terrace, Burleson",
-      "detail": "$2,228 advertised including mandatory fees, before pets. One story, large dogs/cats listed. Provisional 3.8/5; floor plan and photo gallery available; interior details need verification."
+      "title": "236 Northview Terrace — Shelly's rating",
+      "detail": "Shelly likes Northview and tentatively rates it about 4.5/5. Plot updated from ChatGPT preliminary 3.8 to Shelly's 4.5. This does not confirm a place above Clarks Mill in her explicit preference order. $2,228 advertised INCLUDING required fees, BEFORE pets. Dog/cat approval, bathroom tub, lawn and exact commute remain unverified."
     },
     {
       "date": "Nov 4",

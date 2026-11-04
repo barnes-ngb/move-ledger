@@ -26,7 +26,7 @@
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
-      "priceNote": "Direct Progress Residential indexed 12-month quote: $2,235 base + $29.98 required services = $2,264.98 before pets. General two-pet policy suggests +$144/month, or about $2,408.98 before metered utilities/insurance. Portals may show $2,265 or $2,280; final property-specific quote required.",
+      "priceNote": "Progress Residential indexed 12-month quote: $2,235 BASE + $29.98 required services = $2,264.98 before pets. Zillow displays approximately $2,265 including required fees (not a separate price cut); with an illustrative $144 for two ordinary pets, about $2,408.98 before utilities/insurance. Other portals still disagree, so confirm final lease quote.",
       "fit": "Shelly's second-favorite. Hard floors and comfortable layout; painted cabinets and complete fencing need review.",
       "status": "Actionable favorite; Shelly explicitly ranked it #2. Listing generally permits large dogs and cats, but confirm actual Sunny/Belle pet screening, lawn/HOA rules and completeness of fence.",
       "priceBasis": "12-month manager base rent; $29.98 required services extra",
@@ -189,10 +189,10 @@
     },
     {
       "date": "Nov 4",
-      "tag": "PRICE • Better 12-month quote",
+      "tag": "QUOTE • Base vs. total clarified",
       "houseId": "clarks",
       "title": "Clarks Mill, Fort Worth",
-      "detail": "Direct manager working 12-month offer $2,235 base + $29.98 mandatory services, and estimated $144/month for two normal pets = $2,408.98 before utilities and insurance. Final quote needed."
+      "detail": "Direct manager 12-month quote: $2,235 BASE + $29.98 required services = $2,264.98 before pets. Zillow's displayed $2,265 TOTAL is essentially the same figure, so this is NOT proof of a further price cut. General two-pet estimate adds $144, or $2,408.98 before utilities/insurance."
     },
     {
       "date": "Nov 4",

@@ -65,12 +65,17 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
 </header>
 <div class="stats">
  <div class="stat"><strong id="n-homes">8</strong><span>Houses on the board</span></div>
- <div class="stat"><strong>$2,500</strong><span>Maximum advertised base rent</span></div>
+ <div class="stat"><strong>$2,500</strong><span>Preferred base-rent ceiling (additional fees separate)</span></div>
  <div class="stat"><strong id="edition">Nov 1, 2026</strong><span>Last published shortlist update</span></div>
+</div>
+<div class="panel" id="whats-new">
+ <div class="subhead"><h2>What's new — November 4</h2><span class="pill">Published shortlist changes</span></div>
+ <p class="hint">These are new discoveries or meaningful changes. Predictions are not Shelly's ratings, and ordinary approval for both pets is never assumed.</p>
+ <div id="news" class="homes"></div>
 </div>
 <div class="panel">
  <div class="subhead"><h2>Explore → exploit: cost against rating</h2><span class="pill">Tap a dot to open listing</span></div>
- <p class="hint">Top-left is strongest value. The green zone favors strong homes at lower rent; peach means a higher price needs a truly loved house. Ratings marked "predicted" are only estimates.</p>
+ <p class="hint">Top-left is strongest value. Green favors strong homes at lower rent; peach needs a truly loved house. New predicted ratings are estimates, NOT Shelly's votes. Chart displays advertised base prices EXCEPT Northview's $2,228 is a required-fees-inclusive total, before pets.</p>
  <svg class="chart" id="fitChart" viewBox="0 0 760 365" role="img" aria-label="Interactive scatter plot of base rent versus house rating"></svg>
  <div class="legend"><span><b></b>Rated by Shelly</span><span><b class="pred"></b>Predicted by ChatGPT</span></div>
 </div>
@@ -81,8 +86,8 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
  <div class="zo"><span>Nov 1–9 · explore unless exceptional</span><span>Nov 10–26 · value-first opportunity</span><span>Nov 27–Dec 10 · higher-price fallback</span><span>Dec 11–18 · execute the move</span></div>
 </div>
 <div class="panel">
- <div class="subhead"><h2>Houses & clickable galleries</h2><span class="small" id="count">Updated when published</span></div>
- <p class="hint">Published prices may be stale; confirm pet fees, property availability and 12-month rental quotes before any decision. The board shows base rent, not the complete monthly cost.</p>
+ <div class="subhead"><h2>Houses, price details & clickable galleries</h2><span class="small" id="count">Updated when published</span></div>
+ <p class="hint">Prices and lease lengths differ. The figures are generally BASE rent, except Northview ($2,228 incl. required fees). None includes verified total monthly cost for both pets, utilities and insurance. Confirm pet approval, availability and actual lease quotes before applying.</p>
  <div class="homes" id="homes"></div>
 </div>
 <div class="panel" id="add">
@@ -145,7 +150,7 @@ function drawFit(all){
  [3,3.5,4,4.5,5].forEach(function(v){line(s,P.x,Y(v),P.x+P.w,Y(v));tx(s,P.x-12,Y(v)+4,v.toFixed(1),"end",11)});
  tx(s,190,41,"Strong fit + better value","middle",13,"#246e52","700");
  tx(s,610,41,"Higher rent: must love it","middle",12,"#a07732","650");
- tx(s,381,359,"Advertised base rent per month","middle",12);
+ tx(s,381,359,"Advertised monthly figure (base unless noted)","middle",12);
  tx(s,15,18,"5 / 5 ↑","start",10);
  all.forEach(function(h){addDot(s,X(Number(h.rent)),Y(Number(h.rating)),h)});
 }
@@ -171,15 +176,21 @@ function card(h){
  var top=document.createElement("div");top.className="row";d.appendChild(top);
  var name=document.createElement("div"),title=document.createElement("h3");title.textContent=h.name;name.appendChild(title);
  var city=document.createElement("div");city.className="small";city.textContent=h.city||"";name.appendChild(city);top.appendChild(name);
- var price=document.createElement("div");price.className="price";price.textContent=money(h.rent);top.appendChild(price);
+ var priceBox=document.createElement("div");top.appendChild(priceBox);
+ var price=document.createElement("div");price.className="price";price.textContent=money(h.rent);priceBox.appendChild(price);
+ if(h.priceBasis){var priceBasis=document.createElement("div");priceBasis.className="small";priceBasis.style.maxWidth="150px";priceBasis.style.textAlign="right";priceBasis.textContent=h.priceBasis;priceBox.appendChild(priceBasis);}
+ if(h.trackedOn==="2026-11-04"){var newBadge=document.createElement("span");newBadge.className="pill";newBadge.textContent="NEW Nov 4";name.appendChild(newBadge);}
  var rating=document.createElement("div");rating.className="inline";var tag=document.createElement("span");
  tag.className="pill"+(h.basis==="Shelly"?"":" amber");
- tag.textContent=Number(h.rating).toFixed(1)+" / 5 · "+(h.basis==="Shelly"?"Shelly rated":"Predicted");rating.appendChild(tag);d.appendChild(rating);
+ tag.textContent=Number(h.rating).toFixed(1)+" / 5 · "+(h.basis==="Shelly"?"Shelly rated":"Predicted");rating.appendChild(tag);
+ if(h.petGate){var pets=document.createElement("span");pets.className="pill "+(h.petBlocked?"amber":"neutral");pets.textContent=h.petGate;rating.appendChild(pets);}
+ d.appendChild(rating);
  var p=document.createElement("p");p.textContent=h.fit||"";d.appendChild(p);
  if(h.priceNote){var note=document.createElement("p");note.textContent=h.priceNote;d.appendChild(note)}
  if(h.status){var st=document.createElement("p");st.className="small";st.textContent=h.status;d.appendChild(st)}
  var actions=document.createElement("div");actions.className="actions";d.appendChild(actions);
  var a=document.createElement("a");a.href=safeUrl(h.url);a.target="_blank";a.rel="noopener noreferrer";a.textContent="Open listing ↗";actions.appendChild(a);
+ var route=document.createElement("a");route.href="https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(h.name+", "+h.city+", TX")+"&destination="+encodeURIComponent("6565 N MacArthur Blvd, Irving, TX")+"&travelmode=driving";route.target="_blank";route.rel="noopener noreferrer";route.textContent="Drive to office ↗";actions.appendChild(route);
  var b=document.createElement("button");b.type="button";b.textContent="Edit rating";b.addEventListener("click",function(){
   var v=prompt("Rating for "+h.name+" (1–5):",h.rating);
   if(v===null)return;var n=Number(v);if(!Number.isFinite(n)||n<1||n>5)return alert("Use a number between 1 and 5.");
@@ -192,7 +203,7 @@ function card(h){
 }
 function render(){
  var a=houses();byId("n-homes").textContent=a.length;byId("count").textContent=a.length+" houses · published "+latestEdition;
- drawFit(a);drawDate(a);var root=byId("homes");root.replaceChildren();a.slice().sort(function(x,y){return y.rating-x.rating||x.rent-y.rent}).forEach(function(h){root.appendChild(card(h))});
+ drawFit(a);drawDate(a);var root=byId("homes");root.replaceChildren();a.slice().sort(function(x,y){return Number(!!x.petBlocked)-Number(!!y.petBlocked)||y.rating-x.rating||x.rent-y.rent}).forEach(function(h){root.appendChild(card(h))});
 }
 function copyText(text,msg){
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){show(msg)}).catch(function(){window.prompt("Copy this text:",text)})}
@@ -213,12 +224,24 @@ byId("newHome").addEventListener("submit",function(event){
  show("Added to this device. Use 'Copy changes' to include it in the shared published board.");
 });
 loadSaved();
+function drawUpdates(items){
+ var root=byId("news");if(!root)return;root.replaceChildren();
+ (items||[]).forEach(function(u){
+  var box=document.createElement("div");box.className="home";root.appendChild(box);
+  var tag=document.createElement("span");tag.className="pill"+(u.tag.indexOf("Pet restriction")>=0?" amber":"");
+  tag.textContent=(u.date||"")+" · "+(u.tag||"Update");box.appendChild(tag);
+  var title=document.createElement("h3");title.textContent=u.title||"Update";box.appendChild(title);
+  var p=document.createElement("p");p.textContent=u.detail||"";box.appendChild(p);
+  var linked=base.find(function(h){return h.id===u.houseId});
+  if(linked){var a=document.createElement("a");a.href=safeUrl(linked.url);a.target="_blank";a.rel="noopener noreferrer";a.textContent="See listing ↗";a.style.color="#176b5e";a.style.fontWeight="700";box.appendChild(a);}
+ });
+}
 function sync(userInitiated){
  fetch("./listings.json?_="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).then(function(d){
    if(!d||!Array.isArray(d.homes))throw Error("Invalid data");
    base=d.homes;latestEdition=d.edition||"Recently";byId("edition").textContent=latestEdition;byId("footerEdition").textContent="Published data "+latestEdition;
-   render();if(userInitiated)show("Published list refreshed.");
- }).catch(function(){if(!base.length)base=fallback;render();show("Using offline snapshot; published data could not be loaded right now.")});
+   render();drawUpdates(d.updates||[]);if(userInitiated)show("Published list refreshed.");
+ }).catch(function(){if(!base.length)base=fallback;render();drawUpdates([]);show("Using offline snapshot; published data could not be loaded right now.")});
 }
 base=fallback;render();sync(false);
 })();

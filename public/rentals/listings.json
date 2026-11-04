@@ -1,6 +1,6 @@
 {
-  "edition": "2026-11-01 · Shelly feedback added",
-  "note": "Published from Nathan and Shelly's Texas house shortlist. Ratings, checkpoints, prices and pet statuses are references, not live guaranteed offers. Flour Mill Run estimated and needs Shelly photo review.",
+  "edition": "November 4, 2026",
+  "note": "Published Nov 4. 11 homes tracked; 2 are new older-inventory discoveries. Stars and fit estimates are distinct from Shelly's ratings. Monthly comparison values are BASE except Northview's $2,228 including mandatory fees. Advertised pet-friendly never guarantees household pet approval.",
   "homes": [
     {
       "id": "hearthstone",
@@ -11,22 +11,27 @@
       "basis": "Shelly",
       "checkpoint": "2026-11-08",
       "url": "https://www.apartments.com/1305-hearthstone-dr-burleson-tx/sczjcc6/",
-      "priceNote": "At the advertised base-rent ceiling; extra pet/mandatory fees not yet verified.",
+      "priceNote": "Current MLS-linked advertised base $2,500, 12 months. Mandatory recurring fees, both pets and final screening approval not established.",
       "fit": "Her ideal: single story, no carpet, open kitchen, separate study, soaking tub, grassy yard.",
-      "status": "Status and specific pet approval need checking."
+      "status": "Active in public listings last checked November 4, but exact same-day availability and pet acceptance remain unconfirmed.",
+      "priceBasis": "base rent (12-month ad)",
+      "petGate": "Golden retriever + cat acceptance unverified"
     },
     {
       "id": "clarks",
       "name": "2533 Clarks Mill Ln",
       "city": "Fort Worth",
-      "rent": 2265,
+      "rent": 2235,
       "rating": 4.4,
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
-      "priceNote": "Earlier price appeared around $2,265; fees and 12-month quote need confirming.",
+      "priceNote": "Direct Progress Residential indexed 12-month quote: $2,235 base + $29.98 required services = $2,264.98 before pets. General two-pet policy suggests +$144/month, or about $2,408.98 before metered utilities/insurance. Portals may show $2,265 or $2,280; final property-specific quote required.",
       "fit": "Shelly's second-favorite. Hard floors and comfortable layout; painted cabinets and complete fencing need review.",
-      "status": "Live listing status unverified."
+      "status": "Actionable favorite; Shelly explicitly ranked it #2. Listing generally permits large dogs and cats, but confirm actual Sunny/Belle pet screening, lawn/HOA rules and completeness of fence.",
+      "priceBasis": "12-month manager base rent; $29.98 required services extra",
+      "petGate": "Large dogs + cats listed; individual approval pending",
+      "priceUpdatedOn": "2026-11-04"
     },
     {
       "id": "castle",
@@ -37,9 +42,11 @@
       "basis": "Estimated",
       "checkpoint": "2026-11-12",
       "url": "https://www.realtor.com/rentals/details/1416-Castle-Ridge-Rd_Fort-Worth_TX_76140_M86131-47825",
-      "priceNote": "$1,849 previously advertised for a 23-month lease, NOT confirmed for 12 months.",
-      "fit": "Strong liked example: bright white interior, hard floors, nice kitchen, grassy yard.",
-      "status": "Price/lease term and availability must be checked."
+      "priceNote": "Direct Invitation Homes manager quote $1,849 base for approximately 22 months, not a verified 12-month rent. $184.90 mandatory package brings published subtotal to $2,033.90; with up to $80 in general two-pet rent, illustrative subtotal $2,113.90. Possession date conflicts across ads.",
+      "fit": "Shelly liked its bright, white interior, hard floors, open kitchen and grassy fenced yard. Only 3 bedrooms (no verified separate office): using a room for the office may require both boys to share.",
+      "status": "Price/lease term and availability must be checked.",
+      "priceBasis": "base rent, long lease quoted",
+      "petGate": "Cats and large dogs listed; individual approval pending"
     },
     {
       "id": "trecini",
@@ -52,7 +59,9 @@
       "url": "https://www.realtor.com/rentals/details/9545-Trecini-Dr_Fort-Worth_TX_76179_M95032-33197",
       "priceNote": "At base-rent limit; extra costs may exceed the target.",
       "fit": "Potential but carpet, bathroom and commute are concerns.",
-      "status": "Exact interior/status not verified."
+      "status": "Possible 4/5, but long commute, carpet and specific primary bathroom unresolved; pet acceptance not confirmed.",
+      "petGate": "Both pets unverified",
+      "priceBasis": "base rent"
     },
     {
       "id": "cathy",
@@ -65,7 +74,9 @@
       "url": "https://www.invitationhomes.com/houses-for-rent/829-cathy-dr-76028-4964",
       "priceNote": "Previously displayed for an 18-month lease; 12-month quote unknown.",
       "fit": "Promising layout; availability and Shelly's actual rating unresolved.",
-      "status": "Conflicting availability."
+      "status": "Conflicting availability.",
+      "petGate": "Both pets unverified",
+      "priceBasis": "base rent, 18-month offer"
     },
     {
       "id": "wolcott",
@@ -78,7 +89,9 @@
       "url": "https://www.realtor.com/rentals/details/603-Wolcott-Ln_Grand-Prairie_TX_75052_M74211-56117",
       "priceNote": "Portal rents differ (~$2,350–$2,450); price point is comparison midpoint, not a quote.",
       "fit": "One story, open plan and hard flooring; grass, staged photos and pet rule conflict need checking.",
-      "status": "Manager and portal conflict; likely above $2,500 with regular two-pet fees."
+      "status": "Manager and portal conflict; likely above $2,500 with regular two-pet fees.",
+      "petGate": "Conflicting large-dog policies",
+      "priceBasis": "midpoint of conflicting base prices, not offer"
     },
     {
       "id": "crestwood",
@@ -91,7 +104,9 @@
       "url": "https://www.zumper.com/address/2601-crestwood-dr-burleson-tx-76028-usa",
       "priceNote": "Advertised $2,300; fees/lease terms unknown.",
       "fit": "Spacious one-story with an open kitchen; photos mainly show earlier sale condition.",
-      "status": "Current aesthetic and pet eligibility unverified."
+      "status": "MLS-linked rental still shows ACTIVE; earlier inference of pending came from a different address. Three bedrooms, no separate office verified. Pet terms and current photos incomplete.",
+      "petGate": "Both pets case-by-case",
+      "priceBasis": "base rent"
     },
     {
       "id": "parkvillage",
@@ -104,7 +119,9 @@
       "url": "https://www.zillow.com/homedetails/4221-Park-Village-Ct-Fort-Worth-TX-76137/54046210_zpid/",
       "priceNote": "$2,275 advertised; additional costs and deposit apply.",
       "fit": "Fenced yard, garage, multiple living spaces; kitchen/flooring and hot-tub upkeep lower confidence.",
-      "status": "Photos and pets require confirmation."
+      "status": "Photos and pets require confirmation.",
+      "petGate": "Large dogs and cats broadly listed; confirm",
+      "priceBasis": "base rent"
     },
     {
       "id": "flourmill",
@@ -117,7 +134,72 @@
       "url": "https://www.realtor.com/rentals/details/6312-Flour-Mill-Run_Fort-Worth_TX_76179_M92136-49892",
       "priceNote": "Current MLS-linked asking rent $2,200, down $200 on Oct 26. Last published security deposit $2,400, $50 per adult application; pet rent/fees, other mandatory costs and 12-month lease quote unverified. Some portals still show $2,300–$2,400.",
       "fit": "Shelly said this house is very nice and placed it in the 4s (no exact decimal assigned); 4.3 is a provisional plotting estimate. Her supplied kitchen photos show an open, bright single-level kitchen/dining/living arrangement, spacious granite island, dark cabinetry, and continuous light-colored hard-surface flooring in main spaces. Four bedrooms allow one room for office. Tub presence, bedrooms' carpeting, grass/fence and exact commute still need confirmation.",
-      "status": "Shelly's qualitative reaction: nice, in the 4s. Provisional chart rating 4.3 is not her exact vote. Listing active in Nov 1 sources, $2,200 base; both-pet approval subject to HOA size/number restrictions. Exact floor plan and specific bathtub to be verified."
+      "status": "Shelly described the house as very nice and in the 4s; 4.3 is an estimated graph position, not her numeric vote. Large-dog and number limits need written approval. Inquiry emailed November 1; no reply found November 4. Tub, floor plan and fence coverage remain unverified.",
+      "priceBasis": "base rent, property MLS",
+      "petGate": "Size and number limits; both pets awaiting agent reply"
+    },
+    {
+      "id": "northview",
+      "name": "236 Northview Ter",
+      "city": "Burleson",
+      "rent": 2228,
+      "rating": 3.8,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-20",
+      "trackedOn": "2026-11-04",
+      "url": "https://www.zillow.com/homedetails/236-Northview-Ter-Burleson-TX-76028/71275291_zpid/",
+      "priceBasis": "ADVERTISED TOTAL incl. required fees, BEFORE pets (not base rent)",
+      "petGate": "Cats and large dogs listed; screening pending",
+      "priceNote": "Nov 4 Zillow advertised monthly total $2,228 INCLUDING required fees (not comparable directly with base rent figures). 15-month promotion requires signing/moving in by Nov 15; 12-month quote and both-pet costs still need verification. Realtor displays $2,230 base, but its marketing copy refers to an expired Oct 15 promotion.",
+      "fit": "New Nov 4 discovery. One-story 4BR/2BA, 1,798 sq ft. Open island kitchen, granite, light walls, LVP main rooms, grassy backyard advertised, two-car garage. Floor-plan photo/3D tour on Zillow. Cabinets dark, kitchen island moderate; bathtub and bedroom floors unconfirmed. 3.8/5 is ChatGPT's provisional midpoint of 3.5–4.0, not Shelly's rating.",
+      "status": "Promising practical option. Listings expressly say visual imagery and floor plans may be illustrative; confirm actual interior and pet fees. Possible fit but not yet better than favorites."
+    },
+    {
+      "id": "watson",
+      "name": "729 Watson Way",
+      "city": "Crowley",
+      "rent": 2299,
+      "rating": 4.1,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-24",
+      "trackedOn": "2026-11-04",
+      "url": "https://www.dfwurbanrealty.com/listing/21379740-729-watson-way-crowley-texas-76036-3737-crescent-spgs-ranch-ph-3/",
+      "priceBasis": "MLS-linked advertised base rent",
+      "petGate": "Small-dog restriction in one portal; Sunny NOT APPROVED",
+      "petBlocked": true,
+      "priceNote": "MLS-linked asking $2,299 base for a stated 12-month lease; some older copies still show $2,399. Deposit advertised around $2,400. Required fees and pet costs unverified. A small-dog-only listing conflicts with generic 'pet friendly' labels.",
+      "fit": "New Nov 4 discovery. One-story 4 bedrooms PLUS fifth study/flex room, 2 baths, 1,822 sq ft, tile and LVP with no carpet advertised, open living, two-car garage, covered patio and private yard. Yard is small, with hardscape/rock paths reducing grass. 4.1/5 is a low-confidence predicted visual fit, not Shelly's rating.",
+      "status": "VISUAL STUDY ONLY: golden retriever not approved under the size-limited portal; do not treat as actionable until the owner explicitly confirms both Sunny and the cat are accepted in writing."
+    }
+  ],
+  "updates": [
+    {
+      "date": "Nov 4",
+      "tag": "NEW • Photo review",
+      "houseId": "northview",
+      "title": "Northview Terrace, Burleson",
+      "detail": "$2,228 advertised including mandatory fees, before pets. One story, large dogs/cats listed. Provisional 3.8/5; floor plan and photo gallery available; interior details need verification."
+    },
+    {
+      "date": "Nov 4",
+      "tag": "NEW • Pet restriction",
+      "houseId": "watson",
+      "title": "Watson Way, Crowley",
+      "detail": "$2,299 base; four bedrooms plus flex/study, no carpet claimed. Provisional 4.1/5, but a small-dog-only policy conflicts with Sunny; not an actionable finalist."
+    },
+    {
+      "date": "Nov 4",
+      "tag": "PRICE • Better 12-month quote",
+      "houseId": "clarks",
+      "title": "Clarks Mill, Fort Worth",
+      "detail": "Direct manager working 12-month offer $2,235 base + $29.98 mandatory services, and estimated $144/month for two normal pets = $2,408.98 before utilities and insurance. Final quote needed."
+    },
+    {
+      "date": "Nov 4",
+      "tag": "WAITING • Agent",
+      "houseId": "flourmill",
+      "title": "Flour Mill Run, Fort Worth",
+      "detail": "Shelly says it's in the 4s; graph uses a provisional 4.3. Inquiry sent Nov 1; no email reply found Nov 4. Tub, floor plan and both-pet approval pending."
     }
   ]
 }

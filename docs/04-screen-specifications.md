@@ -334,6 +334,38 @@ Amended 2026-10-17 during the APPLY-17 run, which carried the scope of APPLY-14.
 
 **Send again is its own 56px control under the tile,** not a strip across the bottom of it, which measured about 24px. It is offered only when this phone holds the photo's bytes. A photo the other phone took has its bytes there, and Send again here reset a record and sent nothing anyone could see.
 
+## 6a. Care team
+
+Added 2026-11-06, ADR-0006. Reached from the move overview by "See the care team". Back returns to the overview; the header title goes home.
+
+### Purpose
+
+The person who will sit in the rooms reviews two or three options per need, sees which one the household is leaning toward, and marks when a call has been made. Readable in a glance, one tap per status change.
+
+### Shows
+
+One card per need, in display order. On a card: the title, the note under it, then the options with the lean first. An option shows the name, the practice, the "why" line, a phone that dials, the address, a note, and its status. A "Leaning here" mark on the lean. A card with no options says so rather than hiding.
+
+### Actions
+
+- Mark called, Mark booked, Mark not called: one tap, cycles the status. Passed is set only from the option form, so a stray tap cannot rule someone out.
+- Edit on an option: name, practice, phone, address, why, note, status, the lean. Remove this option, after a confirmation.
+- Edit on a card: title and the note. Remove this card, after a confirmation.
+- Add an option. Add a need.
+- Paste a list: the first fill. Pasted text in the import shape becomes cards appended after the ones already there. A bad paste is refused with one sentence and nothing is written.
+- Copy as text: the whole list to the clipboard. This is the export for this data.
+
+### States
+
+- Loading: "Loading" until the listener delivers.
+- Empty: two lines inviting a need or a paste.
+- Error: the stopped-listener screen with Try again, same as boxes.
+- Offline: reads from the persistent cache; every write lands locally and the card redraws from it. A write that fails to reach the server shows "saved on this phone" under the list. The header indicator says Offline as everywhere else.
+
+### What is not here
+
+No suggestions from the app, no sync from any outside list, nothing about visits beyond the status and a note. See ADR-0006.
+
 ## 7. Rooms
 
 ### Shows

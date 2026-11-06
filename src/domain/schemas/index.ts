@@ -191,6 +191,50 @@ export const activityEventSchema = z.object({
   payload: z.record(z.string(), z.unknown()),
 });
 
+/**
+ * Where an option stands. `not_called` is the resting state. `passed` means
+ * the household ruled it out and keeps it on the card so the reason is not
+ * lost; it is not a deletion.
+ */
+export const careStatusSchema = z.enum(["not_called", "called", "booked", "passed"]);
+
+/**
+ * One option under a need: a practice or a person the household might go to.
+ * `why` is the line the reviewer reads, in plain words, and `lean` marks the
+ * one the household is leaning toward. At most one option on a need carries
+ * `lean`; the domain enforces it, the schema does not.
+ */
+export const careProviderSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1).max(120),
+  practice: z.string().max(160).optional(),
+  phone: z.string().max(40).optional(),
+  address: z.string().max(200).optional(),
+  why: z.string().max(400).optional(),
+  status: careStatusSchema,
+  lean: z.boolean().optional(),
+  /** Free text, such as a booked date, written by a person. */
+  note: z.string().max(200).optional(),
+});
+
+/**
+ * One card on the care screen: a need the household has to find someone for,
+ * and the options found so far. Held under the move because it expires with
+ * the move. See decisions/0006-care-page.md.
+ */
+export const careNeedSchema = z.object({
+  id: z.string().min(1),
+  moveId: z.string().min(1),
+  title: z.string().min(1).max(80),
+  /** One line under the title saying what this card is for, in the reviewer's words. */
+  note: z.string().max(300).optional(),
+  /** Display order, lowest first. */
+  order: z.number().int().nonnegative(),
+  providers: z.array(careProviderSchema).max(12),
+  updatedAt: isoString,
+  updatedBy: z.string().min(1),
+});
+
 export type ContainerStatus = z.infer<typeof containerStatusSchema>;
 export type UnpackPriority = z.infer<typeof unpackPrioritySchema>;
 export type Move = z.infer<typeof moveSchema>;
@@ -202,3 +246,6 @@ export type ConditionReport = z.infer<typeof conditionReportSchema>;
 export type Container = z.infer<typeof containerSchema>;
 export type ContainerPhoto = z.infer<typeof containerPhotoSchema>;
 export type ActivityEvent = z.infer<typeof activityEventSchema>;
+export type CareStatus = z.infer<typeof careStatusSchema>;
+export type CareProvider = z.infer<typeof careProviderSchema>;
+export type CareNeed = z.infer<typeof careNeedSchema>;

@@ -5,3 +5,4 @@ export * from "./zones";
 export * from "./containers";
 export * from "./photos";
 export * from "./activity";
+export * from "./care";

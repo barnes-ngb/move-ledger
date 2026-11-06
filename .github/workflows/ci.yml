@@ -36,6 +36,9 @@ jobs:
       # local Claude Code Stop hook.
       - run: npm run verify
 
+      # Keep lint checked on PRs alongside typecheck and tests.
+      - run: npm run lint
+
       # The rules tests need a JVM for the Firestore and Storage emulators.
       - uses: actions/setup-java@v4
         with:

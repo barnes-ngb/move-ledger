@@ -93,6 +93,16 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+      # Verify runs the Firestore emulator tests before this job starts.
+      # Publish rules before Hosting so new screens never reach production
+      # without their matching access policy.
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MOVE_LEDGER }}
+      - run: npm install -g firebase-tools@15
+      - run: firebase deploy --only firestore:rules --project move-ledger --non-interactive
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

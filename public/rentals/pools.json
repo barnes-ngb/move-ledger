@@ -1,0 +1,90 @@
+{
+  "edition": "November 6, 2026",
+  "purpose": "Year-round indoor pools for standing water-based exercise. Exact standing depth, secure wall/rail, safe entry and permission for self-directed stretches must be checked before choosing.",
+  "pools": [
+    {
+      "id": "resource",
+      "name": "Resource Connection Aquatic Center",
+      "city": "Fort Worth",
+      "address": "2200 Circle Dr, Fort Worth, TX 76119",
+      "url": "https://www.tarrantcountytx.gov/en/resource-connection/aquatic-center.html",
+      "tag": "Therapy-water lead",
+      "confirmed": "Temperature-controlled shallow lap pool, two accessible 3-ft therapy spas, aquatic therapists welcome.",
+      "hours": "Mon–Thu daytime; Mon/Wed evening; Fri daytime; closed weekends (check pool schedule).",
+      "cost": "Individual $30/mo; family of four $45/mo (published).",
+      "verify": "Standing space next to secure pool wall/rail, water temperature, independent stretching outside classes, and entry options."
+    },
+    {
+      "id": "huguley",
+      "name": "Texas Health Huguley Fitness Center",
+      "city": "Burleson",
+      "address": "11801 South Fwy, Burleson, TX 76028",
+      "url": "https://www.texashealth.org/Health-and-Wellness/Fitness/Huguley",
+      "tag": "Dedicated therapy pool",
+      "confirmed": "Aquatic center with a separate therapy pool and a Jr. Olympic lap pool.",
+      "hours": "Fitness center open weekdays and weekends; therapy-pool access hours unverified.",
+      "cost": "Membership and day-pass costs unverified.",
+      "verify": "Therapy-pool depth, warmth, wall or handrail, independent exercise access, entry method and pool-specific schedule."
+    },
+    {
+      "id": "brick",
+      "name": "Burleson Recreation Center (BRiCk)",
+      "city": "Burleson",
+      "address": "550 NW Summercrest Blvd, Burleson, TX 76028",
+      "url": "https://www.burlesontx.com/310/Indoor-Pool",
+      "tag": "Indoor recreation pool",
+      "confirmed": "Municipal indoor pool and aquatic fitness programming; center operates year-round.",
+      "hours": "Pool hours differ from recreation center hours; check posted pool schedule.",
+      "cost": "Membership/day-pass pricing to confirm.",
+      "verify": "Quiet shallow-water space, safe rail/edge, entrance stairs or ramp, permitted self-directed stretches and water temperature."
+    },
+    {
+      "id": "nrh",
+      "name": "NRH Centre",
+      "city": "North Richland Hills",
+      "address": "6000 Hawk Ave, North Richland Hills, TX 76180",
+      "url": "https://www.nrhcentre.com/aquatics",
+      "tag": "Aquatic exercise channel",
+      "confirmed": "Indoor aquatic resistance channel, hydrotherapy jets, lap lanes, self-directed fitness swimming and exercise classes.",
+      "hours": "Aquatics hours vary from facility hours.",
+      "cost": "Membership/day-pass pricing to confirm.",
+      "verify": "Whether there is a still-water standing area with a solid wall/rail away from currents, depth, temperature and access."
+    },
+    {
+      "id": "texashealth",
+      "name": "Texas Health Fitness Center Burleson",
+      "city": "Burleson",
+      "address": "2750 SW Wilshire Blvd, Burleson, TX 76028",
+      "url": "https://www.texashealth.org/Health-and-Wellness/Fitness/Burleson",
+      "tag": "Indoor lap / aqua classes",
+      "confirmed": "Indoor 25-meter three-lane pool used for lap swimming and aqua classes.",
+      "hours": "Fitness center open daily; pool-specific free-use hours unverified.",
+      "cost": "Membership costs to confirm.",
+      "verify": "Standing depth near edge, handholds, independent exercise permission, warmth, lane/class conflicts and entry method."
+    },
+    {
+      "id": "kirby",
+      "name": "Kirby Creek Natatorium",
+      "city": "Grand Prairie",
+      "address": "3201 Corn Valley Rd, Grand Prairie, TX 75052",
+      "url": "https://www.visitgrandprairietx.com/Things-To-Do/Recreation-and-Sports",
+      "tag": "Heated indoor pool",
+      "confirmed": "City tourism listing describes a year-round heated accessible indoor pool with changing areas and showers.",
+      "hours": "Current public swim/exercise schedule unverified.",
+      "cost": "Current passes/fees unverified.",
+      "verify": "Current operation, standing depth, secure edge or rail, warm-water suitability and self-directed exercise access."
+    },
+    {
+      "id": "ryan",
+      "name": "Ryan Family YMCA",
+      "city": "Fort Worth",
+      "address": "8250 McCart Ave, Fort Worth, TX 76123",
+      "url": "https://ymcafw.org/locations/ryan/",
+      "tag": "Indoor YMCA pool",
+      "confirmed": "Year-round indoor pool listed, with a separate indoor-pool schedule.",
+      "hours": "Check YMCA indoor-pool schedule; facility hours are not pool hours.",
+      "cost": "YMCA membership/day-pass terms to confirm.",
+      "verify": "Standing-water depth, secure edge/rail, heated temperature, quiet exercise hours and safe entry."
+    }
+  ]
+}

@@ -1,6 +1,9 @@
 import { useState } from "react";
 import {
   CARE_STATUS_LABEL,
+  MAX_PROVIDERS,
+  careNeedSchema,
+  careProviderSchema,
   careToText,
   nextStatus,
   parseCareImport,
@@ -10,10 +13,11 @@ import {
   sortNeeds,
   sortProviders,
   type CareNeed,
+  type CareChange,
   type CareProvider,
   type CareStatus,
 } from "../../domain";
-import { removeCareNeed, saveCareNeed, writeInBackground } from "../../repositories";
+import { removeCareNeed, saveCareNeed, writeInBackground, type CareChangeDetail } from "../../repositories";
 import { newId, nowIso } from "../../repositories/shared";
 import { Button, Confirm, ErrorLine, Field, Screen, SubscriptionFailed, TextArea } from "../kit";
 
@@ -53,13 +57,27 @@ export function Care({
 
   const sorted = sortNeeds(needs);
 
-  const save = (need: CareNeed) => {
+  const notReached = () => setLine("That change did not reach the server. It is saved on this phone.");
+
+  /**
+   * Every write on this screen. The forms check the schema before they get
+   * here, so a throw from the repository is a bug rather than bad input; it
+   * is still caught, because a blank screen is the wrong answer to it.
+   */
+  const save = (need: CareNeed, detail: CareChangeDetail) => {
     setLine(null);
-    const write = saveCareNeed(need, uid);
-    writeInBackground(write.written, () => setLine("That change did not reach the server. It is saved on this phone."));
+    try {
+      writeInBackground(saveCareNeed(need, uid, detail).written, notReached);
+    } catch (e) {
+      console.error("Care write refused", e);
+      setLine("That change could not be saved. Check the card for anything too long.");
+    }
   };
 
-  const markNext = (need: CareNeed, p: CareProvider) => save(setProviderStatus(need, p.id, nextStatus(p.status)));
+  const markNext = (need: CareNeed, p: CareProvider) => {
+    const status = nextStatus(p.status);
+    save(setProviderStatus(need, p.id, status), { change: "status_changed", providerId: p.id, providerName: p.name, status });
+  };
 
   const copyText = async () => {
     try {
@@ -112,13 +130,16 @@ export function Care({
         <ProviderForm
           initial={editing.provider}
           onSave={(p) => {
-            save(putProvider(editing.need, p));
+            const was = editing.provider;
+            const change: CareChange = !was ? "option_added" : was.lean !== p.lean ? "lean_changed" : "option_edited";
+            save(putProvider(editing.need, p), { change, providerId: p.id, providerName: p.name, status: p.status });
             setEditing(null);
           }}
           onRemove={
             editing.provider
               ? () => {
-                  save(removeProvider(editing.need, editing.provider!.id));
+                  const gone = editing.provider!;
+                  save(removeProvider(editing.need, gone.id), { change: "option_removed", providerId: gone.id, providerName: gone.name });
                   setEditing(null);
                 }
               : null
@@ -133,18 +154,13 @@ export function Care({
           onSave={(title, note) => {
             if (editingNeed === "new") {
               const order = (sorted.at(-1)?.order ?? -1) + 1;
-              save({
-                id: newId(),
-                moveId,
-                title,
-                note: note || undefined,
-                order,
-                providers: [],
-                updatedAt: nowIso(),
-                updatedBy: uid,
-              });
+              save(
+                { id: newId(), moveId, title, ...(note ? { note } : {}), order, providers: [], updatedAt: nowIso(), updatedBy: uid },
+                { change: "card_added" }
+              );
             } else {
-              save({ ...editingNeed, title, note: note || undefined });
+              const { note: _old, ...rest } = editingNeed;
+              save({ ...rest, title, ...(note ? { note } : {}) }, { change: "card_edited" });
             }
             setEditingNeed(null);
           }}
@@ -152,9 +168,7 @@ export function Care({
             editingNeed === "new"
               ? null
               : () => {
-                  writeInBackground(removeCareNeed(moveId, editingNeed.id), () =>
-                    setLine("That change did not reach the server. It is saved on this phone.")
-                  );
+                  writeInBackground(removeCareNeed(moveId, editingNeed, uid), notReached);
                   setEditingNeed(null);
                 }
           }
@@ -171,7 +185,7 @@ export function Care({
               console.error("Care import refused", result.detail);
               return result.message;
             }
-            for (const need of result.needs) save(need);
+            for (const need of result.needs) save(need, { change: "imported" });
             setImporting(false);
             setLine(`Added ${result.needs.length} card${result.needs.length === 1 ? "" : "s"}.`);
             return null;
@@ -248,11 +262,32 @@ function NeedCard({
           ))}
         </ul>
       )}
-      <button onClick={onAddProvider} className="min-h-11 self-start text-slate-400 underline">
-        Add an option
-      </button>
+      {need.providers.length >= MAX_PROVIDERS ? (
+        <p className="text-sm text-slate-500">This card is full at {MAX_PROVIDERS} options. Remove one to add another.</p>
+      ) : (
+        <button onClick={onAddProvider} className="min-h-11 self-start text-slate-400 underline">
+          Add an option
+        </button>
+      )}
     </section>
   );
+}
+
+const PROVIDER_LABELS: Record<string, string> = {
+  name: "The name",
+  practice: "The practice",
+  phone: "The phone",
+  address: "The address",
+  why: "Why this one",
+  note: "The note",
+};
+
+const NEED_LABELS: Record<string, string> = { title: "The title", note: "What this is for" };
+
+/** One sentence naming the field the schema refused. The limits are the schema's; the sentence does not repeat them. */
+function limitMessage(path: PropertyKey | undefined, labels: Record<string, string>): string {
+  const label = typeof path === "string" ? labels[path] : undefined;
+  return label ? `${label} is too long.` : "Something here is too long.";
 }
 
 /** What the one-tap button offers next. `passed` is set only from the form. */
@@ -304,18 +339,26 @@ function ProviderForm({
       setError("A name is needed.");
       return;
     }
-    const clean = (s: string) => (s.trim() ? s.trim() : undefined);
-    onSave({
+    // Only the fields with something in them, so nothing undefined reaches
+    // Firestore, and checked against the stored schema so a value too long
+    // is refused here with its field named rather than thrown downstream.
+    const candidate: CareProvider = {
       id: initial?.id ?? newId(),
       name: name.trim(),
-      practice: clean(practice),
-      phone: clean(phone),
-      address: clean(address),
-      why: clean(why),
-      note: clean(note),
+      ...(practice.trim() ? { practice: practice.trim() } : {}),
+      ...(phone.trim() ? { phone: phone.trim() } : {}),
+      ...(address.trim() ? { address: address.trim() } : {}),
+      ...(why.trim() ? { why: why.trim() } : {}),
+      ...(note.trim() ? { note: note.trim() } : {}),
       status,
-      lean: lean ? true : undefined,
-    });
+      ...(lean ? { lean: true } : {}),
+    };
+    const checked = careProviderSchema.safeParse(candidate);
+    if (!checked.success) {
+      setError(limitMessage(checked.error.issues[0]?.path[0], PROVIDER_LABELS));
+      return;
+    }
+    onSave(checked.data);
   };
 
   return (
@@ -386,6 +429,14 @@ function NeedForm({
   const submit = () => {
     if (!title.trim()) {
       setError("A title is needed.");
+      return;
+    }
+    const checked = careNeedSchema.pick({ title: true, note: true }).safeParse({
+      title: title.trim(),
+      ...(note.trim() ? { note: note.trim() } : {}),
+    });
+    if (!checked.success) {
+      setError(limitMessage(checked.error.issues[0]?.path[0], NEED_LABELS));
       return;
     }
     onSave(title.trim(), note.trim());

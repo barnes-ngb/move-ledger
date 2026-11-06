@@ -261,7 +261,8 @@ interface ActivityEvent {
     | "container_deleted"
     | "photo_deleted"
     | "title_changed"
-    | "member_removed";        // payload: memberId, uid, displayName, the range
+    | "member_removed"         // payload: memberId, uid, displayName, the range
+    | "care_changed";          // payload: needId, title, change, and the option's id, name, status where there is one. See CareNeed.
   occurredAt: string;
   payload: Record<string, unknown>;
 }
@@ -298,7 +299,7 @@ interface CareProvider {
 }
 ```
 
-The card is written whole on every change. Two phones editing one card offline resolve last-write-wins, which ADR-0002 accepted for the move. Nothing about a provider is ever committed to this repository; the list is entered in the app, or pasted into it in the import shape in `src/domain/care.ts`.
+The card is written whole on every change, in one batch with a `care_changed` activity event whose payload names the change (`card_added`, `card_edited`, `card_removed`, `option_added`, `option_edited`, `option_removed`, `status_changed`, `lean_changed`, `imported`) and, where there is one, the option's id, name and status. Optional fields are absent rather than undefined, because Firestore refuses an explicit undefined. Two phones editing one card offline resolve last-write-wins, which ADR-0002 accepted for the move. Nothing about a provider is ever committed to this repository; the list is entered in the app, or pasted into it in the import shape in `src/domain/care.ts`.
 
 ## Identity rules
 

@@ -66,6 +66,13 @@ describe("the lean", () => {
     ]);
   });
 
+  it("leaves no undefined key behind, because Firestore refuses one", () => {
+    const n = need({ providers: [provider({ id: "a", lean: true }), provider({ id: "b" })] });
+    for (const p of setLean(n, "b").providers) {
+      expect((Object.values(p) as unknown[]).includes(undefined)).toBe(false);
+    }
+  });
+
   it("sorts first on the card", () => {
     const list = [provider({ id: "a" }), provider({ id: "b", lean: true }), provider({ id: "c" })];
     expect(sortProviders(list).map((p) => p.id)).toEqual(["b", "a", "c"]);
@@ -115,6 +122,14 @@ describe("paste import", () => {
     ]);
     expect(out.needs[1]?.providers).toEqual([]);
     expect(out.needs[0]?.updatedBy).toBe("uid-1");
+  });
+
+  it("writes no undefined keys from a paste", () => {
+    const out = parseCareImport(JSON.stringify([{ title: "T", providers: [{ name: "A" }] }]), ctx);
+    if (!out.ok) throw new Error(out.message);
+    const n = out.needs[0]!;
+    expect((Object.values(n) as unknown[]).includes(undefined)).toBe(false);
+    for (const p of n.providers) expect((Object.values(p) as unknown[]).includes(undefined)).toBe(false);
   });
 
   it("keeps only the first lean when the paste carries two", () => {

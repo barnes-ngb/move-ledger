@@ -186,6 +186,8 @@ export const activityEventSchema = z.object({
     "photo_deleted",
     "title_changed",
     "member_removed",
+    /** A change on the care team. `payload.change` names it. See decisions/0006-care-page.md. */
+    "care_changed",
   ]),
   occurredAt: isoString,
   payload: z.record(z.string(), z.unknown()),

@@ -9,6 +9,35 @@ import {
 
 export type { CareNeed, CareProvider, CareStatus };
 
+/** The most options one card holds. The schema enforces it; the screen stops offering Add at it. */
+export const MAX_PROVIDERS = 12;
+
+/**
+ * What an activity event on the care team says happened. Goes in
+ * `payload.change` on a `care_changed` event.
+ */
+export type CareChange =
+  | "card_added"
+  | "card_edited"
+  | "card_removed"
+  | "option_added"
+  | "option_edited"
+  | "option_removed"
+  | "status_changed"
+  | "lean_changed"
+  | "imported";
+
+/**
+ * Drops keys whose value is undefined, one level deep and inside the
+ * providers array. Firestore refuses an explicit undefined outright, and
+ * every path that builds a card goes through here before it is written.
+ */
+export function withoutUndefined(need: CareNeed): CareNeed {
+  const strip = <T extends object>(o: T): T =>
+    Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as T;
+  return { ...strip(need), providers: need.providers.map((p) => strip(p)) };
+}
+
 /**
  * The care list: needs, each with its options. See decisions/0006-care-page.md.
  *
@@ -55,7 +84,10 @@ export function sortProviders(providers: readonly CareProvider[]): CareProvider[
 export function setLean(need: CareNeed, providerId: string | null): CareNeed {
   return {
     ...need,
-    providers: need.providers.map((p) => ({ ...p, lean: p.id === providerId ? true : undefined })),
+    providers: need.providers.map((p) => {
+      const { lean: _lean, ...rest } = p;
+      return p.id === providerId ? { ...rest, lean: true } : rest;
+    }),
   };
 }
 
@@ -144,6 +176,7 @@ export function parseCareImport(
       id: ctx.newId(),
       status: p.status ?? "not_called",
     }));
+    // Zod keeps an optional key the paste set to nothing; Firestore will not.
     const need: CareNeed = {
       id: ctx.newId(),
       moveId: ctx.moveId,
@@ -156,7 +189,7 @@ export function parseCareImport(
     };
     // Import can carry more than one lean per card; keep the first.
     const firstLean = providers.find((p) => p.lean === true);
-    return careNeedSchema.parse(firstLean ? setLean(need, firstLean.id) : setLean(need, null));
+    return withoutUndefined(careNeedSchema.parse(firstLean ? setLean(need, firstLean.id) : setLean(need, null)));
   });
   return { ok: true, needs };
 }

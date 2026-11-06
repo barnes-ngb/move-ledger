@@ -8,15 +8,17 @@ import type { CareNeed } from "../../../domain";
  * the document handed to it, which is the whole contract of this screen.
  */
 const saved: CareNeed[] = [];
+const changes: string[] = [];
 const removed: string[] = [];
 
 vi.mock("../../../repositories", () => ({
-  saveCareNeed: (need: CareNeed) => {
+  saveCareNeed: (need: CareNeed, _uid: string, detail: { change: string }) => {
     saved.push(need);
+    changes.push(detail.change);
     return { value: need, written: Promise.resolve() };
   },
-  removeCareNeed: async (_moveId: string, id: string) => {
-    removed.push(id);
+  removeCareNeed: async (_moveId: string, need: { id: string }) => {
+    removed.push(need.id);
   },
   writeInBackground: (work: Promise<unknown>) => {
     void work;
@@ -66,6 +68,7 @@ function open(over: Partial<Parameters<typeof Care>[0]> = {}) {
 
 beforeEach(() => {
   saved.length = 0;
+  changes.length = 0;
   removed.length = 0;
 });
 
@@ -85,6 +88,7 @@ describe("the care screen", () => {
     const a = saved[0]?.providers.find((p) => p.id === "a");
     expect(a?.status).toBe("called");
     expect(saved[0]?.updatedBy).toBe("uid-1");
+    expect(changes).toEqual(["status_changed"]);
   });
 
   it("the phone is a link the phone can dial", () => {
@@ -105,6 +109,28 @@ describe("the care screen", () => {
       ["Dr. B", undefined],
       ["Dr. C", true],
     ]);
+    // Firestore refuses an explicit undefined, so the key is absent, not undefined.
+    for (const p of saved[0]!.providers) expect("lean" in p && p.lean === undefined).toBe(false);
+    expect(changes).toEqual(["option_added"]);
+  });
+
+  it("refuses a field the schema will not take and names it, before anything is written", () => {
+    open();
+    fireEvent.click(screen.getByText("Add an option"));
+    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "x".repeat(121) } });
+    fireEvent.click(screen.getByText("Save option"));
+    expect(screen.getByText("The name is too long.")).toBeDefined();
+    expect(saved).toHaveLength(0);
+  });
+
+  it("stops offering Add an option when a card is full", () => {
+    const full: CareNeed = {
+      ...bladder,
+      providers: Array.from({ length: 12 }, (_, i) => ({ id: `p${i}`, name: `Dr. ${i}`, status: "not_called" as const })),
+    };
+    open({ needs: [full] });
+    expect(screen.queryByText("Add an option")).toBeNull();
+    expect(screen.getByText(/This card is full/)).toBeDefined();
   });
 
   it("refuses an option with no name and says so", () => {
@@ -122,6 +148,17 @@ describe("the care screen", () => {
     fireEvent.click(screen.getByText("Save card"));
     expect(saved).toHaveLength(1);
     expect(saved[0]).toMatchObject({ title: "Hip", order: 1, providers: [], moveId: "m1" });
+    expect("note" in saved[0]!).toBe(false);
+    expect(changes).toEqual(["card_added"]);
+  });
+
+  it("refuses a title the schema will not take", () => {
+    open();
+    fireEvent.click(screen.getByText("Add a need"));
+    fireEvent.change(screen.getByLabelText("Title"), { target: { value: "t".repeat(81) } });
+    fireEvent.click(screen.getByText("Save card"));
+    expect(screen.getByText("The title is too long.")).toBeDefined();
+    expect(saved).toHaveLength(0);
   });
 
   it("removing a card asks first", () => {
@@ -144,6 +181,7 @@ describe("the care screen", () => {
       ["Hip", 2],
     ]);
     expect(screen.getByText("Added 2 cards.")).toBeDefined();
+    expect(changes).toEqual(["imported", "imported"]);
   });
 
   it("a bad paste is refused with a sentence and nothing is written", () => {

@@ -351,7 +351,8 @@ One card per need, in display order. On a card: the title, the note under it, th
 - Mark called, Mark booked, Mark not called: one tap, cycles the status. Passed is set only from the option form, so a stray tap cannot rule someone out.
 - Edit on an option: name, practice, phone, address, why, note, status, the lean. Remove this option, after a confirmation.
 - Edit on a card: title and the note. Remove this card, after a confirmation.
-- Add an option. Add a need.
+- Add an option, offered until the card holds 12, at which point the card says it is full. Add a need.
+- Every save is checked against the stored schema in the form; a value too long is refused with its field named, and nothing is written. Every write logs a `care_changed` activity event in the same batch.
 - Paste a list: the first fill. Pasted text in the import shape becomes cards appended after the ones already there. A bad paste is refused with one sentence and nothing is written.
 - Copy as text: the whole list to the clipboard. This is the export for this data.
 

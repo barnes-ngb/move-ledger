@@ -24,6 +24,9 @@ vi.mock("../../hooks/useContainers", () => ({
   useContainers: () => ({ ...listener, failed: false, retry: () => undefined }),
 }));
 vi.mock("../../hooks/usePhotoCounts", () => ({ usePhotoCounts: () => ({}) }));
+vi.mock("../../hooks/useCare", () => ({
+  useCare: () => ({ needs: [], loaded: true, failed: false, retry: () => undefined }),
+}));
 
 vi.mock("../box/AddBox", () => ({
   AddBox: ({
@@ -69,6 +72,15 @@ vi.mock("../box/BoxList", () => ({
       <button onClick={() => onQueryChange("kettle")}>type kettle</button>
       <button onClick={() => onOpen(container)}>open box 042</button>
       <button onClick={onBack}>list back</button>
+    </div>
+  ),
+}));
+
+vi.mock("../care/Care", () => ({
+  Care: ({ onBack }: { onBack: () => void }) => (
+    <div>
+      <p>on the care team</p>
+      <button onClick={onBack}>care back</button>
     </div>
   ),
 }));
@@ -138,6 +150,14 @@ describe("the move overview and the screens under it", () => {
     fireEvent.click(screen.getByText("See all boxes"));
     expect(screen.getByText(/on the list/)).toBeDefined();
 
+    await pressSystemBack();
+    await waitFor(() => expect(screen.getByText("Add a box")).toBeDefined());
+  });
+
+  it("reaches the care team from the overview and comes back the same way", async () => {
+    open();
+    fireEvent.click(screen.getByText("See the care team"));
+    expect(screen.getByText("on the care team")).toBeDefined();
     await pressSystemBack();
     await waitFor(() => expect(screen.getByText("Add a box")).toBeDefined());
   });

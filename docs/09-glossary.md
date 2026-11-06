@@ -45,6 +45,8 @@ Why the split exists: most containers are boxes, but furniture and appliances ar
 
 **Item.** One line of a contents list, such as "white ceramic vase". `aiItems` holds the suggested ones and `contentsItems` the confirmed ones. A line of text on a box, not a record: it has no id and no history of its own. See doc 07, APPLY-18. The interface does not use the word; it shows the list under "Contents" and asks for "one per line".
 
+**Care team.** The screen listing the doctors and practices the household is choosing for after the move. One card per `CareNeed`; each card holds its `CareProvider` options. On screen a provider is an option, and the household's current pick on a card is the lean. Code never says doctor; the interface never says provider or need. See decisions/0006-care-page.md.
+
 ## Words not to use
 
 - Inventory. This tool tracks boxes, not objects. Using the word invites item-level scope.

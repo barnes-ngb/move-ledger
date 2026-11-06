@@ -84,6 +84,17 @@ service cloud.firestore {
         allow update, delete: if isMember(moveId);
       }
 
+      // The care team: one document per need, members only. See
+      // decisions/0006-care-page.md. Whole-document writes, so there is no
+      // field to pin beyond moveId and the writer.
+      match /care/{needId} {
+        allow read: if isMember(moveId);
+        allow create, update: if isMember(moveId)
+          && request.resource.data.moveId == moveId
+          && request.resource.data.updatedBy == request.auth.uid;
+        allow delete: if isMember(moveId);
+      }
+
       match /activity/{eventId} {
         allow read: if isMember(moveId);
         allow create: if isMember(moveId)

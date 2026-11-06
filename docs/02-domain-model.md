@@ -16,6 +16,7 @@ moves/{moveId}/zones/{zoneId}
 moves/{moveId}/containers/{containerId}
 moves/{moveId}/photos/{photoId}
 moves/{moveId}/activity/{eventId}
+moves/{moveId}/care/{needId}
 ```
 
 Photos are a move-level collection rather than a subcollection of container so that the pending-upload query does not require a collection group index.
@@ -260,13 +261,45 @@ interface ActivityEvent {
     | "container_deleted"
     | "photo_deleted"
     | "title_changed"
-    | "member_removed";        // payload: memberId, uid, displayName, the range
+    | "member_removed"         // payload: memberId, uid, displayName, the range
+    | "care_changed";          // payload: needId, title, change, and the option's id, name, status where there is one. See CareNeed.
   occurredAt: string;
   payload: Record<string, unknown>;
 }
 ```
 
 Activity is append-only. Nothing edits or deletes an event.
+
+## CareNeed
+
+One card on the care team screen: a need the household has to find someone for after the move, and the options found so far. Added 2026-11-06 by ADR-0006. Held under the move because it expires with the move, and because the membership check is the whole access model for it.
+
+```ts
+interface CareNeed {
+  id: string;
+  moveId: string;
+  title: string;               // the heading on the card, 1 to 80 chars
+  note?: string;               // one line under the title, what this card is for
+  order: number;               // display order, lowest first
+  providers: CareProvider[];   // at most 12
+  updatedAt: string;
+  updatedBy: string;           // uid, pinned by the rules
+}
+
+interface CareProvider {
+  id: string;
+  name: string;
+  practice?: string;
+  phone?: string;
+  address?: string;
+  why?: string;                // the line the reviewer reads
+  status: "not_called" | "called" | "booked" | "passed";
+  lean?: boolean;              // at most one per need; the domain keeps it so
+  note?: string;               // free text, such as a booked date
+}
+```
+
+The card is written whole on every change, in one batch with a `care_changed` activity event whose payload names the change (`card_added`, `card_edited`, `card_removed`, `option_added`, `option_edited`, `option_removed`, `status_changed`, `lean_changed`, `imported`) and, where there is one, the option's id, name and status. Optional fields are absent rather than undefined, because Firestore refuses an explicit undefined. Two phones editing one card offline resolve last-write-wins, which ADR-0002 accepted for the move. Nothing about a provider is ever committed to this repository; the list is entered in the app, or pasted into it in the import shape in `src/domain/care.ts`.
 
 ## Identity rules
 

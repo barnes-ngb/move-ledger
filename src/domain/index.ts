@@ -8,3 +8,4 @@ export * from "./search";
 export * from "./export";
 export * from "./summary";
 export * from "./contents";
+export * from "./care";

@@ -542,3 +542,45 @@ describe("move creation", () => {
     );
   });
 });
+
+describe("the care team", () => {
+  function careDoc(over: Record<string, unknown> = {}) {
+    return {
+      moveId: MOVE,
+      title: "Everyday doctor",
+      order: 0,
+      providers: [],
+      updatedAt: NOW,
+      updatedBy: NATHAN,
+      ...over,
+    };
+  }
+
+  it("a member can write and read a card", async () => {
+    const db = env.authenticatedContext(NATHAN).firestore();
+    await assertSucceeds(setDoc(doc(db, "moves", MOVE, "care", "n1"), careDoc()));
+    await assertSucceeds(getDoc(doc(db, "moves", MOVE, "care", "n1")));
+    const other = env.authenticatedContext(SHELLY).firestore();
+    await assertSucceeds(getDoc(doc(other, "moves", MOVE, "care", "n1")));
+    await assertSucceeds(setDoc(doc(other, "moves", MOVE, "care", "n1"), careDoc({ updatedBy: SHELLY })));
+    await assertSucceeds(deleteDoc(doc(other, "moves", MOVE, "care", "n1")));
+  });
+
+  it("the write must carry the writer's own uid and the move id", async () => {
+    const db = env.authenticatedContext(SHELLY).firestore();
+    await assertFails(setDoc(doc(db, "moves", MOVE, "care", "n1"), careDoc({ updatedBy: NATHAN })));
+    await assertFails(setDoc(doc(db, "moves", MOVE, "care", "n1"), careDoc({ moveId: "other", updatedBy: SHELLY })));
+  });
+
+  it("a stranger and a signed-out request see nothing", async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "moves", MOVE, "care", "n1"), careDoc());
+    });
+    const stranger = env.authenticatedContext(STRANGER).firestore();
+    await assertFails(getDoc(doc(stranger, "moves", MOVE, "care", "n1")));
+    await assertFails(getDocs(collection(stranger, "moves", MOVE, "care")));
+    await assertFails(setDoc(doc(stranger, "moves", MOVE, "care", "n2"), careDoc({ updatedBy: STRANGER })));
+    const anon = env.unauthenticatedContext().firestore();
+    await assertFails(getDoc(doc(anon, "moves", MOVE, "care", "n1")));
+  });
+});

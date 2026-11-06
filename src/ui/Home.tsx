@@ -1,11 +1,13 @@
 import { isVoided, type Container } from "../domain";
 import type { MoveContext } from "../hooks/useMove";
+import { useCare } from "../hooks/useCare";
 import { useContainers } from "../hooks/useContainers";
 import { usePhotoCounts } from "../hooks/usePhotoCounts";
 import { AddBox } from "./box/AddBox";
 import { BoxDetail } from "./box/BoxDetail";
 import { BoxList } from "./box/BoxList";
 import { FindBox } from "./box/FindBox";
+import { Care } from "./care/Care";
 import { useHistoryView } from "./history";
 import { Button, Screen, SubscriptionFailed } from "./kit";
 import { useOfferHome } from "./nav";
@@ -31,7 +33,9 @@ type View =
   | { name: "add"; draftId?: string }
   | { name: "find" }
   | { name: "list"; query: string }
-  | { name: "detail"; id: string; from: View };
+  | { name: "detail"; id: string; from: View }
+  /** The care team: the doctors the household is choosing for after the move. See decisions/0006-care-page.md. */
+  | { name: "care" };
 
 /** The move overview. Stable so it can be the root of the history slot. */
 const HOME: View = { name: "home" };
@@ -48,6 +52,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
   const view = nav.view;
   const { containers, loaded, failed, retry } = useContainers(ctx.move?.id ?? null);
   const photoCounts = usePhotoCounts(ctx.move?.id ?? null, view.name === "list");
+  const care = useCare(ctx.move?.id ?? null, view.name === "care");
 
   // Every screen under this one goes home through the header title. Add box
   // is the exception and takes the header itself, because leaving it means
@@ -78,6 +83,20 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         // and back should still return to wherever Add box was opened from.
         onDraft={(draftId) => nav.update({ name: "add", draftId })}
         onLeave={nav.home}
+      />
+    );
+  }
+
+  if (view.name === "care") {
+    return (
+      <Care
+        moveId={moveId}
+        uid={uid}
+        needs={care.needs}
+        loaded={care.loaded}
+        failed={care.failed}
+        retry={care.retry}
+        onBack={nav.back}
       />
     );
   }
@@ -182,6 +201,9 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         </Button>
         <Button onClick={() => nav.open({ name: "list", query: "" })} tone="quiet">
           See all boxes
+        </Button>
+        <Button onClick={() => nav.open({ name: "care" })} tone="quiet">
+          See the care team
         </Button>
         <button onClick={onSetup} className="min-h-14 text-slate-400 underline">
           Rooms and members

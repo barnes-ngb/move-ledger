@@ -1,6 +1,6 @@
 {
-  "edition": "November 4, 2026 — afternoon Northview rating update",
-  "note": "Shelly's Nov 4 provisional ~4.5/5 Northview rating is now charted as hers, NOT ChatGPT's earlier 3.8 prediction. Northview's $2,228 represents an advertised monthly total including required fees BEFORE pets; other chart rents are generally base. All pet and availability gates remain separate.",
+  "edition": "November 8, 2026 — Shelly rates Buffalo Ridge and Vista Oak",
+  "note": "Shelly direct ratings Nov 8: 9720 Buffalo Ridge Rd = 4.6/5 and 12113 Vista Oak Blvd = 4.5/5. Plot uses advertised BASE rent for both, NOT full monthly cost. Earlier Northview rating ~4.5/5 remains tentative. No listing is counted as approved for Sunny and the regular-pet cat. Vista 18-month offer ($1,995 base + $184.90 services) must not be called a 12-month quote.",
   "homes": [
     {
       "id": "hearthstone",
@@ -173,9 +173,59 @@
       "fit": "New Nov 4 discovery. One-story 4 bedrooms PLUS fifth study/flex room, 2 baths, 1,822 sq ft, tile and LVP with no carpet advertised, open living, two-car garage, covered patio and private yard. Yard is small, with hardscape/rock paths reducing grass. 4.1/5 is a low-confidence predicted visual fit, not Shelly's rating.",
       "status": "PUBLIC PHOTO LINK REPLACED Nov 4: DFW Urban Realty was prompting for Google sign-in. The Coldwell Banker listing shows 16 photos and current $2,299 base without requiring Google sign-in to read the listing. The serious unresolved issue is ordinary approval for Sunny; a third-party property-specific listing says small dogs only.",
       "photoSource": "Coldwell Banker: publicly accessible 16-photo gallery; no Google account connection needed for viewing."
+    },
+    {
+      "id": "buffalo",
+      "name": "9720 Buffalo Ridge Rd",
+      "city": "Fort Worth",
+      "rent": 2345,
+      "rating": 4.6,
+      "basis": "Shelly",
+      "checkpoint": "2026-11-20",
+      "trackedOn": "2026-11-07",
+      "ratingUpdatedOn": "2026-11-08",
+      "url": "https://sundayshowings.com/rent/9720-buffalo-ridge-road-fort-worth-tx-76036-1194690739",
+      "priceBasis": "MLS listed BASE rent; 12-month term unverified",
+      "priceNote": "New MLS rental November 6 (21429734), $2,345 base. Refundable security-deposit amounts conflict at $2,345/$2,400; $300 pet-deposit entry has unclear refundability/scope. Mandatory recurring charges, ordinary dog-and-cat rent, 12-month quote and total upfront costs unverified; included refrigerator, washer and dryer advertised. Tenant pays lawn/pest care.",
+      "fit": "Shelly directly rates this home 4.6/5 (Nov 8). One-story 4BR/2BA 1,838 sq ft; quartz countertops, stainless kitchen, LVP, open-plan living, fenced yard and double primary sinks claimed in current MLS. Fourth bedroom could serve as private office. Grass amount, carpet in bedrooms, bathtub location, kitchen's exact size and work commute need verification.",
+      "status": "Newly listed Nov 6; active in MLS-linked feeds checked Nov 8. RE/MAX Trinity / Jean Sullivan is listing agent. Nathan's November 8 inquiry was emailed to broker office to forward to Jean; ordinary-pet rules, lease, fees and potential Thanksgiving visit are awaiting response.",
+      "petGate": "Golden retriever + cat require written approval; size/number/breed restrictions listed",
+      "petBlocked": false
+    },
+    {
+      "id": "vistaoak",
+      "name": "12113 Vista Oak Blvd",
+      "city": "Burleson",
+      "rent": 1995,
+      "rating": 4.5,
+      "basis": "Shelly",
+      "checkpoint": "2026-11-20",
+      "trackedOn": "2026-11-08",
+      "ratingUpdatedOn": "2026-11-08",
+      "url": "https://www.invitationhomes.com/houses-for-rent/12113-vista-oak-blvd-76028-9538",
+      "priceBasis": "Manager BASE rent for 18-month offer; 12-month unknown",
+      "priceNote": "Invitation Homes $1,995 base on advertised 18-month lease + $184.90 required package (Internet $85, washer/dryer $40, smart home $40, air filters $9.95, utility billing $9.95) = $2,179.90 before pets, utilities and insurance. Some cached sources show $2,145 for 20 months; these are term-dependent, not a verified reduction. Illustrative up to $80 ordinary monthly rent for two pets would total $2,259.90; deposit and upfront pet fees unquoted.",
+      "fit": "Shelly directly rates Vista Oak 4.5/5 (Nov 8). One-story 4BR/2BA, 1,920 sq ft, bay-window natural light, connected kitchen/living, granite, stainless appliances, LVP, fenced backyard/patio and garage advertised. Fourth bedroom could serve as office. Amount of grassy yard, carpet by room, primary bathtub and bathroom vanity need photo/manager confirmation.",
+      "status": "Direct manager listing advertises available, but generic text also mentions resident occupancy; possession date uncertain. Invitation Homes general pet policy permits three pets, but a property-specific third-party listing explicitly says small dogs only; Sunny is NOT cleared. Inquiry via official contact channel was requested Nov 8; written large-dog and cat approval still needed.",
+      "petGate": "Small-dog-only portal conflict: Sunny not approved",
+      "petBlocked": true
     }
   ],
   "updates": [
+    {
+      "date": "Nov 8",
+      "tag": "SHELLY • 4.6/5",
+      "houseId": "buffalo",
+      "title": "9720 Buffalo Ridge Road — Shelly's rating",
+      "detail": "Shelly directly rates Buffalo Ridge 4.6/5. Newly listed Nov 6 at $2,345 MLS BASE. One-story 4BR/2BA, open kitchen; grassy yard, bathtub, bedroom floors and exact commute still need verification. Sent a single inquiry to RE/MAX Trinity for listing agent Jean Sullivan about pets, full fees and Thanksgiving viewing possibilities. No pet approval or booking assumed."
+    },
+    {
+      "date": "Nov 8",
+      "tag": "SHELLY • 4.5/5",
+      "houseId": "vistaoak",
+      "title": "12113 Vista Oak Boulevard — Shelly's rating",
+      "detail": "Shelly directly rates Vista Oak 4.5/5. Manager's $1,995 BASE quote is for 18 months; mandatory services $184.90, total $2,179.90 BEFORE pet charges. Trulia lists small dogs only despite generic manager pet-friendly policy. Sunny still requires explicit approval; floor, tub, grass and possession should be verified."
+    },
     {
       "date": "Nov 4",
       "tag": "SHELLY • Tentative 4.5/5",

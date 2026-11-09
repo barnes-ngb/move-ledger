@@ -1,6 +1,6 @@
 {
-  "edition": "November 8, 2026 — Shelly rates Buffalo Ridge and Vista Oak",
-  "note": "Shelly direct ratings Nov 8: 9720 Buffalo Ridge Rd = 4.6/5 and 12113 Vista Oak Blvd = 4.5/5. Plot uses advertised BASE rent for both, NOT full monthly cost. Earlier Northview rating ~4.5/5 remains tentative. No listing is counted as approved for Sunny and the regular-pet cat. Vista 18-month offer ($1,995 base + $184.90 services) must not be called a 12-month quote.",
+  "edition": "November 9, 2026 — Vista Oak Shelly rating corrected",
+  "note": "Shelly direct ratings Nov 8: 9720 Buffalo Ridge Rd = 4.6/5 and 12113 Vista Oak Blvd = 4.5/5. Plot uses advertised BASE rent for both, NOT full monthly cost. Earlier Northview rating ~4.5/5 remains tentative. No listing is counted as approved for Sunny and the regular-pet cat. Vista 18-month offer ($1,995 base + $184.90 services) must not be called a 12-month quote.\nNov 9: Shelly directly confirmed Vista Oak 4.4/5 (corrects the previous 4.5 value). Fit is separate from live availability, two-pet approval and full lease costs.",
   "homes": [
     {
       "id": "hearthstone",
@@ -197,21 +197,29 @@
       "name": "12113 Vista Oak Blvd",
       "city": "Burleson",
       "rent": 1995,
-      "rating": 4.5,
+      "rating": 4.4,
       "basis": "Shelly",
       "checkpoint": "2026-11-20",
       "trackedOn": "2026-11-08",
-      "ratingUpdatedOn": "2026-11-08",
+      "ratingUpdatedOn": "2026-11-09",
       "url": "https://www.invitationhomes.com/houses-for-rent/12113-vista-oak-blvd-76028-9538",
       "priceBasis": "Manager BASE rent for 18-month offer; 12-month unknown",
       "priceNote": "Invitation Homes $1,995 base on advertised 18-month lease + $184.90 required package (Internet $85, washer/dryer $40, smart home $40, air filters $9.95, utility billing $9.95) = $2,179.90 before pets, utilities and insurance. Some cached sources show $2,145 for 20 months; these are term-dependent, not a verified reduction. Illustrative up to $80 ordinary monthly rent for two pets would total $2,259.90; deposit and upfront pet fees unquoted.",
-      "fit": "Shelly directly rates Vista Oak 4.5/5 (Nov 8). One-story 4BR/2BA, 1,920 sq ft, bay-window natural light, connected kitchen/living, granite, stainless appliances, LVP, fenced backyard/patio and garage advertised. Fourth bedroom could serve as office. Amount of grassy yard, carpet by room, primary bathtub and bathroom vanity need photo/manager confirmation.",
+      "fit": "Shelly directly rates Vista Oak 4.4/5, confirmed November 9. One-story 4BR/2BA, 1,920 sq ft, bay-window natural light, connected kitchen/living, granite, stainless appliances, LVP, fenced backyard/patio and garage advertised. Fourth bedroom could serve as office. Amount of grassy yard, carpet by room, primary bathtub and bathroom vanity need photo/manager confirmation.",
       "status": "Direct manager listing advertises available, but generic text also mentions resident occupancy; possession date uncertain. Invitation Homes general pet policy permits three pets, but a property-specific third-party listing explicitly says small dogs only; Sunny is NOT cleared. Inquiry via official contact channel was requested Nov 8; written large-dog and cat approval still needed.",
       "petGate": "Small-dog-only portal conflict: Sunny not approved",
-      "petBlocked": true
+      "petBlocked": true,
+      "ratingStatus": "confirmed"
     }
   ],
   "updates": [
+    {
+      "date": "Nov 9",
+      "tag": "SHELLY • Rating corrected",
+      "houseId": "vistaoak",
+      "title": "Vista Oak is 4.4/5",
+      "detail": "Shelly confirmed 12113 Vista Oak Blvd as 4.4/5, correcting the earlier plot value of 4.5. It remains a strong candidate on fit, but ordinary large-golden-retriever + cat approval and final 18-/22-month pricing, fee totals and possession remain unverified."
+    },
     {
       "date": "Nov 8",
       "tag": "SHELLY • 4.6/5",

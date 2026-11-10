@@ -1,6 +1,6 @@
 {
-  "edition": "November 10, 2026 — Buffalo cat restriction; two new-to-tracker study houses",
-  "note": "Shelly direct ratings Nov 8: 9720 Buffalo Ridge Rd = 4.6/5 and 12113 Vista Oak Blvd = 4.4/5. Plot uses advertised BASE rent for both, NOT full monthly cost. Earlier Northview rating ~4.5/5 remains tentative. No listing is counted as approved for Sunny and the regular-pet cat. Vista 18-month offer ($1,995 base + $184.90 services) must not be called a 12-month quote.\nNov 9: Shelly directly confirmed Vista Oak 4.4/5 (corrects the previous 4.5 value). Fit is separate from live availability, two-pet approval and full lease costs.\nNov 10: Direct agent Jean Sullivan confirmed Buffalo Ridge DOES NOT ALLOW CATS. Remove it from current viable choices despite Shelly's confirmed 4.6/5 home fit.",
+  "edition": "November 10, 2026 — Tide Lane reviewed, 16 tracked homes",
+  "note": "Nov 10 update: 6932 Tide Lane added with provisional visual-fit 4.4/5 and warnings: pets, dual sale/rent marketing, excluded appliances, age-restriction data anomaly, and uncertain full backyard/commute. Base-rent plot excludes unknown required extras and uses Northview advertised-inclusive exception.",
   "homes": [
     {
       "id": "hearthstone",
@@ -247,9 +247,35 @@
       "status": "NTREIS-linked Coldwell Banker listing active as checked Nov10, public list date October 8; listed available Nov1 but current possession unconfirmed.",
       "petGate": "MLS says pets allowed generically but neither ordinary cat nor large golden retriever individually verified.",
       "petBlocked": false
+    },
+    {
+      "id": "tide",
+      "name": "6932 Tide Ln",
+      "city": "Fort Worth",
+      "rent": 2250,
+      "rating": 4.4,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-20",
+      "trackedOn": "2026-11-10",
+      "url": "https://www.coldwellbankerhomes.com/tx/fort-worth/6932-tide-ln/pid_74666023/",
+      "priceBasis": "$2,250 advertised base rent; pet, HOA and other tenant costs unverified",
+      "petGate": "Cats/dogs allowed with breed, size & count limits; Sunny and Belle not cleared",
+      "priceNote": "New rental MLS 21430831 posted Nov 8, active, marketed available Nov 6. Advertised $2,250 base, refundable security deposit $2,250, pet deposit $500 (verify if per pet or total), $400/year HOA assessment shown but TENANT obligation unconfirmed. Utilities paid by renter; 12-month quote, application and recurring pet fees unverified. Rental property is ALSO advertised FOR SALE near $308,500; obtain written lease/ownership-sale protection.",
+      "fit": "Excellent on-paper fit, provisional ChatGPT 4.4/5 (NOT rated by Shelly): detached one story, 1,805 sq ft, four bedrooms PLUS dedicated 11x10 office/flex, open granite peninsula kitchen and walk-in pantry, primary soaking tub and double sinks advertised, ceramic tile and luxury vinyl plank flooring (no carpet listed), large laundry room, covered patio, two-car garage, community pool/pond/playground. Only 0.126-acre lot; wood fence listed but complete dog-safe enclosure and actual usable backyard grass NOT photo confirmed. Interior photos beyond first exterior set could not be inspected reliably.",
+      "status": "PHOTO REVIEW / PET & LEASE CONDITIONS REQUIRED. Listed for sale and rent simultaneously, renter appliances excluded (refrigerator, washer, dryer, deep freezer); confirm whether sale listing continues during tenancy, lease term and any transfer. Pet policy says breed/size/number limits, no written Sunny/Belle approval. One sale MLS feed also flags 'Senior Community: Yes' although nearby listings and playground suggest conflicting data; confirm no age restriction for a family with children. HOA annual assessment tenant liability unverified. Commute to Irving not independently timed.",
+      "petBlocked": false,
+      "availabilityStatus": "Advertised active Nov 9–10, 2026; not manager-confirmed",
+      "ratingConfidence": "medium-low; actual Shelly photo judgment pending"
     }
   ],
   "updates": [
+    {
+      "date": "Nov 10",
+      "tag": "NEW LISTING • Strong on-paper match",
+      "houseId": "tide",
+      "title": "6932 Tide Lane — office + soaking tub + no listed carpet",
+      "detail": "$2,250 base, 4 bedrooms plus 11×10 office, one story, tile/LVP flooring, primary soaking tub, open granite kitchen, wood fence and covered patio. Provisional 4.4/5 prediction, not Shelly-rated. PET approval, full backyard, fridge/washer/dryer absence, age-restriction field and simultaneous sale/rent listing need verification."
+    },
     {
       "date": "Nov 10",
       "tag": "DISCOVERED • Existing inventory",

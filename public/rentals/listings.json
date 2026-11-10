@@ -1,5 +1,5 @@
 {
-  "edition": "November 10, 2026 — Buffalo Ridge no-cat hard exclusion",
+  "edition": "November 10, 2026 — Buffalo cat restriction; two new-to-tracker study houses",
   "note": "Shelly direct ratings Nov 8: 9720 Buffalo Ridge Rd = 4.6/5 and 12113 Vista Oak Blvd = 4.4/5. Plot uses advertised BASE rent for both, NOT full monthly cost. Earlier Northview rating ~4.5/5 remains tentative. No listing is counted as approved for Sunny and the regular-pet cat. Vista 18-month offer ($1,995 base + $184.90 services) must not be called a 12-month quote.\nNov 9: Shelly directly confirmed Vista Oak 4.4/5 (corrects the previous 4.5 value). Fit is separate from live availability, two-pet approval and full lease costs.\nNov 10: Direct agent Jean Sullivan confirmed Buffalo Ridge DOES NOT ALLOW CATS. Remove it from current viable choices despite Shelly's confirmed 4.6/5 home fit.",
   "homes": [
     {
@@ -26,9 +26,9 @@
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
-      "priceNote": "Progress Residential indexed 12-month quote: $2,235 BASE + $29.98 required services = $2,264.98 before pets. Zillow displays approximately $2,265 including required fees (not a separate price cut); with an illustrative $144 for two ordinary pets, about $2,408.98 before utilities/insurance. Other portals still disagree, so confirm final lease quote.",
+      "priceNote": "Zillow total required recurring price history $2,220 on Nov 7 (down from $2,265 Oct 30). Redfin displays $2,190 base; if those terms align with Progress $29.98 service and $144 two-pet policy, illustrative $2,363.98, NOT a confirmed final 12-month manager quote. Earlier 12-month basis $2,235 base + $29.98 + $144 = $2,408.98. Specific lease quote and property pet approval unresolved.",
       "fit": "Shelly's second-favorite. Hard floors and comfortable layout; painted cabinets and complete fencing need review.",
-      "status": "Actionable favorite; Shelly explicitly ranked it #2. Listing generally permits large dogs and cats, but confirm actual Sunny/Belle pet screening, lawn/HOA rules and completeness of fence.",
+      "status": "Publicly marketed as of Nov 10; Progress Nov 8 email: ready homes must be possessed within 12 days, may extend 7 days for $250; fridge included, washer/dryer NOT included (hookups only), HOA dues paid by Progress but CC&Rs supplied after application. Pet eligibility and dog-safe fence unverified.",
       "priceBasis": "12-month manager base rent; $29.98 required services extra",
       "petGate": "Large dogs + cats listed; individual approval pending",
       "priceUpdatedOn": "2026-11-04"
@@ -206,16 +206,64 @@
       "trackedOn": "2026-11-08",
       "ratingUpdatedOn": "2026-11-09",
       "url": "https://www.invitationhomes.com/houses-for-rent/12113-vista-oak-blvd-76028-9538",
-      "priceBasis": "Manager BASE rent for 18-month offer; 12-month unknown",
-      "priceNote": "Invitation Homes $1,995 base on advertised 18-month lease + $184.90 required package (Internet $85, washer/dryer $40, smart home $40, air filters $9.95, utility billing $9.95) = $2,179.90 before pets, utilities and insurance. Some cached sources show $2,145 for 20 months; these are term-dependent, not a verified reduction. Illustrative up to $80 ordinary monthly rent for two pets would total $2,259.90; deposit and upfront pet fees unquoted.",
+      "priceBasis": "Manager BASE rent for 22-month offer on direct page checked Nov 10; indexed 18-month quote also exists; 12-month unknown",
+      "priceNote": "$1,995 base + $184.90 mandatory package = $2,179.90 before pets, metered utilities, insurance; current direct page shows 22 months but search snippets showed 18 months. Hypothetical up to $80 two-pet rent would total $2,259.90 only if both are approved. Deposit and upfront fees unquoted.",
       "fit": "Shelly directly rates Vista Oak 4.4/5, confirmed November 9. One-story 4BR/2BA, 1,920 sq ft, bay-window natural light, connected kitchen/living, granite, stainless appliances, LVP, fenced backyard/patio and garage advertised. Fourth bedroom could serve as office. Amount of grassy yard, carpet by room, primary bathtub and bathroom vanity need photo/manager confirmation.",
-      "status": "Direct manager listing advertises available, but generic text also mentions resident occupancy; possession date uncertain. Invitation Homes general pet policy permits three pets, but a property-specific third-party listing explicitly says small dogs only; Sunny is NOT cleared. Inquiry via official contact channel was requested Nov 8; written large-dog and cat approval still needed.",
+      "status": "Direct manager page checked Nov 10 advertises Available Now and 22-month lease, but description says resident-occupied; possession date conflicted. Third-party small-dog-only restriction conflicts with manager general allowance of up to 3 pets. Sunny and cat not individually cleared.",
       "petGate": "Small-dog-only portal conflict: Sunny not approved",
       "petBlocked": true,
       "ratingStatus": "confirmed"
+    },
+    {
+      "id": "lemongrove",
+      "name": "4829 Lemon Grove Dr",
+      "city": "Fort Worth",
+      "rent": 2295,
+      "rating": 3.8,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-20",
+      "trackedOn": "2026-11-10",
+      "url": "https://www.coldwellbankerhomes.com/tx/fort-worth/4829-lemon-grove-dr/pid_74049890/",
+      "priceBasis": "MLS base rent for explicitly advertised 12-month term",
+      "priceNote": "Listed October 1, 2026, not a new Nov10 market arrival. $2,295 12-month base, $2,295 refundable security deposit, $1,000 advertised pet deposit (refundability and per-pet coverage unknown); possible $500 first-month special for qualifying 12-month lease. Mandatory recurring and pet rent unquoted. Fridge included; washer/dryer hookups only. Tenant pays all utilities, grounds care, insurance and trash.",
+      "fit": "Assistant preliminary estimate 3.8/5 only; Shelly has NOT reviewed. Detached single-story 4BR plus advertised separate study, 1,968 sq ft, connected kitchen/living with granite/bar, primary garden tub AND separate shower, two-car garage. MLS explicitly lists carpet + tile and 5,314 sqft lot; grass amount, bedroom flooring location, private study closure, wall brightness, laundry proximity and fence gates require original 34-photo review.",
+      "status": "Active on NTREIS-linked property listing checked November 10, first publicly listed October 1. Advertised available Nov 15; possession not individually verified. Source photographs may predate current condition.",
+      "petGate": "MLS says pets allowed generically; ordinary cat and full-size golden retriever together NOT individually approved; $1,000 pet deposit appears",
+      "petBlocked": false
+    },
+    {
+      "id": "finn",
+      "name": "8912 Finn Ln",
+      "city": "Fort Worth",
+      "rent": 2400,
+      "rating": 3.6,
+      "basis": "Estimated",
+      "checkpoint": "2026-11-20",
+      "trackedOn": "2026-11-10",
+      "url": "https://www.coldwellbankerhomes.com/tx/fort-worth/8912-finn-ln/pid_74175533/",
+      "priceBasis": "MLS advertised base; term length unspecified",
+      "priceNote": "Originally listed October 8, 2026, new-to-tracker Nov10; $2,400 base, lease length and mandatory recurring unquoted. $2,400 refundable deposit and $250 published pet deposit, deposit refundability/per-pet coverage unknown. $360/year HOA assessment shown but tenant liability NOT established. Fridge and washer/dryer machines unlisted; hookups confirmed.",
+      "fit": "Assistant preliminary estimate 3.6/5 only; Shelly has NOT reviewed. 1,995 sq ft one-story detached 4BR + advertised dedicated study, generous granite island kitchen, wood-look tiled common area, two-car garage and fence, but MLS explicitly lists CARPET and ceramic tile, small 5,489 sqft lot, tub/grass/photo condition unknown, North Fort Worth commute not measured.",
+      "status": "NTREIS-linked Coldwell Banker listing active as checked Nov10, public list date October 8; listed available Nov1 but current possession unconfirmed.",
+      "petGate": "MLS says pets allowed generically but neither ordinary cat nor large golden retriever individually verified.",
+      "petBlocked": false
     }
   ],
   "updates": [
+    {
+      "date": "Nov 10",
+      "tag": "DISCOVERED • Existing inventory",
+      "houseId": "finn",
+      "title": "Finn Lane: 4BR + study but carpet",
+      "detail": "8912 Finn Ln Fort Worth, first listed Oct8, newly found Nov10. $2,400 base term not quoted, 19 photos, carpet in MLS, small yard lot; both pets/cost/commute unresolved."
+    },
+    {
+      "date": "Nov 10",
+      "tag": "DISCOVERED • Existing inventory",
+      "houseId": "lemongrove",
+      "title": "Lemon Grove: 4BR + study and primary tub",
+      "detail": "4829 Lemon Grove Dr Fort Worth, first public listing October 1; newly found Nov10. $2,295/12mo, 34-photo gallery, no whole-house no-carpet claim (MLS lists carpet). Two-pet screening and full fees unverified."
+    },
     {
       "date": "Nov 10",
       "tag": "PETS • HARD BLOCK",

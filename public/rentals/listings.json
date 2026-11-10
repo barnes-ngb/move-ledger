@@ -1,6 +1,6 @@
 {
-  "edition": "November 9, 2026 — Vista Oak Shelly rating corrected",
-  "note": "Shelly direct ratings Nov 8: 9720 Buffalo Ridge Rd = 4.6/5 and 12113 Vista Oak Blvd = 4.5/5. Plot uses advertised BASE rent for both, NOT full monthly cost. Earlier Northview rating ~4.5/5 remains tentative. No listing is counted as approved for Sunny and the regular-pet cat. Vista 18-month offer ($1,995 base + $184.90 services) must not be called a 12-month quote.\nNov 9: Shelly directly confirmed Vista Oak 4.4/5 (corrects the previous 4.5 value). Fit is separate from live availability, two-pet approval and full lease costs.",
+  "edition": "November 10, 2026 — Buffalo Ridge no-cat hard exclusion",
+  "note": "Shelly direct ratings Nov 8: 9720 Buffalo Ridge Rd = 4.6/5 and 12113 Vista Oak Blvd = 4.4/5. Plot uses advertised BASE rent for both, NOT full monthly cost. Earlier Northview rating ~4.5/5 remains tentative. No listing is counted as approved for Sunny and the regular-pet cat. Vista 18-month offer ($1,995 base + $184.90 services) must not be called a 12-month quote.\nNov 9: Shelly directly confirmed Vista Oak 4.4/5 (corrects the previous 4.5 value). Fit is separate from live availability, two-pet approval and full lease costs.\nNov 10: Direct agent Jean Sullivan confirmed Buffalo Ridge DOES NOT ALLOW CATS. Remove it from current viable choices despite Shelly's confirmed 4.6/5 home fit.",
   "homes": [
     {
       "id": "hearthstone",
@@ -188,9 +188,12 @@
       "priceBasis": "MLS listed BASE rent; 12-month term unverified",
       "priceNote": "New MLS rental November 6 (21429734), $2,345 base. Refundable security-deposit amounts conflict at $2,345/$2,400; $300 pet-deposit entry has unclear refundability/scope. Mandatory recurring charges, ordinary dog-and-cat rent, 12-month quote and total upfront costs unverified; included refrigerator, washer and dryer advertised. Tenant pays lawn/pest care.",
       "fit": "Shelly directly rates this home 4.6/5 (Nov 8). One-story 4BR/2BA 1,838 sq ft; quartz countertops, stainless kitchen, LVP, open-plan living, fenced yard and double primary sinks claimed in current MLS. Fourth bedroom could serve as private office. Grass amount, carpet in bedrooms, bathtub location, kitchen's exact size and work commute need verification.",
-      "status": "Newly listed Nov 6; active in MLS-linked feeds checked Nov 8. RE/MAX Trinity / Jean Sullivan is listing agent. Nathan's November 8 inquiry was emailed to broker office to forward to Jean; ordinary-pet rules, lease, fees and potential Thanksgiving visit are awaiting response.",
-      "petGate": "Golden retriever + cat require written approval; size/number/breed restrictions listed",
-      "petBlocked": false
+      "status": "Excluded from executable shortlist. Direct listing-agent reply on Nov 9 says owner does NOT allow cats. Shelly-confirmed 4.6/5 home fit retained solely for search learning; no ordinary two-pet eligibility.",
+      "petGate": "HARD EXCLUSION: landlord does not allow cats (direct email from Jean Sullivan, RE/MAX Trinity, Nov 9, 2026)",
+      "petBlocked": true,
+      "lastVerified": "2026-11-10",
+      "replyUrl": "https://mail.google.com/mail/u/0/#all/1a1c2d021170d460",
+      "ratingStatus": "confirmed"
     },
     {
       "id": "vistaoak",
@@ -213,6 +216,13 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 10",
+      "tag": "PETS • HARD BLOCK",
+      "houseId": "buffalo",
+      "title": "Buffalo Ridge does not allow cats",
+      "detail": "Listing agent Jean Sullivan directly confirmed on Nov 9 that the landlord will not accept cats. Exclude from the viable rental shortlist; keep Shelly's 4.6/5 rating as fit learning. No exceptions or alternative terms approved."
+    },
     {
       "date": "Nov 9",
       "tag": "SHELLY • Rating corrected",

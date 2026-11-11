@@ -31,7 +31,7 @@ svg.chart{display:block;width:100%;height:auto;overflow:visible;touch-action:pan
 .chart a{cursor:pointer}.chart a:focus{outline:none}.chart a:focus circle.dot{stroke:#243e64;stroke-width:4}
 .legend{display:flex;gap:15px;flex-wrap:wrap;color:#586d7b;font-size:12px;margin:9px 0}
 .legend b{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px;background:#19866c}
-.legend b.pred{background:#c18a34;border-radius:2px}
+.legend b.pred{background:#c18a34;border-radius:2px}.legend b.nathan{background:#3175bd}
 .zo{display:flex;gap:8px;flex-wrap:wrap}.zo span{font-size:12px;padding:5px 9px;border:1px solid #d9e4e7;border-radius:8px;background:#f2f6f5}
 .homes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .home{border:1px solid var(--line);padding:14px;border-radius:13px;display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -76,7 +76,7 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
  <div class="stat"><strong id="edition">Nov 10, 2026</strong><span>Last published shortlist update</span></div>
 </div>
 <div class="panel" id="whats-new">
- <div class="subhead"><h2>What's new — November 10</h2><span class="pill">Published shortlist changes</span></div>
+ <div class="subhead"><h2>What's new — latest published changes</h2><span class="pill">Published shortlist changes</span></div>
  <p class="hint">These are new discoveries or meaningful changes. Predictions are not Shelly's ratings, and ordinary approval for both pets is never assumed.</p>
  <div id="news" class="homes"></div>
 </div>
@@ -84,7 +84,7 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
  <div class="subhead"><h2>Explore → exploit: cost against rating</h2><span class="pill">Tap a dot to open listing</span></div>
  <p class="hint">Top-left is strongest value. Green favors strong homes at lower rent; peach needs a truly loved house. New predicted ratings are estimates, NOT Shelly's votes. Chart displays advertised base prices EXCEPT Northview's $2,228 is a required-fees-inclusive total, before pets.</p>
  <svg class="chart" id="fitChart" viewBox="0 0 760 365" role="img" aria-label="Interactive scatter plot of base rent versus house rating"></svg>
- <div class="legend"><span><b></b>Rated by Shelly</span><span><b class="pred"></b>Predicted by ChatGPT</span></div>
+ <div class="legend"><span><b></b>Rated by Shelly</span><span><b class="nathan"></b>Rated by Nathan</span><span><b class="pred"></b>Predicted by ChatGPT</span></div>
 </div>
 <div class="panel">
  <div class="subhead"><h2>When to shift from searching to choosing</h2><span class="pill amber">Planning dates, not availability dates</span></div>
@@ -104,7 +104,7 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
    <label>House / street address<input id="f-address" required placeholder="123 Street, City"></label>
    <label>Advertised base rent ($)<input id="f-rent" type="number" required min="1" step="1" placeholder="2200"></label>
    <label>Likely fit (1–5)<input id="f-rating" type="number" required min="1" max="5" step=".1" value="4.0"></label>
-   <label>Rating basis<select id="f-basis"><option value="Estimated">Estimate</option><option value="Shelly">Shelly rated</option></select></label>
+   <label>Rating basis<select id="f-basis"><option value="Estimated">Estimate</option><option value="Shelly">Shelly rated</option><option value="Nathan">Nathan rated</option></select></label>
    <label>Review checkpoint<input id="f-date" type="date" value="2026-11-20"></label>
    <label>Property URL<input id="f-url" placeholder="https://..." type="url"></label>
    <label class="wide">Why it stands out / concerns<input id="f-fit" placeholder="Open kitchen, no carpet, grassy yard..."></label>
@@ -153,7 +153,7 @@ function addDot(s,x,y,h){
  var link=el(s,"a",{href:safeUrl(h.url),target:"_blank",rel:"noopener noreferrer"});
  var group=el(link,"g",{"aria-label":"Open listing: "+h.name,role:"link",tabindex:"0"});
  el(group,"circle",{cx:x,cy:y,r:19,fill:"transparent"});
- el(group,"circle",{cx:x,cy:y,r:9,fill:h.basis==="Shelly"?"#19866c":"#c18a34",stroke:"#fff","stroke-width":2,class:"dot"});
+ el(group,"circle",{cx:x,cy:y,r:9,fill:h.basis==="Shelly"?"#19866c":h.basis==="Nathan"?"#3175bd":"#c18a34",stroke:"#fff","stroke-width":2,class:"dot"});
  el(group,"title",{},h.name+" — "+money(h.rent)+" — "+Number(h.rating).toFixed(1)+"/5");
 }
 function drawFit(all){
@@ -199,8 +199,8 @@ function card(h){
  if(h.priceBasis){var priceBasis=document.createElement("div");priceBasis.className="small";priceBasis.style.maxWidth="150px";priceBasis.style.textAlign="right";priceBasis.textContent=h.priceBasis;priceBox.appendChild(priceBasis);}
  if(h.trackedOn==="2026-11-04"){var newBadge=document.createElement("span");newBadge.className="pill";newBadge.textContent="NEW Nov 4";name.appendChild(newBadge);}
  var rating=document.createElement("div");rating.className="inline";var tag=document.createElement("span");
- tag.className="pill"+(h.basis==="Shelly"?"":" amber");
- tag.textContent=Number(h.rating).toFixed(1)+" / 5 · "+(h.basis==="Shelly"?"Shelly rated":"Predicted");rating.appendChild(tag);
+ tag.className="pill"+(h.basis==="Estimated"?" amber":h.basis==="Nathan"?" neutral":"");
+ tag.textContent=Number(h.rating).toFixed(1)+" / 5 · "+(h.basis==="Shelly"?"Shelly rated":h.basis==="Nathan"?"Nathan "+(h.ratingStatus==="tentative"?"tentative":"rated"):"Predicted");rating.appendChild(tag);
  if(h.petGate){var pets=document.createElement("span");pets.className="pill "+(h.petBlocked?"amber":"neutral");pets.textContent=h.petGate;rating.appendChild(pets);}
  d.appendChild(rating);
  var p=document.createElement("p");p.textContent=h.fit||"";d.appendChild(p);
@@ -212,9 +212,9 @@ function card(h){
  var b=document.createElement("button");b.type="button";b.textContent="Edit rating";b.addEventListener("click",function(){
   var v=prompt("Rating for "+h.name+" (1–5):",h.rating);
   if(v===null)return;var n=Number(v);if(!Number.isFinite(n)||n<1||n>5)return alert("Use a number between 1 and 5.");
-  var bs=confirm("Is this Shelly's own rating?\nOK = Shelly rated; Cancel = prediction");
-  if(base.some(function(i){return i.id===h.id})){overrides[h.id]=Object.assign({},overrides[h.id]||{},{rating:Math.round(n*10)/10,basis:bs?"Shelly":"Estimated"})}
-  else{extra=extra.map(function(a){return a.id===h.id?Object.assign({},a,{rating:Math.round(n*10)/10,basis:bs?"Shelly":"Estimated"}):a})}
+  var who=prompt("Who rated this house? Enter Shelly, Nathan or Estimated:",h.basis||"Estimated");\n  if(who===null)return;who=who.trim();if(!["Shelly","Nathan","Estimated"].includes(who))return alert("Enter Shelly, Nathan or Estimated.");
+  if(base.some(function(i){return i.id===h.id})){overrides[h.id]=Object.assign({},overrides[h.id]||{},{rating:Math.round(n*10)/10,basis:who})}
+  else{extra=extra.map(function(a){return a.id===h.id?Object.assign({},a,{rating:Math.round(n*10)/10,basis:who}):a})}
   snap();render();show("Saved locally. Copy changes to republish for both devices.");
  });actions.appendChild(b);
  return d;

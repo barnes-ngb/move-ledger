@@ -1,6 +1,6 @@
 {
-  "edition": "November 10, 2026 — Tide Lane reviewed, 16 tracked homes",
-  "note": "Nov 10 update: 6932 Tide Lane added with provisional visual-fit 4.4/5 and warnings: pets, dual sale/rent marketing, excluded appliances, age-restriction data anomaly, and uncertain full backyard/commute. Base-rent plot excludes unknown required extras and uses Northview advertised-inclusive exception.",
+  "edition": "November 11, 2026 — Nathan rates Beaver Creek 4.5 tentative, Tide Lane 4.6",
+  "note": "Nov 11: Nathan's new ratings (Beaver Creek tentative 4.5; Tide Lane 4.6) are distinguished from Shelly's votes and assistant estimates. Showing availability requested in one-time emails; no tour booked. Keep pet, cost, age restriction and current availability gates separate.",
   "homes": [
     {
       "id": "hearthstone",
@@ -253,22 +253,57 @@
       "name": "6932 Tide Ln",
       "city": "Fort Worth",
       "rent": 2250,
-      "rating": 4.4,
-      "basis": "Estimated",
+      "rating": 4.6,
+      "basis": "Nathan",
       "checkpoint": "2026-11-20",
       "trackedOn": "2026-11-10",
       "url": "https://www.coldwellbankerhomes.com/tx/fort-worth/6932-tide-ln/pid_74666023/",
       "priceBasis": "$2,250 advertised base rent; pet, HOA and other tenant costs unverified",
       "petGate": "Cats/dogs allowed with breed, size & count limits; Sunny and Belle not cleared",
-      "priceNote": "New rental MLS 21430831 posted Nov 8, active, marketed available Nov 6. Advertised $2,250 base, refundable security deposit $2,250, pet deposit $500 (verify if per pet or total), $400/year HOA assessment shown but TENANT obligation unconfirmed. Utilities paid by renter; 12-month quote, application and recurring pet fees unverified. Rental property is ALSO advertised FOR SALE near $308,500; obtain written lease/ownership-sale protection.",
-      "fit": "Excellent on-paper fit, provisional ChatGPT 4.4/5 (NOT rated by Shelly): detached one story, 1,805 sq ft, four bedrooms PLUS dedicated 11x10 office/flex, open granite peninsula kitchen and walk-in pantry, primary soaking tub and double sinks advertised, ceramic tile and luxury vinyl plank flooring (no carpet listed), large laundry room, covered patio, two-car garage, community pool/pond/playground. Only 0.126-acre lot; wood fence listed but complete dog-safe enclosure and actual usable backyard grass NOT photo confirmed. Interior photos beyond first exterior set could not be inspected reliably.",
-      "status": "PHOTO REVIEW / PET & LEASE CONDITIONS REQUIRED. Listed for sale and rent simultaneously, renter appliances excluded (refrigerator, washer, dryer, deep freezer); confirm whether sale listing continues during tenancy, lease term and any transfer. Pet policy says breed/size/number limits, no written Sunny/Belle approval. One sale MLS feed also flags 'Senior Community: Yes' although nearby listings and playground suggest conflicting data; confirm no age restriction for a family with children. HOA annual assessment tenant liability unverified. Commute to Irving not independently timed.",
+      "priceNote": "Nov 8 MLS 21430831: $2,250 advertised base; yearly lease described in broker feed, terms unconfirmed; $2,250 published refundable security deposit; $500 pet deposit (per-pet treatment/refundability unknown); $400/yr HOA assessment shown, tenant responsibility UNKNOWN. Both-pet rent, recurring packages, upfront admin fees unknown. Marketed for sale and rent simultaneously; obtain protections and sale/lease intent in writing.",
+      "fit": "Nathan rates Tide Lane 4.6/5, not yet a Shelly rating. One-story, four bedrooms plus separate 11x10 office/flex, light-colored tile/LVP (no carpet in current MLS), open granite kitchen, pantry, primary soaking tub, fenced yard claimed, two-car garage. Small 0.126-acre lot; actual grass/fence and office enclosure not photo-verified.",
+      "status": "Active for rent in Nov 11 MLS at $2,250 BASE; simultaneously listed for SALE around $308,500. Showing request emailed Nov 11 to listing agent Kyle Vance; appointment not confirmed. MLS indicates 24-hour notice and appointment only. Cats/dogs permitted generally, subject to breed/number/size restrictions; neither individually cleared. One MLS-fed page marks 'Adult Community: Yes'—age restriction needs direct confirmation before considering this a family home. Refrigerator, washer, dryer and deep freezer excluded from lease marketing. Final costs and lease-start terms pending.",
       "petBlocked": false,
       "availabilityStatus": "Advertised active Nov 9–10, 2026; not manager-confirmed",
-      "ratingConfidence": "medium-low; actual Shelly photo judgment pending"
+      "ratingConfidence": "medium-low; actual Shelly photo judgment pending",
+      "ratingStatus": "reported",
+      "ratingUpdatedOn": "2026-11-11"
+    },
+    {
+      "id": "beavercreek",
+      "name": "828 Beaver Creek Dr",
+      "city": "Burleson",
+      "rent": 1990,
+      "rating": 4.5,
+      "basis": "Nathan",
+      "ratingStatus": "tentative",
+      "ratingUpdatedOn": "2026-11-11",
+      "trackedOn": "2026-11-06",
+      "checkpoint": "2026-11-23",
+      "url": "https://rentprogress.com/property-details/828-beaver-creek-dr/burleson/tx/76028/316204",
+      "priceBasis": "Manager 12-month BASE; +$29.98 recurring required services",
+      "petGate": "Progress generally permits 2 pets, but Sunny and cat/HOA approval pending",
+      "priceNote": "Nov 11 direct manager $1,990 base/12 months + $19.99 smart home + $9.99 utility service = $2,019.98 before pets. General Progress 2-pet rent $144/month makes illustrative $2,163.98, excluding metered utilities, insurance, lawn, possible HOA costs. Deposit generally 1–1.5 months' base; $55/adult application, $125 admin, $30 utility setup (verify specific charges). Resident occupied; earliest advertised lease start AFTER Dec 7. Manager advertises $500 NONREFUNDABLE holding fee credited to first month only if lease executed; no payment/application authorized. Refrigerator generally included; washer/dryer machines not confirmed, likely hookups only.",
+      "fit": "Nathan tentatively rates this home 4.5/5, NOT Shelly confirmed. One-story approx 1,675 sqft. Manager 4BR/2BA; historic address-matched floor plan appears 3 bedrooms plus approx 11x7 separate office. 2020 listing photos show hard floors, grassy fenced yard, primary tub and double vanity but current conditions and fence perimeter unverified; some images virtually staged. Kitchen looks compact compared with Hearthstone; inspect current finishes/bedroom floors/laundry location.",
+      "status": "COMING SOON; occupied. Showing inquiry emailed November 11 to Progress customer care asking for resident-approved Thanksgiving-week appointment windows Nov23–25 or 27–28, or video alternative; NO appointment confirmed. Lease advertised after Dec7, suitable potential for move Dec18 if actually available.",
+      "petBlocked": false
     }
   ],
   "updates": [
+    {
+      "date": "Nov 11",
+      "tag": "NATHAN • Tentative 4.5",
+      "houseId": "beavercreek",
+      "title": "Beaver Creek — showing requested",
+      "detail": "828 Beaver Creek Dr. Nathan tentative 4.5/5. One-story, old photos and floor plan, compact kitchen, resident-occupied; advertised lease start after Dec 7. One-time showing inquiry sent Nov 11; no appointment booked."
+    },
+    {
+      "date": "Nov 11",
+      "tag": "NATHAN • 4.6/5",
+      "houseId": "tide",
+      "title": "Tide Lane — showing requested",
+      "detail": "6932 Tide Ln. Nathan 4.6/5 supersedes assistant preliminary 4.4. Contacted listing agent once Nov 11 for Thanksgiving week; 24-hour notice and appointment required, no confirmed slot. Important gates: two pets, possibly erroneous adult-community flag, marketed for sale and rent, washer/dryer/fridge excluded."
+    },
     {
       "date": "Nov 10",
       "tag": "NEW LISTING • Strong on-paper match",

@@ -56,6 +56,23 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
 .pool-card .tag{align-self:flex-start}
 .pool-card .pool-meta{font-size:12px;color:#526a77}
 .pool-card .actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
+
+/* Per-house evidence and question tracking */
+.check-summary{border:1px solid #d7e4e9;border-radius:10px;background:#f7fafb;padding:9px;margin-top:4px}
+.check-summary .check-row{display:flex;gap:6px;flex-wrap:wrap;margin:7px 0}
+.check-summary .gate-chip{font-size:11px;font-weight:750;padding:3px 7px;border:1px solid #d8e0e5;border-radius:8px;background:white;color:#5e7180}
+.check-summary .gate-chip.yes{background:#eaf7ef;border-color:#bbdcc7;color:#206f4e}
+.check-summary .gate-chip.no{background:#fcebed;border-color:#e5c0c1;color:#963e42}
+.check-summary .gate-chip.conflict,.check-summary .gate-chip.pending{background:#fff6e3;border-color:#ecd5a1;color:#946720}
+.check-summary details{margin-top:6px}
+.check-summary summary{font-size:12px;font-weight:750;color:#22566a;cursor:pointer}
+.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:9px 0}
+.check-grid .check-item{border:1px solid #dbe4e9;border-radius:8px;padding:7px;background:#fff;min-width:0}
+.check-grid strong{font-size:11px;display:block}
+.check-grid span{font-size:11px;display:block;color:#596e7a}
+.check-summary .cost-est{font-size:12px;color:#30546a;margin-top:5px}
+.check-summary .open-q{padding-left:16px;font-size:11px;line-height:1.45;color:#5d6f7c}
+.check-summary .contact-updated{font-size:11px;color:#5d6f7c;margin-top:6px}
 </style>
 </head>
 <body>
@@ -72,7 +89,7 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
 </header>
 <div class="stats">
  <div class="stat"><strong id="n-homes">16</strong><span>Houses on the board</span></div>
- <div class="stat"><strong>$2,500</strong><span>Preferred base-rent ceiling (additional fees separate)</span></div>
+ <div class="stat"><strong>$2,400</strong><span>Preferred monthly total with both ordinary pets and mandatory fees · $2,500 hard base cap</span></div>
  <div class="stat"><strong id="edition">Nov 10, 2026</strong><span>Last published shortlist update</span></div>
 </div>
 <div class="panel" id="whats-new">
@@ -94,7 +111,7 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
 </div>
 <div class="panel">
  <div class="subhead"><h2>Houses, price details & clickable galleries</h2><span class="small" id="count">Updated when published</span></div>
- <p class="hint">Prices and lease lengths differ. The figures are generally BASE rent, except Northview ($2,228 incl. required fees). None includes verified total monthly cost for both pets, utilities and insurance. Confirm pet approval, availability and actual lease quotes before applying.</p>
+ <p class="hint">The monthly target is $2,400 INCLUDING required services and rent for Sunny AND Belle, excluding ordinary metered utilities and insurance. The $2,500 advertised BASE cap remains a stretch ceiling for exceptional homes. Check each card for dog/cat status, actual total, lease dates, available showing slots and unanswered questions. No green approvals without property-specific evidence.</p>
  <div class="homes" id="homes"></div>
 </div>
 <div class="panel" id="add">
@@ -203,16 +220,57 @@ function card(h){
  tag.textContent=Number(h.rating).toFixed(1)+" / 5 · "+(h.basis==="Shelly"?"Shelly rated":h.basis==="Nathan"?"Nathan "+(h.ratingStatus==="tentative"?"tentative":"rated"):"Predicted");rating.appendChild(tag);
  if(h.petGate){var pets=document.createElement("span");pets.className="pill "+(h.petBlocked?"amber":"neutral");pets.textContent=h.petGate;rating.appendChild(pets);}
  d.appendChild(rating);
+ var checks=h.readiness||{};
+ var checkBox=document.createElement("section");checkBox.className="check-summary";checkBox.setAttribute("aria-label","House readiness and outstanding questions");
+ var gates=["dog","cat","availability","cost","lease","photos","commute"];
+ var labels={dog:"Sunny",cat:"Cat",availability:"Available",cost:"All-in",lease:"Lease",photos:"Photos",commute:"Routes",tour:"Tour"};
+ var values=gates.map(function(k){return (checks[k]&&checks[k].status)||"unknown"});
+ var no=values.includes("no"),conflict=values.includes("conflict"),verified=values.every(function(s){return s==="yes"});
+ var headline=document.createElement("strong");headline.style.fontSize="12px";
+ headline.textContent=no?"BLOCKED · condition not met":conflict?"CHECK CONFLICT · not ready":verified?"READY · essential gates checked":"NOT READY · awaiting answers";
+ checkBox.appendChild(headline);
+ var chips=document.createElement("div");chips.className="check-row";
+ ["dog","cat","availability","cost","lease"].forEach(function(k){
+   var s=(checks[k]&&checks[k].status)||"unknown";if(!["yes","no","pending","conflict","unknown"].includes(s))s="unknown";
+   var chip=document.createElement("span");chip.className="gate-chip "+s;
+   chip.textContent=labels[k]+": "+({yes:"✓ Verified",no:"✕ Blocked",pending:"Pending",conflict:"Conflicting",unknown:"Unknown"})[s];
+   chips.appendChild(chip);
+ });
+ checkBox.appendChild(chips);
+ if(h.allInEstimate!=null&&Number.isFinite(Number(h.allInEstimate))){
+   var estimate=document.createElement("div");estimate.className="cost-est";
+   estimate.textContent="Estimated two-pet subtotal: "+money(Number(h.allInEstimate))+"/month · NOT a complete approved quote";
+   checkBox.appendChild(estimate);
+ }
+ var details=document.createElement("details"),summary=document.createElement("summary");summary.textContent="See all 8 checks and remaining questions";details.appendChild(summary);
+ var grid=document.createElement("div");grid.className="check-grid";
+ ["dog","cat","availability","cost","lease","photos","commute","tour"].forEach(function(k){
+   var x=checks[k]||{status:"unknown",detail:"Unverified"};
+   var item=document.createElement("div");item.className="check-item";
+   var title=document.createElement("strong");title.textContent=labels[k]+" — "+x.status;item.appendChild(title);
+   var desc=document.createElement("span");desc.textContent=x.detail||"No answer yet";item.appendChild(desc);grid.appendChild(item);
+ });
+ details.appendChild(grid);
+ if(h.allInBasis){var basis=document.createElement("div");basis.className="contact-updated";basis.textContent=h.allInBasis;details.appendChild(basis)}
+ if(h.questions&&h.questions.length){
+   var title=document.createElement("strong");title.style.fontSize="12px";title.textContent="Open questions";details.appendChild(title);
+   var ul=document.createElement("ul");ul.className="open-q";h.questions.forEach(function(q){var li=document.createElement("li");li.textContent=q;ul.appendChild(li)});details.appendChild(ul);
+ }
+ if(h.contactUpdate){var update=document.createElement("div");update.className="contact-updated";update.textContent="Contact log: "+h.contactUpdate;details.appendChild(update)}
+ if(h.checksUpdatedOn){var date=document.createElement("div");date.className="contact-updated";date.textContent="Reviewed "+h.checksUpdatedOn+"; statuses may change";details.appendChild(date)}
+ checkBox.appendChild(details);d.appendChild(checkBox);
  var p=document.createElement("p");p.textContent=h.fit||"";d.appendChild(p);
  if(h.priceNote){var note=document.createElement("p");note.textContent=h.priceNote;d.appendChild(note)}
  if(h.status){var st=document.createElement("p");st.className="small";st.textContent=h.status;d.appendChild(st)}
  var actions=document.createElement("div");actions.className="actions";d.appendChild(actions);
  var a=document.createElement("a");a.href=safeUrl(h.url);a.target="_blank";a.rel="noopener noreferrer";a.textContent="Open listing ↗";actions.appendChild(a);
  var route=document.createElement("a");route.href="https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(h.name+", "+h.city+", TX")+"&destination="+encodeURIComponent("6565 N MacArthur Blvd, Irving, TX")+"&travelmode=driving";route.target="_blank";route.rel="noopener noreferrer";route.textContent="Drive to office ↗";actions.appendChild(route);
+ var family=document.createElement("a");family.href="https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(h.name+", "+h.city+", TX")+"&destination="+encodeURIComponent("1801 W Lake Shore Dr, Alvarado, TX 76009")+"&travelmode=driving";family.target="_blank";family.rel="noopener noreferrer";family.textContent="Drive to parents ↗";actions.appendChild(family);
  var b=document.createElement("button");b.type="button";b.textContent="Edit rating";b.addEventListener("click",function(){
   var v=prompt("Rating for "+h.name+" (1–5):",h.rating);
   if(v===null)return;var n=Number(v);if(!Number.isFinite(n)||n<1||n>5)return alert("Use a number between 1 and 5.");
-  var who=prompt("Who rated this house? Enter Shelly, Nathan or Estimated:",h.basis||"Estimated");\n  if(who===null)return;who=who.trim();if(!["Shelly","Nathan","Estimated"].includes(who))return alert("Enter Shelly, Nathan or Estimated.");
+  var who=prompt("Who rated this house? Enter Shelly, Nathan or Estimated:",h.basis||"Estimated");
+  if(who===null)return;who=who.trim();if(!["Shelly","Nathan","Estimated"].includes(who))return alert("Enter Shelly, Nathan or Estimated.");
   if(base.some(function(i){return i.id===h.id})){overrides[h.id]=Object.assign({},overrides[h.id]||{},{rating:Math.round(n*10)/10,basis:who})}
   else{extra=extra.map(function(a){return a.id===h.id?Object.assign({},a,{rating:Math.round(n*10)/10,basis:who}):a})}
   snap();render();show("Saved locally. Copy changes to republish for both devices.");

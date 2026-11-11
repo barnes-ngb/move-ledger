@@ -1,6 +1,6 @@
 {
-  "edition": "November 11, 2026 — Nathan rates Beaver Creek 4.5 tentative, Tide Lane 4.6",
-  "note": "Nov 11: Nathan's new ratings (Beaver Creek tentative 4.5; Tide Lane 4.6) are distinguished from Shelly's votes and assistant estimates. Showing availability requested in one-time emails; no tour booked. Keep pet, cost, age restriction and current availability gates separate.",
+  "edition": "November 11, 2026 — expanded regional homes, $2,400 two-pet all-in preference and readiness checks",
+  "note": "Site now includes house-by-house status for Sunny, cat, occupancy, exact total, lease dates, photos, both destinations and showings. Unknown and conflicts never mean approved. Preferred <=$2400 monthly including mandatory and regular pet charges; exceptional up to hard $2500 base as stretch. Contact status is only a log and no booking is implied.",
   "homes": [
     {
       "id": "hearthstone",
@@ -15,7 +15,48 @@
       "fit": "Her ideal: single story, no carpet, open kitchen, separate study, soaking tub, grassy yard.",
       "status": "Active in public listings last checked November 4, but exact same-day availability and pet acceptance remain unconfirmed.",
       "priceBasis": "base rent (12-month ad)",
-      "petGate": "Golden retriever + cat acceptance unverified"
+      "petGate": "Golden retriever + cat acceptance unverified",
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Nov6 email to agent asks approval"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Nov6 email to agent asks approval"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "MLS active; exact vacant date not confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "December start requested"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "pending",
+          "detail": "Thanksgiving showing requested"
+        }
+      },
+      "questions": [
+        "Final two-pet rent and deposit",
+        "Written total and lease start",
+        "Fenced yard and included washer/dryer"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "contactUpdate": "Nov6: Inquiry sent; no agent reply established"
     },
     {
       "id": "clarks",
@@ -31,7 +72,50 @@
       "status": "Publicly marketed as of Nov 10; Progress Nov 8 email: ready homes must be possessed within 12 days, may extend 7 days for $250; fridge included, washer/dryer NOT included (hookups only), HOA dues paid by Progress but CC&Rs supplied after application. Pet eligibility and dog-safe fence unverified.",
       "priceBasis": "12-month manager base rent; $29.98 required services extra",
       "petGate": "Large dogs + cats listed; individual approval pending",
-      "priceUpdatedOn": "2026-11-04"
+      "priceUpdatedOn": "2026-11-04",
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Progress general allowance; HOA/individual screening open"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Progress general allowance; HOA/individual screening open"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "Advertised; possession unconfirmed"
+        },
+        "cost": {
+          "status": "pending",
+          "detail": "Last manager $2235 base + $29.98 services + $144 pets = $2408.98 estimate; newer portal total differs"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "Progress Nov8: rent ready start within 12 days, possible +7 days/$250"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "pending",
+          "detail": "Thanksgiving inquiry sent"
+        }
+      },
+      "questions": [
+        "Full 12-month quote at latest price",
+        "Sunny/cat HOA screening",
+        "Full fence and missing washer/dryer"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "allInEstimate": 2408.98,
+      "allInBasis": "Last manager basis + general pet rent, not final",
+      "contactUpdate": "Nov8: Progress replied on lease window and appliances"
     },
     {
       "id": "castle",
@@ -46,7 +130,46 @@
       "fit": "Shelly liked its bright, white interior, hard floors, open kitchen and grassy fenced yard. Only 3 bedrooms (no verified separate office): using a room for the office may require both boys to share.",
       "status": "Price/lease term and availability must be checked.",
       "priceBasis": "base rent, long lease quoted",
-      "petGate": "Cats and large dogs listed; individual approval pending"
+      "petGate": "Cats and large dogs listed; individual approval pending",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "no",
+          "detail": "Nov7 application under review; direct manager removed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "no",
+          "detail": "No current offer available"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "no",
+          "detail": "No viewing without reopening"
+        }
+      },
+      "questions": [
+        "Recheck authoritative status before pursuing"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "contactUpdate": "Nov7 Invitation Homes: application under review"
     },
     {
       "id": "trecini",
@@ -61,7 +184,48 @@
       "fit": "Potential but carpet, bathroom and commute are concerns.",
       "status": "Possible 4/5, but long commute, carpet and specific primary bathroom unresolved; pet acceptance not confirmed.",
       "petGate": "Both pets unverified",
-      "priceBasis": "base rent"
+      "priceBasis": "base rent",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "cathy",
@@ -76,7 +240,48 @@
       "fit": "Promising layout; availability and Shelly's actual rating unresolved.",
       "status": "Conflicting availability.",
       "petGate": "Both pets unverified",
-      "priceBasis": "base rent, 18-month offer"
+      "priceBasis": "base rent, 18-month offer",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "wolcott",
@@ -91,7 +296,48 @@
       "fit": "One story, open plan and hard flooring; grass, staged photos and pet rule conflict need checking.",
       "status": "Manager and portal conflict; likely above $2,500 with regular two-pet fees.",
       "petGate": "Conflicting large-dog policies",
-      "priceBasis": "midpoint of conflicting base prices, not offer"
+      "priceBasis": "midpoint of conflicting base prices, not offer",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "crestwood",
@@ -106,7 +352,48 @@
       "fit": "Spacious one-story with an open kitchen; photos mainly show earlier sale condition.",
       "status": "MLS-linked rental still shows ACTIVE; earlier inference of pending came from a different address. Three bedrooms, no separate office verified. Pet terms and current photos incomplete.",
       "petGate": "Both pets case-by-case",
-      "priceBasis": "base rent"
+      "priceBasis": "base rent",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "parkvillage",
@@ -121,7 +408,48 @@
       "fit": "Fenced yard, garage, multiple living spaces; kitchen/flooring and hot-tub upkeep lower confidence.",
       "status": "Photos and pets require confirmation.",
       "petGate": "Large dogs and cats broadly listed; confirm",
-      "priceBasis": "base rent"
+      "priceBasis": "base rent",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "flourmill",
@@ -136,7 +464,48 @@
       "fit": "Shelly said this house is very nice and placed it in the 4s (no exact decimal assigned); 4.3 is a provisional plotting estimate. Her supplied kitchen photos show an open, bright single-level kitchen/dining/living arrangement, spacious granite island, dark cabinetry, and continuous light-colored hard-surface flooring in main spaces. Four bedrooms allow one room for office. Tub presence, bedrooms' carpeting, grass/fence and exact commute still need confirmation.",
       "status": "Shelly described the house as very nice and in the 4s; 4.3 is an estimated graph position, not her numeric vote. Large-dog and number limits need written approval. Inquiry emailed November 1; no reply found November 4. Tub, floor plan and fence coverage remain unverified.",
       "priceBasis": "base rent, property MLS",
-      "petGate": "Size and number limits; both pets awaiting agent reply"
+      "petGate": "Size and number limits; both pets awaiting agent reply",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "northview",
@@ -154,7 +523,48 @@
       "fit": "Shelly reviewed 236 Northview Terrace on Nov 4 and said she likes it, tentatively about 4.5/5. This supersedes the earlier assistant-predicted 3.8/5; she has NOT explicitly ranked it ahead of Clarks Mill. One-story 4BR/2BA, 1,798 sq ft; open island kitchen, granite, light walls and LVP in main spaces are advertised/visible in listing material. Actual backyard grass/fencing, bathtub location, bedroom floors and laundry-to-primary proximity remain incompletely verified; listing imagery and plans may be illustrative.",
       "status": "Shelly-confirmed provisional 4.5/5 HOME FIT, not leasing clearance. Large dog and cat are generally listed but individual screening, full recurring costs, live condition, exact off-peak commute and advertised Nov 15 promotion requirements remain outstanding.",
       "ratingStatus": "tentative",
-      "ratingUpdatedOn": "2026-11-04"
+      "ratingUpdatedOn": "2026-11-04",
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "AMH generally large dogs permitted, individual approval missing"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "AMH cat policy generic, individual approval missing"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "AMH Nov6 said available, could change"
+        },
+        "cost": {
+          "status": "pending",
+          "detail": "$2228 incl. fixed charges but before two pets"
+        },
+        "lease": {
+          "status": "no",
+          "detail": "Nov6 AMH agent latest eligible start Nov20; Dec1 not approved"
+        },
+        "photos": {
+          "status": "conflict",
+          "detail": "Marketing imagery may be illustrative"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "pending",
+          "detail": "Self-tour offered; not booked"
+        }
+      },
+      "questions": [
+        "Nov15 promotion vs move-in cutoff",
+        "Pet charges and approval",
+        "Bedroom floors, tub, grass and photo source"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "contactUpdate": "Nov6–8: AMH automated replies, no full quote"
     },
     {
       "id": "watson",
@@ -172,7 +582,48 @@
       "priceNote": "MLS-linked asking $2,299 base for a stated 12-month lease; some older copies still show $2,399. Deposit advertised around $2,400. Required fees and pet costs unverified. A small-dog-only listing conflicts with generic 'pet friendly' labels.",
       "fit": "New Nov 4 discovery. One-story 4 bedrooms PLUS fifth study/flex room, 2 baths, 1,822 sq ft, tile and LVP with no carpet advertised, open living, two-car garage, covered patio and private yard. Yard is small, with hardscape/rock paths reducing grass. 4.1/5 is a low-confidence predicted visual fit, not Shelly's rating.",
       "status": "PUBLIC PHOTO LINK REPLACED Nov 4: DFW Urban Realty was prompting for Google sign-in. The Coldwell Banker listing shows 16 photos and current $2,299 base without requiring Google sign-in to read the listing. The serious unresolved issue is ordinary approval for Sunny; a third-party property-specific listing says small dogs only.",
-      "photoSource": "Coldwell Banker: publicly accessible 16-photo gallery; no Google account connection needed for viewing."
+      "photoSource": "Coldwell Banker: publicly accessible 16-photo gallery; no Google account connection needed for viewing.",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "buffalo",
@@ -193,7 +644,46 @@
       "petBlocked": true,
       "lastVerified": "2026-11-10",
       "replyUrl": "https://mail.google.com/mail/u/0/#all/1a1c2d021170d460",
-      "ratingStatus": "confirmed"
+      "ratingStatus": "confirmed",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "no",
+          "detail": "Nov9 listing agent expressly said landlord prohibits cats"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "Listed, but not suitable household"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "no",
+          "detail": "Do not pursue while cat prohibited"
+        }
+      },
+      "questions": [
+        "Owner prohibits cats; hard stop"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "contactUpdate": "Nov9 direct owner-policy answer"
     },
     {
       "id": "vistaoak",
@@ -212,7 +702,50 @@
       "status": "Direct manager page checked Nov 10 advertises Available Now and 22-month lease, but description says resident-occupied; possession date conflicted. Third-party small-dog-only restriction conflicts with manager general allowance of up to 3 pets. Sunny and cat not individually cleared.",
       "petGate": "Small-dog-only portal conflict: Sunny not approved",
       "petBlocked": true,
-      "ratingStatus": "confirmed"
+      "ratingStatus": "confirmed",
+      "readiness": {
+        "dog": {
+          "status": "conflict",
+          "detail": "Small-dog-only portal conflicts with manager general policy"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "General cat acceptance, property approval missing"
+        },
+        "availability": {
+          "status": "conflict",
+          "detail": "Available now marketing but resident still referenced"
+        },
+        "cost": {
+          "status": "pending",
+          "detail": "Manager $1995/22mo + $184.90 package + up to $80 2 pets = $2259.90 only if accepted"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "22mo promotional term; December start unapproved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Sunny large-dog exception or ordinary approval",
+        "Actual vacant date and 22-month quote",
+        "Cat/large dog + fees and yard"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "allInEstimate": 2259.9,
+      "allInBasis": "Illustrative 22-mo quote with 2 pets, not approved",
+      "contactUpdate": "Nov8–10 automated messages, no pet decision"
     },
     {
       "id": "lemongrove",
@@ -229,7 +762,48 @@
       "fit": "Assistant preliminary estimate 3.8/5 only; Shelly has NOT reviewed. Detached single-story 4BR plus advertised separate study, 1,968 sq ft, connected kitchen/living with granite/bar, primary garden tub AND separate shower, two-car garage. MLS explicitly lists carpet + tile and 5,314 sqft lot; grass amount, bedroom flooring location, private study closure, wall brightness, laundry proximity and fence gates require original 34-photo review.",
       "status": "Active on NTREIS-linked property listing checked November 10, first publicly listed October 1. Advertised available Nov 15; possession not individually verified. Source photographs may predate current condition.",
       "petGate": "MLS says pets allowed generically; ordinary cat and full-size golden retriever together NOT individually approved; $1,000 pet deposit appears",
-      "petBlocked": false
+      "petBlocked": false,
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "finn",
@@ -246,7 +820,48 @@
       "fit": "Assistant preliminary estimate 3.6/5 only; Shelly has NOT reviewed. 1,995 sq ft one-story detached 4BR + advertised dedicated study, generous granite island kitchen, wood-look tiled common area, two-car garage and fence, but MLS explicitly lists CARPET and ceramic tile, small 5,489 sqft lot, tub/grass/photo condition unknown, North Fort Worth commute not measured.",
       "status": "NTREIS-linked Coldwell Banker listing active as checked Nov10, public list date October 8; listed available Nov1 but current possession unconfirmed.",
       "petGate": "MLS says pets allowed generically but neither ordinary cat nor large golden retriever individually verified.",
-      "petBlocked": false
+      "petBlocked": false,
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "unknown",
+          "detail": "Current status/possession not independently confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-11"
     },
     {
       "id": "tide",
@@ -267,7 +882,48 @@
       "availabilityStatus": "Advertised active Nov 9–10, 2026; not manager-confirmed",
       "ratingConfidence": "medium-low; actual Shelly photo judgment pending",
       "ratingStatus": "reported",
-      "ratingUpdatedOn": "2026-11-11"
+      "ratingUpdatedOn": "2026-11-11",
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Pet restrictions, individual dog approval unverified"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Cat and dog broadly permitted with size/number limits"
+        },
+        "availability": {
+          "status": "conflict",
+          "detail": "Rental for sale simultaneously; MLS age-restricted flag unresolved"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "December start asked Nov11"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "pending",
+          "detail": "Thanksgiving agent inquiry sent"
+        }
+      },
+      "questions": [
+        "Family-with-children eligibility",
+        "Sale/rent overlap and lease rights",
+        "Two pets and missing fridge/washer/dryer"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "contactUpdate": "Nov11 showing and leasing questions sent"
     },
     {
       "id": "beavercreek",
@@ -286,10 +942,287 @@
       "priceNote": "Nov 11 direct manager $1,990 base/12 months + $19.99 smart home + $9.99 utility service = $2,019.98 before pets. General Progress 2-pet rent $144/month makes illustrative $2,163.98, excluding metered utilities, insurance, lawn, possible HOA costs. Deposit generally 1–1.5 months' base; $55/adult application, $125 admin, $30 utility setup (verify specific charges). Resident occupied; earliest advertised lease start AFTER Dec 7. Manager advertises $500 NONREFUNDABLE holding fee credited to first month only if lease executed; no payment/application authorized. Refrigerator generally included; washer/dryer machines not confirmed, likely hookups only.",
       "fit": "Nathan tentatively rates this home 4.5/5, NOT Shelly confirmed. One-story approx 1,675 sqft. Manager 4BR/2BA; historic address-matched floor plan appears 3 bedrooms plus approx 11x7 separate office. 2020 listing photos show hard floors, grassy fenced yard, primary tub and double vanity but current conditions and fence perimeter unverified; some images virtually staged. Kitchen looks compact compared with Hearthstone; inspect current finishes/bedroom floors/laundry location.",
       "status": "COMING SOON; occupied. Showing inquiry emailed November 11 to Progress customer care asking for resident-approved Thanksgiving-week appointment windows Nov23–25 or 27–28, or video alternative; NO appointment confirmed. Lease advertised after Dec7, suitable potential for move Dec18 if actually available.",
-      "petBlocked": false
+      "petBlocked": false,
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Progress individual large dog approval missing"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Progress individual cat approval missing"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "Occupied, advertised available after Dec7"
+        },
+        "cost": {
+          "status": "pending",
+          "detail": "$1990 base+$29.98 required+$144 general 2 pet rent ~ $2163.98"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "After Dec7, possession not promised"
+        },
+        "photos": {
+          "status": "conflict",
+          "detail": "Exact-address photos from 2020; staging present"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "pending",
+          "detail": "Thanksgiving showing inquiry sent Nov11"
+        }
+      },
+      "questions": [
+        "Showing while occupied / video",
+        "Updated bath, kitchen and yard photos",
+        "Two-pet quote and deposit"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "allInEstimate": 2163.98,
+      "allInBasis": "Illustrative general Progress pet policy; not guaranteed",
+      "contactUpdate": "Nov11 inquiry sent"
+    },
+    {
+      "id": "garrison",
+      "name": "1500 Garrison St",
+      "city": "Arlington",
+      "rent": 2100,
+      "rating": 4.3,
+      "basis": "Nathan",
+      "ratingStatus": "reported",
+      "trackedOn": "2026-11-11",
+      "checkpoint": "2026-11-23",
+      "url": "https://www.residential.com/l/1500-Garrison-St-Arlington-TX-76018-91ef7b8c09",
+      "priceBasis": "$2,100 advertised base; required fees, pet rent and lease term unverified",
+      "priceNote": "Listed Oct31, MLS 21424741, deposit $2,100. Both pets advertised generally, Sunny and Belle not individually approved.",
+      "fit": "Nathan rating 4.3/5 (not Shelly). Single-story 4 BR/2 BA, approx. 1,729 sqft in NTREIS, eat-in kitchen, courtyard, covered patio, fenced backyard. Kitchen openness, room carpet, tub and real grass unverified.",
+      "status": "Publicly advertised as of Nov11; agent Nonie Bennett emailed Nov11 for Thanksgiving showing and full lease/pet details. No tour booked.",
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Pets generally permitted; large golden retriever specifically asked"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Cats generally permitted; combined two-pet approval asked"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "NTREIS advertised active; owner possession unconfirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "Dec 1–10 start requested Nov11"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "pending",
+          "detail": "Nov11 Thanksgiving-week inquiry sent"
+        }
+      },
+      "questions": [
+        "Ordinary acceptance of Sunny and cat together",
+        "Both-pet all-in quote and December lease start",
+        "Actual kitchen, grass, carpet, bathtub, fridge and laundry"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "contactUpdate": "Nov 11: Agent inquiry sent; no appointment or response"
+    },
+    {
+      "id": "walnutplace",
+      "name": "1006 Walnut Pl",
+      "city": "Mansfield",
+      "rent": 2000,
+      "rating": 4,
+      "basis": "Estimated",
+      "trackedOn": "2026-11-11",
+      "checkpoint": "2026-11-23",
+      "url": "https://sundayshowings.com/rent/1006-walnut-place-mansfield-tx-76063-1193749578",
+      "priceBasis": "$2,000 base, deposit $2,000; pet/mandatory monthly fees unquoted",
+      "priceNote": "MLS 21418658 listed Oct22, 25 photos. Cats/dogs broadly allowed but Trulia says SMALL dogs only, so Sunny may be restricted. Deposit $2,000, unknown pet rent/fees, no quoted duration, refrigerator sources conflict.",
+      "fit": "Assistant provisional 4.0, NOT Shelly reviewed. Single story 4 BR/2 BA 1,922 sqft, 0.23 acre fenced lot, garage, primary garden tub, separate shower, double vanity, laundry close to primary. Kitchen openness, carpet, light colors and grass need review.",
+      "status": "MLS-linked advertised active Nov11; no contact or tour.",
+      "readiness": {
+        "dog": {
+          "status": "conflict",
+          "detail": "NTREIS dogs allowed, Trulia SMALL DOGS ONLY"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Cats advertised permitted; specific approval unverified"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "MLS advertised active Oct22–Nov11"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Resolve small-dog-only rule",
+        "Check kitchen and carpet photos",
+        "Both-pet fees, fridge, lease start, exact commute"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "contactUpdate": "No contact"
+    },
+    {
+      "id": "grenoble",
+      "name": "438 W Grenoble Dr",
+      "city": "Grand Prairie",
+      "rent": 2200,
+      "rating": 3.8,
+      "basis": "Estimated",
+      "trackedOn": "2026-11-11",
+      "checkpoint": "2026-11-23",
+      "url": "https://www.forrent.com/tx/grand-prairie/438-w-grenoble-dr/60yzvpr",
+      "priceBasis": "$2,200 base, total with two pets unknown",
+      "priceNote": "Manager Mexell Property Management, recently listed Nov10–11; 4BR/2BA 1789 sqft, 12-photo listing. Generic cats/dogs welcome, individual clearance unknown. Lease term, deposit, admin, pet rent and utilities unquoted.",
+      "fit": "Assistant preliminary 3.8, NOT rated by Shelly. Four bedrooms; one-story layout, kitchen size, grass, complete fencing, tub/vanity, laundry, and carpet not yet verified.",
+      "status": "Publicly advertised as available Nov11, not confirmed by manager.",
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Dogs allowed generally, large dog unknown"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Cats advertised allowed, two-pet consent pending"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "Portal available now, manager not confirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Photo and layout verification",
+        "Fenced grass, tub and large kitchen",
+        "Both pets, all fees, timing and travel"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "contactUpdate": "No contact"
+    },
+    {
+      "id": "walnutcreek",
+      "name": "501 S Walnut Creek Dr",
+      "city": "Mansfield",
+      "rent": 1999,
+      "rating": 3.5,
+      "basis": "Estimated",
+      "trackedOn": "2026-11-11",
+      "checkpoint": "2026-12-06",
+      "url": "https://www.apartments.com/501-s-walnut-creek-dr-mansfield-tx/v3wd6xf/",
+      "priceBasis": "$1,999 base + $55 internet + $35 laundry + $88 for two pets = minimum $2,177",
+      "priceNote": "Tricon coming soon after Dec15, occupied, 4BR/2BA, 1568 sqft, carpets/tile. General max 2 pets, dog max 85lb, combined max 150lb; HOA restrictions possible. $300 nonrefundable per pet, $150 onboarding, refundable deposit approximately $1,999. Additional required smart/service fees possible; thus $2,177 is NOT full quote.",
+      "fit": "Assistant preliminary 3.5, NOT Shelly reviewed. Compact with carpets; weaker than Hearthstone. Tricon warns AI/virtually staged images. Current tub, lawn, kitchen and laundry access uncertain.",
+      "status": "Occupied; advertised availability AFTER Dec15, so only just before Dec18 move.",
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Tricon max single-pet weight 85lb; Sunny weight/HOA restrictions unverified"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Tricon generally accepts cats"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "Occupied; available after Dec15"
+        },
+        "cost": {
+          "status": "pending",
+          "detail": "At least $2177 incl. known pet rent, internet and laundry; more fees possible"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "After Dec15 too close to Dec18 move"
+        },
+        "photos": {
+          "status": "conflict",
+          "detail": "Manager warns virtual/AI staging"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No confirmed showing"
+        }
+      },
+      "questions": [
+        "Pet combined weight/size under Tricon limits",
+        "Full fee quote",
+        "Current exact-house photos",
+        "Actual Dec possession"
+      ],
+      "checksUpdatedOn": "2026-11-11",
+      "allInEstimate": 2177,
+      "allInBasis": "Minimum, not full fee quote",
+      "contactUpdate": "No contact"
     }
   ],
   "updates": [
+    {
+      "date": "Nov 11",
+      "tag": "REGIONAL + READINESS • New criteria",
+      "title": "Arlington, Mansfield, Grand Prairie and pet/cost verification",
+      "detail": "Preferred $2400 two-pet-inclusive monthly total (not $2400 base). Garrison Nathan 4.3/5; Nov11 Thanksgiving showing request sent, pending. 1006 Walnut Pl Mansfield has primary tub and nearby laundry but conflicting small-dog restriction. 438 W Grenoble Grand Prairie and Tricon 501 S Walnut Creek added for discovery; 8 readiness gates per house."
+    },
     {
       "date": "Nov 11",
       "tag": "NATHAN • Tentative 4.5",

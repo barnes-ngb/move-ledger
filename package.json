@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run test:rentals && tsc -b && vite build",
     "icons": "node scripts/icons.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck && npm run test",
-    "test:rules": "firebase emulators:exec --only firestore,storage \"npx vitest run tests/rules --config vitest.rules.config.ts\""
+    "test:rules": "firebase emulators:exec --only firestore,storage \"npx vitest run tests/rules --config vitest.rules.config.ts\"",
+    "test:rentals": "node scripts/verify-rentals.mjs"
   },
   "dependencies": {
     "dexie": "^4.4.5",

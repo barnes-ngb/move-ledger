@@ -1,6 +1,6 @@
 {
-  "edition": "November 11, 2026 — expanded regional homes, $2,400 two-pet all-in preference and readiness checks",
-  "note": "Site now includes house-by-house status for Sunny, cat, occupancy, exact total, lease dates, photos, both destinations and showings. Unknown and conflicts never mean approved. Preferred <=$2400 monthly including mandatory and regular pet charges; exceptional up to hard $2500 base as stretch. Contact status is only a log and no booking is implied.",
+  "edition": "November 12, 2026 — Tide Lane agent reply and Clarks Mill $45 price reduction; other leasing gates remain open",
+  "note": "Nov12 read-only Gmail update: Kyle Vance Tide Lane confirms $2,250 BASE, $500 dog+cat PET DEPOSIT, 4BR + separate office, fenced yard, Thanksgiving showing possible but NOT booked, no refrigerator/washer/dryer, tenant lawn care, sale marketing would end only upon lease. Still no age/children eligibility, individual ordinary-pet approval, monthly all-in or December start. Zillow Nov11 Clarks Mill TOTAL $2,175 before pets (down $45), 12-month manager quote unverified. Keep Nov11 six-city equal coverage instruction, $2400 all-in target incl both normal pets, and exact work/Alvarado routes. The public site itself may show stale/broken HTML until deploy actually confirmed.",
   "homes": [
     {
       "id": "hearthstone",
@@ -67,12 +67,12 @@
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
-      "priceNote": "Zillow total required recurring price history $2,220 on Nov 7 (down from $2,265 Oct 30). Redfin displays $2,190 base; if those terms align with Progress $29.98 service and $144 two-pet policy, illustrative $2,363.98, NOT a confirmed final 12-month manager quote. Earlier 12-month basis $2,235 base + $29.98 + $144 = $2,408.98. Specific lease quote and property pet approval unresolved.",
+      "priceNote": "NEW Nov11 Zillow price-cut notification: 'Total monthly price' $2,175, DOWN $45 from $2,220, before individual pet rent; Zillow figure includes its identified mandatory recurring price but not confirmed as current 12-month Progress quote. Earlier 12-month manager base $2,235 + $29.98 services + general $144 two-pet rent = $2,408.98 illustrative and outdated basis. IF same lease/fees, $2175 + $144 = $2319 illustrative, not approved all-in and not comparable to $2235 base without synchronized term. Resolve live manager quote, pets and HOA rules. Nov8 Progress: possession within 12 days of rent-ready, optional +7 for $250 fee; fridge yes, washer/dryer no; landlord pays HOA dues.",
       "fit": "Shelly's second-favorite. Hard floors and comfortable layout; painted cabinets and complete fencing need review.",
-      "status": "Publicly marketed as of Nov 10; Progress Nov 8 email: ready homes must be possessed within 12 days, may extend 7 days for $250; fridge included, washer/dryer NOT included (hookups only), HOA dues paid by Progress but CC&Rs supplied after application. Pet eligibility and dog-safe fence unverified.",
+      "status": "Nov11 Zillow alert advertised FOR RENT at $2,175 monthly total (down $45 from $2,220); live manager listing/current 12-month base, two-pet approval and exact true full monthly quote still unverified. Progress Nov8 says rent-ready possession within 12 days +7 days extension for $250, washer/dryer not included, fridge included, HOA dues covered.",
       "priceBasis": "12-month manager base rent; $29.98 required services extra",
       "petGate": "Large dogs + cats listed; individual approval pending",
-      "priceUpdatedOn": "2026-11-04",
+      "priceUpdatedOn": "2026-11-11",
       "readiness": {
         "dog": {
           "status": "pending",
@@ -88,7 +88,7 @@
         },
         "cost": {
           "status": "pending",
-          "detail": "Last manager $2235 base + $29.98 services + $144 pets = $2408.98 estimate; newer portal total differs"
+          "detail": "Nov11 Zillow TOTAL $2175 before pets (down $45), indicative $2319 if $144 generic pet rent applied; 12mo/individual approval not verified; prior manager-based estimate $2408.98 no longer reliable"
         },
         "lease": {
           "status": "pending",
@@ -112,10 +112,11 @@
         "Sunny/cat HOA screening",
         "Full fence and missing washer/dryer"
       ],
-      "checksUpdatedOn": "2026-11-11",
+      "checksUpdatedOn": "2026-11-12",
       "allInEstimate": 2408.98,
       "allInBasis": "Last manager basis + general pet rent, not final",
-      "contactUpdate": "Nov8: Progress replied on lease window and appliances"
+      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7.",
+      "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cb4d2abe8eea7"
     },
     {
       "id": "castle",
@@ -874,35 +875,35 @@
       "trackedOn": "2026-11-10",
       "url": "https://www.coldwellbankerhomes.com/tx/fort-worth/6932-tide-ln/pid_74666023/",
       "priceBasis": "$2,250 advertised base rent; pet, HOA and other tenant costs unverified",
-      "petGate": "Cats/dogs allowed with breed, size & count limits; Sunny and Belle not cleared",
-      "priceNote": "Nov 8 MLS 21430831: $2,250 advertised base; yearly lease described in broker feed, terms unconfirmed; $2,250 published refundable security deposit; $500 pet deposit (per-pet treatment/refundability unknown); $400/yr HOA assessment shown, tenant responsibility UNKNOWN. Both-pet rent, recurring packages, upfront admin fees unknown. Marketed for sale and rent simultaneously; obtain protections and sale/lease intent in writing.",
+      "petGate": "Agent Nov12 quoted $500 deposit for dog and cat together, but did NOT explicitly approve both as ordinary pets or resolve breed/size/HOA restrictions; monthly pet rent unknown.",
+      "priceNote": "Nov12 agent reply: $2,250/month advertised BASE; first month's rent + security deposit due to hold home (security deposit advertised $2,250 in MLS, not reconfirmed by agent), $500 PET DEPOSIT covering BOTH Sunny (golden retriever) and cat. Refundability of pet deposit, individual written pet approval, pet monthly rent, mandatory packages, app/admin charges, December lease start/duration, HOA fee payer and age-restriction status NOT answered. Refrigerator, washer, dryer missing (additional budget/appliance burden); tenant pays lawn mowing/watering. Condo/property listed for sale and rent, agent says will stop sale marketing if a lease proceeds, but signed lease rights unknown. Published $400/yr HOA assessment is not confirmed tenant obligation. Do not treat $2250 as all-in.",
       "fit": "Nathan rates Tide Lane 4.6/5, not yet a Shelly rating. One-story, four bedrooms plus separate 11x10 office/flex, light-colored tile/LVP (no carpet in current MLS), open granite kitchen, pantry, primary soaking tub, fenced yard claimed, two-car garage. Small 0.126-acre lot; actual grass/fence and office enclosure not photo-verified.",
-      "status": "Active for rent in Nov 11 MLS at $2,250 BASE; simultaneously listed for SALE around $308,500. Showing request emailed Nov 11 to listing agent Kyle Vance; appointment not confirmed. MLS indicates 24-hour notice and appointment only. Cats/dogs permitted generally, subject to breed/number/size restrictions; neither individually cleared. One MLS-fed page marks 'Adult Community: Yes'—age restriction needs direct confirmation before considering this a family home. Refrigerator, washer, dryer and deep freezer excluded from lease marketing. Final costs and lease-start terms pending.",
+      "status": "Nov 12: Listing agent Kyle Vance replied and says currently advertised for RENT at $2,250 base, 4 bedrooms plus separate office, fully fenced yard, able to coordinate an in-person Thanksgiving-week showing after family confirms travel dates; NONE booked. He says home will be removed from sale market upon executed lease. Still simultaneously sale/rent marketed until lease, and family eligibility (one feed says Adult Community: Yes) remains unanswered; DO NOT assume family-with-children eligible. No December start or lease duration approved. Refrigerator, washer, dryer not included; tenant mows and waters lawn.",
       "petBlocked": false,
-      "availabilityStatus": "Advertised active Nov 9–10, 2026; not manager-confirmed",
+      "availabilityStatus": "Nov12 human agent reports currently advertised at $2,250 for RENT; also advertised for sale, with age-restricted flag on an MLS-syndicated feed still unresolved.",
       "ratingConfidence": "medium-low; actual Shelly photo judgment pending",
       "ratingStatus": "reported",
       "ratingUpdatedOn": "2026-11-11",
       "readiness": {
         "dog": {
           "status": "pending",
-          "detail": "Pet restrictions, individual dog approval unverified"
+          "detail": "Nov12 agent quotes $500 PET DEPOSIT covering large golden retriever and cat, not explicit pet screening approval"
         },
         "cat": {
           "status": "pending",
-          "detail": "Cat and dog broadly permitted with size/number limits"
+          "detail": "Nov12 agent includes cat in combined $500 pet deposit, not separate written ordinary-pet approval"
         },
         "availability": {
           "status": "conflict",
-          "detail": "Rental for sale simultaneously; MLS age-restricted flag unresolved"
+          "detail": "Agent says currently for rent; sale listing remains until lease, MLS adult-community eligibility conflict unanswered"
         },
         "cost": {
           "status": "unknown",
-          "detail": "Full monthly quote incl. both pets not confirmed"
+          "detail": "$2250 BASE, $500 one-time dog+cat deposit; recurring pet fees/packages, refundable status unknown; refrigerator/washer/dryer absent"
         },
         "lease": {
           "status": "pending",
-          "detail": "December start asked Nov11"
+          "detail": "Agent willing to arrange Thanksgiving showing but did not approve Dec 1–10 start or specific lease term"
         },
         "photos": {
           "status": "unknown",
@@ -914,16 +915,18 @@
         },
         "tour": {
           "status": "pending",
-          "detail": "Thanksgiving agent inquiry sent"
+          "detail": "Nov12 Kyle Vance can coordinate Thanksgiving-week AFTER family confirms dates; nothing scheduled"
         }
       },
       "questions": [
-        "Family-with-children eligibility",
-        "Sale/rent overlap and lease rights",
-        "Two pets and missing fridge/washer/dryer"
+        "Does 'Adult Community: Yes' reflect any genuine 55+/no-children restriction? Written family-with-children eligibility required",
+        "Explicit acceptance of adult golden retriever and cat as ordinary pets, any monthly pet fees or size/HOA restrictions",
+        "December lease start cutoff, exact lease term and all mandatory costs; sale listing removal under signed lease",
+        "Security-deposit amount, pet deposit refundability, excluded refrigerator/washer/dryer purchase costs"
       ],
-      "checksUpdatedOn": "2026-11-11",
-      "contactUpdate": "Nov11 showing and leasing questions sent"
+      "checksUpdatedOn": "2026-11-12",
+      "contactUpdate": "Nov12 Kyle Vance replied (read-only): $2250 base, $500 deposit covers dog+cat, 4BR + office, fenced yard, tenant lawn care, no fridge/washer/dryer, sale marketing stops upon lease; showing possible, NOT booked. Age eligibility, final pet clearance, December start, monthly all-in not answered. Gmail message 1a1cfa1b364e36b5.",
+      "agentReplyUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cfa1b364e36b5"
     },
     {
       "id": "beavercreek",
@@ -1217,6 +1220,20 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 12",
+      "tag": "AGENT REPLY • Critical family/pet gates",
+      "houseId": "tide",
+      "title": "6932 Tide Lane — Kyle Vance replies, showing feasible but no appointment",
+      "detail": "Nov12 6am CST: Realtor Kyle Vance confirms $2250 BASE, $500 PET DEPOSIT for both dog and cat, fenced backyard, 4BR plus separate office; tenant lawn care, no fridge/washer/dryer; rental to be removed from sale if leased; Thanksgiving showing can be coordinated after dates confirmed. NOT answered: 55+/children eligibility flag, written pet clearance, December lease start, monthly pet/packages, exact lease term and deposit refundability. No tour scheduled. Gmail 1a1cfa1b364e36b5."
+    },
+    {
+      "date": "Nov 11",
+      "tag": "PRICE CUT • Portal total, not manager base",
+      "houseId": "clarks",
+      "title": "2533 Clarks Mill — Zillow total drops $45 to $2175 before pets",
+      "detail": "Nov11 Zillow alert $2220→$2175 displayed TOTAL MONTHLY (known Zillow required fees, before individual pet fees); NOT a confirmed 12-month manager quote. If generic $144 pet rent applies, indicative $2319, subject to all fees and approval. Earlier $2408.98 on different 12-month basis no longer safely comparable. Gmail 1a1cb4d2abe8eea7."
+    },
     {
       "date": "Nov 11",
       "tag": "REGIONAL + READINESS • New criteria",

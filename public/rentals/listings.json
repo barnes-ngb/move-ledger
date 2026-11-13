@@ -1,6 +1,6 @@
 {
-  "edition": "November 13, 2026 — Tide Lane eligibility/pet/Dec 1 confirmed by agent; Vista Oak 22mo rent lowered by $46",
-  "note": "Read-only Gmail Nov13: Tide agent says not senior housing, pets okay for context of Sunny and Belle, $500 NONREFUNDABLE fee, Dec1 accepted; no time slots/bookings, full all-in/term unknown. Vista Oak $1949 base for 22-month term +$184.90 mandatory = $2133.90 before pets, down $46. Hidden Lake $100 reduction to $2275 3BR fallback; Spitfire new Zillow alert $2215 3BR. No outgoing contacts, bookings or approved applications. Exact commutes and pool access remain unverified.",
+  "edition": "November 13, 2026 — Hidden Lake 4.7/5 and showing inquiry",
+  "note": "Shelly confirmed 1121 Hidden Lake Dr 4.7/5 Nov13; other ratings unchanged. Hidden Lake advertised base has current $2,275 Zumper/Zillow vs $2,375 MLS/Redfin discrepancy; not lease-ready until verified. The board chart shows this lower advertised BASE, not fees-inclusive rent. Pending showing requested, not confirmed.",
   "homes": [
     {
       "id": "hearthstone",
@@ -1220,9 +1220,34 @@
       "allInEstimate": 2177,
       "allInBasis": "Minimum, not full fee quote",
       "contactUpdate": "No contact"
+    },
+    {
+      "id": "hiddenlake",
+      "name": "1121 Hidden Lake Dr",
+      "city": "Burleson",
+      "rent": 2275,
+      "rating": 4.7,
+      "basis": "Shelly",
+      "checkpoint": "2026-11-22",
+      "trackedOn": "2026-11-13",
+      "ratingUpdatedOn": "2026-11-13",
+      "url": "https://www.zumper.com/address/1121-hidden-lk-dr-burleson-tx-76028-usa",
+      "priceBasis": "Zumper current advertised BASE; MLS / Redfin conflict",
+      "petGate": "Dog + cat allowed generally; Sunny individual/HOA approval pending",
+      "petBlocked": false,
+      "priceNote": "Zumper Nov13 shows $2,275 BASE; MLS/Redfin/HAR still show $2,375. Current 12-month price and $1,000 first-full-month concession terms require written confirmation. Open House generic policy: $25/mo ordinary rent per pet ($50 both), $250 nonrefundable initial fee each ($500), $25 verification each ($50), $150 admin after approval, refundable security deposit quoted individually; mandatory recurring property-specific fees unknown. Illustrative $2,325 monthly BASE+two pets at $2,275 offer BEFORE other mandatory charges/utilities/insurance.",
+      "fit": "Shelly directly rates Hidden Lake 4.7/5 Nov13. One-story 3BR/2BA approx 2,044 sq ft; listing claims open kitchen, updated countertops and spacious fenced backyard. Former sales description mentions separate dedicated study plus flex/second living, but CURRENT rental listing shows 3BR; private additional office must be independently verified. Yard grass, bedroom carpet distribution, primary bathtub, full fence, garage/pool distances and actual layout require verification.",
+      "status": "MLS #21377159 listed as active in current public feeds; lease-ready status NOT established, conflicting rent and pet-policy descriptions. Listing agent Chelsea Holguin at Open House Texas Property Mgmt emailed Nov13 regarding actual rent/fees, both pets, floor plan and a real showing appointment for Nov22, Nov25 or Nov28 4–6 PM; NO confirmed showing yet."
     }
   ],
   "updates": [
+    {
+      "date": "Nov 13",
+      "tag": "SHELLY • 4.7/5",
+      "houseId": "hiddenlake",
+      "title": "1121 Hidden Lake Drive — Shelly 4.7 and showing requested",
+      "detail": "Shelly directly rates 1121 Hidden Lake Dr Burleson 4.7/5. Zumper Nov13 base $2,275; MLS/Redfin/HAR still advertise $2,375, so verify. Open House Texas manager general pet fees $25/month each, $250 nonrefundable each, $25 verification each, but ordinary approval of large golden retriever + cat at this address remains pending. Listing agent Chelsea emailed Nov13 seeking showing Nov22/25/28 late afternoon, actual 12mo quote, concession, pets/HOA, floor plan/office, yard and bath. No appointment booked yet."
+    },
     {
       "date": "Nov 13",
       "tag": "AGENT REPLY • Pet/family/lease gates",
@@ -1236,12 +1261,6 @@
       "houseId": "vistaoak",
       "title": "Vista Oak — $1,949 base, $2,133.90 pre-pet mandatory total",
       "detail": "Nov12 email, Nov13 direct manager: $1949 base on 22-month +$184.90 mandatory=$2133.90 before pets, down $46 on same-term basis. If up to $80 generic 2-pet rent applies, indicative $2213.90 NOT approved. Sunny restriction conflict and 12-month quote unresolved. Gmail https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d0ecce904cfbd"
-    },
-    {
-      "date": "Nov 13",
-      "tag": "PRICE CUT • 3BR only",
-      "title": "1121 Hidden Lake Dr — Zillow $100 off",
-      "detail": "Nov13 Zillow email $2375→$2275 advertised, 3BR/2BA 2044 sqft; an older HAR $2425 record is not current price. Pets generic only, all-in fees, tub/grass and separate office unknown. 3BR fallback not promoted. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d29895c9b2f37"
     },
     {
       "date": "Nov 13",

@@ -1,6 +1,6 @@
 {
-  "edition": "November 12, 2026 — Tide Lane agent reply and Clarks Mill $45 price reduction; other leasing gates remain open",
-  "note": "Nov12 read-only Gmail update: Kyle Vance Tide Lane confirms $2,250 BASE, $500 dog+cat PET DEPOSIT, 4BR + separate office, fenced yard, Thanksgiving showing possible but NOT booked, no refrigerator/washer/dryer, tenant lawn care, sale marketing would end only upon lease. Still no age/children eligibility, individual ordinary-pet approval, monthly all-in or December start. Zillow Nov11 Clarks Mill TOTAL $2,175 before pets (down $45), 12-month manager quote unverified. Keep Nov11 six-city equal coverage instruction, $2400 all-in target incl both normal pets, and exact work/Alvarado routes. The public site itself may show stale/broken HTML until deploy actually confirmed.",
+  "edition": "November 13, 2026 — Tide Lane eligibility/pet/Dec 1 confirmed by agent; Vista Oak 22mo rent lowered by $46",
+  "note": "Read-only Gmail Nov13: Tide agent says not senior housing, pets okay for context of Sunny and Belle, $500 NONREFUNDABLE fee, Dec1 accepted; no time slots/bookings, full all-in/term unknown. Vista Oak $1949 base for 22-month term +$184.90 mandatory = $2133.90 before pets, down $46. Hidden Lake $100 reduction to $2275 3BR fallback; Spitfire new Zillow alert $2215 3BR. No outgoing contacts, bookings or approved applications. Exact commutes and pool access remain unverified.",
   "homes": [
     {
       "id": "hearthstone",
@@ -690,17 +690,17 @@
       "id": "vistaoak",
       "name": "12113 Vista Oak Blvd",
       "city": "Burleson",
-      "rent": 1995,
+      "rent": 1949,
       "rating": 4.4,
       "basis": "Shelly",
       "checkpoint": "2026-11-20",
       "trackedOn": "2026-11-08",
       "ratingUpdatedOn": "2026-11-09",
       "url": "https://www.invitationhomes.com/houses-for-rent/12113-vista-oak-blvd-76028-9538",
-      "priceBasis": "Manager BASE rent for 22-month offer on direct page checked Nov 10; indexed 18-month quote also exists; 12-month unknown",
-      "priceNote": "$1,995 base + $184.90 mandatory package = $2,179.90 before pets, metered utilities, insurance; current direct page shows 22 months but search snippets showed 18 months. Hypothetical up to $80 two-pet rent would total $2,259.90 only if both are approved. Deposit and upfront fees unquoted.",
+      "priceBasis": "Nov13 DIRECT MANAGER $1949 BASE/22-month term +$184.90 mandatory package, NOT a 12mo quote",
+      "priceNote": "Nov12 price alert and Nov13 direct manager: $1949 BASE/22mo+$184.90 mandatory service fees=$2133.90 recurring BEFORE pets, metered utilities/insurance; down $46 from earlier $1995 same 22mo. If generic $80 2-pet rent applies, $2213.90 is hypothetical, not approved. Manager says available now but older resident-occupied copy; third party small-dog-only conflicts with manager general policy. Final Sunny and Belle approval remains OPEN.",
       "fit": "Shelly directly rates Vista Oak 4.4/5, confirmed November 9. One-story 4BR/2BA, 1,920 sq ft, bay-window natural light, connected kitchen/living, granite, stainless appliances, LVP, fenced backyard/patio and garage advertised. Fourth bedroom could serve as office. Amount of grassy yard, carpet by room, primary bathtub and bathroom vanity need photo/manager confirmation.",
-      "status": "Direct manager page checked Nov 10 advertises Available Now and 22-month lease, but description says resident-occupied; possession date conflicted. Third-party small-dog-only restriction conflicts with manager general allowance of up to 3 pets. Sunny and cat not individually cleared.",
+      "status": "Nov13 direct Invitation Homes page advertises AVAILABLE NOW, $1949 base for 22mo, $2133.90 mandatory-fees-inclusive BEFORE pets, $46 lower than previous same-term quote; individual dog+cat and occupied status unresolved.",
       "petGate": "Small-dog-only portal conflict: Sunny not approved",
       "petBlocked": true,
       "ratingStatus": "confirmed",
@@ -715,15 +715,15 @@
         },
         "availability": {
           "status": "conflict",
-          "detail": "Available now marketing but resident still referenced"
+          "detail": "Direct manager Available Now, prior copy said occupied"
         },
         "cost": {
           "status": "pending",
-          "detail": "Manager $1995/22mo + $184.90 package + up to $80 2 pets = $2259.90 only if accepted"
+          "detail": "Manager Nov13 $1949 22mo base+$184.90 mandatory=$2133.90 before pets; illustrated $2213.90 if 2 pets +$80 but not approved"
         },
         "lease": {
           "status": "pending",
-          "detail": "22mo promotional term; December start unapproved"
+          "detail": "22mo price; 12mo price and Dec start unquoted"
         },
         "photos": {
           "status": "unknown",
@@ -743,10 +743,12 @@
         "Actual vacant date and 22-month quote",
         "Cat/large dog + fees and yard"
       ],
-      "checksUpdatedOn": "2026-11-11",
-      "allInEstimate": 2259.9,
-      "allInBasis": "Illustrative 22-mo quote with 2 pets, not approved",
-      "contactUpdate": "Nov8–10 automated messages, no pet decision"
+      "checksUpdatedOn": "2026-11-13",
+      "allInEstimate": 2213.9,
+      "allInBasis": "Hypothetical only: $1949 on 22mo + $184.90 mandatory + $80 general 2-pet rent if approved",
+      "contactUpdate": "Nov12 12:02pm Central Invitation Homes email PRICE DROP $1949 base / $2133.90 mandatory package before pets; Nov13 direct manager confirms 22mo and same costs. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d0ecce904cfbd",
+      "priceUpdatedOn": "2026-11-12",
+      "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d0ecce904cfbd"
     },
     {
       "id": "lemongrove",
@@ -874,40 +876,40 @@
       "checkpoint": "2026-11-20",
       "trackedOn": "2026-11-10",
       "url": "https://www.coldwellbankerhomes.com/tx/fort-worth/6932-tide-ln/pid_74666023/",
-      "priceBasis": "$2,250 advertised base rent; pet, HOA and other tenant costs unverified",
-      "petGate": "Agent Nov12 quoted $500 deposit for dog and cat together, but did NOT explicitly approve both as ordinary pets or resolve breed/size/HOA restrictions; monthly pet rent unknown.",
-      "priceNote": "Nov12 agent reply: $2,250/month advertised BASE; first month's rent + security deposit due to hold home (security deposit advertised $2,250 in MLS, not reconfirmed by agent), $500 PET DEPOSIT covering BOTH Sunny (golden retriever) and cat. Refundability of pet deposit, individual written pet approval, pet monthly rent, mandatory packages, app/admin charges, December lease start/duration, HOA fee payer and age-restriction status NOT answered. Refrigerator, washer, dryer missing (additional budget/appliance burden); tenant pays lawn mowing/watering. Condo/property listed for sale and rent, agent says will stop sale marketing if a lease proceeds, but signed lease rights unknown. Published $400/yr HOA assessment is not confirmed tenant obligation. Do not treat $2250 as all-in.",
+      "priceBasis": "$2250 verified BASE; 12-month quote and tenant mandatory monthly charges not verified.",
+      "petGate": "Nov13 agent says 'Pets are ok' after question about large golden retriever Sunny and cat Belle. Combined $500 NONREFUNDABLE pet charge, tenant liable for animal damage. Written individual pet/HOA/weight clearance and monthly pet rent still unverified.",
+      "priceNote": "Nov13 agent: $2250 advertised BASE, $500 NONREFUNDABLE combined pet fee for dog+cat (corrects prior 'pet deposit' assumption). Dec1 lease start acceptable. First month's rent + security deposit needed to secure; $2250 published deposit not reconfirmed. Recurring pet rent, mandatory monthly packages, 12-month term, HOA fee payer unknown. Fridge/washer/dryer excluded. Tenant mows and waters. Do not treat $2250 as full all-in.",
       "fit": "Nathan rates Tide Lane 4.6/5, not yet a Shelly rating. One-story, four bedrooms plus separate 11x10 office/flex, light-colored tile/LVP (no carpet in current MLS), open granite kitchen, pantry, primary soaking tub, fenced yard claimed, two-car garage. Small 0.126-acre lot; actual grass/fence and office enclosure not photo-verified.",
-      "status": "Nov 12: Listing agent Kyle Vance replied and says currently advertised for RENT at $2,250 base, 4 bedrooms plus separate office, fully fenced yard, able to coordinate an in-person Thanksgiving-week showing after family confirms travel dates; NONE booked. He says home will be removed from sale market upon executed lease. Still simultaneously sale/rent marketed until lease, and family eligibility (one feed says Adult Community: Yes) remains unanswered; DO NOT assume family-with-children eligible. No December start or lease duration approved. Refrigerator, washer, dryer not included; tenant mows and waters lawn.",
+      "status": "Nov13 human agent Kyle Vance directly confirms NOT a senior community, pets OK in context of golden retriever and cat, and Dec1 start acceptable. Advertised for rent at $2250 base (MLS #21430831, initially Nov8); also for sale until a lease is executed. Exact showing dates/time slots not supplied; no booking or hold. Full lease, costs, HOA and commute still unverified.",
       "petBlocked": false,
-      "availabilityStatus": "Nov12 human agent reports currently advertised at $2,250 for RENT; also advertised for sale, with age-restricted flag on an MLS-syndicated feed still unresolved.",
+      "availabilityStatus": "ACTIVE rent listing per NTREIS-linked page and agent Nov13; also for sale. No lease signed or held.",
       "ratingConfidence": "medium-low; actual Shelly photo judgment pending",
       "ratingStatus": "reported",
       "ratingUpdatedOn": "2026-11-11",
       "readiness": {
         "dog": {
           "status": "pending",
-          "detail": "Nov12 agent quotes $500 PET DEPOSIT covering large golden retriever and cat, not explicit pet screening approval"
+          "detail": "Nov13 agent says pets OK re golden retriever and cat; written individual/HOA approval TBD"
         },
         "cat": {
           "status": "pending",
-          "detail": "Nov12 agent includes cat in combined $500 pet deposit, not separate written ordinary-pet approval"
+          "detail": "Nov13 agent says pets OK re both pets; formal cat/HOA clearance TBD"
         },
         "availability": {
-          "status": "conflict",
-          "detail": "Agent says currently for rent; sale listing remains until lease, MLS adult-community eligibility conflict unanswered"
+          "status": "yes",
+          "detail": "Nov13 human agent and MLS active rental, simultaneous sale until lease; not held"
         },
         "cost": {
-          "status": "unknown",
-          "detail": "$2250 BASE, $500 one-time dog+cat deposit; recurring pet fees/packages, refundable status unknown; refrigerator/washer/dryer absent"
+          "status": "pending",
+          "detail": "$2250 base + $500 one-time NONREFUNDABLE pet fee, other recurring charges/pet rent unquoted; appliances missing"
         },
         "lease": {
           "status": "pending",
-          "detail": "Agent willing to arrange Thanksgiving showing but did not approve Dec 1–10 start or specific lease term"
+          "detail": "Nov13 agent says Dec1 start ideal, lease duration/final agreement not established"
         },
         "photos": {
-          "status": "unknown",
-          "detail": "Current room-by-room photos not verified"
+          "status": "pending",
+          "detail": "MLS address-matched 33-photo gallery; floor described tile/LVP; grass and study privacy need visual confirmation"
         },
         "commute": {
           "status": "unknown",
@@ -915,18 +917,19 @@
         },
         "tour": {
           "status": "pending",
-          "detail": "Nov12 Kyle Vance can coordinate Thanksgiving-week AFTER family confirms dates; nothing scheduled"
+          "detail": "Nov13 agent or colleague can show once date chosen; no Nov22/25/28 actual time slots, none booked"
         }
       },
       "questions": [
-        "Does 'Adult Community: Yes' reflect any genuine 55+/no-children restriction? Written family-with-children eligibility required",
-        "Explicit acceptance of adult golden retriever and cat as ordinary pets, any monthly pet fees or size/HOA restrictions",
-        "December lease start cutoff, exact lease term and all mandatory costs; sale listing removal under signed lease",
-        "Security-deposit amount, pet deposit refundability, excluded refrigerator/washer/dryer purchase costs"
+        "Written lease/HOA confirmation for large golden retriever + cat",
+        "Full 12-month/alternative terms and required monthly fees including any pet rent, HOA payer",
+        "Reconfirm refundable security deposit and separate $500 NONREFUNDABLE pet charge",
+        "Which late afternoon/evening Nov22, Nov25, Nov28 windows are truly available; none booked",
+        "Exact two-destination commute and appliance costs"
       ],
-      "checksUpdatedOn": "2026-11-12",
-      "contactUpdate": "Nov12 Kyle Vance replied (read-only): $2250 base, $500 deposit covers dog+cat, 4BR + office, fenced yard, tenant lawn care, no fridge/washer/dryer, sale marketing stops upon lease; showing possible, NOT booked. Age eligibility, final pet clearance, December start, monthly all-in not answered. Gmail message 1a1cfa1b364e36b5.",
-      "agentReplyUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cfa1b364e36b5"
+      "checksUpdatedOn": "2026-11-13",
+      "contactUpdate": "Nov13 5:17AM CST Kyle Vance: not senior community, pets OK, $500 nonrefundable, Dec1 'perfect', agent or colleague can show once date chosen; Nov22/25/28 late afternoon/evening NOT individually answered. No tour booked. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d4a09596e8a54",
+      "agentReplyUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d4a09596e8a54"
     },
     {
       "id": "beavercreek",
@@ -1220,6 +1223,32 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 13",
+      "tag": "AGENT REPLY • Pet/family/lease gates",
+      "houseId": "tide",
+      "title": "Tide Lane — NOT senior; Dec 1 works; $500 nonrefundable pets",
+      "detail": "Kyle Vance at 5:17AM CST: not a senior community; pets okay in response to questions for adult golden retriever and cat; $500 NONREFUNDABLE combined charge; December 1 ideal. Agent/colleague can show when date chosen, no exact date/time slot or booking. 12mo/full monthly fee/individual lease approval unverified. Gmail https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d4a09596e8a54"
+    },
+    {
+      "date": "Nov 13",
+      "tag": "PRICE DROP • Manager-verified 22-month",
+      "houseId": "vistaoak",
+      "title": "Vista Oak — $1,949 base, $2,133.90 pre-pet mandatory total",
+      "detail": "Nov12 email, Nov13 direct manager: $1949 base on 22-month +$184.90 mandatory=$2133.90 before pets, down $46 on same-term basis. If up to $80 generic 2-pet rent applies, indicative $2213.90 NOT approved. Sunny restriction conflict and 12-month quote unresolved. Gmail https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d0ecce904cfbd"
+    },
+    {
+      "date": "Nov 13",
+      "tag": "PRICE CUT • 3BR only",
+      "title": "1121 Hidden Lake Dr — Zillow $100 off",
+      "detail": "Nov13 Zillow email $2375→$2275 advertised, 3BR/2BA 2044 sqft; an older HAR $2425 record is not current price. Pets generic only, all-in fees, tub/grass and separate office unknown. 3BR fallback not promoted. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d29895c9b2f37"
+    },
+    {
+      "date": "Nov 13",
+      "tag": "NEW ZILLOW ALERT • Not qualified",
+      "title": "6523 Spitfire Dr Arlington — $2,215 3BR/1504 sqft",
+      "detail": "Nov12 Zillow brand-new alert $2215 3BR/2BA 1504 sqft, cats/dogs generic. New-to-alert not verified true MLS new-to-market. Boys share + third as office fallback, room sizes and all-in unknown. Not a direct Hearthstone-quality substitute. Gmail 1a1d08c00d4498bb"
+    },
     {
       "date": "Nov 12",
       "tag": "AGENT REPLY • Critical family/pet gates",

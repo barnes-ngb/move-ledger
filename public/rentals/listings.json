@@ -1,6 +1,6 @@
 {
   "edition": "November 14, 2026 — Beaver Creek and Northview repriced; new-market screening and reply gates",
-  "note": "Nov14 verified changes: 828 Beaver Creek $1,920 BASE on 12-month term +$29.98 required fees (before two pets); 236 Northview $2,198 manager-advertised total incl required fees BEFORE pets. Nov13 inquiries to Hidden Lake agent, Vista Oak specialist and Progress for Beaver Creek remain without substantive replies or confirmed tours. Automated Beaver Creek application invitation does NOT establish an application. Tide Lane Nov13 approval details remain as previously noted. This is source data, not evidence of website deployment.",
+  "note": "Nov14 verified changes: 828 Beaver Creek $1,920 BASE on 12-month term +$29.98 required fees (before two pets); 236 Northview $2,198 manager-advertised total incl required fees BEFORE pets. Nov13 inquiries to Hidden Lake agent, Vista Oak specialist and Progress for Beaver Creek remain without substantive replies or confirmed tours. Automated Beaver Creek application invitation does NOT establish an application. Tide Lane Nov13 approval details remain as previously noted. This is source data, not evidence of website deployment. Beaver Creek live advertised refundable deposit range $1920–$2880. Vista Oak site shows required $40 washer/dryer package and conflicting Available Now versus resident-occupied language.",
   "homes": [
     {
       "id": "hearthstone",
@@ -700,7 +700,7 @@
       "ratingUpdatedOn": "2026-11-09",
       "url": "https://www.invitationhomes.com/houses-for-rent/12113-vista-oak-blvd-76028-9538",
       "priceBasis": "Nov13 DIRECT MANAGER $1949 BASE/22-month term +$184.90 mandatory package, NOT a 12mo quote",
-      "priceNote": "Nov12 price alert and Nov13 direct manager: $1949 BASE/22mo+$184.90 mandatory service fees=$2133.90 recurring BEFORE pets, metered utilities/insurance; down $46 from earlier $1995 same 22mo. If generic $80 2-pet rent applies, $2213.90 is hypothetical, not approved. Manager says available now but older resident-occupied copy; third party small-dog-only conflicts with manager general policy. Final Sunny and Belle approval remains OPEN.",
+      "priceNote": "Nov12 price alert and Nov13 direct manager: $1949 BASE/22mo+$184.90 mandatory service fees=$2133.90 recurring BEFORE pets, metered utilities/insurance; down $46 from earlier $1995 same 22mo. If generic $80 2-pet rent applies, $2213.90 is hypothetical, not approved. Manager says available now but older resident-occupied copy; third party small-dog-only conflicts with manager general policy. Final Sunny and Belle approval remains OPEN. Direct live listing itemizes required recurring fees: $85 internet/media, $40 washer/dryer PACKAGE, $40 smart home/video doorbell, $9.95 air filter, $9.95 utility billing; washer/dryer are INCLUDED via mandatory rental package but refrigerator remains to confirm. Page simultaneously displays Available Now and 'currently enjoyed by another resident': current status CONFLICTED.",
       "fit": "Shelly directly rates Vista Oak 4.4/5, confirmed November 9. One-story 4BR/2BA, 1,920 sq ft, bay-window natural light, connected kitchen/living, granite, stainless appliances, LVP, fenced backyard/patio and garage advertised. Fourth bedroom could serve as office. Amount of grassy yard, carpet by room, primary bathtub and bathroom vanity need photo/manager confirmation.",
       "status": "Nov13 direct Invitation Homes page advertises AVAILABLE NOW, $1949 base for 22mo, $2133.90 mandatory-fees-inclusive BEFORE pets, $46 lower than previous same-term quote; individual dog+cat and occupied status unresolved.",
       "petGate": "Small-dog-only portal conflict: Sunny not approved",
@@ -717,7 +717,7 @@
         },
         "availability": {
           "status": "conflict",
-          "detail": "Direct manager Available Now, prior copy said occupied"
+          "detail": "Live manager page says 'Available Now' but its description also says home occupied by another resident; confirm vacancy and actual showing/lease dates"
         },
         "cost": {
           "status": "pending",
@@ -947,7 +947,7 @@
       "url": "https://rentprogress.com/property-details/828-beaver-creek-dr/burleson/tx/76028/316204",
       "priceBasis": "Nov14 Progress manager advertised 12-month BASE; +$29.98 mandatory recurring, excludes all pets",
       "petGate": "Progress generally permits 2 pets, but Sunny and cat/HOA approval pending",
-      "priceNote": "Nov14 manager listing $1,920 BASE for 12 months +$19.99 smart-home +$9.99 utility service = $1,949.98 recurring before both pets. General previous Progress two-pet rent estimate $144 would imply $2,093.98/month but individual Sunny/Belle and fees not approved; do not treat this as firm. Other lengths differ; advertised available after Dec7, currently occupied. Deposit and pet fees unquoted; earlier generic $55/adult application, $125 admin, $30 utility setup, $500 holding fee credited only if lease proceeds; verify exact costs. Refrigerator generally included; washer/dryer not verified.",
+      "priceNote": "Nov14 manager listing $1,920 BASE for 12 months +$19.99 smart-home +$9.99 utility service = $1,949.98 recurring before both pets. General previous Progress two-pet rent estimate $144 would imply $2,093.98/month but individual Sunny/Belle and fees not approved; do not treat this as firm. Other lengths differ; advertised available after Dec7, currently occupied. Deposit and pet fees unquoted; earlier generic $55/adult application, $125 admin, $30 utility setup, $500 holding fee credited only if lease proceeds; verify exact costs. Refrigerator generally included; washer/dryer not verified. Fresh direct listing specifies refundable security deposit range $1,920–$2,880, and $500 holding fee credited to first rent if lease executes; refundable if not available/ready on agreed date. No payment made. The page warns of virtual staging and images do not prove current interior finishes.",
       "fit": "Nathan tentatively rates this home 4.5/5, NOT Shelly confirmed. One-story approx 1,675 sqft. Manager 4BR/2BA; historic address-matched floor plan appears 3 bedrooms plus approx 11x7 separate office. 2020 listing photos show hard floors, grassy fenced yard, primary tub and double vanity but current conditions and fence perimeter unverified; some images virtually staged. Kitchen looks compact compared with Hearthstone; inspect current finishes/bedroom floors/laundry location.",
       "status": "Nov14 manager advertises coming soon at $1,920/12mo, occupied, available after Dec7 subject to confirmation. Nov11 and Nov13 one-time showing inquiries sent; NO tour booked. Nov13 automated 'finish application' email is marketing, not confirmation of any application. Latest lease-start cutoff and holiday showing approval unanswered.",
       "petBlocked": false,
@@ -988,7 +988,8 @@
       "questions": [
         "Showing while occupied / video",
         "Updated bath, kitchen and yard photos",
-        "Two-pet quote and deposit"
+        "Two-pet quote and deposit",
+        "Refundable deposit $1,920–$2,880; verify final amount, credited holding-fee terms"
       ],
       "checksUpdatedOn": "2026-11-14",
       "allInEstimate": 2093.98,

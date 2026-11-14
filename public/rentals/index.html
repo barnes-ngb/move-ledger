@@ -73,49 +73,113 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
 .check-summary .cost-est{font-size:12px;color:#30546a;margin-top:5px}
 .check-summary .open-q{padding-left:16px;font-size:11px;line-height:1.45;color:#5d6f7c}
 .check-summary .contact-updated{font-size:11px;color:#5d6f7c;margin-top:6px}
+
+/* Compact, photo-first rental decision view. Only green-zone houses receive route research. */
+:root{--focus:#19694f}
+header{padding:21px 24px;margin-bottom:12px}header h1{font-size:clamp(22px,3vw,31px)}
+header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px}
+.panel{margin:12px 0}.stats{gap:8px;margin:10px 0}.stat{padding:10px 12px}.stat strong{font-size:21px}
+.filter-grid{display:grid;grid-template-columns:minmax(180px,1.1fr) minmax(150px,1fr) minmax(150px,1fr);gap:10px;margin:12px 0}
+.filter-grid label{display:block}.filter-grid select,.filter-grid input{margin-top:5px;font-size:13px;padding:8px 10px}
+.filter-sub{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:8px}
+.filter-sub label{display:flex;align-items:center;flex-direction:row;gap:7px;font-size:12px}.filter-sub input{width:auto}
+#fitChart{max-height:340px;cursor:default}
+.chart .point-link{cursor:pointer}.chart .point-link:focus-visible .dot{stroke:#182f48;stroke-width:4}
+.chart .dot-label{font-family:system-ui,sans-serif;font-size:11px;paint-order:stroke;stroke:#f6f9f9;stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+.legend{margin:4px 0;font-size:11px;gap:12px}
+.explain{font-size:12px;color:#58717e;margin:7px 0 0}
+.decision-list{display:grid;gap:9px}
+.decision-card{border:1px solid #d9e3e7;border-radius:12px;padding:13px 14px;background:white;scroll-margin-top:16px;outline:0}
+.decision-card:focus{outline:3px solid #a1cfb9;outline-offset:2px}
+.decision-card.selected{border-color:#2b8062;box-shadow:0 0 0 3px #cdeade}
+.decision-card .head{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.decision-card h3{font-size:16px;line-height:1.3}
+.decision-card .meta{font-size:12px;color:#61717b;margin-top:2px}
+.decision-card .money{font-size:19px;font-weight:800;text-align:right;white-space:nowrap}
+.decision-card .basis{text-align:right;font-size:10px;color:#5f7280;max-width:150px}
+.decision-card .compact-badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.decision-card .compact-badges .pill{font-size:10px}
+.decision-card .exceptions{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0 10px}
+.decision-card .exception{font-size:11px;color:#7b4c14;background:#fff6e5;border:1px solid #f2e2bd;border-radius:6px;padding:4px 7px}
+.decision-card .exception.critical{color:#8f343b;background:#fff0f1;border-color:#f2d1d3}
+.decision-card .exception.good{color:#276d58;background:#e7f5ed;border-color:#c7e5d4}
+.travel-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:9px 0}
+.travel-cell{display:block;min-width:0;text-decoration:none;color:#1c3e52;background:#f2f7f8;border:1px solid #dde9ec;border-radius:9px;padding:8px}
+.travel-cell strong{display:block;font-size:16px;font-variant-numeric:tabular-nums}
+.travel-cell span{display:block;font-size:11px;color:#5a6c79;overflow-wrap:anywhere}
+.travel-cell:hover{border-color:#55a787;background:#eaf7f1}
+.travel-cell:focus-visible{outline:3px solid #dfb652}
+.route-unmeasured{font-size:11px;color:#657784;padding:7px 0}
+.decision-card .row-actions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.decision-card a.text-link,.decision-card .row-actions button{font-size:12px;font-weight:700;color:#196b5e}
+.decision-card .row-actions button{border:0;background:transparent;padding:5px}
+.house-details{border-top:1px solid #e4ecf0;margin-top:10px;padding-top:10px}
+.house-details summary{cursor:pointer;color:#235873;font-size:12px;font-weight:700}
+.house-details p{font-size:12px;color:#586c78;margin:9px 0 0}
+.house-details ul{margin:7px 0;padding-left:19px;color:#536977;font-size:12px}
+.house-details .check-grid{margin:9px 0}
+.disclosure{padding:13px 18px}.disclosure>summary{cursor:pointer;font-size:15px;font-weight:750;color:#22445a}
+.disclosure .hint{margin:10px 0}
+.updates-list{display:grid;gap:8px;margin:10px 0}
+.update-line{border-bottom:1px solid #e5edf0;padding:7px 0}
+.update-line:last-child{border:0}.update-line .small{line-height:1.3}.update-line strong{font-size:12px}
+.update-line p{font-size:12px;color:#5b6f7a;margin:4px 0;max-width:90ch}
+.pool-disclosure .pool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pool-entry{border:1px solid #dde7eb;border-radius:10px;padding:11px;display:flex;flex-direction:column;gap:5px}
+.pool-entry strong{font-size:13px}.pool-entry p{font-size:12px;color:#58717a;margin:0}
+.pool-entry .actions{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.pool-entry .actions a{color:#196b5e}
+#boardStatus{font-size:12px;color:#226e52;margin:2px 0;min-height:0}
+@media(max-width:750px){.filter-grid{grid-template-columns:1fr 1fr}.pool-disclosure .pool-grid{grid-template-columns:1fr}.filter-grid label:last-child{grid-column:1/-1}.decision-card{padding:11px}.travel-cell{padding:7px 5px}.travel-cell strong{font-size:14px}}
+@media(max-width:400px){.travel-strip{gap:4px}.travel-cell span{font-size:10px}.decision-card .head{gap:5px}.decision-card h3{font-size:14px}}
+
 </style>
 </head>
 <body>
 <main>
 <header>
 <div class="kicker">Texas move · shared decision workspace</div>
-<h1>Find the house we'll be happy to call home.</h1>
-<p class="sub">A live published shortlist, combining Shelly's house ratings, cost tradeoffs and the November explore → exploit plan. Tap any chart dot or listing to open its property page.</p>
+<h1>Choose a home. See the tradeoffs.</h1>
+<p class="sub">A focused rental decision board for the Texas move. Filter strong fits, tap a plot dot to jump to its house, and see the exceptions and driving estimates that actually change our decision.</p>
 <div class="toolbar">
   <button id="share" class="primary">Share this link</button>
   <button id="refresh" type="button">Refresh published houses</button>
-  <a class="btn" href="#add">Add a house</a>
+  <a class="btn" href="#add">Edit / add a house</a>
 </div>
 </header>
+
 <div class="stats">
- <div class="stat"><strong id="n-homes">24</strong><span>Houses on the board</span></div>
- <div class="stat"><strong>$2,400</strong><span>Preferred monthly total with both ordinary pets and mandatory fees · $2,500 hard base cap</span></div>
- <div class="stat"><strong id="edition">Nov 14, 2026</strong><span>Last published shortlist update</span></div>
+ <div class="stat"><strong id="greenCount">—</strong><span>Green-zone houses for comparison</span></div>
+ <div class="stat"><strong>$2,400</strong><span>Preferred all-in monthly target · $2,500 base ceiling</span></div>
+ <div class="stat"><strong id="edition">Nov 14, 2026</strong><span>Published shortlist update</span></div>
 </div>
-<div class="panel" id="whats-new">
- <div class="subhead"><h2>What's new — latest published changes</h2><span class="pill">Published shortlist changes</span></div>
- <p class="hint">These are new discoveries or meaningful changes. Predictions are not Shelly's ratings, and ordinary approval for both pets is never assumed.</p>
- <div id="news" class="homes"></div>
-</div>
-<div class="panel">
- <div class="subhead"><h2>Explore → exploit: cost against rating</h2><span class="pill">Tap a dot to open listing</span></div>
- <p class="hint">Top-left is strongest value. Green favors strong homes at lower rent; peach needs a truly loved house. New predicted ratings are estimates, NOT Shelly's votes. Chart displays advertised base prices EXCEPT Northview's $2,228 is a required-fees-inclusive total, before pets.</p>
- <svg class="chart" id="fitChart" viewBox="0 0 760 365" role="img" aria-label="Interactive scatter plot of base rent versus house rating"></svg>
- <div class="legend"><span><b></b>Rated by Shelly</span><span><b class="nathan"></b>Rated by Nathan</span><span><b class="pred"></b>Predicted by ChatGPT</span></div>
-</div>
-<div class="panel">
- <div class="subhead"><h2>When to shift from searching to choosing</h2><span class="pill amber">Planning dates, not availability dates</span></div>
- <p class="hint">Nov 10–26: lean toward <strong>lower rent</strong> for a high-fit house. From Nov 27: consider <strong>higher rent</strong> for an excellent match. The date of a dot is a discussion checkpoint, not a listing's move-in date.</p>
- <svg class="chart" id="dateChart" viewBox="0 0 760 365" role="img" aria-label="Interactive chart of base rent against suggested planning date"></svg>
- <div class="zo"><span>Nov 1–9 · explore unless exceptional</span><span>Nov 10–26 · value-first opportunity</span><span>Nov 27–Dec 10 · higher-price fallback</span><span>Dec 11–18 · execute the move</span></div>
-</div>
-<div class="panel">
- <div class="subhead"><h2>Houses, price details & clickable galleries</h2><span class="small" id="count">Updated when published</span></div>
- <p class="hint">The monthly target is $2,400 INCLUDING required services and rent for Sunny AND Belle, excluding ordinary metered utilities and insurance. The $2,500 advertised BASE cap remains a stretch ceiling for exceptional homes. Check each card for dog/cat status, actual total, lease dates, available showing slots and unanswered questions. No green approvals without property-specific evidence.</p>
- <div class="homes" id="homes"></div>
-</div>
-<div class="panel" id="add">
- <h2>Add a house or update a rating</h2>
+<section class="panel" id="decision" aria-label="Filter and compare rental homes">
+ <div class="subhead"><h2>Home fit × advertised rent</h2><span class="pill">Tap a dot → house below</span></div>
+ <p class="hint">Green = rated at least 4.2/5 and advertised monthly figure at most $2,300, with no known hard pet or availability exclusion. It is a screening zone, <strong>not</strong> approval of both pets, actual all-in cost or commute.</p>
+ <div class="filter-grid">
+  <label>Show homes<select id="filterMode"><option value="green">Green zone (default)</option><option value="rated">Shelly rated</option><option value="attention">Important exceptions</option><option value="all">All tracked houses</option></select></label>
+  <label>Sort by<select id="sortMode"><option value="fit">Best rating</option><option value="price">Lower advertised rent</option><option value="work">Shorter work drive</option></select></label>
+  <label>Find a house<input id="filterSearch" type="search" placeholder="Street or city" autocomplete="off"></label>
+ </div>
+ <div class="filter-sub"><label><input id="onlyShelly" type="checkbox"> Shelly's scores only</label><span class="small" id="visibleCount" aria-live="polite"></span></div>
+ <svg class="chart" id="fitChart" viewBox="0 0 760 335" role="group" aria-label="Scatter plot of advertised rent against house score. Select a dot to jump to the corresponding house card."></svg>
+ <div class="legend"><span><b></b> Shelly rated</span><span><b class="nathan"></b> Nathan rated</span><span><b class="pred"></b> Estimated</span></div>
+ <p class="explain">The horizontal position uses the listing's advertised figure, which may be base rent or a fees-inclusive quote. The card shows the distinction. Current green-zone homes receive route research; other homes remain in the archive and exceptions view.</p>
+ <p id="boardStatus" role="status" aria-live="polite"></p>
+</section>
+<section class="panel" id="shortlist" aria-label="Rental shortlist">
+ <div class="subhead"><h2>Homes &amp; decision exceptions</h2><span class="small" id="count">Updated when published</span></div>
+ <p class="hint">Compact rows show the main obstacle and approximate driving times. Tap the house dot above to jump here, or open details for the full leasing evidence and outstanding questions.</p>
+ <div id="homes" class="decision-list"></div>
+ <p class="notice">Road-network times are one-time estimates without live traffic, not a weekday commute prediction. Pool suitability for standing exercises is still unverified. Nothing in a green zone means pets are approved or a tour is booked.</p>
+</section>
+<details class="panel disclosure" id="whats-new">
+ <summary>Latest changes &amp; unanswered leasing questions</summary>
+ <p class="hint">Important changes only; the full daily watch remains in ChatGPT.</p>
+ <div id="news" class="updates-list"></div>
+</details>
+<details class="panel disclosure" id="add">
+ <summary>Add a house or update a rating</summary>
  <p class="hint">Changes made here save on <strong>this device only</strong>. Use “Copy changes” to send them to Nathan/ChatGPT for the next public republish; publishing then updates this same link for everyone.</p>
  <form id="newHome">
    <label>House / street address<input id="f-address" required placeholder="123 Street, City"></label>
@@ -128,19 +192,19 @@ footer{font-size:12px;color:#617584;padding:12px 3px 22px}
    <div class="wide inline"><button class="primary" type="submit">+ Add to my board</button><button type="button" id="copyChanges">Copy changes for republishing</button><button type="button" id="clearChanges">Clear my local changes</button></div>
  </form>
  <div id="status" role="status"></div>
- <div class="notice">This page is viewable by anyone with its URL; it is not password-protected. Do not add private family details, medical information or personal documents. No login is needed to browse. Local edits are not synchronized until republished.</div>
-</div>
+ <div class="notice">This page is accessible to anyone with its URL. Do not add private family details. Local edits are not synchronized until republished.</div>
+</details>
 
-<div class="panel" id="indoor-pools">
- <div class="subhead"><h2>Indoor pools &amp; standing-water exercise</h2><span class="pill neutral">Compare from a house</span></div>
+<details class="panel disclosure pool-disclosure" id="indoor-pools">
+ <summary>Indoor pools — compare nearby standing-water options</summary>
  <p class="hint">Year-round aquatic options for standing stretches near the house shortlist. Pool depth, a stable wall/rail, comfortable water temperature, safe entry, and permission for independent exercise must be confirmed. A therapy spa is not automatically a suitable stretching area.</p>
  <div class="pool-controls">
   <label>Directions starting from<select id="poolOrigin" aria-label="Select a house to compare pool driving routes"></select></label>
-  <span class="small">Open each route in Google Maps to see driving miles and time. No address-specific distances have been verified or saved on this board yet.</span>
+  <span class="small">Open each route in Google Maps to see driving miles and time. Green-zone route estimates appear in the house rows above. Use these Google Maps links to check current traffic.</span>
  </div>
- <div id="poolCards" class="homes" aria-live="polite"><p class="hint">Loading indoor pool options…</p></div>
+ <div id="poolCards" class="pool-grid" aria-live="polite"><p class="hint">Loading indoor pool options…</p></div>
  <div class="notice">Facility details are a research shortlist, not a determination that a pool is suitable for a particular exercise. Confirm current pool-specific hours, water depth, edge/rail access, membership fees, and unrestricted stretching space before relying on one. No private health details are published here.</div>
-</div>
+</details>
 <footer><span id="footerEdition"></span> · Housing comparisons are for discussion, not promises of live availability or approved pet accommodations. Published at an unlisted page of the Move Ledger website.</footer>
 </main>
 <script>
@@ -164,123 +228,186 @@ function houses(){return base.map(function(h){return Object.assign({},h,override
 function safeUrl(x){try{var a=new URL(x,location.href);return a.protocol==="https:"||a.protocol==="http:"?a.href:"#"}catch(e){return"#"}}
 function snap(){try{localStorage.setItem(KEY,JSON.stringify({overrides:overrides,extra:extra}))}catch(e){}}
 function loadSaved(){try{var q=JSON.parse(localStorage.getItem(KEY)||"{}");if(q&&typeof q==="object"){overrides=q.overrides||{};extra=Array.isArray(q.extra)?q.extra:[]}}catch(e){}}
-function show(msg){byId("status").textContent=msg}
-function addDot(s,x,y,h){
+function show(msg){byId("status").textContent=msg;byId("boardStatus").textContent=msg}
+
+var travelData={homes:{},destinations:{}};
+var activeHouseId=null;
+function isHardBlocked(h){
+ var r=h.readiness||{};
+ return !!h.petBlocked||["dog","cat","availability"].some(function(k){return r[k]&&r[k].status==="no"});
+}
+function isGreen(h){
+ return Number(h.rating)>=4.2&&Number(h.rent)<=2300&&!isHardBlocked(h);
+}
+function eligibleRoutes(h){return isGreen(h)?(travelData.homes||{})[h.id]||null:null}
+function matchingHouses(){
+ var mode=byId("filterMode").value,query=byId("filterSearch").value.toLowerCase().trim(),shell=byId("onlyShelly").checked;
+ return houses().filter(function(h){
+  if(mode==="green"&&!isGreen(h))return false;
+  if(mode==="rated"&&h.basis!=="Shelly")return false;
+  if(mode==="attention"&&!(isHardBlocked(h)||(Number(h.rating)>=4.4&&!isGreen(h))))return false;
+  if(shell&&h.basis!=="Shelly")return false;
+  return !query||(h.name+" "+(h.city||"")).toLowerCase().includes(query);
+ }).sort(function(a,b){
+  var mode=byId("sortMode").value;
+  if(mode==="price")return Number(a.rent)-Number(b.rent)||Number(b.rating)-Number(a.rating);
+  if(mode==="work"){
+   var at=eligibleRoutes(a)?.work?.minutes,bt=eligibleRoutes(b)?.work?.minutes;
+   return (at==null?999:at)-(bt==null?999:bt)||Number(b.rating)-Number(a.rating);
+  }
+  return Number(b.rating)-Number(a.rating)||Number(a.rent)-Number(b.rent);
+ });
+}
+function linkForRoute(h,destination){
+ return "https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(h.name+", "+h.city+", TX")+
+  "&destination="+encodeURIComponent(destination)+"&travelmode=driving";
+}
+function focusHouse(id){
+ var node=byId("house-"+id);if(!node)return;
+ if(activeHouseId&&byId("house-"+activeHouseId))byId("house-"+activeHouseId).classList.remove("selected");
+ activeHouseId=id;node.classList.add("selected");
+ var detail=node.querySelector("details.house-details");if(detail)detail.open=true;
+ node.scrollIntoView({behavior:window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+ node.focus({preventScroll:true});
+ if(history&&history.replaceState)history.replaceState(null,"","#house-"+id);
+}
+function addDot(s,x,y,h,idx){
  if(!Number.isFinite(x)||!Number.isFinite(y))return;
- var link=el(s,"a",{href:safeUrl(h.url),target:"_blank",rel:"noopener noreferrer"});
- var group=el(link,"g",{"aria-label":"Open listing: "+h.name,role:"link",tabindex:"0"});
- el(group,"circle",{cx:x,cy:y,r:19,fill:"transparent"});
- el(group,"circle",{cx:x,cy:y,r:9,fill:h.basis==="Shelly"?"#19866c":h.basis==="Nathan"?"#3175bd":"#c18a34",stroke:"#fff","stroke-width":2,class:"dot"});
- el(group,"title",{},h.name+" — "+money(h.rent)+" — "+Number(h.rating).toFixed(1)+"/5");
+ var anchor=el(s,"a",{href:"#house-"+h.id,"class":"point-link","aria-label":"Jump to "+h.name+" house card"});
+ el(anchor,"circle",{cx:x,cy:y,r:19,fill:"transparent"});
+ var color=isHardBlocked(h)?"#9aaab3":h.basis==="Shelly"?"#19866c":h.basis==="Nathan"?"#3175bd":"#c18a34";
+ el(anchor,"circle",{cx:x,cy:y,r:8.5,fill:color,stroke:"#fff","stroke-width":2,class:"dot"});
+ var label=h.name.replace(/^\d+\s*/,"").replace(/ (Dr|Rd|Ln|Ter|St|Blvd|Ct|Way|Pl)\b.*$/i," $1");
+ el(anchor,"title",{},h.name+" · "+money(h.rent)+" · "+Number(h.rating).toFixed(1)+"/5 · jump to card");
+ // Alternating anchor placement keeps nearby dots more legible; cards are the definitive labels.
+ var dy=idx%3===0?-15:idx%3===1?23:-16;
+ var lab=tx(anchor,x+(idx%2?8:-8),y+dy,label,idx%2?"start":"end",10,"#35566b","600");
+ lab.setAttribute("class","dot-label");
+ anchor.addEventListener("click",function(e){e.preventDefault();focusHouse(h.id)});
 }
-function drawFit(all){
+function drawFit(list){
  var s=byId("fitChart");s.replaceChildren();
- var P={x:57,y:25,w:660,h:284};var X=function(r){return P.x+(r-1700)/900*P.w};
- var Y=function(r){return P.y+(5.25-r)/2.75*P.h};
- rect(s,P.x,P.y,P.w,P.h,"#f2f6f7");rect(s,P.x,P.y,X(2300)-P.x,Y(4.2)-P.y,"#daf0e3");
- rect(s,P.x,Y(4.2),X(2300)-P.x,Y(3.9)-Y(4.2),"#e9f3ec");
- rect(s,X(2300),P.y,X(2500)-X(2300),Y(4.5)-P.y,"#fff0d8");
- rect(s,X(2500),P.y,X(2600)-X(2500),P.h,"#f9e8e9");
- for(var v=1800;v<=2600;v+=200){line(s,X(v),P.y,X(v),P.y+P.h);tx(s,X(v),P.y+P.h+18,money(v),"middle",11)}
- [3,3.5,4,4.5,5].forEach(function(v){line(s,P.x,Y(v),P.x+P.w,Y(v));tx(s,P.x-12,Y(v)+4,v.toFixed(1),"end",11)});
- tx(s,190,41,"Strong fit + better value","middle",13,"#246e52","700");
- tx(s,610,41,"Higher rent: must love it","middle",12,"#a07732","650");
- tx(s,381,359,"Advertised monthly figure (base unless noted)","middle",12);
- tx(s,15,18,"5 / 5 ↑","start",10);
- all.forEach(function(h){addDot(s,X(Number(h.rent)),Y(Number(h.rating)),h)});
+ var P={x:57,y:22,w:652,h:266},X=function(r){return P.x+(r-1700)/900*P.w},Y=function(r){return P.y+(5.2-r)/2.7*P.h};
+ rect(s,P.x,P.y,P.w,P.h,"#f4f7f8");
+ rect(s,P.x,P.y,X(2300)-P.x,Y(4.2)-P.y,"#ddefe5");
+ rect(s,X(2300),P.y,X(2500)-X(2300),Y(4.5)-P.y,"#fff0d9");
+ rect(s,X(2500),P.y,P.x+P.w-X(2500),P.h,"#f9e6e8");
+ [1800,2000,2200,2300,2400,2600].forEach(function(r){line(s,X(r),P.y,X(r),P.y+P.h,r===2300);tx(s,X(r),P.y+P.h+19,money(r),"middle",11)});
+ [3,3.5,4,4.2,4.5,5].forEach(function(r){line(s,P.x,Y(r),P.x+P.w,Y(r),r===4.2);tx(s,P.x-11,Y(r)+4,r.toFixed(1),"end",11)});
+ tx(s,207,38,"GREEN · better value","middle",12,"#246e52","700");
+ tx(s,601,38,"Higher rent","middle",12,"#97712f","700");
+ tx(s,378,329,"Advertised monthly figure (not necessarily all-in)","middle",11);
+ // Largest labels first would collide most; render estimated first, then confirmed.
+ list.slice().sort(function(a,b){return Number(a.basis==="Shelly")-Number(b.basis==="Shelly")}).forEach(function(h,i){addDot(s,X(Number(h.rent)),Y(Number(h.rating)),h,i)});
 }
-function drawDate(all){
- var s=byId("dateChart");s.replaceChildren();var P={x:57,y:25,w:660,h:284};
- var start=parseDay("2026-11-01"),end=parseDay("2026-12-18");
- var X=function(day){return P.x+(parseDay(day)-start)/(end-start)*P.w};
- var Y=function(n){return P.y+(2600-n)/1000*P.h};
- rect(s,P.x,P.y,P.w,P.h,"#f3f6f7");
- rect(s,X("2026-11-10"),Y(2350),X("2026-11-27")-X("2026-11-10"),Y(1600)-Y(2350),"#ddefe5");
- rect(s,X("2026-11-27"),Y(2500),X("2026-12-11")-X("2026-11-27"),Y(2350)-Y(2500),"#ffebc8");
- rect(s,X("2026-12-11"),P.y,X("2026-12-18")-X("2026-12-11"),P.h,"#f8e6e7");
- ["2026-11-01","2026-11-10","2026-11-20","2026-11-27","2026-12-05","2026-12-11","2026-12-18"].forEach(function(d){line(s,X(d),P.y,X(d),P.y+P.h);tx(s,X(d),P.y+P.h+18,d.slice(5).replace("-","/"),"middle",10)});
- [1800,2000,2200,2350,2500].forEach(function(r){line(s,P.x,Y(r),P.x+P.w,Y(r));tx(s,P.x-10,Y(r)+4,money(r),"end",11)});
- tx(s,X("2026-11-18"),Y(1910),"Nov 10–26: lower rent","middle",13,"#267258","700");
- tx(s,X("2026-12-04"),Y(2420),"Higher rent if loved","middle",11,"#926b20","700");
- tx(s,X("2026-12-14"),Y(2150),"Execute","middle",11,"#a25b58","700");
- tx(s,380,359,"Decision checkpoint — NOT rental availability","middle",12);
- all.forEach(function(h){addDot(s,X(h.checkpoint),Y(Number(h.rent)),h)});
+function write(root,tag,text,cls){
+ var e=document.createElement(tag);if(cls)e.className=cls;e.textContent=text;root.appendChild(e);return e;
 }
-function card(h){
- var d=document.createElement("div");d.className="home";
- var top=document.createElement("div");top.className="row";d.appendChild(top);
- var name=document.createElement("div"),title=document.createElement("h3");title.textContent=h.name;name.appendChild(title);
- var city=document.createElement("div");city.className="small";city.textContent=h.city||"";name.appendChild(city);top.appendChild(name);
- var priceBox=document.createElement("div");top.appendChild(priceBox);
- var price=document.createElement("div");price.className="price";price.textContent=money(h.rent);priceBox.appendChild(price);
- if(h.priceBasis){var priceBasis=document.createElement("div");priceBasis.className="small";priceBasis.style.maxWidth="150px";priceBasis.style.textAlign="right";priceBasis.textContent=h.priceBasis;priceBox.appendChild(priceBasis);}
- if(h.trackedOn==="2026-11-04"){var newBadge=document.createElement("span");newBadge.className="pill";newBadge.textContent="NEW Nov 4";name.appendChild(newBadge);}
- var rating=document.createElement("div");rating.className="inline";var tag=document.createElement("span");
- tag.className="pill"+(h.basis==="Estimated"?" amber":h.basis==="Nathan"?" neutral":"");
- tag.textContent=Number(h.rating).toFixed(1)+" / 5 · "+(h.basis==="Shelly"?"Shelly rated":h.basis==="Nathan"?"Nathan "+(h.ratingStatus==="tentative"?"tentative":"rated"):"Predicted");rating.appendChild(tag);
- if(h.petGate){var pets=document.createElement("span");pets.className="pill "+(h.petBlocked?"amber":"neutral");pets.textContent=h.petGate;rating.appendChild(pets);}
- d.appendChild(rating);
- var checks=h.readiness||{};
- var checkBox=document.createElement("section");checkBox.className="check-summary";checkBox.setAttribute("aria-label","House readiness and outstanding questions");
- var gates=["dog","cat","availability","cost","lease","photos","commute"];
- var labels={dog:"Sunny",cat:"Cat",availability:"Available",cost:"All-in",lease:"Lease",photos:"Photos",commute:"Routes",tour:"Tour"};
- var values=gates.map(function(k){return (checks[k]&&checks[k].status)||"unknown"});
- var no=values.includes("no"),conflict=values.includes("conflict"),verified=values.every(function(s){return s==="yes"});
- var headline=document.createElement("strong");headline.style.fontSize="12px";
- headline.textContent=no?"BLOCKED · condition not met":conflict?"CHECK CONFLICT · not ready":verified?"READY · essential gates checked":"NOT READY · awaiting answers";
- checkBox.appendChild(headline);
- var chips=document.createElement("div");chips.className="check-row";
- ["dog","cat","availability","cost","lease"].forEach(function(k){
-   var s=(checks[k]&&checks[k].status)||"unknown";if(!["yes","no","pending","conflict","unknown"].includes(s))s="unknown";
-   var chip=document.createElement("span");chip.className="gate-chip "+s;
-   chip.textContent=labels[k]+": "+({yes:"✓ Verified",no:"✕ Blocked",pending:"Pending",conflict:"Conflicting",unknown:"Unknown"})[s];
-   chips.appendChild(chip);
- });
- checkBox.appendChild(chips);
- if(h.allInEstimate!=null&&Number.isFinite(Number(h.allInEstimate))){
-   var estimate=document.createElement("div");estimate.className="cost-est";
-   estimate.textContent="Estimated two-pet subtotal: "+money(Number(h.allInEstimate))+"/month · NOT a complete approved quote";
-   checkBox.appendChild(estimate);
+function routeCell(root,h,label,r,dest){
+ var a=document.createElement("a");a.href=linkForRoute(h,dest);a.className="travel-cell";a.target="_blank";a.rel="noopener noreferrer";
+ a.setAttribute("aria-label","Check "+label+" driving route from "+h.name+" in Google Maps");
+ write(a,"span",label);write(a,"strong",r&&r.minutes!=null?"~"+r.minutes+" min":"Check route");
+ if(r&&r.miles!=null)write(a,"span",r.miles.toFixed(1)+" mi · no traffic");
+ root.appendChild(a);
+}
+function keyIssues(h,t){
+ var issues=[],r=h.readiness||{},dog=r.dog?.status,cat=r.cat?.status,avail=r.availability?.status;
+ if(cat==="no")issues.push(["Cat not allowed — hard stop",true]);
+ else if(h.petBlocked)issues.push(["Pet rule blocks move until cleared",true]);
+ else if(dog==="conflict")issues.push(["Sunny size rule conflicts",true]);
+ if(avail==="no")issues.push(["Manager says unavailable",true]);
+ else if(avail==="conflict")issues.push(["Listing availability conflicts",true]);
+ if(h.id==="northview")issues.push(["Nov 20 lease-start cutoff unresolved",false]);
+ if(h.id==="hiddenlake")issues.push(["Separate office still unverified",false]);
+ if(h.id==="loftin")issues.push(["Potential $1,200 two-pet fees",false]);
+ if(h.id==="hearthstone")issues.push(["Base rent at $2,500 ceiling",false]);
+ if(h.id==="vistaoak")issues.push(["Long-lease quote; 12-month unknown",false]);
+ if(t&&t.work?.minutes>45)issues.push(["Work baseline ~"+t.work.minutes+" min",false]);
+ if(t&&t.parents?.minutes>60)issues.push(["Mom & Dad baseline ~"+t.parents.minutes+" min",false]);
+ if(t&&t.pools?.[0]?.minutes>20)issues.push(["Nearest pool candidate ~"+t.pools[0].minutes+" min",false]);
+ if(h.basis==="Estimated")issues.push(["Fit score is a prediction",false]);
+ if(!issues.length)issues.push(["Pets, lease & live condition still need confirmation",false]);
+ return issues.slice(0,4);
+}
+function houseCard(h){
+ var d=document.createElement("article");d.className="decision-card";d.id="house-"+h.id;d.tabIndex=-1;
+ var head=write(d,"div","","head"),left=write(head,"div",""),right=write(head,"div","");
+ write(left,"h3",h.name);
+ write(left,"div",(h.city||"Texas")+" · "+(h.basis==="Shelly"?"Shelly":h.basis==="Nathan"?"Nathan":"Estimated")+" "+Number(h.rating).toFixed(1)+"/5","meta");
+ write(right,"div",money(h.rent),"money");
+ var pb=String(h.priceBasis||"").toLowerCase(),included=pb.includes("total")||pb.includes("incl.")||pb.includes("inclusive");
+ write(right,"div",included?"includes some required fees":"advertised figure · check fees","basis");
+ var tags=write(d,"div","","compact-badges");
+ write(tags,"span",isGreen(h)?"GREEN ZONE":isHardBlocked(h)?"HARD BLOCK":"Outside green", "pill "+(isGreen(h)?"":isHardBlocked(h)?"amber":"neutral"));
+ if(h.basis==="Shelly")write(tags,"span","Shelly confirmed","pill neutral");
+ if(h.basis==="Nathan")write(tags,"span","Nathan-rated · Shelly pending","pill neutral");
+ var t=eligibleRoutes(h),issues=write(d,"div","","exceptions");
+ keyIssues(h,t).forEach(function(k){write(issues,"span",k[0],"exception"+(k[1]?" critical":""))});
+ if(t){
+  var grid=write(d,"div","","travel-strip");
+  routeCell(grid,h,"Work",t.work,travelData.destinations?.work?.address||"6565 N MacArthur Blvd, Irving, TX");
+  routeCell(grid,h,"Mom & Dad",t.parents,travelData.destinations?.parents?.address||"1801 W Lake Shore Dr, Alvarado, TX");
+  var pool=t.pools?.[0],dest=pool&&(travelData.destinations||{})[pool.id];
+  if(pool&&dest)routeCell(grid,h,dest.label,pool,dest.address);
+  else routeCell(grid,h,"Indoor pool",null,"550 NW Summercrest Blvd, Burleson, TX");
+ }else if(isGreen(h))write(d,"div","Travel estimate not yet measured for this green-zone home. Check routes in Google Maps.","route-unmeasured");
+ else write(d,"div","Travel research is reserved for green-zone candidates.","route-unmeasured");
+ var actions=write(d,"div","","row-actions");
+ var link=document.createElement("a");link.href=safeUrl(h.url);link.target="_blank";link.rel="noopener noreferrer";link.className="text-link";link.textContent="Listing photos ↗";actions.appendChild(link);
+ if(t&&t.pools?.[1]){
+  var backup=t.pools[1],bd=travelData.destinations?.[backup.id];
+  if(bd){var alt=document.createElement("a");alt.className="text-link";alt.href=linkForRoute(h,bd.address);alt.target="_blank";alt.rel="noopener noreferrer";alt.textContent="Other pool: "+bd.label+" ~"+backup.minutes+"m ↗";actions.appendChild(alt);}
  }
- var details=document.createElement("details"),summary=document.createElement("summary");summary.textContent="See all 8 checks and remaining questions";details.appendChild(summary);
- var grid=document.createElement("div");grid.className="check-grid";
- ["dog","cat","availability","cost","lease","photos","commute","tour"].forEach(function(k){
-   var x=checks[k]||{status:"unknown",detail:"Unverified"};
-   var item=document.createElement("div");item.className="check-item";
-   var title=document.createElement("strong");title.textContent=labels[k]+" — "+x.status;item.appendChild(title);
-   var desc=document.createElement("span");desc.textContent=x.detail||"No answer yet";item.appendChild(desc);grid.appendChild(item);
+ var details=document.createElement("details");details.className="house-details";details.id="details-"+h.id;d.appendChild(details);
+ var sum=document.createElement("summary");sum.textContent="Questions, lease evidence & full status";details.appendChild(sum);
+ if(h.fit)write(details,"p","FIT: "+h.fit);
+ if(h.priceNote)write(details,"p","PRICE: "+h.priceNote);
+ if(h.status)write(details,"p","STATUS: "+h.status);
+ var checks=h.readiness||{},checkLabels={dog:"Sunny",cat:"Cat",availability:"Availability",cost:"All-in cost",lease:"Lease",photos:"Photos",commute:"Commute",tour:"Tour"};
+ var checkGrid=write(details,"div","","check-grid");
+ Object.keys(checkLabels).forEach(function(k){
+  var x=checks[k]||{status:"unknown",detail:"Not verified"};
+  var item=write(checkGrid,"div","","check-item");
+  write(item,"strong",checkLabels[k]+" · "+(x.status||"unknown"));
+  write(item,"span",x.detail||"No confirmed details");
  });
- details.appendChild(grid);
- if(h.allInBasis){var basis=document.createElement("div");basis.className="contact-updated";basis.textContent=h.allInBasis;details.appendChild(basis)}
- if(h.questions&&h.questions.length){
-   var title=document.createElement("strong");title.style.fontSize="12px";title.textContent="Open questions";details.appendChild(title);
-   var ul=document.createElement("ul");ul.className="open-q";h.questions.forEach(function(q){var li=document.createElement("li");li.textContent=q;ul.appendChild(li)});details.appendChild(ul);
+ if(h.questions?.length){
+  write(details,"p","Open questions:");var ul=document.createElement("ul");details.appendChild(ul);
+  h.questions.slice(0,5).forEach(function(q){write(ul,"li",q)});
  }
- if(h.contactUpdate){var update=document.createElement("div");update.className="contact-updated";update.textContent="Contact log: "+h.contactUpdate;details.appendChild(update)}
- if(h.checksUpdatedOn){var date=document.createElement("div");date.className="contact-updated";date.textContent="Reviewed "+h.checksUpdatedOn+"; statuses may change";details.appendChild(date)}
- checkBox.appendChild(details);d.appendChild(checkBox);
- var p=document.createElement("p");p.textContent=h.fit||"";d.appendChild(p);
- if(h.priceNote){var note=document.createElement("p");note.textContent=h.priceNote;d.appendChild(note)}
- if(h.status){var st=document.createElement("p");st.className="small";st.textContent=h.status;d.appendChild(st)}
- var actions=document.createElement("div");actions.className="actions";d.appendChild(actions);
- var a=document.createElement("a");a.href=safeUrl(h.url);a.target="_blank";a.rel="noopener noreferrer";a.textContent="Open listing ↗";actions.appendChild(a);
- var route=document.createElement("a");route.href="https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(h.name+", "+h.city+", TX")+"&destination="+encodeURIComponent("6565 N MacArthur Blvd, Irving, TX")+"&travelmode=driving";route.target="_blank";route.rel="noopener noreferrer";route.textContent="Drive to office ↗";actions.appendChild(route);
- var family=document.createElement("a");family.href="https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(h.name+", "+h.city+", TX")+"&destination="+encodeURIComponent("1801 W Lake Shore Dr, Alvarado, TX 76009")+"&travelmode=driving";family.target="_blank";family.rel="noopener noreferrer";family.textContent="Drive to parents ↗";actions.appendChild(family);
- var b=document.createElement("button");b.type="button";b.textContent="Edit rating";b.addEventListener("click",function(){
-  var v=prompt("Rating for "+h.name+" (1–5):",h.rating);
-  if(v===null)return;var n=Number(v);if(!Number.isFinite(n)||n<1||n>5)return alert("Use a number between 1 and 5.");
-  var who=prompt("Who rated this house? Enter Shelly, Nathan or Estimated:",h.basis||"Estimated");
-  if(who===null)return;who=who.trim();if(!["Shelly","Nathan","Estimated"].includes(who))return alert("Enter Shelly, Nathan or Estimated.");
-  if(base.some(function(i){return i.id===h.id})){overrides[h.id]=Object.assign({},overrides[h.id]||{},{rating:Math.round(n*10)/10,basis:who})}
-  else{extra=extra.map(function(a){return a.id===h.id?Object.assign({},a,{rating:Math.round(n*10)/10,basis:who}):a})}
-  snap();render();show("Saved locally. Copy changes to republish for both devices.");
- });actions.appendChild(b);
+ if(h.contactUpdate)write(details,"p","Contact: "+h.contactUpdate);
+ if(h.allInBasis)write(details,"p","Estimate basis: "+h.allInBasis);
+ if(h.checksUpdatedOn)write(details,"p","Last evidence check: "+h.checksUpdatedOn);
+ if(t)write(details,"p","Drive-time source: "+(travelData.method||"road-network baseline")+". Check the links above for current traffic. Pool standing stretch suitability is unverified.");
+ var button=document.createElement("button");button.type="button";button.textContent="Edit rating on this device";
+ button.addEventListener("click",function(){
+  var value=prompt("Rating for "+h.name+" (1–5):",h.rating);if(value===null)return;
+  var n=Number(value);if(!Number.isFinite(n)||n<1||n>5)return alert("Enter a number between 1 and 5.");
+  var who=prompt("Whose rating? Shelly, Nathan, or Estimated:",h.basis||"Estimated");
+  if(who===null)return;who=who.trim();if(!["Shelly","Nathan","Estimated"].includes(who))return alert("Enter Shelly, Nathan, or Estimated.");
+  if(base.some(function(a){return a.id===h.id}))overrides[h.id]=Object.assign({},overrides[h.id]||{},{rating:Math.round(n*10)/10,basis:who});
+  else extra=extra.map(function(a){return a.id===h.id?Object.assign({},a,{rating:Math.round(n*10)/10,basis:who}):a});
+  snap();render();show("Saved on this device. Copy the local changes to publish them for both devices.");
+ });
+ details.appendChild(button);
  return d;
 }
 function render(){
- var a=houses();byId("n-homes").textContent=a.length;byId("count").textContent=a.length+" houses · published "+latestEdition;
- drawFit(a);drawDate(a);var root=byId("homes");root.replaceChildren();a.slice().sort(function(x,y){return Number(!!x.petBlocked)-Number(!!y.petBlocked)||y.rating-x.rating||x.rent-y.rent}).forEach(function(h){root.appendChild(card(h))});renderPools();
+ var all=houses(),visible=matchingHouses(),green=all.filter(isGreen);
+ byId("greenCount").textContent=green.length;
+ byId("count").textContent=visible.length+" displayed · "+all.length+" tracked";
+ byId("visibleCount").textContent=visible.length+" of "+all.length+" shown";
+ drawFit(visible);
+ var root=byId("homes");root.replaceChildren();
+ if(visible.length)visible.forEach(function(h){root.appendChild(houseCard(h))});
+ else write(root,"p","No houses match these filters. Clear the search or switch to All tracked houses.","hint");
+ renderPools();
+ if(location.hash.startsWith("#house-")){
+  var id=location.hash.slice(7),node=byId("house-"+id);
+  if(node)node.classList.add("selected");
+ }
 }
+
 function copyText(text,msg){
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){show(msg)}).catch(function(){window.prompt("Copy this text:",text)})}
  else{window.prompt("Copy this text:",text)}
@@ -300,51 +427,47 @@ byId("newHome").addEventListener("submit",function(event){
  show("Added to this device. Use 'Copy changes' to include it in the shared published board.");
 });
 loadSaved();
+
 function drawUpdates(items){
  var root=byId("news");if(!root)return;root.replaceChildren();
- (items||[]).forEach(function(u){
-  var box=document.createElement("div");box.className="home";root.appendChild(box);
-  var tag=document.createElement("span");tag.className="pill"+(u.tag.indexOf("Pet restriction")>=0?" amber":"");
-  tag.textContent=(u.date||"")+" · "+(u.tag||"Update");box.appendChild(tag);
-  var title=document.createElement("h3");title.textContent=u.title||"Update";box.appendChild(title);
-  var p=document.createElement("p");p.textContent=u.detail||"";box.appendChild(p);
-  var linked=base.find(function(h){return h.id===u.houseId});
-  if(linked){var a=document.createElement("a");a.href=safeUrl(linked.url);a.target="_blank";a.rel="noopener noreferrer";a.textContent="See listing ↗";a.style.color="#176b5e";a.style.fontWeight="700";box.appendChild(a);}
+ (items||[]).slice(0,8).forEach(function(u){
+  var box=write(root,"div","","update-line");
+  write(box,"div",(u.date||"")+" · "+(u.tag||"Update"),"small");
+  write(box,"strong",u.title||"Update");
+  write(box,"p",u.detail||"");
+  if(u.houseId){
+   var house=houses().find(function(h){return h.id===u.houseId});
+   if(house){var a=document.createElement("a");a.href="#house-"+house.id;a.className="text-link";a.textContent="Find house ↗";
+    a.addEventListener("click",function(e){e.preventDefault();if(!byId("house-"+house.id)){byId("filterMode").value="all";byId("filterSearch").value="";byId("onlyShelly").checked=false;render()}focusHouse(house.id)});
+    box.appendChild(a);
+   }
+  }
  });
 }
 
 var poolItems=[];
+
 function renderPools(){
  if(!poolItems.length)return;
- var select=byId("poolOrigin"),all=houses(),old=select.value;
+ var select=byId("poolOrigin"),all=houses().filter(isGreen),old=select.value;
  select.replaceChildren();
- all.forEach(function(h){
-  var opt=document.createElement("option");opt.value=h.id;opt.textContent=h.name+" · "+(h.city||"TX");select.appendChild(opt);
- });
- select.value=all.some(function(h){return h.id===old})?old:(all.some(function(h){return h.id==="hearthstone"})?"hearthstone":(all[0]||{}).id);
- var from=all.find(function(h){return h.id===select.value})||all[0],root=byId("poolCards");root.replaceChildren();
+ all.sort(function(a,b){return Number(b.rating)-Number(a.rating)});
+ all.forEach(function(h){var opt=document.createElement("option");opt.value=h.id;opt.textContent=h.name+" · "+h.city;select.appendChild(opt)});
+ if(!all.length){byId("poolCards").textContent="No green-zone homes available for pool comparison.";return;}
+ select.value=all.some(function(h){return h.id===old})?old:all[0].id;
+ var from=all.find(function(h){return h.id===select.value})||all[0];
+ var root=byId("poolCards");root.replaceChildren();
  poolItems.forEach(function(p){
-  var c=document.createElement("div");c.className="home pool-card";root.appendChild(c);
-  var pill=document.createElement("span");pill.className="pill neutral tag";pill.textContent=p.tag;c.appendChild(pill);
-  var heading=document.createElement("h3");heading.textContent=p.name;c.appendChild(heading);
-  var address=document.createElement("div");address.className="small";address.textContent=p.address;c.appendChild(address);
-  function detail(label,value){
-   if(!value)return;var t=document.createElement("p");var strong=document.createElement("strong");strong.textContent=label+": ";t.appendChild(strong);t.appendChild(document.createTextNode(value));c.appendChild(t);
-  }
-  detail("Confirmed",p.confirmed);
-  detail("Hours",p.hours);
-  detail("Cost",p.cost);
-  detail("Check before relying on it",p.verify);
-  var actions=document.createElement("div");actions.className="actions";c.appendChild(actions);
+  var c=write(root,"div","","pool-entry");
+  write(c,"strong",p.name);
+  write(c,"div",p.address,"small");
+  write(c,"p",p.tag+" · "+p.verify);
+  var actions=write(c,"div","","actions");
   var site=document.createElement("a");site.href=safeUrl(p.url);site.target="_blank";site.rel="noopener noreferrer";site.textContent="Official facility ↗";actions.appendChild(site);
-  if(from){
-   var route=document.createElement("a");
-   route.href="https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(from.name+", "+(from.city||"")+" TX")+"&destination="+encodeURIComponent(p.address)+"&travelmode=driving";
-   route.target="_blank";route.rel="noopener noreferrer";
-   route.textContent="Driving distance from "+from.name+" ↗";actions.appendChild(route);
-  }
+  var route=document.createElement("a");route.href=linkForRoute(from,p.address);route.target="_blank";route.rel="noopener noreferrer";route.textContent="Drive from "+from.name+" ↗";actions.appendChild(route);
  });
 }
+
 function loadPools(){
  fetch("./pools.json?_="+Date.now(),{cache:"no-store"})
  .then(function(r){if(!r.ok)throw Error("HTTP "+r.status);return r.json()})
@@ -358,7 +481,15 @@ function sync(userInitiated){
    render();drawUpdates(d.updates||[]);if(userInitiated)show("Published list refreshed.");
  }).catch(function(){if(!base.length)base=fallback;render();drawUpdates([]);show("Using offline snapshot; published data could not be loaded right now.")});
 }
-base=fallback;render();sync(false);byId("poolOrigin").addEventListener("change",renderPools);loadPools();
+var filterIds=["filterMode","sortMode","filterSearch","onlyShelly"];
+filterIds.forEach(function(id){byId(id).addEventListener(id==="filterSearch"?"input":"change",render)});
+function loadTravel(){
+ fetch("./travel.json?_="+Date.now(),{cache:"no-store"})
+ .then(function(r){if(!r.ok)throw Error("HTTP "+r.status);return r.json()})
+ .then(function(d){if(d&&d.homes&&d.destinations){travelData=d;render()}})
+ .catch(function(){show("Travel times unavailable; Google Maps route links remain available.")});
+}
+base=fallback;render();sync(false);byId("poolOrigin").addEventListener("change",renderPools);loadPools();loadTravel();
 })();
 </script>
 </body>

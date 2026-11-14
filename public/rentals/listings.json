@@ -1,6 +1,6 @@
 {
-  "edition": "November 13, 2026 — Hidden Lake 4.7/5 and showing inquiry",
-  "note": "Shelly confirmed 1121 Hidden Lake Dr 4.7/5 Nov13; other ratings unchanged. Hidden Lake advertised base has current $2,275 Zumper/Zillow vs $2,375 MLS/Redfin discrepancy; not lease-ready until verified. The board chart shows this lower advertised BASE, not fees-inclusive rent. Pending showing requested, not confirmed.",
+  "edition": "November 14, 2026 — Beaver Creek and Northview repriced; new-market screening and reply gates",
+  "note": "Nov14 verified changes: 828 Beaver Creek $1,920 BASE on 12-month term +$29.98 required fees (before two pets); 236 Northview $2,198 manager-advertised total incl required fees BEFORE pets. Nov13 inquiries to Hidden Lake agent, Vista Oak specialist and Progress for Beaver Creek remain without substantive replies or confirmed tours. Automated Beaver Creek application invitation does NOT establish an application. Tide Lane Nov13 approval details remain as previously noted. This is source data, not evidence of website deployment.",
   "homes": [
     {
       "id": "hearthstone",
@@ -512,17 +512,17 @@
       "id": "northview",
       "name": "236 Northview Ter",
       "city": "Burleson",
-      "rent": 2228,
+      "rent": 2198,
       "rating": 4.5,
       "basis": "Shelly",
       "checkpoint": "2026-11-20",
       "trackedOn": "2026-11-04",
       "url": "https://www.zillow.com/homedetails/236-Northview-Ter-Burleson-TX-76028/71275291_zpid/",
-      "priceBasis": "ADVERTISED TOTAL incl. required fees, BEFORE pets (not base rent)",
+      "priceBasis": "Nov13 AMH email: advertised TOTAL including fixed required monthly charges, BEFORE pets, not base",
       "petGate": "Cats and large dogs listed; screening pending",
-      "priceNote": "Nov 4 Zillow advertised monthly total $2,228 INCLUDING required fees (not comparable directly with base rent figures). 15-month promotion requires signing/moving in by Nov 15; 12-month quote and both-pet costs still need verification. Realtor displays $2,230 base, but its marketing copy refers to an expired Oct 15 promotion.",
+      "priceNote": "AMH virtual leasing assistant Amy T. Nov13 confirms total monthly price REDUCED $2,228→$2,198 including required charges, excluding one-time/conditional charges including normal dog+cat fees. Underlying base, actual 12-month rent and promotion eligibility unresolved. Prior AMH answer latest compatible start Nov20; no December 1 acceptance. Nov15 15-month promotion deadline still unresolved. No individual dog+cat approval.",
       "fit": "Shelly reviewed 236 Northview Terrace on Nov 4 and said she likes it, tentatively about 4.5/5. This supersedes the earlier assistant-predicted 3.8/5; she has NOT explicitly ranked it ahead of Clarks Mill. One-story 4BR/2BA, 1,798 sq ft; open island kitchen, granite, light walls and LVP in main spaces are advertised/visible in listing material. Actual backyard grass/fencing, bathtub location, bedroom floors and laundry-to-primary proximity remain incompletely verified; listing imagery and plans may be illustrative.",
-      "status": "Shelly-confirmed provisional 4.5/5 HOME FIT, not leasing clearance. Large dog and cat are generally listed but individual screening, full recurring costs, live condition, exact off-peak commute and advertised Nov 15 promotion requirements remain outstanding.",
+      "status": "Nov13 AMH direct automated email confirms a $2,198 mandatory-fees-inclusive advertised total BEFORE pets; current final lease cost/term and Dec start not verified. Earlier latest compatible start Nov20; later date not granted.",
       "ratingStatus": "tentative",
       "ratingUpdatedOn": "2026-11-04",
       "readiness": {
@@ -540,11 +540,11 @@
         },
         "cost": {
           "status": "pending",
-          "detail": "$2228 incl. fixed charges but before two pets"
+          "detail": "Nov13 AMH direct email $2,198 incl required charges BEFORE 2 pets, down $30; pet rent and exact term unknown"
         },
         "lease": {
           "status": "no",
-          "detail": "Nov6 AMH agent latest eligible start Nov20; Dec1 not approved"
+          "detail": "Earlier AMH latest compatible start Nov20, not a hold or Dec1 agreement. New lower price does not approve later start"
         },
         "photos": {
           "status": "conflict",
@@ -564,8 +564,10 @@
         "Pet charges and approval",
         "Bedroom floors, tub, grass and photo source"
       ],
-      "checksUpdatedOn": "2026-11-11",
-      "contactUpdate": "Nov6–8: AMH automated replies, no full quote"
+      "checksUpdatedOn": "2026-11-14",
+      "contactUpdate": "Nov13 2:36pm CT AMH Amy T virtual leasing assistant: advertised total $2,228→$2,198, required recurring included, pet/conditional charges extra; no new move-in timing approval. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d69fd601557b1",
+      "priceUpdatedOn": "2026-11-13",
+      "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d69fd601557b1"
     },
     {
       "id": "watson",
@@ -707,11 +709,11 @@
       "readiness": {
         "dog": {
           "status": "conflict",
-          "detail": "Small-dog-only portal conflicts with manager general policy"
+          "detail": "Small-dog-only portal conflict vs generic manager policy; Nov13 email asks explicit ordinary large golden retriever approval, unanswered"
         },
         "cat": {
           "status": "pending",
-          "detail": "General cat acceptance, property approval missing"
+          "detail": "Nov13 email asks ordinary cat clearance with golden retriever; not yet replied"
         },
         "availability": {
           "status": "conflict",
@@ -734,8 +736,8 @@
           "detail": "Exact off-peak office/Alvarado routes not verified"
         },
         "tour": {
-          "status": "unknown",
-          "detail": "No confirmed showing"
+          "status": "pending",
+          "detail": "Nov13 user-authorized one-time message to property specialist Racheal Ross-Addison asks Nov22/25/28 4–6pm and Sunny/Belle; no reply or slot confirmed"
         }
       },
       "questions": [
@@ -743,10 +745,10 @@
         "Actual vacant date and 22-month quote",
         "Cat/large dog + fees and yard"
       ],
-      "checksUpdatedOn": "2026-11-13",
+      "checksUpdatedOn": "2026-11-14",
       "allInEstimate": 2213.9,
       "allInBasis": "Hypothetical only: $1949 on 22mo + $184.90 mandatory + $80 general 2-pet rent if approved",
-      "contactUpdate": "Nov12 12:02pm Central Invitation Homes email PRICE DROP $1949 base / $2133.90 mandatory package before pets; Nov13 direct manager confirms 22mo and same costs. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d0ecce904cfbd",
+      "contactUpdate": "Nov12 12:02pm Central Invitation Homes email PRICE DROP $1949 base / $2133.90 mandatory package before pets; Nov13 direct manager confirms 22mo and same costs. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d0ecce904cfbd Nov13 one-time inquiry to leasing specialist regarding both pets, 22mo vs 12mo pricing, Dec lease start, and Nov22/25/28 possible tour; no response or booking. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d5800660cf3fa",
       "priceUpdatedOn": "2026-11-12",
       "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d0ecce904cfbd"
     },
@@ -935,7 +937,7 @@
       "id": "beavercreek",
       "name": "828 Beaver Creek Dr",
       "city": "Burleson",
-      "rent": 1990,
+      "rent": 1920,
       "rating": 4.5,
       "basis": "Nathan",
       "ratingStatus": "tentative",
@@ -943,11 +945,11 @@
       "trackedOn": "2026-11-06",
       "checkpoint": "2026-11-23",
       "url": "https://rentprogress.com/property-details/828-beaver-creek-dr/burleson/tx/76028/316204",
-      "priceBasis": "Manager 12-month BASE; +$29.98 recurring required services",
+      "priceBasis": "Nov14 Progress manager advertised 12-month BASE; +$29.98 mandatory recurring, excludes all pets",
       "petGate": "Progress generally permits 2 pets, but Sunny and cat/HOA approval pending",
-      "priceNote": "Nov 11 direct manager $1,990 base/12 months + $19.99 smart home + $9.99 utility service = $2,019.98 before pets. General Progress 2-pet rent $144/month makes illustrative $2,163.98, excluding metered utilities, insurance, lawn, possible HOA costs. Deposit generally 1–1.5 months' base; $55/adult application, $125 admin, $30 utility setup (verify specific charges). Resident occupied; earliest advertised lease start AFTER Dec 7. Manager advertises $500 NONREFUNDABLE holding fee credited to first month only if lease executed; no payment/application authorized. Refrigerator generally included; washer/dryer machines not confirmed, likely hookups only.",
+      "priceNote": "Nov14 manager listing $1,920 BASE for 12 months +$19.99 smart-home +$9.99 utility service = $1,949.98 recurring before both pets. General previous Progress two-pet rent estimate $144 would imply $2,093.98/month but individual Sunny/Belle and fees not approved; do not treat this as firm. Other lengths differ; advertised available after Dec7, currently occupied. Deposit and pet fees unquoted; earlier generic $55/adult application, $125 admin, $30 utility setup, $500 holding fee credited only if lease proceeds; verify exact costs. Refrigerator generally included; washer/dryer not verified.",
       "fit": "Nathan tentatively rates this home 4.5/5, NOT Shelly confirmed. One-story approx 1,675 sqft. Manager 4BR/2BA; historic address-matched floor plan appears 3 bedrooms plus approx 11x7 separate office. 2020 listing photos show hard floors, grassy fenced yard, primary tub and double vanity but current conditions and fence perimeter unverified; some images virtually staged. Kitchen looks compact compared with Hearthstone; inspect current finishes/bedroom floors/laundry location.",
-      "status": "COMING SOON; occupied. Showing inquiry emailed November 11 to Progress customer care asking for resident-approved Thanksgiving-week appointment windows Nov23–25 or 27–28, or video alternative; NO appointment confirmed. Lease advertised after Dec7, suitable potential for move Dec18 if actually available.",
+      "status": "Nov14 manager advertises coming soon at $1,920/12mo, occupied, available after Dec7 subject to confirmation. Nov11 and Nov13 one-time showing inquiries sent; NO tour booked. Nov13 automated 'finish application' email is marketing, not confirmation of any application. Latest lease-start cutoff and holiday showing approval unanswered.",
       "petBlocked": false,
       "readiness": {
         "dog": {
@@ -964,11 +966,11 @@
         },
         "cost": {
           "status": "pending",
-          "detail": "$1990 base+$29.98 required+$144 general 2 pet rent ~ $2163.98"
+          "detail": "Nov14 $1,920 base (12mo)+$29.98 fixed=$1,949.98 PRE-pet; $2,093.98 if old generic $144/month two-pet estimate applies; owner/HOA and actual fees unknown"
         },
         "lease": {
           "status": "pending",
-          "detail": "After Dec7, possession not promised"
+          "detail": "Occupied; advertised after Dec7, Dec8–15 requested but no approved start"
         },
         "photos": {
           "status": "conflict",
@@ -980,7 +982,7 @@
         },
         "tour": {
           "status": "pending",
-          "detail": "Thanksgiving showing inquiry sent Nov11"
+          "detail": "Nov11 + Nov13 user-authorized one-time inquiries request late afternoon/evening Nov22/25/28; no showing options or booking provided"
         }
       },
       "questions": [
@@ -988,10 +990,11 @@
         "Updated bath, kitchen and yard photos",
         "Two-pet quote and deposit"
       ],
-      "checksUpdatedOn": "2026-11-11",
-      "allInEstimate": 2163.98,
-      "allInBasis": "Illustrative general Progress pet policy; not guaranteed",
-      "contactUpdate": "Nov11 inquiry sent"
+      "checksUpdatedOn": "2026-11-14",
+      "allInEstimate": 2093.98,
+      "allInBasis": "Illustrative only: $1,920 12mo base +$29.98 required + $144 generic two-pet figure; NOT property-specific approval",
+      "contactUpdate": "Nov13 user-authorized follow-up to Progress (existing Nov11 thread), no substantive reply. Nov13 automated Chloe application-completion email is NOT evidence a rental application was filed or a tour booked. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d631b2d742f72",
+      "priceUpdatedOn": "2026-11-14"
     },
     {
       "id": "garrison",
@@ -1018,8 +1021,8 @@
           "detail": "Cats generally permitted; combined two-pet approval asked"
         },
         "availability": {
-          "status": "pending",
-          "detail": "NTREIS advertised active; owner possession unconfirmed"
+          "status": "conflict",
+          "detail": "NTREIS-linked portal showed listed, but another syndication advertises not available; verify directly, no agent reply found"
         },
         "cost": {
           "status": "unknown",
@@ -1047,8 +1050,8 @@
         "Both-pet all-in quote and December lease start",
         "Actual kitchen, grass, carpet, bathtub, fridge and laundry"
       ],
-      "checksUpdatedOn": "2026-11-11",
-      "contactUpdate": "Nov 11: Agent inquiry sent; no appointment or response"
+      "checksUpdatedOn": "2026-11-14",
+      "contactUpdate": "Nov11 one-time inquiry to agent Nonie Bennett sent, no verified reply/tour. Nov14 syndicated public status conflicts: do not assume available."
     },
     {
       "id": "walnutplace",
@@ -1237,10 +1240,134 @@
       "petBlocked": false,
       "priceNote": "Zumper Nov13 shows $2,275 BASE; MLS/Redfin/HAR still show $2,375. Current 12-month price and $1,000 first-full-month concession terms require written confirmation. Open House generic policy: $25/mo ordinary rent per pet ($50 both), $250 nonrefundable initial fee each ($500), $25 verification each ($50), $150 admin after approval, refundable security deposit quoted individually; mandatory recurring property-specific fees unknown. Illustrative $2,325 monthly BASE+two pets at $2,275 offer BEFORE other mandatory charges/utilities/insurance.",
       "fit": "Shelly directly rates Hidden Lake 4.7/5 Nov13. One-story 3BR/2BA approx 2,044 sq ft; listing claims open kitchen, updated countertops and spacious fenced backyard. Former sales description mentions separate dedicated study plus flex/second living, but CURRENT rental listing shows 3BR; private additional office must be independently verified. Yard grass, bedroom carpet distribution, primary bathtub, full fence, garage/pool distances and actual layout require verification.",
-      "status": "MLS #21377159 listed as active in current public feeds; lease-ready status NOT established, conflicting rent and pet-policy descriptions. Listing agent Chelsea Holguin at Open House Texas Property Mgmt emailed Nov13 regarding actual rent/fees, both pets, floor plan and a real showing appointment for Nov22, Nov25 or Nov28 4–6 PM; NO confirmed showing yet."
+      "status": "MLS #21377159 listed as active in current public feeds; lease-ready status NOT established, conflicting rent and pet-policy descriptions. Listing agent Chelsea Holguin at Open House Texas Property Mgmt emailed Nov13 regarding actual rent/fees, both pets, floor plan and a real showing appointment for Nov22, Nov25 or Nov28 4–6 PM; NO confirmed showing yet.",
+      "readiness": {
+        "dog": {
+          "status": "conflict",
+          "detail": "Ordinary large golden retriever approval not established; possible small-dog-only syndicated restriction queried Nov13"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Regular cat advertised generically; owner/HOA and combined two-pet approval pending"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "Public MLS rental advertised; actual lease readiness not confirmed"
+        },
+        "cost": {
+          "status": "conflict",
+          "detail": "Zumper/Zillow alert $2,275 base vs MLS/Redfin/HAR $2,375. Monthly 2-pet rent generically $50; mandatory charges unknown; $1,000 concession unverified"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "Agent asked Nov13 for true 12mo rent, concession, December 18-compatible lease start; no reply"
+        },
+        "photos": {
+          "status": "pending",
+          "detail": "Address-matched older/sale photos; separate enclosed office, actual grass, floors, tub not verified for current rental"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office and parents-address route time unavailable"
+        },
+        "tour": {
+          "status": "pending",
+          "detail": "Nov13 direct agent request to book Nov22/25/28 4–6pm; neither reply nor appointment confirmed"
+        }
+      },
+      "checksUpdatedOn": "2026-11-14",
+      "contactUpdate": "Nov13 one-time email sent to Chelsea Holguin at Open House Texas concerning rate discrepancy, concessions, two ordinary pets, full fees, layout, current photos and showing Nov22/25/28 4–6pm. NO agent reply or booked tour as of Nov14. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d6a4e97d66d07"
+    },
+    {
+      "id": "trusler",
+      "name": "9841 Trusler Rd",
+      "city": "Fort Worth",
+      "rent": 2150,
+      "rating": 3.9,
+      "basis": "Estimated",
+      "ratingStatus": "assistant provisional only; Shelly has not reviewed",
+      "trackedOn": "2026-11-14",
+      "listedOn": "2026-11-12",
+      "checkpoint": "2026-11-21",
+      "url": "https://www.elliman.com/listing/9841-trusler-rd-fort-worth-tx-76179/36148516",
+      "priceBasis": "NTREIS-linked advertised BASE, lease length unquoted",
+      "priceNote": "First rental-listed Nov12 2026, MLS #21434618. $2,150 advertised BASE, $2,150 published security deposit, some property listing says $450 pet deposit (refundability unknown). Mandatory monthly fees, exact lease length, regular rent for both pets and utilities not quoted. Dogs/cats allowed with breed/size/number restrictions; Sunny approval unverified.",
+      "fit": "New-to-market one-story 4BR/2BA approximately 1,683 sq ft, 2024 construction, bright open granite kitchen according to original MLS description. Garage and fenced yard claimed. Specific grass coverage, primary tub/vanity, carpet room by room, laundry proximity and possible private office unverified; 4th bedroom could serve as office. No Shelly rating.",
+      "status": "Current MLS-linked rental listed from Nov12, confirmed listing exists Nov14; individual owner lease readiness unverified. NEWLY DISCOVERED TO TRACKER Nov14, truly newly listed Nov12.",
+      "petGate": "Cats and dogs generic; weight/breed/number restrictions require normal individual approval for adult golden retriever and cat",
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Pet restrictions noted; golden retriever not individually approved"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Generic cat allowed, owner combined two-pet approval missing"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "MLS advertised since Nov12, not independently confirmed open for lease"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "$2,150 base, mandatory fees and both pet rents unknown"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Lease length and December move-in start unconfirmed"
+        },
+        "photos": {
+          "status": "pending",
+          "detail": "Exact property gallery linked; current room-specific grass, floors/tub unverified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "No offpeak verified two-destination travel time"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No contact or showing authorized/scheduled"
+        }
+      },
+      "questions": [
+        "Verify both pets without weight/breed restriction",
+        "Full 12mo total and move-in availability",
+        "Current indoor flooring, yard grass, bathtub, primary vanity and office space",
+        "Exact work and parents offpeak routes"
+      ],
+      "checksUpdatedOn": "2026-11-14",
+      "contactUpdate": "No contact; discovery only"
     }
   ],
   "updates": [
+    {
+      "date": "Nov 14",
+      "tag": "NEW MARKET • Nov 12 / NEW to tracker Nov 14",
+      "houseId": "trusler",
+      "title": "9841 Trusler Road, Fort Worth — new listing under $2,200 base",
+      "detail": "NTREIS MLS #21434618 listed Nov12 $2,150 base; single-story 4BR/2BA ~1,683sf. Generic cats/dogs with size/breed restrictions, unverified Sunny and Belle, all-in rent, turf/rooms and commute. Shelly has NOT rated. Original gallery on Elliman property page."
+    },
+    {
+      "date": "Nov 14",
+      "tag": "PRICE DROP • Manager 12mo",
+      "houseId": "beavercreek",
+      "title": "828 Beaver Creek — $1,920 base / $1,949.98 before pets",
+      "detail": "Manager live price Nov14 drops from $1990 base to $1920 on 12 months, +$29.98 monthly services. Old generic two-pet estimate +$144 gives hypothetical $2093.98, NOT owner/HOA approval. Nov13 Progress automated app email is not application proof; Thanksgiving tour request still unanswered."
+    },
+    {
+      "date": "Nov 14",
+      "tag": "PRICE DROP • Manager email",
+      "houseId": "northview",
+      "title": "236 Northview Terrace — $2,198 advertised required-fees-inclusive before pets",
+      "detail": "AMH Amy T Nov13 2:36pm Central confirms $2228→$2198 advertised total incl required fees, before conditional charges/pets; Nov20 earlier lease start cutoff remains unresolved for December; nothing held. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d69fd601557b1"
+    },
+    {
+      "date": "Nov 14",
+      "tag": "REPLY WATCH • Unanswered inquiries",
+      "houseId": "hiddenlake",
+      "title": "Hidden Lake, Vista Oak and Beaver Creek — no tours confirmed",
+      "detail": "Nov13 authorized email inquiries already sent: Chelsea Hidden Lake (Shelly 4.7, Nov22/25/28 4–6pm), Racheal Vista Oak (two pets, Nov22/25/28), Progress Beaver Creek (occupied showing dates); no human reply/appointment verified by Nov14 morning. No further outgoing contact authorized."
+    },
     {
       "date": "Nov 13",
       "tag": "SHELLY • 4.7/5",

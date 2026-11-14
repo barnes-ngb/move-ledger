@@ -1,0 +1,239 @@
+{
+  "edition": "November 14, 2026",
+  "method": "US Census matched street addresses → OpenStreetMap OSRM public car route-table, one-time snapshot; approximate baseline with NO live traffic or departure-time adjustment.",
+  "caveats": "Minutes are model baseline, not guaranteed travel or weekday/rush-hour estimates. Travel times are not verified in Google Maps. Indoor pool suitability, independent standing access and membership have not been confirmed. Only actionable house-fit green zone (rating ≥4.2 and advertised figure ≤$2300, no hard pet/availability exclusion) was researched.",
+  "destinations": {
+    "work": {
+      "label": "Work",
+      "address": "6565 N MacArthur Blvd, Irving, TX 75039, USA"
+    },
+    "parents": {
+      "label": "Mom & Dad",
+      "address": "1801 W Lake Shore Dr, Alvarado, TX 76009, USA"
+    },
+    "brick": {
+      "label": "BRiCk",
+      "address": "550 NW Summercrest Blvd, Burleson, TX 76028, USA"
+    },
+    "huguley": {
+      "label": "Huguley therapy pool",
+      "address": "11801 South Fwy, Burleson, TX 76028, USA"
+    },
+    "resource": {
+      "label": "Resource Connection",
+      "address": "2200 Circle Dr, Fort Worth, TX 76119, USA"
+    },
+    "ryan": {
+      "label": "Ryan YMCA",
+      "address": "8250 McCart Ave, Fort Worth, TX 76123, USA"
+    },
+    "nrh": {
+      "label": "NRH Centre",
+      "address": "6000 Hawk Ave, North Richland Hills, TX 76180, USA"
+    },
+    "kirby": {
+      "label": "Kirby Creek Natatorium",
+      "address": "3201 Corn Valley Rd, Grand Prairie, TX 75052, USA"
+    }
+  },
+  "homes": {
+    "clarks": {
+      "work": {
+        "minutes": 50,
+        "miles": 39.2
+      },
+      "parents": {
+        "minutes": 42,
+        "miles": 25.7
+      },
+      "pools": [
+        {
+          "id": "ryan",
+          "minutes": 4,
+          "miles": 1.9
+        },
+        {
+          "id": "huguley",
+          "minutes": 11,
+          "miles": 5.7
+        }
+      ]
+    },
+    "northview": {
+      "work": {
+        "minutes": 59,
+        "miles": 46.3
+      },
+      "parents": {
+        "minutes": 36,
+        "miles": 19.2
+      },
+      "pools": [
+        {
+          "id": "brick",
+          "minutes": 10,
+          "miles": 4.5
+        },
+        {
+          "id": "huguley",
+          "minutes": 15,
+          "miles": 7.9
+        }
+      ]
+    },
+    "flourmill": {
+      "work": {
+        "minutes": 43,
+        "miles": 32.3
+      },
+      "parents": {
+        "minutes": 68,
+        "miles": 47.1
+      },
+      "pools": [
+        {
+          "id": "nrh",
+          "minutes": 27,
+          "miles": 16.7
+        },
+        {
+          "id": "resource",
+          "minutes": 35,
+          "miles": 22
+        }
+      ]
+    },
+    "tide": {
+      "work": {
+        "minutes": 44,
+        "miles": 34.8
+      },
+      "parents": {
+        "minutes": 68,
+        "miles": 44.6
+      },
+      "pools": [
+        {
+          "id": "nrh",
+          "minutes": 28,
+          "miles": 19.2
+        },
+        {
+          "id": "resource",
+          "minutes": 35,
+          "miles": 19.5
+        }
+      ]
+    },
+    "beavercreek": {
+      "work": {
+        "minutes": 52,
+        "miles": 42.2
+      },
+      "parents": {
+        "minutes": 36,
+        "miles": 21.2
+      },
+      "pools": [
+        {
+          "id": "brick",
+          "minutes": 2,
+          "miles": 0.6
+        },
+        {
+          "id": "huguley",
+          "minutes": 7,
+          "miles": 3.8
+        }
+      ]
+    },
+    "garrison": {
+      "work": {
+        "minutes": 29,
+        "miles": 23.1
+      },
+      "parents": {
+        "minutes": 58,
+        "miles": 38.2
+      },
+      "pools": [
+        {
+          "id": "kirby",
+          "minutes": 14,
+          "miles": 7.9
+        },
+        {
+          "id": "resource",
+          "minutes": 22,
+          "miles": 15.1
+        }
+      ]
+    },
+    "hiddenlake": {
+      "work": {
+        "minutes": 54,
+        "miles": 43.6
+      },
+      "parents": {
+        "minutes": 32,
+        "miles": 17.5
+      },
+      "pools": [
+        {
+          "id": "brick",
+          "minutes": 7,
+          "miles": 2.7
+        },
+        {
+          "id": "huguley",
+          "minutes": 10,
+          "miles": 5.2
+        }
+      ]
+    },
+    "trusler": {
+      "work": {
+        "minutes": 44,
+        "miles": 32.8
+      },
+      "parents": {
+        "minutes": 69,
+        "miles": 47.6
+      },
+      "pools": [
+        {
+          "id": "nrh",
+          "minutes": 28,
+          "miles": 17.2
+        },
+        {
+          "id": "resource",
+          "minutes": 36,
+          "miles": 22.5
+        }
+      ]
+    },
+    "loftin": {
+      "work": {
+        "minutes": 54,
+        "miles": 40.9
+      },
+      "parents": {
+        "minutes": 41,
+        "miles": 23.9
+      },
+      "pools": [
+        {
+          "id": "huguley",
+          "minutes": 9,
+          "miles": 4.1
+        },
+        {
+          "id": "ryan",
+          "minutes": 10,
+          "miles": 4.7
+        }
+      ]
+    }
+  }
+}

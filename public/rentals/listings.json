@@ -1,6 +1,6 @@
 {
-  "edition": "November 14, 2026 — Beaver Creek and Northview repriced; new-market screening and reply gates",
-  "note": "Nov14 verified changes: 828 Beaver Creek $1,920 BASE on 12-month term +$29.98 required fees (before two pets); 236 Northview $2,198 manager-advertised total incl required fees BEFORE pets. Nov13 inquiries to Hidden Lake agent, Vista Oak specialist and Progress for Beaver Creek remain without substantive replies or confirmed tours. Automated Beaver Creek application invitation does NOT establish an application. Tide Lane Nov13 approval details remain as previously noted. This is source data, not evidence of website deployment. Beaver Creek live advertised refundable deposit range $1920–$2880. Vista Oak site shows required $40 washer/dryer package and conflicting Available Now versus resident-occupied language.",
+  "edition": "November 14, 2026 — Shelly rates Trusler and Loftin 4.4/5",
+  "note": "Nov14 verified changes: 828 Beaver Creek $1,920 BASE on 12-month term +$29.98 required fees (before two pets); 236 Northview $2,198 manager-advertised total incl required fees BEFORE pets. Nov13 inquiries to Hidden Lake agent, Vista Oak specialist and Progress for Beaver Creek remain without substantive replies or confirmed tours. Automated Beaver Creek application invitation does NOT establish an application. Tide Lane Nov13 approval details remain as previously noted. This is source data, not evidence of website deployment. Beaver Creek live advertised refundable deposit range $1920–$2880. Vista Oak site shows required $40 washer/dryer package and conflicting Available Now versus resident-occupied language. NOV14 SHELLY DIRECT FIT SCORES: 9841 Trusler Rd 4.4/5, 945 Loftin St 4.4/5. Trusler first listed Nov12; Loftin older Oct12 but NEW TO TRACKER Nov14. The scores are explicitly Shelly's, independent of pet/cost/tour readiness. Both need written acceptance of two ordinary pets incl a large golden retriever; no contact authorized/requested for these two.",
   "homes": [
     {
       "id": "hearthstone",
@@ -1284,16 +1284,16 @@
       "name": "9841 Trusler Rd",
       "city": "Fort Worth",
       "rent": 2150,
-      "rating": 3.9,
-      "basis": "Estimated",
-      "ratingStatus": "assistant provisional only; Shelly has not reviewed",
+      "rating": 4.4,
+      "basis": "Shelly",
+      "ratingStatus": "Shelly directly rated 4.4/5 on November 14, 2026",
       "trackedOn": "2026-11-14",
       "listedOn": "2026-11-12",
       "checkpoint": "2026-11-21",
       "url": "https://www.elliman.com/listing/9841-trusler-rd-fort-worth-tx-76179/36148516",
       "priceBasis": "NTREIS-linked advertised BASE, lease length unquoted",
       "priceNote": "First rental-listed Nov12 2026, MLS #21434618. $2,150 advertised BASE, $2,150 published security deposit, some property listing says $450 pet deposit (refundability unknown). Mandatory monthly fees, exact lease length, regular rent for both pets and utilities not quoted. Dogs/cats allowed with breed/size/number restrictions; Sunny approval unverified.",
-      "fit": "New-to-market one-story 4BR/2BA approximately 1,683 sq ft, 2024 construction, bright open granite kitchen according to original MLS description. Garage and fenced yard claimed. Specific grass coverage, primary tub/vanity, carpet room by room, laundry proximity and possible private office unverified; 4th bedroom could serve as office. No Shelly rating.",
+      "fit": "New-to-market one-story 4BR/2BA approximately 1,683 sq ft, 2024 construction, bright open granite kitchen according to original MLS description. Garage and fenced yard claimed. Specific grass coverage, primary tub/vanity, carpet room by room, laundry proximity and possible private office unverified; 4th bedroom could serve as office. Shelly's home-fit rating: 4.4/5 (Nov 14).",
       "status": "Current MLS-linked rental listed from Nov12, confirmed listing exists Nov14; individual owner lease readiness unverified. NEWLY DISCOVERED TO TRACKER Nov14, truly newly listed Nov12.",
       "petGate": "Cats and dogs generic; weight/breed/number restrictions require normal individual approval for adult golden retriever and cat",
       "readiness": {
@@ -1337,16 +1337,80 @@
         "Exact work and parents offpeak routes"
       ],
       "checksUpdatedOn": "2026-11-14",
-      "contactUpdate": "No contact; discovery only"
+      "contactUpdate": "No contact; discovery only",
+      "ratingUpdatedOn": "2026-11-14"
+    },
+    {
+      "id": "loftin",
+      "name": "945 Loftin St",
+      "city": "Crowley",
+      "rent": 2095,
+      "rating": 4.4,
+      "basis": "Shelly",
+      "ratingStatus": "Shelly directly rated 4.4/5 on November 14, 2026",
+      "trackedOn": "2026-11-14",
+      "listedOn": "2026-10-12",
+      "ratingUpdatedOn": "2026-11-14",
+      "checkpoint": "2026-11-22",
+      "url": "https://www.har.com/homedetail/945-loftin-st-crowley-tx-76036/14807693",
+      "priceBasis": "NTREIS-linked advertised BASE, not full monthly with pets",
+      "priceNote": "MLS-linked HAR rent $2,095 BASE after a Nov 3 $100 reduction; other portals still display $2,195. Lease length/mandatory recurring services unverified, refundable deposit conditional, application $65 per adult. Advertised $600 NONREFUNDABLE per pet could mean $1,200 total for Sunny and Belle if permitted; confirm actual owner policy before paying. Refrigerator-inclusion descriptions conflict.",
+      "fit": "Shelly directly rates 945 Loftin St 4.4/5 (Nov 14). Four bedrooms, two bathrooms, about 1,802 square feet, single story, open granite kitchen, pantry, fenced yard, split bedrooms, dual primary vanity and two-car garage advertised. A fourth bedroom might be an office; separate private study NOT verified. Exact tub, current grass and carpet floors need checking.",
+      "status": "Listed Oct 12, 2026 and first discovered by broader Nov 14 search; NOT a newly listed market arrival. Pet approval and early December lease timing not confirmed. No agent contacted or showing requested.",
+      "petGate": "Pets considered individually; $600 nonrefundable each advertised, Sunny and Belle unapproved",
+      "petBlocked": false,
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Owner approval for large golden retriever unconfirmed; nonrefundable fee advertised"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Owner approval for cat alongside dog unconfirmed"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "Recently checked public MLS listing; possession date unconfirmed"
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "MLS linked $2,095 base, other portals $2,195; two pet fees potentially $1,200"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "12-month quote and move-in date unverified"
+        },
+        "photos": {
+          "status": "pending",
+          "detail": "Listing gallery exists but actual tub, grass and carpet not fully established"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "No verified offpeak work or family destination route"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No direct inquiry or showing yet"
+        }
+      },
+      "checksUpdatedOn": "2026-11-14",
+      "contactUpdate": "Not contacted; rating recorded only"
     }
   ],
   "updates": [
     {
       "date": "Nov 14",
-      "tag": "NEW MARKET • Nov 12 / NEW to tracker Nov 14",
+      "tag": "SHELLY • 4.4/5",
       "houseId": "trusler",
-      "title": "9841 Trusler Road, Fort Worth — new listing under $2,200 base",
-      "detail": "NTREIS MLS #21434618 listed Nov12 $2,150 base; single-story 4BR/2BA ~1,683sf. Generic cats/dogs with size/breed restrictions, unverified Sunny and Belle, all-in rent, turf/rooms and commute. Shelly has NOT rated. Original gallery on Elliman property page."
+      "title": "9841 Trusler Road — Shelly rates 4.4",
+      "detail": "Shelly directly rated this genuinely new Nov 12 Fort Worth listing 4.4/5 on Nov 14. MLS base $2,150, 4BR/2BA one-story. $450 advertised pet deposit, but pet eligibility, size limits, 12mo term, actual floors, primary tub and complete monthly fees unverified. No agent contacted."
+    },
+    {
+      "date": "Nov 14",
+      "tag": "SHELLY • 4.4/5",
+      "houseId": "loftin",
+      "title": "945 Loftin Street — Shelly rates 4.4",
+      "detail": "Shelly directly rated this Crowley home 4.4/5 on Nov 14. Older Oct 12 MLS listing newly discovered, NOT new market inventory. $2,095 MLS base (some portals still $2,195). Up to $1,200 in advertised nonrefundable fees for two ordinary pets, pending property-specific approval. Four bedrooms, one possibly office; 12mo quote, tub/floors/yard and touring unverified. No agent contacted."
     },
     {
       "date": "Nov 14",

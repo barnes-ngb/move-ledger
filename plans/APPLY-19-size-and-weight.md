@@ -40,9 +40,12 @@ New src/domain/space.ts (not "load": that word belongs to the loaded status):
     noSize,             // count with no volume
     weightLb,           // sum of weightLb where set
     notWeighed,         // count with no weightLb
-    estimatedWeightLb,  // weightLb + for each unweighed box with a size,
-                        //   the average weight of weighed boxes of that size;
-                        //   undefined for a size with no weighed boxes yet
+    estimatedWeightLb,  // weightLb + for each unweighed box, the average
+                        //   weight of weighed boxes of its size. undefined
+                        //   if ANY unweighed box has no size, has size
+                        //   "other", or has a size with no weighed boxes
+                        //   yet: a partial estimate would understate the
+                        //   total the capacity decision rests on.
     capacity: { cuFt, lb },
     byZone: [{ zoneId | null, name, colorName, count, volumeCuFt, weightLb,
                notWeighed }],   // grouped by destinationZoneId, the same
@@ -121,8 +124,9 @@ undefined. The JSON export carries the new fields as they are stored.
 === 4. Tests ===
 
 space.ts: volume per size, other with and without volumeCuFt, voided
-excluded, unweighed count, the estimate (including a size with no weighed
-boxes), byZone with a null room, capacity defaults. Schema: weight bounds
+excluded, unweighed count, the estimate (undefined when an unweighed box
+has no size, size "other", or a size with no weighed boxes), byZone with
+a null room, capacity defaults. Schema: weight bounds
 and one decimal. Repositories: clearing a weight. UI: Weigh boxes advances
 on Save and next, skips without a write, shows the empty state; Space and
 weight renders over-capacity text and the unweighed line; Box detail saves

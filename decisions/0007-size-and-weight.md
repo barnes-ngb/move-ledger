@@ -21,7 +21,7 @@ This record approves totals only. It does not approve a loading order, a layout 
 
 ## Alternatives considered
 
-**A spreadsheet beside the app.** Lost because the box numbers, rooms, and photos already live in the app, and copying 58 rows by hand is the error the app exists to prevent.
+**A spreadsheet beside the app.** Lost because every box and its room already live in the app, and copying 58 rows by hand is the error the app exists to prevent.
 
 **A weight estimated by the vision model from the photo.** Lost on accuracy. A photo of a sealed tote says nothing about whether it holds books or pillows, and the decision this supports has a hard limit with no margin. The household asked for this to be left out.
 

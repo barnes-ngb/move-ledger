@@ -45,6 +45,16 @@ Why the split exists: most containers are boxes, but furniture and appliances ar
 
 **Item.** One line of a contents list, such as "white ceramic vase". `aiItems` holds the suggested ones and `contentsItems` the confirmed ones. A line of text on a box, not a record: it has no id and no history of its own. See doc 07, APPLY-18. The interface does not use the word; it shows the list under "Contents" and asks for "one per line".
 
+**Size.** `size` on a container: what kind of box it is, for counting space. The interface says Large tote, Medium tote, Large box, Medium box, Small box, Other. In code the value is `bin_large` and so on; the interface never shows the code value, and code never says tote. Independent of `type`. See decisions/0007-size-and-weight.md.
+
+**Weight.** `weightLb` on a container, typed in pounds by a person. Shown as "lb". Never estimated by the app.
+
+**Capacity.** `capacityCuFt` and `capacityLb` on the move: how much the container holds. Shown as "cu ft" and "lb". Absent means 710 cu ft and 4,200 lb.
+
+**Space and weight.** The summary screen that totals size and weight against the capacity, by room and by size. Code calls the calculation `spaceAndWeight` in `src/domain/space.ts`. Not "load": that word belongs to the loaded status.
+
+**Weigh boxes.** The repeat screen that steps through every box with no weight, one at a time.
+
 **Care team.** The screen listing the doctors and practices the household is choosing for after the move. One card per `CareNeed`; each card holds its `CareProvider` options. On screen a provider is an option, and the household's current pick on a card is the lean. Code never says doctor; the interface never says provider or need. See decisions/0006-care-page.md.
 
 ## Words not to use

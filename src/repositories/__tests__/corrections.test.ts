@@ -82,6 +82,8 @@ const {
   deleteContainer,
   dismissAiSummary,
   replaceAiSummary,
+  setContainerSize,
+  setContainerWeight,
   setContentsItems,
   unvoidContainer,
   voidContainer,
@@ -625,5 +627,57 @@ describe("summary marks", () => {
       summaryError: "deadline-exceeded",
       summaryRequestedAt: DELETE_FIELD,
     });
+  });
+});
+
+describe("setContainerWeight", () => {
+  it("writes a weight through the general save, stamping who wrote it", () => {
+    const result = setContainerWeight("m1", makeContainer(), 31.5, [], "uid-2");
+
+    expect(result.value.weightLb).toBe(31.5);
+    expect(result.value.updatedBy).toBe("uid-2");
+    expect(lastUpdate().weightLb).toBe(31.5);
+  });
+
+  it("sends a delete sentinel when cleared, so an emptied field reads as not weighed", () => {
+    const result = setContainerWeight("m1", makeContainer({ weightLb: 31.5 }), null, [], "uid-1");
+
+    expect("weightLb" in result.value).toBe(false);
+    const fields = lastUpdate();
+    expect(fields.weightLb).toBe(DELETE_FIELD);
+    expect(Object.values(fields)).not.toContain(undefined);
+  });
+
+  it("refuses a weight the schema refuses before anything is written", () => {
+    expect(() => setContainerWeight("m1", makeContainer(), 12.34, [], "uid-1")).toThrow();
+    expect(() => setContainerWeight("m1", makeContainer(), 0, [], "uid-1")).toThrow();
+    expect(mocks.updateDoc).not.toHaveBeenCalled();
+  });
+});
+
+describe("setContainerSize", () => {
+  it("writes the size and leaves the type alone", () => {
+    const result = setContainerSize("m1", makeContainer({ type: "box" }), "bin_large", undefined, [], "uid-1");
+
+    expect(result.value.size).toBe("bin_large");
+    expect(result.value.type).toBe("box");
+  });
+
+  it("keeps a typed volume only with other", () => {
+    const other = setContainerSize("m1", makeContainer(), "other", 22, [], "uid-1");
+    expect(other.value.volumeCuFt).toBe(22);
+
+    const named = setContainerSize("m1", makeContainer({ size: "other", volumeCuFt: 22 }), "box_small", 22, [], "uid-1");
+    expect("volumeCuFt" in named.value).toBe(false);
+    expect(lastUpdate().volumeCuFt).toBe(DELETE_FIELD);
+  });
+
+  it("clears the size and its figure with a delete sentinel", () => {
+    const result = setContainerSize("m1", makeContainer({ size: "other", volumeCuFt: 22 }), null, undefined, [], "uid-1");
+
+    expect("size" in result.value).toBe(false);
+    const fields = lastUpdate();
+    expect(fields.size).toBe(DELETE_FIELD);
+    expect(fields.volumeCuFt).toBe(DELETE_FIELD);
   });
 });

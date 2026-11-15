@@ -32,6 +32,10 @@ export const moveSchema = z.object({
   memberUids: z.array(z.string().min(1)).min(1),
   /** Absent means nobody has been asked yet, which is distinct from false. The privacy notice keys on that. */
   aiEnabled: z.boolean().optional(),
+  /** Usable space in the container. Absent means the 16 ft PODS default, applied in `spaceAndWeight` and never written. ADR-0007. */
+  capacityCuFt: z.number().positive().max(100000).optional(),
+  /** Contents weight limit. Absent means the default, as above. */
+  capacityLb: z.number().positive().max(1000000).optional(),
   createdAt: isoString,
   updatedAt: isoString,
 });
@@ -99,6 +103,12 @@ export const conditionReportSchema = z.object({
   photoIds: z.array(z.string()),
 });
 
+/** What kind of box it is, for counting space. Independent of `type`. See src/domain/space.ts and ADR-0007. */
+export const containerSizeSchema = z.enum(["bin_large", "bin_medium", "box_large", "box_medium", "box_small", "other"]);
+
+/** At most one decimal place, which is what a bathroom scale shows. Checked on tenths so 12.3 is not refused for floating point. */
+const oneDecimal = (n: number) => Math.abs(Math.round(n * 10) - n * 10) < 1e-9;
+
 export const containerSchema = z.object({
   id: z.string().min(1),
   moveId: z.string().min(1),
@@ -131,6 +141,11 @@ export const containerSchema = z.object({
     missing: conditionReportSchema.optional(),
     damaged: conditionReportSchema.optional(),
   }),
+  size: containerSizeSchema.optional(),
+  /** Typed by a person. Read only when `size` is "other". */
+  volumeCuFt: z.number().positive().max(200).optional(),
+  /** Typed by a person from a scale, never estimated. */
+  weightLb: z.number().positive().max(500).refine(oneDecimal, "weight takes at most one decimal place").optional(),
   labelConfirmedAt: isoString.optional(),
   /** Set when a box that was already written on is withdrawn. The document stays so its number stays retired. */
   voidedAt: isoString.optional(),
@@ -237,6 +252,7 @@ export const careNeedSchema = z.object({
   updatedBy: z.string().min(1),
 });
 
+export type ContainerSize = z.infer<typeof containerSizeSchema>;
 export type ContainerStatus = z.infer<typeof containerStatusSchema>;
 export type UnpackPriority = z.infer<typeof unpackPrioritySchema>;
 export type Move = z.infer<typeof moveSchema>;

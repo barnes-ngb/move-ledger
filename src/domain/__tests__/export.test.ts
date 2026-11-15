@@ -94,6 +94,43 @@ describe("toCsv", () => {
   });
 });
 
+describe("toCsv size and weight", () => {
+  it("keeps every existing column where it was and appends the three new ones", () => {
+    const header = toCsv({ containers: [], zones, photos: [] }).split("\r\n")[0];
+    expect(header).toBe(
+      "number,room,color,status,priority,title,notes,contents,flags,missing,damaged,photos,created,size,volume_cu_ft,weight_lb"
+    );
+  });
+
+  it("writes the size code, its volume, and the weight at the end of the row", () => {
+    const csv = toCsv({
+      containers: [makeContainer({ size: "bin_large", weightLb: 31.5 })],
+      zones,
+      photos: [],
+    });
+    expect(csv.split("\r\n")[1]).toMatch(/,bin_large,5\.4,31\.5$/);
+  });
+
+  it("leaves the three cells blank on a box with neither", () => {
+    const csv = toCsv({ containers: [makeContainer()], zones, photos: [] });
+    expect(csv.split("\r\n")[1]).toMatch(/,,,$/);
+  });
+
+  it("writes a typed volume for other and blank when other has none", () => {
+    const csv = toCsv({
+      containers: [
+        makeContainer({ id: "a", sequenceNumber: 1, displayCode: "001", size: "other", volumeCuFt: 22 }),
+        makeContainer({ id: "b", sequenceNumber: 2, displayCode: "002", size: "other" }),
+      ],
+      zones,
+      photos: [],
+    });
+    const lines = csv.split("\r\n");
+    expect(lines[1]).toMatch(/,other,22,$/);
+    expect(lines[2]).toMatch(/,other,,$/);
+  });
+});
+
 describe("exportFilename", () => {
   const day = new Date("2026-08-15T21:30:00.000Z");
 

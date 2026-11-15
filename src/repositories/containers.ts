@@ -7,6 +7,7 @@ import {
   toDisplayCode,
   transition,
   type Container,
+  type ContainerSize,
   type ContainerStatus,
   type MoveMember,
   type Zone,
@@ -276,6 +277,89 @@ export function setContentsItems(
       contentsCategories: deleteField(),
     }),
   };
+}
+
+/**
+ * Saves `next` and removes `cleared` from the stored document. The same shape
+ * `setTitle` and `setContentsItems` use: a key left out of an update leaves
+ * the stored value, so clearing a field has to reach Firestore as a delete.
+ * With nothing to clear it is `saveContainer`.
+ */
+function saveClearing(
+  moveId: string,
+  next: Container,
+  cleared: readonly (keyof Container)[],
+  zones: readonly Zone[],
+  actorUid: string
+): PendingWrite<Container> {
+  if (cleared.length === 0) return saveContainer(moveId, next, zones, actorUid);
+  const rest = { ...next };
+  for (const key of cleared) delete rest[key];
+  const parsed = containerSchema.parse({
+    ...rest,
+    searchText: buildSearchText(rest, zones.find((z) => z.id === rest.destinationZoneId)?.name),
+    updatedAt: nowIso(),
+    updatedBy: actorUid,
+  });
+  const { id, ...fields } = parsed;
+  return {
+    value: parsed,
+    written: updateDoc(doc(containers(moveId), id), {
+      ...fields,
+      ...Object.fromEntries(cleared.map((key) => [key, deleteField()])),
+    }),
+  };
+}
+
+/**
+ * The size of a box, for the Space and weight totals. ADR-0007.
+ *
+ * `volumeCuFt` is kept only with "other", which is the one size that carries
+ * its own figure: a named size has a fixed volume, and a stale figure left
+ * behind from an earlier "other" would read as a second answer. Null clears
+ * the size and the figure with it. `type` is never touched.
+ *
+ * No activity event. Size is metadata about the box, like the note, not its
+ * place in the pipeline.
+ */
+export function setContainerSize(
+  moveId: string,
+  container: Container,
+  size: ContainerSize | null,
+  volumeCuFt: number | undefined,
+  zones: readonly Zone[],
+  actorUid: string
+): PendingWrite<Container> {
+  const { size: _size, volumeCuFt: _volume, ...rest } = container;
+  const keepVolume = size === "other" && volumeCuFt !== undefined;
+  const next: Container = {
+    ...rest,
+    ...(size ? { size } : {}),
+    ...(keepVolume ? { volumeCuFt } : {}),
+  };
+  const cleared: (keyof Container)[] = [];
+  if (!size && container.size !== undefined) cleared.push("size");
+  if (!keepVolume && container.volumeCuFt !== undefined) cleared.push("volumeCuFt");
+  return saveClearing(moveId, next, cleared, zones, actorUid);
+}
+
+/**
+ * The weight of a box in pounds, typed from a scale. Null clears it, as a
+ * delete rather than a zero, so an emptied field reads as not weighed.
+ * No activity event, for the reason `setContainerSize` gives.
+ */
+export function setContainerWeight(
+  moveId: string,
+  container: Container,
+  weightLb: number | null,
+  zones: readonly Zone[],
+  actorUid: string
+): PendingWrite<Container> {
+  const { weightLb: _weight, ...rest } = container;
+  if (weightLb === null) {
+    return saveClearing(moveId, rest, container.weightLb === undefined ? [] : ["weightLb"], zones, actorUid);
+  }
+  return saveContainer(moveId, { ...rest, weightLb }, zones, actorUid);
 }
 
 /**

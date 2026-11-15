@@ -1,0 +1,102 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import type { Container } from "../../../domain";
+import { makeContainer, makeZone } from "../../../domain/__tests__/factories";
+
+const mocks = vi.hoisted(() => ({ setMoveCapacity: vi.fn() }));
+vi.mock("../../../repositories", () => ({
+  setMoveCapacity: mocks.setMoveCapacity,
+  writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
+}));
+
+const { SpaceAndWeight } = await import("../SpaceAndWeight");
+
+const zones = [makeZone({ id: "z1", name: "Kitchen" })];
+const box = (n: number, over: Partial<Container> = {}) =>
+  makeContainer({ id: `c${n}`, sequenceNumber: n, displayCode: String(n).padStart(3, "0"), ...over });
+
+function open(containers: Container[], move = {}, loaded = true) {
+  const onWeigh = vi.fn();
+  render(
+    <SpaceAndWeight
+      moveId="m1"
+      move={move}
+      containers={containers}
+      loaded={loaded}
+      zones={zones}
+      onWeigh={onWeigh}
+      onBack={vi.fn()}
+    />
+  );
+  return onWeigh;
+}
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mocks.setMoveCapacity.mockReturnValue({ value: undefined, written: Promise.resolve() });
+});
+
+describe("Space and weight", () => {
+  it("says Loading before the first delivery rather than a total of nothing", () => {
+    open([], {}, false);
+    expect(screen.getByText("Loading")).toBeDefined();
+  });
+
+  it("says there are no boxes yet on an empty move", () => {
+    open([]);
+    expect(screen.getByText(/No boxes yet/)).toBeDefined();
+  });
+
+  it("says by how much a total is over capacity", () => {
+    open([box(1, { size: "other", volumeCuFt: 20, weightLb: 300 })], { capacityCuFt: 10, capacityLb: 4200 });
+    expect(screen.getByText("10 cu ft over")).toBeDefined();
+    expect(screen.queryByText(/lb over/)).toBeNull();
+  });
+
+  it("states the unweighed boxes and the estimate with them", () => {
+    open([
+      box(1, { size: "bin_large", weightLb: 30 }),
+      box(2, { size: "bin_large", weightLb: 40 }),
+      box(3, { size: "bin_large" }),
+    ]);
+    expect(screen.getByText("1 box not weighed yet. Estimate with them: 105 lb.")).toBeDefined();
+  });
+
+  it("leaves the estimate off when it cannot be made, and counts the boxes with no size", () => {
+    open([box(1, { size: "bin_large", weightLb: 30 }), box(2), box(3)]);
+    expect(screen.getByText("2 boxes not weighed yet.")).toBeDefined();
+    expect(screen.getByText("2 boxes have no size.")).toBeDefined();
+  });
+
+  it("offers Weigh boxes only while a box is unweighed", () => {
+    const onWeigh = open([box(1)]);
+    fireEvent.click(screen.getByText("Weigh boxes"));
+    expect(onWeigh).toHaveBeenCalled();
+  });
+
+  it("hides Weigh boxes when every box has a weight", () => {
+    open([box(1, { weightLb: 10 })]);
+    expect(screen.queryByText("Weigh boxes")).toBeNull();
+  });
+
+  it("shows the rooms, with no room last", () => {
+    open([box(1, { destinationZoneId: "z1" }), box(2)]);
+    expect(screen.getByText("Kitchen")).toBeDefined();
+    expect(screen.getByText("No room")).toBeDefined();
+  });
+
+  it("fills the capacity from the defaults and saves an edit on blur", () => {
+    open([box(1)]);
+    const cuFt = screen.getByLabelText("Usable space") as HTMLInputElement;
+    expect(cuFt.value).toBe("710");
+    fireEvent.change(cuFt, { target: { value: "1420" } });
+    fireEvent.blur(cuFt);
+    expect(mocks.setMoveCapacity).toHaveBeenCalledWith("m1", { capacityCuFt: 1420, capacityLb: 4200 });
+  });
+
+  it("writes nothing when the capacity did not change", () => {
+    open([box(1)]);
+    fireEvent.blur(screen.getByLabelText("Usable space"));
+    expect(mocks.setMoveCapacity).not.toHaveBeenCalled();
+  });
+});

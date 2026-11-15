@@ -1,5 +1,6 @@
 import type { ActivityEvent, Container, ContainerPhoto, Location, Move, MoveMember, Zone } from "./schemas";
 import { tokenize } from "./search";
+import { volumeOf } from "./space";
 
 export interface MoveBundle {
   move: Move;
@@ -47,6 +48,11 @@ const CSV_COLUMNS = [
   "damaged",
   "photos",
   "created",
+  // Appended in APPLY-19 rather than placed beside the room, so a reader built
+  // against the columns above keeps every position it already had.
+  "size",
+  "volume_cu_ft",
+  "weight_lb",
 ] as const;
 
 function escapeCell(value: string): string {
@@ -86,6 +92,9 @@ export function toCsv(bundle: Pick<MoveBundle, "containers" | "zones" | "photos"
         c.conditions.damaged ? c.conditions.damaged.reportedAt : "",
         String(photoCount.get(c.id) ?? 0),
         c.createdAt,
+        c.size ?? "",
+        volumeOf(c)?.toString() ?? "",
+        c.weightLb?.toString() ?? "",
       ].map(escapeCell);
     });
 

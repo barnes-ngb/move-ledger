@@ -31,12 +31,17 @@ interface Move {
   originLocationId?: string;
   destinationLocationId?: string;
   memberUids: string[];        // denormalized for security rules
+  aiEnabled?: boolean;         // absent means nobody has been asked yet
+  capacityCuFt?: number;       // usable space in the container, absent means 710
+  capacityLb?: number;         // contents weight limit, absent means 4,200
   createdAt: string;           // ISO 8601 UTC
   updatedAt: string;
 }
 ```
 
 `memberUids` exists only so rules can authorize without a second document read per operation. It is written by the same code that writes a member document. Nothing else writes it. `updateMove` takes a named set of fields that leaves it out and refuses it at runtime too, because until 2026-10-17 it wrote the whole move back: a contents list toggle queued offline replayed this phone's old copy of the array after a member had been added or removed, which locked a helper out or let a removed one back in. See APPLY-17.
+
+`capacityCuFt` and `capacityLb` are what the Space and weight screen totals against. Absent means the 16 ft PODS figures, 710 cu ft usable and 4,200 lb, confirmed with PODS on 2026-11-14. The defaults are applied when the totals are worked out in `src/domain/space.ts` and are never written on read, so a move that has never had its capacity edited stays without the fields. A second container is the reason the numbers are editable. Added 2026-11-14 in APPLY-19, ADR-0007.
 
 ## MoveMember
 
@@ -163,6 +168,10 @@ interface Container {
     damaged?: ConditionReport;
   };
 
+  size?: "bin_large" | "bin_medium" | "box_large" | "box_medium" | "box_small" | "other";
+  volumeCuFt?: number;         // typed by a person, read only when size is "other"
+  weightLb?: number;           // typed by a person, over 0, at most 500, one decimal
+
   labelConfirmedAt?: string;
   voidedAt?: string;           // withdrawn without freeing the number, see below
   voidedBy?: string;
@@ -205,6 +214,18 @@ So a number is only free if it was never written down, and `labelConfirmedAt` is
 A voided box keeps its place in the collection so `nextSequenceNumber` keeps counting past it. That means it must stay in the subscription: filtering it out in a hook or a repository would hand its number to the next box and reintroduce the collision. Voided boxes are hidden in components only.
 
 Voiding is reversible. Unvoiding removes both stamps, which has to reach Firestore as a field delete rather than an absent key.
+
+### Size and weight
+
+Both optional, both typed by a person. Nothing estimates either from a photo. Added 2026-11-14 in APPLY-19, ADR-0007.
+
+`size` is independent of `type`. A tote is `plastic_bin` by type whatever its size, and changing the size never changes the type. Each named size stands for a fixed volume in `SIZE_VOLUME_CU_FT` in `src/domain/space.ts`: a large tote 5.4 cu ft (a 27 gallon tote, measured at 30 by 20 by 15.5 inches), a medium tote 3.5, a large box 4.5, a medium box 3.0, a small box 1.5. `other` takes its volume from `volumeCuFt`, which is how a piece of furniture tracked as a container gets counted. A box with no size, or `other` with no figure, has no volume and is counted as having no size.
+
+`weightLb` is over 0, at most 500, with at most one decimal place, which is what a bathroom scale reads. Clearing it removes the field rather than storing zero.
+
+`spaceAndWeight` totals every container that is not voided, whatever its status, because the question is what goes in the container and a loaded box is still in it. It reports how many boxes have no size and how many have no weight rather than filling either gap silently. The one estimate it gives fills each unweighed box with the average weight of weighed boxes of the same size, and it gives none at all unless every unweighed box has a named size that somebody has already weighed: a partial estimate would understate the total the capacity decision rests on. The breakdown by room groups on `destinationZoneId`, the same room the box list shows.
+
+Neither field writes an activity event. They are metadata about the box rather than its place in the pipeline, the same as the note.
 
 ### searchText
 

@@ -17,6 +17,8 @@ import {
   deleteContainer,
   reportContainerCondition,
   saveContainer,
+  setContainerSize,
+  setContainerWeight,
   setContentsItems,
   setStatus,
   setTitle,
@@ -30,6 +32,8 @@ import { AiSummary } from "./AiSummary";
 import { CategoryChips, ItemList } from "./ContentsList";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
+import { NumberField, SizeChips } from "./SizeChips";
+import { VOLUME_HELP, WEIGHT_HELP, numberText, parseVolume, parseWeight } from "./numberInput";
 
 const SAVED_HERE = "This change is saved on your phone. It has not reached the other phone yet.";
 
@@ -78,6 +82,23 @@ export function BoxDetail({
     setLastStored(stored);
     if (contents === lastStored) setContents(stored);
   }
+  // Weight and a typed cu ft, held as text while they are typed and saved on
+  // blur. Same shape as the contents field: a value written from elsewhere,
+  // such as Weigh boxes on the other phone, replaces an untouched field.
+  const storedWeight = numberText(container.weightLb);
+  const [weight, setWeight] = useState(storedWeight);
+  const [lastWeight, setLastWeight] = useState(storedWeight);
+  if (storedWeight !== lastWeight) {
+    setLastWeight(storedWeight);
+    if (weight === lastWeight) setWeight(storedWeight);
+  }
+  const storedVolume = numberText(container.volumeCuFt);
+  const [volume, setVolume] = useState(storedVolume);
+  const [lastVolume, setLastVolume] = useState(storedVolume);
+  if (storedVolume !== lastVolume) {
+    setLastVolume(storedVolume);
+    if (volume === lastVolume) setVolume(storedVolume);
+  }
   const [editingRoom, setEditingRoom] = useState(false);
   const [changingStatus, setChangingStatus] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -117,6 +138,28 @@ export function BoxDetail({
 
   function saveField(patch: Partial<Container>) {
     run(() => saveContainer(moveId, { ...container, ...patch }, zones, uid));
+  }
+
+  function saveWeight() {
+    const parsed = parseWeight(weight);
+    if (parsed.kind === "invalid") {
+      setError(WEIGHT_HELP);
+      return;
+    }
+    const next = parsed.kind === "value" ? parsed.value : undefined;
+    if (next === container.weightLb) return;
+    run(() => setContainerWeight(moveId, container, next ?? null, zones, uid));
+  }
+
+  function saveVolume() {
+    const parsed = parseVolume(volume);
+    if (parsed.kind === "invalid") {
+      setError(VOLUME_HELP);
+      return;
+    }
+    const next = parsed.kind === "value" ? parsed.value : undefined;
+    if (next === container.volumeCuFt) return;
+    run(() => setContainerSize(moveId, container, "other", next, zones, uid));
   }
 
   function toggleCondition(key: ConditionKey) {
@@ -333,6 +376,38 @@ export function BoxDetail({
               </Button>
             </div>
 
+            {/* Size and weight, for the Space and weight totals. Each saves on
+                its own: a chip on the tap, a number when the field loses
+                focus. ADR-0007. */}
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-slate-400">Size</p>
+              <SizeChips
+                selected={container.size}
+                onSelect={(size) =>
+                  run(() =>
+                    setContainerSize(
+                      moveId,
+                      container,
+                      size,
+                      size === "other" ? parseVolumeOrUndefined(volume) : undefined,
+                      zones,
+                      uid
+                    )
+                  )
+                }
+              />
+              {container.size === "other" ? (
+                <NumberField
+                  label="Size in cu ft"
+                  unit="cu ft"
+                  value={volume}
+                  onChange={setVolume}
+                  onCommit={saveVolume}
+                />
+              ) : null}
+              <NumberField label="Weight" unit="lb" value={weight} onChange={setWeight} onCommit={saveWeight} />
+            </div>
+
             <div>
               <Field label="Title" value={title} onChange={setTitleText} placeholder="winter coats" />
               <div className="mt-3">
@@ -420,6 +495,11 @@ export function BoxDetail({
       </div>
     </div>
   );
+}
+
+function parseVolumeOrUndefined(text: string): number | undefined {
+  const parsed = parseVolume(text);
+  return parsed.kind === "value" ? parsed.value : undefined;
 }
 
 function Badge({ children }: { children: string }) {

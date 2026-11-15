@@ -79,7 +79,13 @@ describe("updateMove", () => {
 });
 
 describe("setMoveCapacity", () => {
-  it("writes both figures together and nothing about membership", () => {
+  it("writes only the figure it is given", () => {
+    setMoveCapacity("m1", { capacityLb: 8400 });
+    const data = mocks.updateDoc.mock.calls[0]![1] as Record<string, unknown>;
+    expect(Object.keys(data).sort()).toEqual(["capacityLb", "updatedAt"]);
+  });
+
+  it("writes both figures and nothing about membership", () => {
     setMoveCapacity("m1", { capacityCuFt: 1420, capacityLb: 8400 });
     const data = mocks.updateDoc.mock.calls[0]![1] as Record<string, unknown>;
     expect(Object.keys(data).sort()).toEqual(["capacityCuFt", "capacityLb", "updatedAt"]);

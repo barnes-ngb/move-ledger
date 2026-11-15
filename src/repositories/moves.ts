@@ -73,13 +73,14 @@ export function setAiEnabled(moveId: string, aiEnabled: boolean): PendingWrite<M
 }
 
 /**
- * What the container holds, for the Space and weight totals. Both are written
- * together so the screen never shows one edited figure beside one default the
- * move does not store. ADR-0007.
+ * What the container holds, for the Space and weight totals. Takes whichever
+ * figures changed and writes only those, so an edit to one never carries a
+ * stale copy of the other from this phone over another phone's change. An
+ * absent figure reads as its default. ADR-0007.
  */
 export function setMoveCapacity(
   moveId: string,
-  capacity: { capacityCuFt: number; capacityLb: number }
+  capacity: { capacityCuFt?: number; capacityLb?: number }
 ): PendingWrite<MoveFields> {
   return updateMove(moveId, capacity);
 }

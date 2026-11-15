@@ -91,7 +91,24 @@ describe("Space and weight", () => {
     expect(cuFt.value).toBe("710");
     fireEvent.change(cuFt, { target: { value: "1420" } });
     fireEvent.blur(cuFt);
-    expect(mocks.setMoveCapacity).toHaveBeenCalledWith("m1", { capacityCuFt: 1420, capacityLb: 4200 });
+    expect(mocks.setMoveCapacity).toHaveBeenCalledWith("m1", { capacityCuFt: 1420 });
+  });
+
+  it("follows another phone's change while the field is untouched, and does not write it back", () => {
+    const props = {
+      moveId: "m1",
+      containers: [box(1)],
+      loaded: true,
+      zones,
+      onWeigh: vi.fn(),
+      onBack: vi.fn(),
+    };
+    const { rerender } = render(<SpaceAndWeight {...props} move={{}} />);
+    rerender(<SpaceAndWeight {...props} move={{ capacityCuFt: 1420, capacityLb: 8400 }} />);
+    const lb = screen.getByLabelText("Weight limit") as HTMLInputElement;
+    expect(lb.value).toBe("8400");
+    fireEvent.blur(lb);
+    expect(mocks.setMoveCapacity).not.toHaveBeenCalled();
   });
 
   it("writes nothing when the capacity did not change", () => {

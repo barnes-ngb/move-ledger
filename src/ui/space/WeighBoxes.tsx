@@ -47,10 +47,20 @@ export function WeighBoxes({
   const subscribed = queue[0];
   const current = subscribed ? withSize(subscribed, sizeHere) : undefined;
 
+  // The typed weight belongs to the box it was typed for. Another phone can
+  // weigh or void the box on screen, the subscription then puts the next box
+  // here, and a draft carried across would be saved onto the wrong one.
+  const [draftFor, setDraftFor] = useState<string | undefined>(current?.id);
+  if (current?.id !== draftFor) {
+    setDraftFor(current?.id);
+    setWeight("");
+  }
+
   if (!current) {
     return (
       <Screen title="Weigh boxes" onBack={onBack}>
         <p className="text-slate-300">Every box has a weight.</p>
+        <ErrorLine message={error} />
         <Button onClick={onBack}>Back to Space and weight</Button>
       </Screen>
     );
@@ -71,7 +81,17 @@ export function WeighBoxes({
     }
     try {
       const { written } = setContainerWeight(moveId, box, parsed.value, zones, uid);
-      writeInBackground(written, () => setError(SAVED_HERE));
+      // A refused write is rolled back in the cache, so the box is put back in
+      // the queue to come round again, and the screen says so wherever it is,
+      // the empty state included. Advancing does not wait on the server.
+      writeInBackground(written, () => {
+        setPassed((p) => {
+          const next = new Set(p);
+          next.delete(box.id);
+          return next;
+        });
+        setError(`The weight for box ${box.displayCode} did not save. It is back in the list.`);
+      });
       advance(box.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save the weight.");

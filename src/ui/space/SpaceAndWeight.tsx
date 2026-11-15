@@ -41,8 +41,23 @@ export function SpaceAndWeight({
   onBack: () => void;
 }) {
   const capacity = capacityOf(move);
-  const [cuFt, setCuFt] = useState(numberText(capacity.cuFt));
-  const [lb, setLb] = useState(numberText(capacity.lb));
+  // Each field follows the move while it is untouched, the same shape box
+  // detail uses: another phone can change the capacity while this is open,
+  // and a field still showing the old figure would write it back on blur.
+  const storedCuFt = numberText(capacity.cuFt);
+  const storedLb = numberText(capacity.lb);
+  const [cuFt, setCuFt] = useState(storedCuFt);
+  const [lb, setLb] = useState(storedLb);
+  const [lastCuFt, setLastCuFt] = useState(storedCuFt);
+  const [lastLb, setLastLb] = useState(storedLb);
+  if (storedCuFt !== lastCuFt) {
+    setLastCuFt(storedCuFt);
+    if (cuFt === lastCuFt) setCuFt(storedCuFt);
+  }
+  if (storedLb !== lastLb) {
+    setLastLb(storedLb);
+    if (lb === lastLb) setLb(storedLb);
+  }
   const [error, setError] = useState<string | null>(null);
 
   if (!loaded) {
@@ -63,9 +78,15 @@ export function SpaceAndWeight({
       return;
     }
     setError(null);
-    if (c.value === capacity.cuFt && w.value === capacity.lb) return;
+    // Only the figure that changed is written, so blurring one field never
+    // sends the other back from this phone's copy.
+    const changed = {
+      ...(c.value !== capacity.cuFt ? { capacityCuFt: c.value } : {}),
+      ...(w.value !== capacity.lb ? { capacityLb: w.value } : {}),
+    };
+    if (Object.keys(changed).length === 0) return;
     try {
-      writeInBackground(setMoveCapacity(moveId, { capacityCuFt: c.value, capacityLb: w.value }).written, () =>
+      writeInBackground(setMoveCapacity(moveId, changed).written, () =>
         setError("This change is saved on your phone. It has not reached the other phone yet.")
       );
     } catch (e) {

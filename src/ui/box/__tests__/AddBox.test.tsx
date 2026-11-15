@@ -185,6 +185,32 @@ describe("AddBox", () => {
     expect(mocks.packContainer.mock.calls[0]?.[1]?.title).toBe("winter coats");
   });
 
+  it("saves the size with the box, in the same write as the room", () => {
+    open();
+    fireEvent.click(screen.getByText("Large tote"));
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer).toHaveBeenCalledTimes(1);
+    expect(mocks.packContainer.mock.calls[0]?.[1]?.size).toBe("bin_large");
+  });
+
+  it("saves a typed cu ft only with Other, and refuses one that is not a number", () => {
+    open();
+    fireEvent.click(screen.getByText("Other"));
+    fireEvent.change(screen.getByLabelText("Size in cu ft"), { target: { value: "lots" } });
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByLabelText("Size in cu ft"), { target: { value: "22" } });
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer.mock.calls[0]?.[1]).toMatchObject({ size: "other", volumeCuFt: 22 });
+  });
+
+  it("leaves the size out when none is picked, and has no weight field", () => {
+    open();
+    expect(screen.queryByLabelText("Weight")).toBeNull();
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer.mock.calls[0]?.[1]).not.toHaveProperty("size");
+  });
+
   it("leaves the title out rather than saving a blank one", () => {
     open();
     fireEvent.click(screen.getByText("Save and finish"));

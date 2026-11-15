@@ -21,6 +21,8 @@ const mocks = vi.hoisted(() => ({
   setTitle: vi.fn(),
   setContentsItems: vi.fn(),
   setStatus: vi.fn(),
+  setContainerSize: vi.fn(),
+  setContainerWeight: vi.fn(),
 }));
 
 const pending = { value: undefined, written: Promise.resolve() };
@@ -35,6 +37,8 @@ vi.mock("../../../repositories", () => ({
   setStatus: mocks.setStatus,
   setTitle: mocks.setTitle,
   setContentsItems: mocks.setContentsItems,
+  setContainerSize: mocks.setContainerSize,
+  setContainerWeight: mocks.setContainerWeight,
   writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
 }));
 
@@ -63,6 +67,8 @@ beforeEach(() => {
   mocks.setTitle.mockReturnValue(pending);
   mocks.setContentsItems.mockReturnValue(pending);
   mocks.setStatus.mockReturnValue(pending);
+  mocks.setContainerSize.mockReturnValue(pending);
+  mocks.setContainerWeight.mockReturnValue(pending);
 });
 
 describe("removing a box", () => {
@@ -364,5 +370,57 @@ describe("changing status", () => {
     open(makeContainer({ status: "filling" }));
     expect(screen.getByText("draft")).toBeDefined();
     expect(screen.queryByText("filling")).toBeNull();
+  });
+});
+
+describe("size and weight", () => {
+  const weight = () => screen.getByLabelText("Weight") as HTMLInputElement;
+
+  it("saves a size on the tap", () => {
+    open(makeContainer());
+    fireEvent.click(screen.getByText("Medium box"));
+    expect(mocks.setContainerSize).toHaveBeenCalledTimes(1);
+    expect(mocks.setContainerSize.mock.calls[0]![2]).toBe("box_medium");
+  });
+
+  it("clears the size on a second tap of the same chip", () => {
+    open(makeContainer({ size: "box_medium" }));
+    fireEvent.click(screen.getByText("Medium box"));
+    expect(mocks.setContainerSize.mock.calls[0]![2]).toBeNull();
+  });
+
+  it("saves the weight when the field loses focus", () => {
+    open(makeContainer());
+    fireEvent.change(weight(), { target: { value: "28.4" } });
+    fireEvent.blur(weight());
+    expect(mocks.setContainerWeight.mock.calls[0]![2]).toBe(28.4);
+  });
+
+  it("clears the stored weight when the field is emptied", () => {
+    open(makeContainer({ weightLb: 28.4 }));
+    expect(weight().value).toBe("28.4");
+    fireEvent.change(weight(), { target: { value: "" } });
+    fireEvent.blur(weight());
+    expect(mocks.setContainerWeight.mock.calls[0]![2]).toBeNull();
+  });
+
+  it("says why a weight was refused and writes nothing", () => {
+    open(makeContainer());
+    fireEvent.change(weight(), { target: { value: "0" } });
+    fireEvent.blur(weight());
+    expect(mocks.setContainerWeight).not.toHaveBeenCalled();
+    expect(screen.getByText(/to one decimal/)).toBeDefined();
+  });
+
+  it("writes nothing when the weight did not change", () => {
+    open(makeContainer({ weightLb: 28.4 }));
+    fireEvent.blur(weight());
+    expect(mocks.setContainerWeight).not.toHaveBeenCalled();
+  });
+
+  it("shows neither on a voided box", () => {
+    open(makeContainer({ voidedAt: NOW, voidedBy: "uid-1" }));
+    expect(screen.queryByLabelText("Weight")).toBeNull();
+    expect(screen.queryByText("Medium box")).toBeNull();
   });
 });

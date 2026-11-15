@@ -154,3 +154,51 @@ describe("moveMemberSchema", () => {
     expect(moveMemberSchema.safeParse({ ...member, removedAt: 0 }).success).toBe(false);
   });
 });
+
+describe("container size and weight", () => {
+  const ok = (over: Record<string, unknown>) => containerSchema.safeParse(makeContainer(over)).success;
+
+  it("accepts a box with neither, which is every box from before", () => {
+    expect(ok({})).toBe(true);
+  });
+
+  it("accepts each named size and refuses one it does not know", () => {
+    for (const size of ["bin_large", "bin_medium", "box_large", "box_medium", "box_small", "other"]) {
+      expect(ok({ size })).toBe(true);
+    }
+    expect(ok({ size: "tote" })).toBe(false);
+  });
+
+  it("takes a weight over 0 and up to 500 with one decimal", () => {
+    expect(ok({ weightLb: 0.1 })).toBe(true);
+    expect(ok({ weightLb: 12.3 })).toBe(true);
+    expect(ok({ weightLb: 500 })).toBe(true);
+    expect(ok({ weightLb: 0 })).toBe(false);
+    expect(ok({ weightLb: -4 })).toBe(false);
+    expect(ok({ weightLb: 500.1 })).toBe(false);
+    expect(ok({ weightLb: 12.34 })).toBe(false);
+  });
+
+  it("bounds a typed volume", () => {
+    expect(ok({ size: "other", volumeCuFt: 40 })).toBe(true);
+    expect(ok({ size: "other", volumeCuFt: 0 })).toBe(false);
+    expect(ok({ size: "other", volumeCuFt: 201 })).toBe(false);
+  });
+});
+
+describe("move capacity", () => {
+  const move = {
+    id: "m1",
+    name: "KC to DFW",
+    status: "packing",
+    memberUids: ["u1"],
+    createdAt: NOW,
+    updatedAt: NOW,
+  };
+
+  it("is optional, and positive when present", () => {
+    expect(moveSchema.safeParse(move).success).toBe(true);
+    expect(moveSchema.safeParse({ ...move, capacityCuFt: 1420, capacityLb: 8400 }).success).toBe(true);
+    expect(moveSchema.safeParse({ ...move, capacityCuFt: 0 }).success).toBe(false);
+  });
+});

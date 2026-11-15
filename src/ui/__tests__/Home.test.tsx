@@ -85,6 +85,25 @@ vi.mock("../care/Care", () => ({
   ),
 }));
 
+vi.mock("../space/SpaceAndWeight", () => ({
+  SpaceAndWeight: ({ onWeigh, onBack }: { onWeigh: () => void; onBack: () => void }) => (
+    <div>
+      <p>on space and weight</p>
+      <button onClick={onWeigh}>weigh</button>
+      <button onClick={onBack}>space back</button>
+    </div>
+  ),
+}));
+
+vi.mock("../space/WeighBoxes", () => ({
+  WeighBoxes: ({ onBack }: { onBack: () => void }) => (
+    <div>
+      <p>weighing</p>
+      <button onClick={onBack}>weigh back</button>
+    </div>
+  ),
+}));
+
 vi.mock("../box/BoxDetail", () => ({
   BoxDetail: ({ backLabel, onBack }: { backLabel: string; onBack: () => void }) => (
     <div>
@@ -159,6 +178,18 @@ describe("the move overview and the screens under it", () => {
     fireEvent.click(screen.getByText("See the care team"));
     expect(screen.getByText("on the care team")).toBeDefined();
     await pressSystemBack();
+    await waitFor(() => expect(screen.getByText("Add a box")).toBeDefined());
+  });
+
+  it("reaches Space and weight from the overview, and Weigh boxes from there, and back up each step", async () => {
+    open();
+    fireEvent.click(screen.getByText("Space and weight"));
+    expect(screen.getByText("on space and weight")).toBeDefined();
+    fireEvent.click(screen.getByText("weigh"));
+    expect(screen.getByText("weighing")).toBeDefined();
+    fireEvent.click(screen.getByText("weigh back"));
+    await waitFor(() => expect(screen.getByText("on space and weight")).toBeDefined());
+    fireEvent.click(screen.getByText("space back"));
     await waitFor(() => expect(screen.getByText("Add a box")).toBeDefined());
   });
 

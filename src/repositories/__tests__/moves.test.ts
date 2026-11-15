@@ -25,7 +25,7 @@ vi.mock("firebase/firestore", () => ({
 
 vi.mock("../../lib/firebase", () => ({ db: {} }));
 
-const { setAiEnabled, setMoveLocations, updateMove } = await import("../moves");
+const { setAiEnabled, setMoveCapacity, setMoveLocations, updateMove } = await import("../moves");
 
 const move: Move = {
   id: "m1",
@@ -74,6 +74,26 @@ describe("updateMove", () => {
     expect(() =>
       updateMove("m1", { ...move, aiEnabled: true } as unknown as Parameters<typeof updateMove>[1])
     ).toThrow();
+    expect(mocks.updateDoc).not.toHaveBeenCalled();
+  });
+});
+
+describe("setMoveCapacity", () => {
+  it("writes only the figure it is given", () => {
+    setMoveCapacity("m1", { capacityLb: 8400 });
+    const data = mocks.updateDoc.mock.calls[0]![1] as Record<string, unknown>;
+    expect(Object.keys(data).sort()).toEqual(["capacityLb", "updatedAt"]);
+  });
+
+  it("writes both figures and nothing about membership", () => {
+    setMoveCapacity("m1", { capacityCuFt: 1420, capacityLb: 8400 });
+    const data = mocks.updateDoc.mock.calls[0]![1] as Record<string, unknown>;
+    expect(Object.keys(data).sort()).toEqual(["capacityCuFt", "capacityLb", "updatedAt"]);
+    expect(data).toMatchObject({ capacityCuFt: 1420, capacityLb: 8400 });
+  });
+
+  it("refuses a capacity of zero", () => {
+    expect(() => setMoveCapacity("m1", { capacityCuFt: 0, capacityLb: 4200 })).toThrow();
     expect(mocks.updateDoc).not.toHaveBeenCalled();
   });
 });

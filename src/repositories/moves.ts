@@ -36,7 +36,9 @@ export function createMove(name: string, creatorUid: string): PendingWrite<Move>
  * back: a helper added on the couch lost access with nothing on any screen to
  * repair it, and a removed one got it back.
  */
-export type MoveFields = Partial<Pick<Move, "name" | "status" | "originLocationId" | "destinationLocationId" | "aiEnabled">>;
+export type MoveFields = Partial<
+  Pick<Move, "name" | "status" | "originLocationId" | "destinationLocationId" | "aiEnabled" | "capacityCuFt" | "capacityLb">
+>;
 
 /**
  * Strict, so a caller that spreads a whole move in is refused at runtime as
@@ -44,7 +46,15 @@ export type MoveFields = Partial<Pick<Move, "name" | "status" | "originLocationI
  * before anything reaches Firestore.
  */
 const moveFieldsSchema = moveSchema
-  .pick({ name: true, status: true, originLocationId: true, destinationLocationId: true, aiEnabled: true })
+  .pick({
+    name: true,
+    status: true,
+    originLocationId: true,
+    destinationLocationId: true,
+    aiEnabled: true,
+    capacityCuFt: true,
+    capacityLb: true,
+  })
   .partial()
   .strict();
 
@@ -60,6 +70,19 @@ export function updateMove(moveId: string, fields: MoveFields): PendingWrite<Mov
 /** The contents list setting. Both answers are written, because absent means unasked. */
 export function setAiEnabled(moveId: string, aiEnabled: boolean): PendingWrite<MoveFields> {
   return updateMove(moveId, { aiEnabled });
+}
+
+/**
+ * What the container holds, for the Space and weight totals. Takes whichever
+ * figures changed and writes only those, so an edit to one never carries a
+ * stale copy of the other from this phone over another phone's change. An
+ * absent figure reads as its default. ADR-0007.
+ */
+export function setMoveCapacity(
+  moveId: string,
+  capacity: { capacityCuFt?: number; capacityLb?: number }
+): PendingWrite<MoveFields> {
+  return updateMove(moveId, capacity);
 }
 
 /**

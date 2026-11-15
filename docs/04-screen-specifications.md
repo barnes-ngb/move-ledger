@@ -66,6 +66,8 @@ The counters in **Shows** above are still owed. The overview names the move, cou
 
 Amended 2026-10-17 during the APPLY-17 run. **The count is what the box list shows,** so voided boxes are left out of it; the overview said 12 where the list one tap away said 11. **Nothing is said about the boxes until the containers listener has delivered.** Before that the list is empty because nothing has arrived, and the screen reads "Loading" rather than explaining the physical system to somebody forty boxes in. The cache answers in a tick, so this is a blink. The same rule holds on box detail, which read "That box is gone" in that tick after a reload, and on the box list, which read "No boxes yet".
 
+Amended 2026-11-14 during the APPLY-19 run. A fourth quiet button, "Space and weight", sits under "See all boxes" and opens section 6b.
+
 ## 2. Add box
 
 ### Purpose
@@ -148,6 +150,10 @@ Amended 2026-10-17.
 **Answering Leave before the number arrives reserves nothing.** The back guard is live while the screen reads "Finding your next box number.", and the navigation behind Leave lands a moment after the tap. A listener delivering inside that moment used to reserve a draft for a screen that was already going, which nobody was asked about.
 
 **Stay on this box keeps the draft after a reload.** The guard put back an entry rebuilt from the one the gesture had popped to, which after a reload was the move overview's, so the draft id travelling in the entry was lost and the next reload reserved a second number. The guard now remembers the entry it is guarding from the moment it is installed.
+
+### What shipped, APPLY-19
+
+A row of size chips under the room picker: Large tote, Medium tote, Large box, Medium box, Small box, Other. Optional, and a second tap on the same chip clears it. Other reveals a cu ft field. The size goes out in the same write as the room, so saving never waits on it. There is no weight here: a box is weighed once it is sealed, on Weigh boxes. ADR-0007.
 
 ## 3. Label instruction
 
@@ -317,6 +323,10 @@ Amended 2026-10-17. **The contents list is a list.** The suggestion and the conf
 
 **Add box.** The brief named an Add box contents field from APPLY-11. There is none: APPLY-11's contents field is on this screen. Add box shows the suggestion block, which follows the one-per-line rule above, and its own fields are the title and the note, which are unchanged.
 
+### What shipped, APPLY-19
+
+Size chips and a weight field, under the condition controls. Each size chip saves on the tap, and Other reveals a cu ft field saved when it loses focus. The weight field opens the numeric keypad and saves when it loses focus; emptying it clears the stored weight. A value the schema refuses, such as 0 or more than one decimal, is not written and the error line says why. A voided box shows neither. ADR-0007.
+
 ### Adding a photo: two controls, one path
 
 Amended 2026-08-16 during the APPLY-11 run, and this is the settled pattern for anywhere a photo is added. The line above was half right and cost the camera. Removing `capture` did not make one input offer both the camera and the library; on the phone this app is built for, it made that input offer files only. `capture` is a hint, and a browser is free to read it as "camera only", "camera first", or to ignore it. Neither state of one attribute gets both.
@@ -366,6 +376,60 @@ One card per need, in display order. On a card: the title, the note under it, th
 ### What is not here
 
 No suggestions from the app, no sync from any outside list, nothing about visits beyond the status and a note. See ADR-0006.
+
+## 6b. Space and weight
+
+Added 2026-11-14, ADR-0007. Reached from the move overview by "Space and weight". Back returns to the overview; the header title goes home.
+
+### Purpose
+
+Read the boxes against what the container holds, so the decision about a second container rests on numbers rather than a guess.
+
+### Shows
+
+- "Weigh boxes" at the top while any box has no weight.
+- Two bars, cu ft against capacity and lb against capacity, each with the number and the percent. Over capacity turns the bar and its number red and says by how much, such as "130 cu ft over".
+- Under the weight bar, while any box is unweighed: "12 boxes not weighed yet. Estimate with them: 4,610 lb." The estimate is left off when it cannot be made honestly; see doc 02, Size and weight.
+- While any box has no size: "9 boxes have no size."
+- By room, in room order and then "No room": count, cu ft, lb, and the not-weighed count when it is not zero.
+- By size, one row per size present.
+- Capacity: a cu ft field and a lb field, filled from the move or the defaults, each saved when it loses focus. One line under them: "16 ft PODS: 710 cu ft usable, 4,200 lb."
+
+Voided boxes are left out of every number. Every status counts.
+
+### States
+
+- Loading: "Loading" until the containers listener delivers.
+- Empty: one line saying there are no boxes yet.
+- Error: the stopped-listener screen with Try again, same as boxes.
+- Offline: the totals come from the persistent cache and a capacity edit lands locally. The header indicator says Offline as everywhere else.
+
+### What is not here
+
+No loading order or layout, and no weight from a photo. Those are load planning and need their own record. See ADR-0007.
+
+## 6c. Weigh boxes
+
+Added 2026-11-14, ADR-0007. Opened from Space and weight. Back returns there.
+
+### Purpose
+
+Weigh every box on a bathroom scale and type each number once, one after another, without opening a box to do it.
+
+### Shows
+
+The boxes with no weight that are not voided, lowest number first, one at a time: the number large, the room color and name, the first photo if the box has one, the size chips, and the weight field, focused, with the numeric keypad. A count line, such as "14 left".
+
+### Actions
+
+- Save and next: writes the weight and moves to the next box. Disabled while the field is empty.
+- Skip: moves to the next box and writes nothing. A skipped box comes round again the next time the screen opens.
+- A size chip saves on the tap, the same as box detail.
+
+### States
+
+- Empty: "Every box has a weight." and a button back to Space and weight.
+- Offline: the write lands locally and the screen does not wait for the server, the same as every other write in the app.
 
 ## 7. Rooms
 

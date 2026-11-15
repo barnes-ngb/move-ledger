@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { Container, MoveMember, Zone } from "../../domain";
+import type { Container, ContainerSize, MoveMember, Zone } from "../../domain";
 import { RangeExhaustedError, canDelete, isVoided, remainingInRange } from "../../domain";
 import { deleteContainer, packContainer, reserveContainer, writeInBackground } from "../../repositories";
 import { useBackGuard } from "../history";
@@ -8,6 +8,8 @@ import { useOfferHome } from "../nav";
 import { AiSummary } from "./AiSummary";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
+import { NumberField, SizeChips } from "./SizeChips";
+import { VOLUME_HELP, parseVolume } from "./numberInput";
 import { labelInstruction } from "./label";
 import { usePhotos } from "../../hooks/usePhotos";
 
@@ -78,6 +80,10 @@ export function AddBox({
   const [roomId, setRoomId] = useState<string | undefined>(undefined);
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
+  // Size goes out with the save, in the same write as the room. No weight here:
+  // a box is weighed once it is sealed. ADR-0007.
+  const [size, setSize] = useState<ContainerSize | undefined>(undefined);
+  const [volume, setVolume] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
   // The leave sheet covers the screen, so a failure while deleting has to be
@@ -256,6 +262,14 @@ export function AddBox({
   function save(andNext: boolean) {
     if (!live) return;
     setError(null);
+    // A typed cu ft that is not a number is the one thing on this screen that
+    // stops a save, and only while Other is picked. Empty is fine: the box is
+    // counted as having no size until somebody fills it in.
+    const typedVolume = size === "other" ? parseVolume(volume) : ({ kind: "empty" } as const);
+    if (typedVolume.kind === "invalid") {
+      setError(VOLUME_HELP);
+      return;
+    }
     try {
       const trimmedNote = note.trim();
       const trimmedTitle = title.trim();
@@ -265,6 +279,8 @@ export function AddBox({
         ...(roomId ? { destinationZoneId: roomId } : {}),
         ...(trimmedTitle ? { title: trimmedTitle } : {}),
         ...(trimmedNote ? { notes: trimmedNote } : {}),
+        ...(size ? { size } : {}),
+        ...(typedVolume.kind === "value" ? { volumeCuFt: typedVolume.value } : {}),
       };
       // One batch: the confirmed label, the packed status, and the event.
       // Two writes here could leave a box on cardboard reading as a draft
@@ -281,6 +297,8 @@ export function AddBox({
         setRoomId(undefined);
         setTitle("");
         setNote("");
+        setSize(undefined);
+        setVolume("");
         reserved.current = false;
         // A fresh number, never the draft this entry started on: the box just
         // saved may still read as a draft in the subscription for a tick.
@@ -413,6 +431,16 @@ export function AddBox({
 
         <div className="mt-6">
           <RoomPicker zones={zones} selectedId={roomId} onSelect={setRoomId} />
+        </div>
+
+        <div className="mt-6">
+          <p className="mb-2 text-sm text-slate-400">Size, optional</p>
+          <SizeChips selected={size} onSelect={(s) => setSize(s ?? undefined)} />
+          {size === "other" ? (
+            <div className="mt-3">
+              <NumberField label="Size in cu ft" unit="cu ft" value={volume} onChange={setVolume} />
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-6">

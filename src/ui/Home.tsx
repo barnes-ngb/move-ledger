@@ -8,6 +8,8 @@ import { BoxDetail } from "./box/BoxDetail";
 import { BoxList } from "./box/BoxList";
 import { FindBox } from "./box/FindBox";
 import { Care } from "./care/Care";
+import { SpaceAndWeight } from "./space/SpaceAndWeight";
+import { WeighBoxes } from "./space/WeighBoxes";
 import { useHistoryView } from "./history";
 import { Button, Screen, SubscriptionFailed } from "./kit";
 import { useOfferHome } from "./nav";
@@ -35,7 +37,10 @@ type View =
   | { name: "list"; query: string }
   | { name: "detail"; id: string; from: View }
   /** The care team: the doctors the household is choosing for after the move. See decisions/0006-care-page.md. */
-  | { name: "care" };
+  | { name: "care" }
+  /** Size and weight against the container, and the screen that weighs boxes one after another. ADR-0007. */
+  | { name: "space" }
+  | { name: "weigh" };
 
 /** The move overview. Stable so it can be the root of the history slot. */
 const HOME: View = { name: "home" };
@@ -99,6 +104,33 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         onBack={nav.back}
       />
     );
+  }
+
+  if (view.name === "space") {
+    return (
+      <SpaceAndWeight
+        moveId={moveId}
+        move={ctx.move}
+        containers={containers}
+        loaded={loaded}
+        zones={ctx.zones}
+        onWeigh={() => nav.open({ name: "weigh" })}
+        onBack={nav.back}
+      />
+    );
+  }
+
+  if (view.name === "weigh") {
+    // Not arrived is not empty. "Every box has a weight" in the tick before the
+    // first delivery would be false.
+    if (!loaded) {
+      return (
+        <Screen title="Weigh boxes" onBack={nav.back}>
+          <p className="text-slate-400">Loading</p>
+        </Screen>
+      );
+    }
+    return <WeighBoxes moveId={moveId} containers={containers} zones={ctx.zones} uid={uid} onBack={nav.back} />;
   }
 
   if (view.name === "find") {
@@ -201,6 +233,9 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         </Button>
         <Button onClick={() => nav.open({ name: "list", query: "" })} tone="quiet">
           See all boxes
+        </Button>
+        <Button onClick={() => nav.open({ name: "space" })} tone="quiet">
+          Space and weight
         </Button>
         <Button onClick={() => nav.open({ name: "care" })} tone="quiet">
           See the care team

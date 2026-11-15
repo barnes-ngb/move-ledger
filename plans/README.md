@@ -34,7 +34,7 @@ Settled 2026-08-02. The vertical slice was one plan when APPLY-02 was written, t
 | APPLY-16 | The contents list from production. Nothing visible, categories in search, the printed text rule, retries, the enabled race | Run 2026-10-17 |
 | APPLY-17 | Hardening from a full code review before packing starts, and the scope of APPLY-14 | Run 2026-10-17 |
 | APPLY-18 | The contents list as items. One item per line from the model to the screen | Run 2026-10-17 |
-| APPLY-19 | Size and weight on a box, Weigh boxes, and the Space and weight summary against the container. ADR-0007 | Written 2026-11-14, not run |
+| APPLY-19 | Size and weight on a box, Weigh boxes, and the Space and weight summary against the container. ADR-0007 | Run 2026-11-14 |
 
 APPLY-14 was never executed and has no file here. Its scope, several photos at once from the library and a Title field on Add box, landed in APPLY-17 as items D1 and D2, so the number is spent and stays unused.
 

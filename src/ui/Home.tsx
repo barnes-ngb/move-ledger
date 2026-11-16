@@ -33,6 +33,8 @@ type View =
    * reserving a second number for a box that already has one.
    */
   | { name: "add"; draftId?: string }
+  /** Add box in its furniture form. Its own entry so a reload comes back to the same piece. ADR-0008. */
+  | { name: "addFurniture"; draftId?: string }
   | { name: "find" }
   | { name: "list"; query: string }
   | { name: "detail"; id: string; from: View }
@@ -49,6 +51,7 @@ const HOME: View = { name: "home" };
 function backLabel(from: View): string {
   if (from.name === "list") return "Back to the list";
   if (from.name === "find") return "Back to find";
+  if (from.name === "space") return "Back to Space and weight";
   return "Back";
 }
 
@@ -62,7 +65,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
   // Every screen under this one goes home through the header title. Add box
   // is the exception and takes the header itself, because leaving it means
   // answering for the draft first.
-  useOfferHome(view.name !== "add", nav.home);
+  useOfferHome(view.name !== "add" && view.name !== "addFurniture", nav.home);
 
   if (!ctx.move || !ctx.me) return null;
   const moveId = ctx.move.id;
@@ -73,6 +76,24 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
   // in this app that a marker makes permanent. `loaded` covers the other way
   // the list can be empty, which is not having arrived yet.
   if (failed) return <SubscriptionFailed title="Cannot load your boxes" onRetry={retry} />;
+
+  if (view.name === "addFurniture") {
+    return (
+      <AddBox
+        kind="furniture"
+        moveId={moveId}
+        me={ctx.me}
+        containers={containers}
+        loaded={loaded}
+        zones={ctx.zones}
+        uid={uid}
+        draftId={view.draftId}
+        onDraft={(draftId) => nav.update({ name: "addFurniture", draftId })}
+        // Back to Space and weight, where it was opened, so the total updates in front of you.
+        onLeave={nav.back}
+      />
+    );
+  }
 
   if (view.name === "add") {
     return (
@@ -115,6 +136,8 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
         loaded={loaded}
         zones={ctx.zones}
         onWeigh={() => nav.open({ name: "weigh" })}
+        onAddFurniture={() => nav.open({ name: "addFurniture" })}
+        onOpenBox={(c) => nav.open({ name: "detail", id: c.id, from: view })}
         onBack={nav.back}
       />
     );

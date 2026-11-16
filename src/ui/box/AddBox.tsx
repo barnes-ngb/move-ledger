@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { Container, ContainerSize, MoveMember, Zone } from "../../domain";
+import type { Container, ContainerSize, FurniturePreset, MoveMember, Zone } from "../../domain";
 import { RangeExhaustedError, canDelete, isVoided, remainingInRange } from "../../domain";
 import { deleteContainer, packContainer, reserveContainer, writeInBackground } from "../../repositories";
 import { useBackGuard } from "../history";
@@ -9,7 +9,8 @@ import { AiSummary } from "./AiSummary";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 import { NumberField, SizeChips } from "./SizeChips";
-import { VOLUME_HELP, parseVolume } from "./numberInput";
+import { VOLUME_HELP, WEIGHT_HELP, parseVolume, parseWeight } from "./numberInput";
+import { Check, FurniturePicker } from "./FurniturePicker";
 import { labelInstruction } from "./label";
 import { usePhotos } from "../../hooks/usePhotos";
 
@@ -62,6 +63,7 @@ export function AddBox({
   draftId,
   onDraft,
   onLeave,
+  kind = "box",
 }: {
   moveId: string;
   me: MoveMember;
@@ -75,7 +77,15 @@ export function AddBox({
   /** Called with each box this screen reserves or resumes, so the entry can hold it. */
   onDraft?: (draftId: string) => void;
   onLeave: () => void;
+  /**
+   * "furniture" is Add furniture: the same number, room, and photos, with a
+   * list of common pieces in place of the size chips, a weight that is marked
+   * as a guess, and the not-sure mark. ADR-0008.
+   */
+  kind?: "box" | "furniture";
 }) {
+  const furniture = kind === "furniture";
+  const noun = furniture ? "piece" : "box";
   const [container, setContainer] = useState<Container | null>(null);
   const [roomId, setRoomId] = useState<string | undefined>(undefined);
   const [title, setTitle] = useState("");
@@ -84,6 +94,12 @@ export function AddBox({
   // a box is weighed once it is sealed. ADR-0007.
   const [size, setSize] = useState<ContainerSize | undefined>(undefined);
   const [volume, setVolume] = useState("");
+  // Add furniture only. The weight starts as a guess, because furniture does
+  // not go on a bathroom scale; unticking says it was weighed.
+  const [preset, setPreset] = useState<FurniturePreset | undefined>(undefined);
+  const [weight, setWeight] = useState("");
+  const [weightGuess, setWeightGuess] = useState(true);
+  const [undecided, setUndecided] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
   // The leave sheet covers the screen, so a failure while deleting has to be
@@ -265,21 +281,39 @@ export function AddBox({
     // A typed cu ft that is not a number is the one thing on this screen that
     // stops a save, and only while Other is picked. Empty is fine: the box is
     // counted as having no size until somebody fills it in.
-    const typedVolume = size === "other" ? parseVolume(volume) : ({ kind: "empty" } as const);
+    const typedVolume = furniture || size === "other" ? parseVolume(volume) : ({ kind: "empty" } as const);
     if (typedVolume.kind === "invalid") {
       setError(VOLUME_HELP);
       return;
     }
+    const typedWeight = furniture ? parseWeight(weight) : ({ kind: "empty" } as const);
+    if (typedWeight.kind === "invalid") {
+      setError(WEIGHT_HELP);
+      return;
+    }
     try {
       const trimmedNote = note.trim();
-      const trimmedTitle = title.trim();
+      // A piece with no title takes the name of what was picked, so the list
+      // says "Queen mattress" rather than a bare number.
+      const trimmedTitle = title.trim() || (furniture ? (preset?.label ?? "") : "");
       // Conditional spread. An explicit undefined here throws at the write.
       const next: Container = {
         ...live,
         ...(roomId ? { destinationZoneId: roomId } : {}),
         ...(trimmedTitle ? { title: trimmedTitle } : {}),
         ...(trimmedNote ? { notes: trimmedNote } : {}),
-        ...(size ? { size } : {}),
+        ...(furniture
+          ? {
+              type: preset?.type ?? "furniture",
+              size: "other" as const,
+              ...(typedWeight.kind === "value"
+                ? { weightLb: typedWeight.value, ...(weightGuess ? { weightEstimated: true } : {}) }
+                : {}),
+              ...(undecided ? { undecided: true } : {}),
+            }
+          : size
+            ? { size }
+            : {}),
         ...(typedVolume.kind === "value" ? { volumeCuFt: typedVolume.value } : {}),
       };
       // One batch: the confirmed label, the packed status, and the event.
@@ -299,6 +333,10 @@ export function AddBox({
         setNote("");
         setSize(undefined);
         setVolume("");
+        setPreset(undefined);
+        setWeight("");
+        setWeightGuess(true);
+        setUndecided(false);
         reserved.current = false;
         // A fresh number, never the draft this entry started on: the box just
         // saved may still read as a draft in the subscription for a tick.
@@ -370,7 +408,7 @@ export function AddBox({
       <div className="flex-1 overflow-y-auto p-6 pt-2">
         {/* The label instruction. Written before anything else is decided. */}
         <div className="rounded-3xl bg-slate-800 p-6 text-center">
-          <p className="text-sm text-slate-400">Write on the box</p>
+          <p className="text-sm text-slate-400">{furniture ? "Write on tape on the piece" : "Write on the box"}</p>
           <p className="mt-2 font-mono text-7xl font-bold tracking-wider text-slate-50">
             {container ? container.displayCode : "..."}
           </p>
@@ -433,7 +471,25 @@ export function AddBox({
           <RoomPicker zones={zones} selectedId={roomId} onSelect={setRoomId} />
         </div>
 
-        <div className="mt-6">
+        {furniture ? (
+          <div className="mt-6 flex flex-col gap-3">
+            <p className="text-sm text-slate-400">What is it? Picking one fills typical figures you can change.</p>
+            <FurniturePicker
+              selectedId={preset?.id}
+              onSelect={(p) => {
+                setPreset(p);
+                setVolume(String(p.cuFt));
+                setWeight(String(p.lb));
+                setWeightGuess(true);
+              }}
+            />
+            <NumberField label="Size in cu ft" unit="cu ft" value={volume} onChange={setVolume} />
+            <NumberField label="Weight" unit="lb" value={weight} onChange={setWeight} />
+            <Check label="Weight is a guess" checked={weightGuess} onChange={setWeightGuess} />
+            <Check label="Not sure it's going" checked={undecided} onChange={setUndecided} />
+          </div>
+        ) : (
+          <div className="mt-6">
           <p className="mb-2 text-sm text-slate-400">Size, optional</p>
           <SizeChips selected={size} onSelect={(s) => setSize(s ?? undefined)} />
           {size === "other" ? (
@@ -442,9 +498,15 @@ export function AddBox({
             </div>
           ) : null}
         </div>
+        )}
 
         <div className="mt-6">
-          <Field label="Title, optional" value={title} onChange={setTitle} placeholder="winter coats" />
+          <Field
+            label="Title, optional"
+            value={title}
+            onChange={setTitle}
+            placeholder={furniture ? (preset?.label ?? "white dresser") : "winter coats"}
+          />
         </div>
 
         <div className="mt-4">
@@ -478,10 +540,10 @@ export function AddBox({
 
       {leaving ? (
         <Sheet
-          title={container ? `Leave box ${container.displayCode}?` : "Leave without saving?"}
+          title={container ? `Leave ${noun} ${container.displayCode}?` : "Leave without saving?"}
           detail={
             container
-              ? `Number ${container.displayCode} is reserved for this box${photos.length > 0 ? ` and its ${photos.length} photo${photos.length === 1 ? " is" : "s are"} kept` : ""}. Keep the draft and it stays in the box list, where you can finish it later. Delete it and the number goes back to your range${photos.length > 0 ? ` and the ${photos.length === 1 ? "photo goes" : "photos go"} with it` : ""}.`
+              ? `Number ${container.displayCode} is reserved for this ${noun}${photos.length > 0 ? ` and its ${photos.length} photo${photos.length === 1 ? " is" : "s are"} kept` : ""}. Keep the draft and it stays in the box list, where you can finish it later. Delete it and the number goes back to your range${photos.length > 0 ? ` and the ${photos.length === 1 ? "photo goes" : "photos go"} with it` : ""}.`
               : loaded
                 ? "No number was reserved, so there is no draft to decide about."
                 : "No number has been reserved yet, so there is no draft to decide about."
@@ -503,7 +565,7 @@ export function AddBox({
             <Button onClick={() => leave(false)}>Leave</Button>
           )}
           <Button onClick={() => setLeaving(false)} disabled={deleting} tone="quiet">
-            Stay on this box
+            Stay on this {noun}
           </Button>
         </Sheet>
       ) : null}

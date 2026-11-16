@@ -1,3 +1,4 @@
+import { isFurniture } from "./furniture";
 import { isVoided } from "./lifecycle";
 import type { Container, ContainerSize, Move, Zone } from "./schemas";
 
@@ -68,6 +69,12 @@ export interface SizeTotals {
   weightLb: number;
 }
 
+export interface PartTotals {
+  count: number;
+  volumeCuFt: number;
+  weightLb: number;
+}
+
 export interface SpaceAndWeight {
   /** Containers that are not voided. Every status counts. */
   counted: number;
@@ -75,10 +82,16 @@ export interface SpaceAndWeight {
   /** Counted containers with no volume: no size, or "other" with no figure. */
   noSize: number;
   weightLb: number;
+  /** The part of `weightLb` that is a guess rather than a scale reading. ADR-0008. */
+  estimatedLb: number;
   notWeighed: number;
+  /** Furniture and appliances, counted inside every total above. */
+  furniture: PartTotals;
+  /** Pieces marked not sure, counted inside every total above. Subtract for the second total. */
+  undecided: PartTotals;
   /**
    * The weighed total plus, for each unweighed box, the average weight of the
-   * weighed boxes of its size. Undefined when any unweighed box has no size,
+   * weighed boxes of its size. Estimated weights are never part of an average. Undefined when any unweighed box has no size,
    * is "other", or is a size nobody has weighed: a partial estimate would
    * understate the total the capacity decision rests on.
    */
@@ -95,6 +108,10 @@ function tidy(n: number): number {
   return Math.round(n * 10) / 10;
 }
 
+function tidyPart(p: PartTotals): PartTotals {
+  return { count: p.count, volumeCuFt: tidy(p.volumeCuFt), weightLb: tidy(p.weightLb) };
+}
+
 export function spaceAndWeight(
   containers: readonly Container[],
   zones: readonly Zone[],
@@ -105,7 +122,10 @@ export function spaceAndWeight(
   let volume = 0;
   let noSize = 0;
   let weight = 0;
+  let estimatedLb = 0;
   let notWeighed = 0;
+  const furniture: PartTotals = { count: 0, volumeCuFt: 0, weightLb: 0 };
+  const undecided: PartTotals = { count: 0, volumeCuFt: 0, weightLb: 0 };
 
   const zoneById = new Map(zones.map((z) => [z.id, z]));
   const byZone = new Map<string | null, ZoneTotals>();
@@ -118,7 +138,16 @@ export function spaceAndWeight(
     if (v === undefined) noSize += 1;
     else volume += v;
     if (c.weightLb === undefined) notWeighed += 1;
-    else weight += c.weightLb;
+    else {
+      weight += c.weightLb;
+      if (c.weightEstimated) estimatedLb += c.weightLb;
+    }
+    for (const part of [isFurniture(c) ? furniture : null, c.undecided ? undecided : null]) {
+      if (!part) continue;
+      part.count += 1;
+      part.volumeCuFt += v ?? 0;
+      part.weightLb += c.weightLb ?? 0;
+    }
 
     // A room id that no longer names a room reads as no room, the same as the list.
     const zone = c.destinationZoneId ? zoneById.get(c.destinationZoneId) : undefined;
@@ -147,7 +176,8 @@ export function spaceAndWeight(
       s.volumeCuFt += v ?? 0;
       s.weightLb += c.weightLb ?? 0;
       bySize.set(c.size, s);
-      if (c.weightLb !== undefined) {
+      // A guess never stands in as a measurement for other boxes. ADR-0008.
+      if (c.weightLb !== undefined && !c.weightEstimated) {
         const w = sample.get(c.size) ?? { sum: 0, n: 0 };
         w.sum += c.weightLb;
         w.n += 1;
@@ -185,7 +215,10 @@ export function spaceAndWeight(
     volumeCuFt: tidy(volume),
     noSize,
     weightLb: tidy(weight),
+    estimatedLb: tidy(estimatedLb),
     notWeighed,
+    furniture: tidyPart(furniture),
+    undecided: tidyPart(undecided),
     ...(estimatedWeightLb === undefined ? {} : { estimatedWeightLb: Math.round(estimatedWeightLb) }),
     capacity,
     byZone: zoneRows.map((r) => ({ ...r, volumeCuFt: tidy(r.volumeCuFt), weightLb: tidy(r.weightLb) })),

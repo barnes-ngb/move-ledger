@@ -240,7 +240,7 @@ Added 2026-11-15 in APPLY-20, ADR-0008. A piece of furniture is a container of t
 
 ### Dimensions
 
-Added 2026-11-15 in APPLY-21, ADR-0009. `dimensionsIn` is the outside size of a piece, typed from a tape measure or taken from a photo estimate. Writing it sets `volumeCuFt` to width times depth times height over 1,728, to a tenth, and size to `other`. Removing it leaves the cu ft as it was. On Add furniture, measured dimensions scale the weight of the picked piece by the ratio of the measured cu ft to the preset's, bounded to half and double, until somebody types a weight. A scaled weight is still stored as a guess.
+Added 2026-11-15 in APPLY-21, ADR-0009. `dimensionsIn` is the outside size of a piece, typed from a tape measure or taken from a photo estimate. Writing it sets `volumeCuFt` to width times depth times height over 1,728, to a tenth, and size to `other`. Removing it leaves the cu ft as it was. One record holds at most 400 cu ft, raised from 200 in APPLY-21 so a measured sectional fits; three sides that are each valid but make more than that together are refused before the write. On Add furniture, measured dimensions scale the weight of the picked piece by the ratio of the measured cu ft to the preset's, bounded to half and double, until somebody types a weight. A scaled weight is still stored as a guess.
 
 ### searchText
 

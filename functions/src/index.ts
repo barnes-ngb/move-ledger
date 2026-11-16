@@ -315,6 +315,14 @@ export const summarizePhoto = onCall(
  */
 const FURNITURE_ESTIMATE_CAP = 200;
 
+/**
+ * A copy of `furnitureEstimateUsageSchema` in `src/domain/schemas`, which this
+ * package cannot import. Keep the two alike. A counter that does not parse
+ * stops the call rather than resetting to zero, because the cap guards paid
+ * calls and a reset would lift it.
+ */
+const furnitureEstimateUsage = z.object({ count: z.number().int().nonnegative() });
+
 const furnitureReply = z.object({
   name: z.string(),
   widthIn: z.number().positive().max(240),
@@ -385,9 +393,10 @@ export const estimateFurniture = onCall(
     const usageRef = db.doc(`moves/${moveId}/usage/furnitureEstimates`);
     const allowed = await db.runTransaction(async (tx) => {
       const snap = await tx.get(usageRef);
-      const count = (snap.data()?.count as number | undefined) ?? 0;
-      if (count >= FURNITURE_ESTIMATE_CAP) return false;
-      tx.set(usageRef, { count: count + 1 }, { merge: true });
+      const stored = snap.exists ? furnitureEstimateUsage.safeParse(snap.data()) : { success: true as const, data: { count: 0 } };
+      if (!stored.success) throw new HttpsError("internal", "The estimate counter could not be read.");
+      if (stored.data.count >= FURNITURE_ESTIMATE_CAP) return false;
+      tx.set(usageRef, furnitureEstimateUsage.parse({ count: stored.data.count + 1 }));
       return true;
     });
     if (!allowed) throw new HttpsError("resource-exhausted", "This move has reached its photo estimate limit.");

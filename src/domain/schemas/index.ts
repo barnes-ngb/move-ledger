@@ -103,6 +103,15 @@ export const conditionReportSchema = z.object({
   photoIds: z.array(z.string()),
 });
 
+/**
+ * The largest cu ft one container record takes. Raised from 200 in APPLY-21:
+ * a sectional measured at 120 x 60 x 60 in is 250 cu ft, and refusing a
+ * measurement a tape measure produced is wrong. Measurements are checked
+ * against the same figure before they are written. Raised in review on pull
+ * request 34.
+ */
+export const MAX_VOLUME_CU_FT = 400;
+
 /** What kind of box it is, for counting space. Independent of `type`. See src/domain/space.ts and ADR-0007. */
 export const containerSizeSchema = z.enum(["bin_large", "bin_medium", "box_large", "box_medium", "box_small", "other"]);
 
@@ -143,7 +152,7 @@ export const containerSchema = z.object({
   }),
   size: containerSizeSchema.optional(),
   /** Typed by a person. Read only when `size` is "other". */
-  volumeCuFt: z.number().positive().max(200).optional(),
+  volumeCuFt: z.number().positive().max(MAX_VOLUME_CU_FT).optional(),
   /** Typed by a person from a scale, never estimated. */
   weightLb: z.number().positive().max(500).refine(oneDecimal, "weight takes at most one decimal place").optional(),
   /** The weight is a guess, from the furniture list or typed as one, rather than read off a scale. Kept out of the box averages. ADR-0008. */
@@ -262,6 +271,15 @@ export const careNeedSchema = z.object({
   providers: z.array(careProviderSchema).max(12),
   updatedAt: isoString,
   updatedBy: z.string().min(1),
+});
+
+/**
+ * The paid-call counter for Estimate from photo, written only by the function
+ * at `moves/{moveId}/usage/furnitureEstimates`. ADR-0009. The functions
+ * package cannot import this file, so it carries a copy; keep the two alike.
+ */
+export const furnitureEstimateUsageSchema = z.object({
+  count: z.number().int().nonnegative(),
 });
 
 export type ContainerSize = z.infer<typeof containerSizeSchema>;

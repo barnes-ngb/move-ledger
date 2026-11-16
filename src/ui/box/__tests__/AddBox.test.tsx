@@ -625,3 +625,24 @@ describe("Add furniture measurements", () => {
     expect(screen.queryByText("Estimate from photo")).toBeNull();
   });
 });
+
+describe("Add furniture size limits", () => {
+  it("refuses three sides that together are more than one record holds", () => {
+    open([], { kind: "furniture" });
+    fireEvent.change(screen.getByLabelText("Width"), { target: { value: "240" } });
+    fireEvent.change(screen.getByLabelText("Depth"), { target: { value: "60" } });
+    fireEvent.change(screen.getByLabelText("Height"), { target: { value: "60" } });
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer).not.toHaveBeenCalled();
+    expect(screen.getByText(/400 cu ft together/)).toBeDefined();
+  });
+
+  it("saves a measured piece over the old 200 cu ft limit", () => {
+    open([], { kind: "furniture" });
+    fireEvent.change(screen.getByLabelText("Width"), { target: { value: "120" } });
+    fireEvent.change(screen.getByLabelText("Depth"), { target: { value: "60" } });
+    fireEvent.change(screen.getByLabelText("Height"), { target: { value: "60" } });
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer.mock.calls[0]?.[1]).toMatchObject({ volumeCuFt: 250 });
+  });
+});

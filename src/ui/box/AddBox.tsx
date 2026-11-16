@@ -510,6 +510,10 @@ export function AddBox({
             />
             {photoEstimateOn && live ? (
               <PhotoEstimate
+                // A new piece is a new estimate. Save and next swaps the piece
+                // under this component, and an answer for the last one must not
+                // land on this one. Raised in review on pull request 34.
+                key={live.id}
                 moveId={moveId}
                 containerId={live.id}
                 uploadedPhotos={photos.filter((v) => v.photo.uploadState === "uploaded").length}

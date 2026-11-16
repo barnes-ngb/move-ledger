@@ -49,6 +49,29 @@ vi.mock("../../../repositories", () => ({
 vi.mock("../../../hooks/usePhotos", () => ({ usePhotos: () => [] }));
 vi.mock("../PhotoStrip", () => ({ PhotoStrip: () => null }));
 vi.mock("../AiSummary", () => ({ AiSummary: () => null }));
+// The real component calls the function; here it hands back a fixed estimate on a tap.
+vi.mock("../PhotoEstimate", () => ({
+  PhotoEstimate: ({ onUse }: { onUse: (e: unknown) => void }) => (
+    <button
+      onClick={() =>
+        onUse({
+          name: "6-drawer dresser",
+          widthIn: 60,
+          depthIn: 18,
+          heightIn: 32,
+          weightLb: 150,
+          weightLowLb: 120,
+          weightHighLb: 180,
+          scale: "tape",
+          note: "",
+          photos: 1,
+        })
+      }
+    >
+      use the estimate
+    </button>
+  ),
+}));
 
 const { BoxDetail } = await import("../BoxDetail");
 
@@ -481,5 +504,25 @@ describe("measurements on box detail", () => {
   it("has no measurement fields on a box", () => {
     open(makeContainer());
     expect(screen.queryByLabelText("Width")).toBeNull();
+  });
+});
+
+describe("using a photo estimate on box detail", () => {
+  it("replaces a half-typed measurement with the accepted one", () => {
+    const onBack = vi.fn();
+    render(
+      <BoxDetail
+        moveId="m1"
+        container={makeContainer({ type: "furniture", size: "other", volumeCuFt: 25 })}
+        zones={zones}
+        uid="uid-1"
+        contentsListOn
+        onBack={onBack}
+      />
+    );
+    fireEvent.change(screen.getByLabelText("Width"), { target: { value: "48" } });
+    fireEvent.click(screen.getByText("use the estimate"));
+    expect((screen.getByLabelText("Width") as HTMLInputElement).value).toBe("60");
+    expect((screen.getByLabelText("Depth") as HTMLInputElement).value).toBe("18");
   });
 });

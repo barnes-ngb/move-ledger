@@ -6,6 +6,7 @@ import {
   canTransition,
   contentsItemsOf,
   hasCondition,
+  MAX_VOLUME_CU_FT,
   cuFtOf,
   isFurniture,
   isVoided,
@@ -202,6 +203,16 @@ export function BoxDetail({
    */
   function applyEstimate(e: FurnitureEstimate) {
     const dimensionsIn = { width: e.widthIn, depth: e.depthIn, height: e.heightIn };
+    if (cuFtOf(dimensionsIn) > MAX_VOLUME_CU_FT) {
+      setError(DIMENSIONS_HELP);
+      return;
+    }
+    // The fields take the accepted figures too. A half-typed width left in
+    // place would be written back over the estimate on the next blur. Raised
+    // in review on pull request 34.
+    setDimW(String(e.widthIn));
+    setDimD(String(e.depthIn));
+    setDimH(String(e.heightIn));
     const { weightLb: _w, weightEstimated: _we, ...rest } = container;
     const fits = e.weightLb <= 500;
     run(() =>
@@ -473,6 +484,7 @@ export function BoxDetail({
                 <>
                   {contentsListOn ? (
                     <PhotoEstimate
+                      key={container.id}
                       moveId={moveId}
                       containerId={container.id}
                       uploadedPhotos={photos.filter((v) => v.photo.uploadState === "uploaded").length}

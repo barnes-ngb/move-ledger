@@ -1,6 +1,6 @@
 {
-  "edition": "November 14, 2026 — Shelly rates Trusler and Loftin 4.4/5",
-  "note": "Nov14 verified changes: 828 Beaver Creek $1,920 BASE on 12-month term +$29.98 required fees (before two pets); 236 Northview $2,198 manager-advertised total incl required fees BEFORE pets. Nov13 inquiries to Hidden Lake agent, Vista Oak specialist and Progress for Beaver Creek remain without substantive replies or confirmed tours. Automated Beaver Creek application invitation does NOT establish an application. Tide Lane Nov13 approval details remain as previously noted. This is source data, not evidence of website deployment. Beaver Creek live advertised refundable deposit range $1920–$2880. Vista Oak site shows required $40 washer/dryer package and conflicting Available Now versus resident-occupied language. NOV14 SHELLY DIRECT FIT SCORES: 9841 Trusler Rd 4.4/5, 945 Loftin St 4.4/5. Trusler first listed Nov12; Loftin older Oct12 but NEW TO TRACKER Nov14. The scores are explicitly Shelly's, independent of pet/cost/tour readiness. Both need written acceptance of two ordinary pets incl a large golden retriever; no contact authorized/requested for these two.",
+  "edition": "November 16, 2026 - Beaver Creek price cut and Hidden Lake broker price verification",
+  "note": "Nov16 Green-zone update: Beaver Creek direct Progress listing reduces 12/13mo BASE from $1,920 to $1,915; fixed required recurring $29.98 makes $1,944.98 before two ordinary pets. Progress Chloe automated Nov15 message says application workflow due Nov16 9:35AM with six steps left; there is NO confirmed submitted application, booked tour or home hold. Hidden Lake Open House Texas managing brokerage inventory on HAR lists active at $2,275, matching the earlier deal and conflicting with stale $2,425 Zillow/$2,375 older MLS sources; actual lease term, pet gate and concession still unconfirmed. No agent response to Thanksgiving showing inquiries found. All Shelly-confirmed scores unchanged. This is data source only and not proof of deployed website.",
   "homes": [
     {
       "id": "hearthstone",
@@ -937,7 +937,7 @@
       "id": "beavercreek",
       "name": "828 Beaver Creek Dr",
       "city": "Burleson",
-      "rent": 1920,
+      "rent": 1915,
       "rating": 4.5,
       "basis": "Nathan",
       "ratingStatus": "tentative",
@@ -945,11 +945,11 @@
       "trackedOn": "2026-11-06",
       "checkpoint": "2026-11-23",
       "url": "https://rentprogress.com/property-details/828-beaver-creek-dr/burleson/tx/76028/316204",
-      "priceBasis": "Nov14 Progress manager advertised 12-month BASE; +$29.98 mandatory recurring, excludes all pets",
+      "priceBasis": "Nov16 live Progress manager advertised 12/13-month BASE; +$29.98 mandatory recurring, excludes both ordinary pets",
       "petGate": "Progress generally permits 2 pets, but Sunny and cat/HOA approval pending",
-      "priceNote": "Nov14 manager listing $1,920 BASE for 12 months +$19.99 smart-home +$9.99 utility service = $1,949.98 recurring before both pets. General previous Progress two-pet rent estimate $144 would imply $2,093.98/month but individual Sunny/Belle and fees not approved; do not treat this as firm. Other lengths differ; advertised available after Dec7, currently occupied. Deposit and pet fees unquoted; earlier generic $55/adult application, $125 admin, $30 utility setup, $500 holding fee credited only if lease proceeds; verify exact costs. Refrigerator generally included; washer/dryer not verified. Fresh direct listing specifies refundable security deposit range $1,920–$2,880, and $500 holding fee credited to first rent if lease executes; refundable if not available/ready on agreed date. No payment made. The page warns of virtual staging and images do not prove current interior finishes.",
+      "priceNote": "Nov16 manager live listing $1,915 BASE for a 12- or 13-month lease +$19.99 smart-home +$9.99 utility service = $1,944.98 recurring BEFORE Sunny and Belle, usage-based utilities and insurance. Quoted other lease lengths vary. Generic past Progress two-pet rent estimate $144/month would produce illustrative $2,088.98 only if actually applicable; no individual pet approval or final quote. Occupied; lease start advertised after Dec7. Required $55/application adult, $125 nonrefundable administration, $30 utility setup; refundable security deposit $1,915–$2,872.50 subject to screening. $500 holding fee credited to first rent if a lease is executed and refundable if home is not available/ready on agreed move-in date, otherwise terms apply. No application/holding payment authorized. Page says some address-matched photos virtually staged; present condition not verified.",
       "fit": "Nathan tentatively rates this home 4.5/5, NOT Shelly confirmed. One-story approx 1,675 sqft. Manager 4BR/2BA; historic address-matched floor plan appears 3 bedrooms plus approx 11x7 separate office. 2020 listing photos show hard floors, grassy fenced yard, primary tub and double vanity but current conditions and fence perimeter unverified; some images virtually staged. Kitchen looks compact compared with Hearthstone; inspect current finishes/bedroom floors/laundry location.",
-      "status": "Nov14 manager advertises coming soon at $1,920/12mo, occupied, available after Dec7 subject to confirmation. Nov11 and Nov13 one-time showing inquiries sent; NO tour booked. Nov13 automated 'finish application' email is marketing, not confirmation of any application. Latest lease-start cutoff and holiday showing approval unanswered.",
+      "status": "Nov16 manager advertises coming soon at $1,915 12/13mo base, currently occupied, lease start after Dec7; dates can change. Nov11 and Nov13 one-time showing inquiries sent; NO tour. Chloe automated Nov15 message states an incomplete application workflow deadline on Nov16 at 9:35 AM CST. This does NOT establish an actual application or rental hold. No human reply addressing touring/pets.",
       "petBlocked": false,
       "readiness": {
         "dog": {
@@ -962,11 +962,11 @@
         },
         "availability": {
           "status": "pending",
-          "detail": "Occupied, advertised available after Dec7"
+          "detail": "Occupied; manager advertises lease start after Dec7. No confirmed holiday showing or possession date."
         },
         "cost": {
           "status": "pending",
-          "detail": "Nov14 $1,920 base (12mo)+$29.98 fixed=$1,949.98 PRE-pet; $2,093.98 if old generic $144/month two-pet estimate applies; owner/HOA and actual fees unknown"
+          "detail": "Nov16 $1,915 base 12/13mo +$29.98 fixed = $1,944.98 PRE-pet. $2,088.98 only if generic old $144/month 2-pet estimate applies. Pet consent and final fees not granted."
         },
         "lease": {
           "status": "pending",
@@ -991,11 +991,11 @@
         "Two-pet quote and deposit",
         "Refundable deposit $1,920–$2,880; verify final amount, credited holding-fee terms"
       ],
-      "checksUpdatedOn": "2026-11-14",
-      "allInEstimate": 2093.98,
-      "allInBasis": "Illustrative only: $1,920 12mo base +$29.98 required + $144 generic two-pet figure; NOT property-specific approval",
-      "contactUpdate": "Nov13 user-authorized follow-up to Progress (existing Nov11 thread), no substantive reply. Nov13 automated Chloe application-completion email is NOT evidence a rental application was filed or a tour booked. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d631b2d742f72",
-      "priceUpdatedOn": "2026-11-14"
+      "checksUpdatedOn": "2026-11-16",
+      "allInEstimate": 2088.98,
+      "allInBasis": "Illustrative only: Nov16 $1,915 12mo base + $29.98 mandatory fixed + old generic $144 two-pet estimate; NOT verified property-specific pet approval or quote.",
+      "contactUpdate": "Nov11 and Nov13 user-authorized inquiry/follow-up to Progress; no substantive answer. Automated Chloe message Nov15 says application workflow due Nov16 9:35 AM CST, six steps left; NOT evidence a user-submitted application, rental hold or tour. No action taken. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1dff80fa9ce652",
+      "priceUpdatedOn": "2026-11-16"
     },
     {
       "id": "garrison",
@@ -1236,12 +1236,12 @@
       "trackedOn": "2026-11-13",
       "ratingUpdatedOn": "2026-11-13",
       "url": "https://www.zumper.com/address/1121-hidden-lk-dr-burleson-tx-76028-usa",
-      "priceBasis": "Zumper current advertised BASE; MLS / Redfin conflict",
+      "priceBasis": "Nov16 HAR broker inventory for Open House Texas Property Mgmt shows $2,275 BASE; syndicated Zillow $2,425 and prior MLS feed $2,375 lag/conflict",
       "petGate": "Dog + cat allowed generally; Sunny individual/HOA approval pending",
       "petBlocked": false,
-      "priceNote": "Zumper Nov13 shows $2,275 BASE; MLS/Redfin/HAR still show $2,375. Current 12-month price and $1,000 first-full-month concession terms require written confirmation. Open House generic policy: $25/mo ordinary rent per pet ($50 both), $250 nonrefundable initial fee each ($500), $25 verification each ($50), $150 admin after approval, refundable security deposit quoted individually; mandatory recurring property-specific fees unknown. Illustrative $2,325 monthly BASE+two pets at $2,275 offer BEFORE other mandatory charges/utilities/insurance.",
+      "priceNote": "Nov16 manager brokerage inventory on HAR lists $2,275 BASE and ACTIVE, supporting Nov13 Zumper alert. Separate Zillow rental page still displays $2,425 and older MLS/Redfin dated Nov2 $2,375, so DO NOT interpret either older rate as confirmed new increase. Exact written 12-month $2,275 offer and $1,000 first-full-month concession require agent confirmation. Generic Open House pet policy estimates $25/mo for each ordinary pet ($50 total), $250 nonrefundable each ($500), $25 verification each ($50), $150 admin. Security deposit and other mandatory fees unknown. Illustrative $2,325 recurring if both pets are approved at generic terms.",
       "fit": "Shelly directly rates Hidden Lake 4.7/5 Nov13. One-story 3BR/2BA approx 2,044 sq ft; listing claims open kitchen, updated countertops and spacious fenced backyard. Former sales description mentions separate dedicated study plus flex/second living, but CURRENT rental listing shows 3BR; private additional office must be independently verified. Yard grass, bedroom carpet distribution, primary bathtub, full fence, garage/pool distances and actual layout require verification.",
-      "status": "MLS #21377159 listed as active in current public feeds; lease-ready status NOT established, conflicting rent and pet-policy descriptions. Listing agent Chelsea Holguin at Open House Texas Property Mgmt emailed Nov13 regarding actual rent/fees, both pets, floor plan and a real showing appointment for Nov22, Nov25 or Nov28 4–6 PM; NO confirmed showing yet.",
+      "status": "Nov16 Open House Texas Property Mgmt HAR inventory marks rental ACTIVE at $2,275, while syndicated listings still show old higher rates. Active advert is not confirmed vacant/lease-ready or proof of large dog approval. Chelsea Holguin Nov13 one-time email asked pet, fee, actual lease and tour; no new reply nor tour booked.",
       "readiness": {
         "dog": {
           "status": "conflict",
@@ -1257,7 +1257,7 @@
         },
         "cost": {
           "status": "conflict",
-          "detail": "Zumper/Zillow alert $2,275 base vs MLS/Redfin/HAR $2,375. Monthly 2-pet rent generically $50; mandatory charges unknown; $1,000 concession unverified"
+          "detail": "Nov16 Open House manager brokerage HAR $2,275 base; older MLS $2,375/Zillow $2,425 conflict. Conditional $50/mo generic 2-pet rent, full fees and concession still await Chelsea."
         },
         "lease": {
           "status": "pending",
@@ -1276,8 +1276,8 @@
           "detail": "Nov13 direct agent request to book Nov22/25/28 4–6pm; neither reply nor appointment confirmed"
         }
       },
-      "checksUpdatedOn": "2026-11-14",
-      "contactUpdate": "Nov13 one-time email sent to Chelsea Holguin at Open House Texas concerning rate discrepancy, concessions, two ordinary pets, full fees, layout, current photos and showing Nov22/25/28 4–6pm. NO agent reply or booked tour as of Nov14. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d6a4e97d66d07"
+      "checksUpdatedOn": "2026-11-16",
+      "contactUpdate": "No reply as of Nov16 to one-time Nov13 inquiry to Chelsea Holguin, asking for both pets, current $2,275 offer and special, all fees, and Nov22/25/28 4–6pm tour. No appointment booked. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d6a4e97d66d07"
     },
     {
       "id": "trusler",
@@ -1398,6 +1398,20 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 16",
+      "tag": "RATE VERIFIED",
+      "houseId": "hiddenlake",
+      "title": "Hidden Lake: Open House managing-broker inventory shows $2,275",
+      "detail": "HAR broker inventory for Open House Texas lists ACTIVE $2,275, corroborating the Nov13 advertised cut. Zillow at $2,425 and dated older MLS at $2,375 conflict; don't treat as fresh increase. 12mo written quote, $1,000 concession, both ordinary pets and Nov22/25/28 tour still unconfirmed. Shelly's 4.7/5 retained."
+    },
+    {
+      "date": "Nov 16",
+      "tag": "PRICE -$5",
+      "houseId": "beavercreek",
+      "title": "Beaver Creek: live manager reduces 12-month base to $1,915",
+      "detail": "New live quote: $1,915 base + $19.99 smart home + $9.99 utilities service = $1,944.98 before Sunny, Belle, usage-based utilities and insurance. Also $1,915 for 13 months. Deposit $1,915-$2,872.50. Automated Nov15 application-workflow deadline Nov16 at 9:35 AM is not an application, booking or hold. Pet approval and resident-approved holiday showing remain pending."
+    },
     {
       "date": "Nov 14",
       "tag": "SHELLY • 4.4/5",

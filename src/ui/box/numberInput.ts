@@ -1,3 +1,5 @@
+import type { Dimensions } from "../../domain";
+
 /**
  * What a typed number means. Empty is a real answer: it clears the field.
  * Anything that is not a plain number, or that the schema would refuse, is
@@ -25,4 +27,18 @@ export const parseVolume = (text: string) => parseNumber(text, 200, 1);
 /** How a stored number reads back in its field. */
 export function numberText(n: number | undefined): string {
   return n === undefined ? "" : String(n);
+}
+
+export const DIMENSIONS_HELP = "Fill all three measurements in inches, up to 240 each, or leave all three empty.";
+
+/** Three inch fields: all empty is no answer, all valid is an answer, anything else is invalid. */
+export function parseDimensions(text: { width: string; depth: string; height: string }):
+  | { kind: "empty" }
+  | { kind: "value"; value: Dimensions }
+  | { kind: "invalid" } {
+  const parts = [text.width, text.depth, text.height].map((t) => parseNumber(t, 240, 1));
+  if (parts.every((p) => p.kind === "empty")) return { kind: "empty" };
+  if (parts.some((p) => p.kind !== "value")) return { kind: "invalid" };
+  const [width, depth, height] = parts.map((p) => (p as { kind: "value"; value: number }).value) as [number, number, number];
+  return { kind: "value", value: { width, depth, height } };
 }

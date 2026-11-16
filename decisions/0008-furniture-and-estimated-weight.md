@@ -1,6 +1,6 @@
 # ADR-0008: Furniture in the totals, with estimated weight and a not-sure mark
 
-Status: accepted
+Status: accepted, amended by ADR-0009
 Date: 2026-11-15
 
 ## Context

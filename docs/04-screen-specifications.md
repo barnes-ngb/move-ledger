@@ -443,6 +443,10 @@ The number is reserved the same way, and the instruction reads "Write on tape on
 
 A weight or cu ft that is not a number stops the save with one sentence on the error line. Saving goes out in the same write as the room.
 
+Amended 2026-11-15, APPLY-21, ADR-0009. Under the list, Estimate from photo, then three fields for the measured width, depth, and height in inches. Filling all three sets the cu ft and, until a weight is typed by hand, scales the picked piece's weight to the measured size. A partial set stops the save with one sentence. Estimate from photo needs the move's photo setting on, an uploaded photo of the piece, and a connection; without the photo it asks for one with a tape measure along the piece, and offline it says it needs a connection. It shows the estimate as a guess: the name, the size in inches and cu ft, the weight range with a likely figure, and whether the size came from the tape measure. Use these fills the fields and Not this drops it. Nothing is written until the piece is saved.
+
+Box detail on a piece shows the same Estimate from photo and the three measurement fields above the weight. The measurements save when a field loses focus once all three are in. Use these writes size and weight together in one write.
+
 Box detail on a piece shows the two ticks under the weight field. Turning "Weight is a guess" off rewrites the same weight as a scale reading.
 
 ## 7. Rooms

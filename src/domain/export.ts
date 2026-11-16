@@ -56,6 +56,8 @@ const CSV_COLUMNS = [
   // Appended in APPLY-20, after the APPLY-19 three, for the same reason.
   "weight_estimated",
   "not_sure",
+  // APPLY-21: width x depth x height in inches, for a piece measured or estimated.
+  "dimensions_in",
 ] as const;
 
 function escapeCell(value: string): string {
@@ -100,6 +102,7 @@ export function toCsv(bundle: Pick<MoveBundle, "containers" | "zones" | "photos"
         c.weightLb?.toString() ?? "",
         c.weightEstimated ? "yes" : "",
         c.undecided ? "yes" : "",
+        c.dimensionsIn ? `${c.dimensionsIn.width}x${c.dimensionsIn.depth}x${c.dimensionsIn.height}` : "",
       ].map(escapeCell);
     });
 

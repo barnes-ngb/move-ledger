@@ -4,7 +4,7 @@
 
 AI is a Phase 3 addition to a system that already works without it. If Phase 3 never happens, nothing is broken.
 
-Two features are in scope. Everything else from earlier drafts is cut.
+Three features are in scope. Everything else from earlier drafts is cut. The third, Furniture estimate, was added 2026-11-15 by ADR-0009.
 
 ## Rule
 
@@ -50,6 +50,14 @@ Asking again reads every contents photo once more and replaces the suggested ite
 ## Feature 2: Search enrichment
 
 No separate feature to build. It falls out of Feature 1 once `aiSummary` and `aiItems` are in `searchText`. The only work is marking results whose match came from an unconfirmed summary.
+
+## Feature 3: Furniture estimate from photo
+
+Added 2026-11-15, ADR-0009. On Add furniture and on box detail for a piece, Estimate from photo sends up to three uploaded photos of that piece to `estimateFurniture`, newest first, damage photos left out. The model returns a name, the outside width, depth, and height in inches, a likely weight with a low and a high, what the size was judged from (`tape`, `surroundings`, or `none`), and one sentence on what it rests on. A reply with an empty name means no furniture is in the photos.
+
+The function returns the estimate and writes nothing. The phone shows it with Use these and Not this, and Use these fills the fields with the weight marked as a guess. Inches are rounded to whole numbers and pounds to whole pounds, so the suggestion claims no more precision than a photo has.
+
+Same privacy rules as the contents list: the move's single setting gates it, only the images are sent, and text on documents or screens is never transcribed. Its own cap of 200 per move, counted in `moves/{moveId}/usage/furnitureEstimates` before each call. A box is never weighed from a photo.
 
 ## Cut
 

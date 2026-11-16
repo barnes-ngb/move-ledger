@@ -6,9 +6,11 @@ import {
   nextSequenceNumber,
   toDisplayCode,
   transition,
+  cuFtOf,
   type Container,
   type ContainerSize,
   type ContainerStatus,
+  type Dimensions,
   type MoveMember,
   type Zone,
 } from "../domain";
@@ -393,6 +395,31 @@ export function setContainerUndecided(
   const { undecided: _u, ...rest } = container;
   if (undecided) return saveContainer(moveId, { ...rest, undecided: true }, zones, actorUid);
   return saveClearing(moveId, rest, container.undecided !== undefined ? ["undecided"] : [], zones, actorUid);
+}
+
+/**
+ * Outside dimensions of a piece, in inches. Writing them sets the cu ft from
+ * them, size "other" with it, so the totals follow the tape measure. Null
+ * removes the dimensions and leaves the cu ft as it was. No activity event.
+ * ADR-0009.
+ */
+export function setContainerDimensions(
+  moveId: string,
+  container: Container,
+  dimensions: Dimensions | null,
+  zones: readonly Zone[],
+  actorUid: string
+): PendingWrite<Container> {
+  const { dimensionsIn: _d, ...rest } = container;
+  if (dimensions === null) {
+    return saveClearing(moveId, rest, container.dimensionsIn !== undefined ? ["dimensionsIn"] : [], zones, actorUid);
+  }
+  return saveContainer(
+    moveId,
+    { ...rest, dimensionsIn: dimensions, size: "other", volumeCuFt: cuFtOf(dimensions) },
+    zones,
+    actorUid
+  );
 }
 
 /**

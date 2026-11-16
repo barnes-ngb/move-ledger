@@ -150,6 +150,14 @@ export const containerSchema = z.object({
   weightEstimated: z.boolean().optional(),
   /** Marked "Not sure it's going". Counted in the main total, and left out of the second one. ADR-0008. */
   undecided: z.boolean().optional(),
+  /** Measured or estimated outside dimensions in inches, for a piece. Sets `volumeCuFt` when written. ADR-0009. */
+  dimensionsIn: z
+    .object({
+      width: z.number().positive().max(240),
+      depth: z.number().positive().max(240),
+      height: z.number().positive().max(240),
+    })
+    .optional(),
   labelConfirmedAt: isoString.optional(),
   /** Set when a box that was already written on is withdrawn. The document stays so its number stays retired. */
   voidedAt: isoString.optional(),

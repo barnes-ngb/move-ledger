@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Container, ContainerSize, FurniturePreset, MoveMember, Zone } from "../../domain";
-import { RangeExhaustedError, canDelete, isVoided, remainingInRange } from "../../domain";
+import { RangeExhaustedError, canDelete, cuFtOf, isVoided, remainingInRange, scaledWeight } from "../../domain";
 import { deleteContainer, packContainer, reserveContainer, writeInBackground } from "../../repositories";
 import { useBackGuard } from "../history";
 import { BackBar, Button, ErrorLine, Field, Sheet } from "../kit";
@@ -9,7 +9,8 @@ import { AiSummary } from "./AiSummary";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 import { NumberField, SizeChips } from "./SizeChips";
-import { VOLUME_HELP, WEIGHT_HELP, parseVolume, parseWeight } from "./numberInput";
+import { DIMENSIONS_HELP, VOLUME_HELP, WEIGHT_HELP, parseDimensions, parseVolume, parseWeight } from "./numberInput";
+import { PhotoEstimate } from "./PhotoEstimate";
 import { Check, FurniturePicker } from "./FurniturePicker";
 import { labelInstruction } from "./label";
 import { usePhotos } from "../../hooks/usePhotos";
@@ -64,6 +65,7 @@ export function AddBox({
   onDraft,
   onLeave,
   kind = "box",
+  photoEstimateOn = false,
 }: {
   moveId: string;
   me: MoveMember;
@@ -83,6 +85,8 @@ export function AddBox({
    * as a guess, and the not-sure mark. ADR-0008.
    */
   kind?: "box" | "furniture";
+  /** The move has said yes to photos leaving the phone, which Estimate from photo needs. ADR-0009. */
+  photoEstimateOn?: boolean;
 }) {
   const furniture = kind === "furniture";
   const noun = furniture ? "piece" : "box";
@@ -99,6 +103,11 @@ export function AddBox({
   const [preset, setPreset] = useState<FurniturePreset | undefined>(undefined);
   const [weight, setWeight] = useState("");
   const [weightGuess, setWeightGuess] = useState(true);
+  // Measured or estimated outside size, in inches. Filling all three sets the
+  // cu ft, and scales the picked piece's weight until somebody types a weight
+  // of their own. ADR-0009.
+  const [dims, setDims] = useState({ width: "", depth: "", height: "" });
+  const [weightTouched, setWeightTouched] = useState(false);
   const [undecided, setUndecided] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
@@ -291,6 +300,11 @@ export function AddBox({
       setError(WEIGHT_HELP);
       return;
     }
+    const typedDims = furniture ? parseDimensions(dims) : ({ kind: "empty" } as const);
+    if (typedDims.kind === "invalid") {
+      setError(DIMENSIONS_HELP);
+      return;
+    }
     try {
       const trimmedNote = note.trim();
       // A piece with no title takes the name of what was picked, so the list
@@ -310,6 +324,7 @@ export function AddBox({
                 ? { weightLb: typedWeight.value, ...(weightGuess ? { weightEstimated: true } : {}) }
                 : {}),
               ...(undecided ? { undecided: true } : {}),
+              ...(typedDims.kind === "value" ? { dimensionsIn: typedDims.value } : {}),
             }
           : size
             ? { size }
@@ -336,6 +351,8 @@ export function AddBox({
         setPreset(undefined);
         setWeight("");
         setWeightGuess(true);
+        setDims({ width: "", depth: "", height: "" });
+        setWeightTouched(false);
         setUndecided(false);
         reserved.current = false;
         // A fresh number, never the draft this entry started on: the box just
@@ -481,10 +498,61 @@ export function AddBox({
                 setVolume(String(p.cuFt));
                 setWeight(String(p.lb));
                 setWeightGuess(true);
+                setWeightTouched(false);
+                // A size already measured stands; the new piece's weight is scaled to it.
+                const measured = parseDimensions(dims);
+                if (measured.kind === "value") {
+                  const cu = cuFtOf(measured.value);
+                  setVolume(String(cu));
+                  setWeight(String(scaledWeight(p, cu)));
+                }
               }}
             />
+            {photoEstimateOn && live ? (
+              <PhotoEstimate
+                moveId={moveId}
+                containerId={live.id}
+                uploadedPhotos={photos.filter((v) => v.photo.uploadState === "uploaded").length}
+                onUse={(e) => {
+                  setDims({ width: String(e.widthIn), depth: String(e.depthIn), height: String(e.heightIn) });
+                  setVolume(String(cuFtOf({ width: e.widthIn, depth: e.depthIn, height: e.heightIn })));
+                  setWeight(String(e.weightLb));
+                  setWeightGuess(true);
+                  setWeightTouched(true);
+                  if (!title.trim()) setTitle(e.name);
+                }}
+              />
+            ) : null}
+            <p className="text-sm text-slate-400">Measured outside size, optional. All three set the cu ft.</p>
+            <div className="grid grid-cols-3 gap-2">
+              {(["width", "depth", "height"] as const).map((k) => (
+                <NumberField
+                  key={k}
+                  label={k === "width" ? "Width" : k === "depth" ? "Depth" : "Height"}
+                  unit="in"
+                  value={dims[k]}
+                  onChange={(v) => {
+                    const next = { ...dims, [k]: v };
+                    setDims(next);
+                    const measured = parseDimensions(next);
+                    if (measured.kind !== "value") return;
+                    const cu = cuFtOf(measured.value);
+                    setVolume(String(cu));
+                    if (preset && !weightTouched) setWeight(String(scaledWeight(preset, cu)));
+                  }}
+                />
+              ))}
+            </div>
             <NumberField label="Size in cu ft" unit="cu ft" value={volume} onChange={setVolume} />
-            <NumberField label="Weight" unit="lb" value={weight} onChange={setWeight} />
+            <NumberField
+              label="Weight"
+              unit="lb"
+              value={weight}
+              onChange={(v) => {
+                setWeight(v);
+                setWeightTouched(true);
+              }}
+            />
             <Check label="Weight is a guess" checked={weightGuess} onChange={setWeightGuess} />
             <Check label="Not sure it's going" checked={undecided} onChange={setUndecided} />
           </div>

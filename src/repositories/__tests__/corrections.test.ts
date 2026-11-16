@@ -82,6 +82,7 @@ const {
   deleteContainer,
   dismissAiSummary,
   replaceAiSummary,
+  setContainerDimensions,
   setContainerSize,
   setContainerUndecided,
   setContainerWeight,
@@ -713,5 +714,24 @@ describe("estimated weight and the not-sure mark", () => {
     expect(on.value.undecided).toBe(true);
     setContainerUndecided("m1", makeContainer({ undecided: true }), false, [], "uid-1");
     expect(lastUpdate().undecided).toBe(DELETE_FIELD);
+  });
+});
+
+describe("setContainerDimensions", () => {
+  it("stores the inches and sets the cu ft from them", () => {
+    const result = setContainerDimensions("m1", makeContainer({ type: "furniture" }), { width: 60, depth: 18, height: 32 }, [], "uid-1");
+    expect(result.value).toMatchObject({ size: "other", volumeCuFt: 20, dimensionsIn: { width: 60, depth: 18, height: 32 } });
+  });
+
+  it("removes the dimensions with a delete and leaves the cu ft", () => {
+    const result = setContainerDimensions(
+      "m1",
+      makeContainer({ size: "other", volumeCuFt: 20, dimensionsIn: { width: 60, depth: 18, height: 32 } }),
+      null,
+      [],
+      "uid-1"
+    );
+    expect(result.value.volumeCuFt).toBe(20);
+    expect(lastUpdate().dimensionsIn).toBe(DELETE_FIELD);
   });
 });

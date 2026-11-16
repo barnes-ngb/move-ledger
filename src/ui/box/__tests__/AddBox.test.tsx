@@ -583,3 +583,45 @@ describe("Add furniture", () => {
     expect(screen.queryByText("Large tote")).toBeNull();
   });
 });
+
+describe("Add furniture measurements", () => {
+  const saved = () => mocks.packContainer.mock.calls[0]?.[1] as Container;
+
+  it("sets the cu ft from three measurements and scales the picked piece's weight", () => {
+    open([], { kind: "furniture" });
+    fireEvent.click(screen.getByText("Dresser, wide"));
+    fireEvent.change(screen.getByLabelText("Width"), { target: { value: "60" } });
+    fireEvent.change(screen.getByLabelText("Depth"), { target: { value: "18" } });
+    fireEvent.change(screen.getByLabelText("Height"), { target: { value: "40" } });
+    expect((screen.getByLabelText("Size in cu ft") as HTMLInputElement).value).toBe("25");
+    fireEvent.change(screen.getByLabelText("Height"), { target: { value: "48" } });
+    expect((screen.getByLabelText("Size in cu ft") as HTMLInputElement).value).toBe("30");
+    expect((screen.getByLabelText("Weight") as HTMLInputElement).value).toBe("180");
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(saved()).toMatchObject({ dimensionsIn: { width: 60, depth: 18, height: 48 }, volumeCuFt: 30, weightLb: 180 });
+  });
+
+  it("leaves a typed weight alone when the measurements change", () => {
+    open([], { kind: "furniture" });
+    fireEvent.click(screen.getByText("Dresser, wide"));
+    fireEvent.change(screen.getByLabelText("Weight"), { target: { value: "95" } });
+    fireEvent.change(screen.getByLabelText("Width"), { target: { value: "60" } });
+    fireEvent.change(screen.getByLabelText("Depth"), { target: { value: "18" } });
+    fireEvent.change(screen.getByLabelText("Height"), { target: { value: "48" } });
+    expect((screen.getByLabelText("Weight") as HTMLInputElement).value).toBe("95");
+  });
+
+  it("refuses two of three measurements", () => {
+    open([], { kind: "furniture" });
+    fireEvent.change(screen.getByLabelText("Width"), { target: { value: "60" } });
+    fireEvent.change(screen.getByLabelText("Depth"), { target: { value: "18" } });
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer).not.toHaveBeenCalled();
+    expect(screen.getByText(/Fill all three measurements/)).toBeDefined();
+  });
+
+  it("does not offer a photo estimate while the move has photo features off", () => {
+    open([], { kind: "furniture" });
+    expect(screen.queryByText("Estimate from photo")).toBeNull();
+  });
+});

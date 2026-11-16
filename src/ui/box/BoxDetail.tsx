@@ -6,6 +6,7 @@ import {
   canTransition,
   contentsItemsOf,
   hasCondition,
+  cuFtOf,
   isFurniture,
   isVoided,
   nextStatuses,
@@ -13,12 +14,14 @@ import {
   statusLabel,
 } from "../../domain";
 import type { ConditionKey } from "../../domain/conditions";
+import type { FurnitureEstimate } from "../../lib/functions";
 import {
   clearContainerCondition,
   deleteContainer,
   reportContainerCondition,
   saveContainer,
   setContainerSize,
+  setContainerDimensions,
   setContainerUndecided,
   setContainerWeight,
   setContentsItems,
@@ -36,7 +39,9 @@ import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 import { NumberField, SizeChips } from "./SizeChips";
 import { Check } from "./FurniturePicker";
-import { VOLUME_HELP, WEIGHT_HELP, numberText, parseVolume, parseWeight } from "./numberInput";
+import { PhotoEstimate } from "./PhotoEstimate";
+import { useSyncedText } from "./useSyncedText";
+import { DIMENSIONS_HELP, VOLUME_HELP, WEIGHT_HELP, numberText, parseDimensions, parseVolume, parseWeight } from "./numberInput";
 
 const SAVED_HERE = "This change is saved on your phone. It has not reached the other phone yet.";
 
@@ -107,6 +112,10 @@ export function BoxDetail({
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const photos = usePhotos(moveId, container.id);
+  // Outside size of a piece, in inches. ADR-0009.
+  const [dimW, setDimW] = useSyncedText(numberText(container.dimensionsIn?.width));
+  const [dimD, setDimD] = useSyncedText(numberText(container.dimensionsIn?.depth));
+  const [dimH, setDimH] = useSyncedText(numberText(container.dimensionsIn?.height));
 
   const zone = zones.find((z) => z.id === container.destinationZoneId);
   const forward = nextStatuses(container.status);
@@ -163,6 +172,54 @@ export function BoxDetail({
     const next = parsed.kind === "value" ? parsed.value : undefined;
     if (next === container.volumeCuFt) return;
     run(() => setContainerSize(moveId, container, "other", next, zones, uid));
+  }
+
+  /**
+   * Saved when a field loses focus, and only once all three are in: a half
+   * typed set is not wrong yet, just unfinished. Emptying all three removes
+   * the dimensions and leaves the cu ft as it stands.
+   */
+  function saveDimensions() {
+    const text = { width: dimW, depth: dimD, height: dimH };
+    const parsed = parseDimensions(text);
+    if (parsed.kind === "empty") {
+      if (container.dimensionsIn) run(() => setContainerDimensions(moveId, container, null, zones, uid));
+      return;
+    }
+    if (parsed.kind === "invalid") {
+      if (Object.values(text).every((t) => t.trim() !== "")) setError(DIMENSIONS_HELP);
+      return;
+    }
+    const d = container.dimensionsIn;
+    if (d && d.width === parsed.value.width && d.depth === parsed.value.depth && d.height === parsed.value.height) return;
+    run(() => setContainerDimensions(moveId, container, parsed.value, zones, uid));
+  }
+
+  /**
+   * The estimate goes in as one write, so the size and the weight cannot land
+   * apart. The weight is marked as a guess. A weight over what the field
+   * holds is left for a person to type. ADR-0009.
+   */
+  function applyEstimate(e: FurnitureEstimate) {
+    const dimensionsIn = { width: e.widthIn, depth: e.depthIn, height: e.heightIn };
+    const { weightLb: _w, weightEstimated: _we, ...rest } = container;
+    const fits = e.weightLb <= 500;
+    run(() =>
+      saveContainer(
+        moveId,
+        {
+          ...(fits ? rest : container),
+          dimensionsIn,
+          size: "other",
+          volumeCuFt: cuFtOf(dimensionsIn),
+          ...(fits ? { weightLb: e.weightLb, weightEstimated: true } : {}),
+          ...(container.title ? {} : { title: e.name }),
+        },
+        zones,
+        uid
+      )
+    );
+    if (!fits) setError(`The estimate is ${e.weightLb} lb, more than the weight field holds. Note it in the title.`);
   }
 
   function toggleCondition(key: ConditionKey) {
@@ -412,6 +469,24 @@ export function BoxDetail({
               {/* Furniture does not go on a bathroom scale, so its weight can
                   be marked as a guess, and a piece can be marked not sure it
                   is going. ADR-0008. */}
+              {isFurniture(container) ? (
+                <>
+                  {contentsListOn ? (
+                    <PhotoEstimate
+                      moveId={moveId}
+                      containerId={container.id}
+                      uploadedPhotos={photos.filter((v) => v.photo.uploadState === "uploaded").length}
+                      onUse={applyEstimate}
+                    />
+                  ) : null}
+                  <p className="text-sm text-slate-400">Measured outside size. All three set the cu ft.</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    <NumberField label="Width" unit="in" value={dimW} onChange={setDimW} onCommit={saveDimensions} />
+                    <NumberField label="Depth" unit="in" value={dimD} onChange={setDimD} onCommit={saveDimensions} />
+                    <NumberField label="Height" unit="in" value={dimH} onChange={setDimH} onCommit={saveDimensions} />
+                  </div>
+                </>
+              ) : null}
               {isFurniture(container) || container.weightEstimated ? (
                 <Check
                   label="Weight is a guess"

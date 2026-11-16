@@ -98,7 +98,7 @@ describe("toCsv size and weight", () => {
   it("keeps every existing column where it was and appends the new ones", () => {
     const header = toCsv({ containers: [], zones, photos: [] }).split("\r\n")[0];
     expect(header).toBe(
-      "number,room,color,status,priority,title,notes,contents,flags,missing,damaged,photos,created,size,volume_cu_ft,weight_lb,weight_estimated,not_sure"
+      "number,room,color,status,priority,title,notes,contents,flags,missing,damaged,photos,created,size,volume_cu_ft,weight_lb,weight_estimated,not_sure,dimensions_in"
     );
   });
 
@@ -108,12 +108,12 @@ describe("toCsv size and weight", () => {
       zones,
       photos: [],
     });
-    expect(csv.split("\r\n")[1]).toMatch(/,bin_large,5\.4,31\.5,,$/);
+    expect(csv.split("\r\n")[1]).toMatch(/,bin_large,5\.4,31\.5,,,$/);
   });
 
   it("leaves the three cells blank on a box with neither", () => {
     const csv = toCsv({ containers: [makeContainer()], zones, photos: [] });
-    expect(csv.split("\r\n")[1]).toMatch(/,,,,,$/);
+    expect(csv.split("\r\n")[1]).toMatch(/,,,,,,$/);
   });
 
   it("writes a typed volume for other and blank when other has none", () => {
@@ -126,8 +126,8 @@ describe("toCsv size and weight", () => {
       photos: [],
     });
     const lines = csv.split("\r\n");
-    expect(lines[1]).toMatch(/,other,22,,,$/);
-    expect(lines[2]).toMatch(/,other,,,,$/);
+    expect(lines[1]).toMatch(/,other,22,,,,$/);
+    expect(lines[2]).toMatch(/,other,,,,,$/);
   });
 });
 
@@ -138,7 +138,18 @@ describe("toCsv furniture marks", () => {
       zones,
       photos: [],
     });
-    expect(csv.split("\r\n")[1]).toMatch(/,other,25,150,yes,yes$/);
+    expect(csv.split("\r\n")[1]).toMatch(/,other,25,150,yes,yes,$/);
+  });
+});
+
+describe("toCsv dimensions", () => {
+  it("writes width x depth x height in inches", () => {
+    const csv = toCsv({
+      containers: [makeContainer({ type: "furniture", size: "other", volumeCuFt: 20, dimensionsIn: { width: 60, depth: 18, height: 32 } })],
+      zones,
+      photos: [],
+    });
+    expect(csv.split("\r\n")[1]).toMatch(/,60x18x32$/);
   });
 });
 

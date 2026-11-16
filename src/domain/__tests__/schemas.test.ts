@@ -182,7 +182,8 @@ describe("container size and weight", () => {
   it("bounds a typed volume", () => {
     expect(ok({ size: "other", volumeCuFt: 40 })).toBe(true);
     expect(ok({ size: "other", volumeCuFt: 0 })).toBe(false);
-    expect(ok({ size: "other", volumeCuFt: 201 })).toBe(false);
+    expect(ok({ size: "other", volumeCuFt: 250 })).toBe(true);
+    expect(ok({ size: "other", volumeCuFt: 401 })).toBe(false);
   });
 });
 
@@ -200,5 +201,15 @@ describe("move capacity", () => {
     expect(moveSchema.safeParse(move).success).toBe(true);
     expect(moveSchema.safeParse({ ...move, capacityCuFt: 1420, capacityLb: 8400 }).success).toBe(true);
     expect(moveSchema.safeParse({ ...move, capacityCuFt: 0 }).success).toBe(false);
+  });
+});
+
+describe("furniture estimate usage", () => {
+  it("is a whole count of zero or more", async () => {
+    const { furnitureEstimateUsageSchema } = await import("../schemas");
+    expect(furnitureEstimateUsageSchema.safeParse({ count: 3 }).success).toBe(true);
+    expect(furnitureEstimateUsageSchema.safeParse({ count: -1 }).success).toBe(false);
+    expect(furnitureEstimateUsageSchema.safeParse({ count: 1.5 }).success).toBe(false);
+    expect(furnitureEstimateUsageSchema.safeParse({}).success).toBe(false);
   });
 });

@@ -304,3 +304,170 @@ export const summarizePhoto = onCall(
     return { items, summary: items.join(ITEM_SEPARATOR), categories };
   }
 );
+
+/**
+ * Furniture estimates from a photo. ADR-0009.
+ *
+ * Kept apart from the contents list on purpose: this returns its answer to the
+ * phone and writes nothing to the box. The phone shows it as a suggestion and
+ * a person decides whether to use it, so a guess never lands in the totals
+ * without somebody looking at it first.
+ */
+const FURNITURE_ESTIMATE_CAP = 200;
+
+/**
+ * A copy of `furnitureEstimateUsageSchema` in `src/domain/schemas`, which this
+ * package cannot import. Keep the two alike. A counter that does not parse
+ * stops the call rather than resetting to zero, because the cap guards paid
+ * calls and a reset would lift it.
+ */
+const furnitureEstimateUsage = z.object({ count: z.number().int().nonnegative() });
+
+const furnitureReply = z.object({
+  name: z.string(),
+  widthIn: z.number().positive().max(240),
+  depthIn: z.number().positive().max(240),
+  heightIn: z.number().positive().max(240),
+  weightLb: z.number().positive().max(2000),
+  weightLowLb: z.number().positive().max(2000),
+  weightHighLb: z.number().positive().max(2000),
+  scale: z.enum(["tape", "surroundings", "none"]),
+  note: z.string().max(300),
+});
+type FurnitureReply = z.infer<typeof furnitureReply>;
+
+function readFurnitureReply(text: string): FurnitureReply | "not furniture" | null {
+  const stripped = text.replace(/```json|```/g, "").trim();
+  let value: unknown;
+  try {
+    value = JSON.parse(stripped);
+  } catch {
+    return null;
+  }
+  if (value && typeof value === "object" && (value as { name?: unknown }).name === "") return "not furniture";
+  const parsed = furnitureReply.safeParse(value);
+  return parsed.success ? parsed.data : null;
+}
+
+export const estimateFurniture = onCall(
+  { secrets: [ANTHROPIC_API_KEY], region: "us-central1", memory: "512MiB", timeoutSeconds: 120 },
+  async (request) => {
+    const uid = request.auth?.uid;
+    if (!uid) throw new HttpsError("unauthenticated", "Sign in first.");
+
+    const { moveId, containerId } = z
+      .object({ moveId: z.string().min(1), containerId: z.string().min(1) })
+      .parse(request.data);
+
+    const db = getFirestore();
+
+    // The same membership and consent checks as the contents list: a callable
+    // function bypasses security rules, and photos leave the phone only when
+    // the move has said yes to that.
+    const moveSnap = await db.doc(`moves/${moveId}`).get();
+    if (!moveSnap.exists) throw new HttpsError("not-found", "No such move.");
+    const move = moveSnap.data()!;
+    if (!Array.isArray(move.memberUids) || !move.memberUids.includes(uid)) {
+      throw new HttpsError("permission-denied", "Not a member of this move.");
+    }
+    if (move.aiEnabled !== true) {
+      throw new HttpsError("failed-precondition", "Photo features are turned off for this move.");
+    }
+
+    const photos = await db
+      .collection(`moves/${moveId}/photos`)
+      .where("containerId", "==", containerId)
+      .get();
+    // Up to three, newest first. A tape measure is usually in a later shot.
+    const uploaded = photos.docs
+      .map((d) => d.data())
+      .filter((p) => typeof p.storagePath === "string" && p.type !== "damage")
+      .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
+      .slice(0, 3);
+    if (uploaded.length === 0) {
+      throw new HttpsError("failed-precondition", "No photo of this piece has uploaded yet.");
+    }
+
+    // The cap, counted before the call so a failed reply still counts: the
+    // call was made and paid for either way.
+    const usageRef = db.doc(`moves/${moveId}/usage/furnitureEstimates`);
+    const allowed = await db.runTransaction(async (tx) => {
+      const snap = await tx.get(usageRef);
+      const stored = snap.exists ? furnitureEstimateUsage.safeParse(snap.data()) : { success: true as const, data: { count: 0 } };
+      if (!stored.success) throw new HttpsError("internal", "The estimate counter could not be read.");
+      if (stored.data.count >= FURNITURE_ESTIMATE_CAP) return false;
+      tx.set(usageRef, furnitureEstimateUsage.parse({ count: stored.data.count + 1 }));
+      return true;
+    });
+    if (!allowed) throw new HttpsError("resource-exhausted", "This move has reached its photo estimate limit.");
+
+    const images = await Promise.all(
+      uploaded.map(async (p) => {
+        const [bytes] = await getStorage().bucket().file(p.storagePath as string).download();
+        return {
+          type: "image" as const,
+          source: { type: "base64" as const, media_type: "image/jpeg" as const, data: bytes.toString("base64") },
+        };
+      })
+    );
+
+    const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY.value() });
+    const result = await client.messages.create({
+      model: "claude-sonnet-5",
+      // Thinking is left on here, unlike the contents list: judging size from
+      // a photo is reasoning, and the cap below covers it and the reply.
+      max_tokens: 4000,
+      system:
+        "You estimate the size and weight of one piece of household furniture or one appliance " +
+        "from photos, so a family can tell whether their belongings fit a moving container. " +
+        "Name the piece in a few plain words, such as \"6-drawer dresser\" or \"front-load washer\". " +
+        "Estimate its outside width, depth, and height in inches as it stands, including handles and legs. " +
+        "If a tape measure is visible, read it and use it as the scale, and say so with scale \"tape\". " +
+        "Otherwise judge scale from doors, outlets, floor tiles, or other things of known size, with scale " +
+        "\"surroundings\", or say \"none\" if there is nothing to judge from. " +
+        "Estimate weight in pounds as it would be moved, empty of contents: judge the material from what you " +
+        "can see, solid wood, particleboard, metal, or upholstery, and give a most likely figure with a low " +
+        "and a high. Lean toward the high side when unsure, because the container has a hard weight limit. " +
+        "The note is one short sentence saying what the estimate rests on, such as which tape reading you used. " +
+        "Never transcribe text from documents or screens. " +
+        "If the photos do not show a piece of furniture or an appliance, reply with {\"name\": \"\"}. " +
+        "Reply with JSON only, no preamble and no code fence, matching: " +
+        '{"name": string, "widthIn": number, "depthIn": number, "heightIn": number, "weightLb": number, ' +
+        '"weightLowLb": number, "weightHighLb": number, "scale": "tape" | "surroundings" | "none", "note": string}',
+      messages: [
+        {
+          role: "user",
+          content: [
+            ...images,
+            { type: "text", text: "Estimate the size and weight of this piece." },
+          ],
+        },
+      ],
+    });
+
+    const text = result.content
+      .flatMap((block) => (block.type === "text" ? [block.text] : []))
+      .join("");
+    const reply = readFurnitureReply(text);
+    if (reply === null) throw new HttpsError("internal", "The reply could not be read.");
+    if (reply === "not furniture") return { skipped: "no furniture in the photos" };
+
+    // Rounded to what a tape measure would read, so the suggestion does not
+    // claim more precision than a photo has.
+    const inch = (n: number) => Math.round(n);
+    return {
+      estimate: {
+        name: reply.name.trim().slice(0, 80),
+        widthIn: inch(reply.widthIn),
+        depthIn: inch(reply.depthIn),
+        heightIn: inch(reply.heightIn),
+        weightLb: Math.round(reply.weightLb),
+        weightLowLb: Math.round(Math.min(reply.weightLowLb, reply.weightLb)),
+        weightHighLb: Math.round(Math.max(reply.weightHighLb, reply.weightLb)),
+        scale: reply.scale,
+        note: reply.note.trim(),
+        photos: uploaded.length,
+      },
+    };
+  }
+);

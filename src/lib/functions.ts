@@ -37,3 +37,40 @@ export function summarizePhoto(
   );
   return callable(data);
 }
+
+/** What `estimateFurniture` hands back. A suggestion: the phone shows it and a person decides. ADR-0009. */
+export interface FurnitureEstimate {
+  name: string;
+  widthIn: number;
+  depthIn: number;
+  heightIn: number;
+  weightLb: number;
+  weightLowLb: number;
+  weightHighLb: number;
+  /** What the size was judged from. "tape" means a tape measure was read in the photo. */
+  scale: "tape" | "surroundings" | "none";
+  note: string;
+  /** How many photos it looked at. */
+  photos: number;
+}
+
+export interface EstimateFurnitureResponse {
+  estimate?: FurnitureEstimate;
+  skipped?: string;
+}
+
+let estimateCallable:
+  | ((data: { moveId: string; containerId: string }) => Promise<HttpsCallableResult<EstimateFurnitureResponse>>)
+  | null = null;
+
+/** Built on first use, for the reason `summarizePhoto` gives. */
+export function estimateFurniture(data: {
+  moveId: string;
+  containerId: string;
+}): Promise<HttpsCallableResult<EstimateFurnitureResponse>> {
+  estimateCallable ??= httpsCallable<{ moveId: string; containerId: string }, EstimateFurnitureResponse>(
+    getFunctions(app, "us-central1"),
+    "estimateFurniture"
+  );
+  return estimateCallable(data);
+}

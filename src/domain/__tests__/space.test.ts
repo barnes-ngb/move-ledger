@@ -198,3 +198,19 @@ describe("furniture presets", () => {
     }
   });
 });
+
+describe("dimensions", () => {
+  it("turns inches into cu ft to a tenth", async () => {
+    const { cuFtOf } = await import("../furniture");
+    expect(cuFtOf({ width: 60, depth: 18, height: 32 })).toBe(20);
+    expect(cuFtOf({ width: 12, depth: 12, height: 12 })).toBe(1);
+  });
+
+  it("scales a preset weight by size, within half and double", async () => {
+    const { scaledWeight } = await import("../furniture");
+    const dresser = { cuFt: 25, lb: 150 };
+    expect(scaledWeight(dresser, 30)).toBe(180);
+    expect(scaledWeight(dresser, 100)).toBe(300);
+    expect(scaledWeight(dresser, 5)).toBe(75);
+  });
+});

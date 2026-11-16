@@ -24,6 +24,7 @@ const mocks = vi.hoisted(() => ({
   setContainerSize: vi.fn(),
   setContainerWeight: vi.fn(),
   setContainerUndecided: vi.fn(),
+  setContainerDimensions: vi.fn(),
 }));
 
 const pending = { value: undefined, written: Promise.resolve() };
@@ -41,12 +42,36 @@ vi.mock("../../../repositories", () => ({
   setContainerSize: mocks.setContainerSize,
   setContainerWeight: mocks.setContainerWeight,
   setContainerUndecided: mocks.setContainerUndecided,
+  setContainerDimensions: mocks.setContainerDimensions,
   writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
 }));
 
 vi.mock("../../../hooks/usePhotos", () => ({ usePhotos: () => [] }));
 vi.mock("../PhotoStrip", () => ({ PhotoStrip: () => null }));
 vi.mock("../AiSummary", () => ({ AiSummary: () => null }));
+// The real component calls the function; here it hands back a fixed estimate on a tap.
+vi.mock("../PhotoEstimate", () => ({
+  PhotoEstimate: ({ onUse }: { onUse: (e: unknown) => void }) => (
+    <button
+      onClick={() =>
+        onUse({
+          name: "6-drawer dresser",
+          widthIn: 60,
+          depthIn: 18,
+          heightIn: 32,
+          weightLb: 150,
+          weightLowLb: 120,
+          weightHighLb: 180,
+          scale: "tape",
+          note: "",
+          photos: 1,
+        })
+      }
+    >
+      use the estimate
+    </button>
+  ),
+}));
 
 const { BoxDetail } = await import("../BoxDetail");
 
@@ -72,6 +97,7 @@ beforeEach(() => {
   mocks.setContainerSize.mockReturnValue(pending);
   mocks.setContainerWeight.mockReturnValue(pending);
   mocks.setContainerUndecided.mockReturnValue(pending);
+  mocks.setContainerDimensions.mockReturnValue(pending);
 });
 
 describe("removing a box", () => {
@@ -457,5 +483,46 @@ describe("furniture on box detail", () => {
     const call = mocks.setContainerWeight.mock.calls[0]!;
     expect(call[2]).toBe(150);
     expect(call[5]).toBe(false);
+  });
+});
+
+describe("measurements on box detail", () => {
+  const piece = () => makeContainer({ type: "furniture", size: "other", volumeCuFt: 25 });
+
+  it("saves once all three are in, and not before", () => {
+    open(piece());
+    fireEvent.change(screen.getByLabelText("Width"), { target: { value: "60" } });
+    fireEvent.blur(screen.getByLabelText("Width"));
+    expect(mocks.setContainerDimensions).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Fill all three measurements/)).toBeNull();
+    fireEvent.change(screen.getByLabelText("Depth"), { target: { value: "18" } });
+    fireEvent.change(screen.getByLabelText("Height"), { target: { value: "32" } });
+    fireEvent.blur(screen.getByLabelText("Height"));
+    expect(mocks.setContainerDimensions.mock.calls[0]![2]).toEqual({ width: 60, depth: 18, height: 32 });
+  });
+
+  it("has no measurement fields on a box", () => {
+    open(makeContainer());
+    expect(screen.queryByLabelText("Width")).toBeNull();
+  });
+});
+
+describe("using a photo estimate on box detail", () => {
+  it("replaces a half-typed measurement with the accepted one", () => {
+    const onBack = vi.fn();
+    render(
+      <BoxDetail
+        moveId="m1"
+        container={makeContainer({ type: "furniture", size: "other", volumeCuFt: 25 })}
+        zones={zones}
+        uid="uid-1"
+        contentsListOn
+        onBack={onBack}
+      />
+    );
+    fireEvent.change(screen.getByLabelText("Width"), { target: { value: "48" } });
+    fireEvent.click(screen.getByText("use the estimate"));
+    expect((screen.getByLabelText("Width") as HTMLInputElement).value).toBe("60");
+    expect((screen.getByLabelText("Depth") as HTMLInputElement).value).toBe("18");
   });
 });

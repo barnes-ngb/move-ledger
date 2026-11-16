@@ -81,6 +81,7 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
     return (
       <AddBox
         kind="furniture"
+        photoEstimateOn={ctx.move?.aiEnabled === true}
         moveId={moveId}
         me={ctx.me}
         containers={containers}

@@ -77,3 +77,26 @@ export const FURNITURE_GROUPS = [...new Set(FURNITURE_PRESETS.map((p) => p.group
 export function isFurniture(c: Pick<Container, "type">): boolean {
   return c.type === "furniture" || c.type === "appliance";
 }
+
+export interface Dimensions {
+  width: number;
+  depth: number;
+  height: number;
+}
+
+/** Cubic feet from inches, to a tenth. A box around the piece, which is what it takes up in the container. */
+export function cuFtOf(d: Dimensions): number {
+  return Math.round(((d.width * d.depth * d.height) / 1728) * 10) / 10;
+}
+
+/**
+ * The preset's weight scaled by how much bigger or smaller the measured piece
+ * is than the preset's typical size. Bounded to half and double, because a
+ * size far outside the preset usually means the wrong preset was picked, and
+ * scaling a guess that far makes it worse rather than better. Whole pounds.
+ * Still a guess: the caller stores it with `weightEstimated`. ADR-0009.
+ */
+export function scaledWeight(preset: Pick<FurniturePreset, "cuFt" | "lb">, cuFt: number): number {
+  const ratio = Math.min(2, Math.max(0.5, cuFt / preset.cuFt));
+  return Math.round(preset.lb * ratio);
+}

@@ -61,6 +61,10 @@ Why the split exists: most containers are boxes, but furniture and appliances ar
 
 **Not sure it's going.** `undecided` on a container. The interface never says undecided.
 
+**Measurements.** `dimensionsIn` on a piece: width, depth, and height in inches. The interface says Width, Depth, Height and "in".
+
+**Estimate from photo.** The button that asks `estimateFurniture` for a piece's size and weight. Its answer is a suggestion until Use these. Never offered for a box. See decisions/0009-furniture-from-a-photo.md.
+
 **Care team.** The screen listing the doctors and practices the household is choosing for after the move. One card per `CareNeed`; each card holds its `CareProvider` options. On screen a provider is an option, and the household's current pick on a card is the lean. Code never says doctor; the interface never says provider or need. See decisions/0006-care-page.md.
 
 ## Words not to use

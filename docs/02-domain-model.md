@@ -173,6 +173,7 @@ interface Container {
   weightLb?: number;           // typed by a person, over 0, at most 500, one decimal
   weightEstimated?: boolean;   // the weight is a guess, not a scale reading. ADR-0008
   undecided?: boolean;         // "Not sure it's going". ADR-0008
+  dimensionsIn?: { width: number; depth: number; height: number };  // inches, up to 240 each. ADR-0009
 
   labelConfirmedAt?: string;
   voidedAt?: string;           // withdrawn without freeing the number, see below
@@ -236,6 +237,10 @@ Added 2026-11-15 in APPLY-20, ADR-0008. A piece of furniture is a container of t
 `weightEstimated` marks a weight that is a guess. `spaceAndWeight` reports how much of the total is guessed as `estimatedLb`, and a guessed weight never feeds the per-size average that fills in unweighed boxes. Typing a weight on box detail keeps whatever mark the box had; clearing the weight clears the mark.
 
 `undecided` marks a piece the household is not sure is going. It stays in every main total, which is the safe reading for a hard limit, and `spaceAndWeight` reports the pieces so the screen can show the total without them. Removing either mark deletes the field. Neither writes an activity event.
+
+### Dimensions
+
+Added 2026-11-15 in APPLY-21, ADR-0009. `dimensionsIn` is the outside size of a piece, typed from a tape measure or taken from a photo estimate. Writing it sets `volumeCuFt` to width times depth times height over 1,728, to a tenth, and size to `other`. Removing it leaves the cu ft as it was. One record holds at most 400 cu ft, raised from 200 in APPLY-21 so a measured sectional fits; three sides that are each valid but make more than that together are refused before the write. On Add furniture, measured dimensions scale the weight of the picked piece by the ratio of the measured cu ft to the preset's, bounded to half and double, until somebody types a weight. A scaled weight is still stored as a guess.
 
 ### searchText
 

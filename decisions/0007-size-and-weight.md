@@ -1,6 +1,6 @@
 # ADR-0007: Size and weight on a box, and a total against the container
 
-Status: accepted
+Status: accepted, amended for furniture by ADR-0009
 Date: 2026-11-14
 
 ## Context

@@ -146,6 +146,10 @@ export const containerSchema = z.object({
   volumeCuFt: z.number().positive().max(200).optional(),
   /** Typed by a person from a scale, never estimated. */
   weightLb: z.number().positive().max(500).refine(oneDecimal, "weight takes at most one decimal place").optional(),
+  /** The weight is a guess, from the furniture list or typed as one, rather than read off a scale. Kept out of the box averages. ADR-0008. */
+  weightEstimated: z.boolean().optional(),
+  /** Marked "Not sure it's going". Counted in the main total, and left out of the second one. ADR-0008. */
+  undecided: z.boolean().optional(),
   labelConfirmedAt: isoString.optional(),
   /** Set when a box that was already written on is withdrawn. The document stays so its number stays retired. */
   voidedAt: isoString.optional(),

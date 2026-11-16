@@ -171,6 +171,8 @@ interface Container {
   size?: "bin_large" | "bin_medium" | "box_large" | "box_medium" | "box_small" | "other";
   volumeCuFt?: number;         // typed by a person, read only when size is "other"
   weightLb?: number;           // typed by a person, over 0, at most 500, one decimal
+  weightEstimated?: boolean;   // the weight is a guess, not a scale reading. ADR-0008
+  undecided?: boolean;         // "Not sure it's going". ADR-0008
 
   labelConfirmedAt?: string;
   voidedAt?: string;           // withdrawn without freeing the number, see below
@@ -226,6 +228,14 @@ Both optional, both typed by a person. Nothing estimates either from a photo. Ad
 `spaceAndWeight` totals every container that is not voided, whatever its status, because the question is what goes in the container and a loaded box is still in it. It reports how many boxes have no size and how many have no weight rather than filling either gap silently. The one estimate it gives fills each unweighed box with the average weight of weighed boxes of the same size, and it gives none at all unless every unweighed box has a named size that somebody has already weighed: a partial estimate would understate the total the capacity decision rests on. The breakdown by room groups on `destinationZoneId`, the same room the box list shows.
 
 Neither field writes an activity event. They are metadata about the box rather than its place in the pipeline, the same as the note.
+
+### Furniture and estimated weight
+
+Added 2026-11-15 in APPLY-20, ADR-0008. A piece of furniture is a container of type `furniture` or `appliance` with size `other`, so it is numbered and counts in every total like a box. `FURNITURE_PRESETS` in `src/domain/furniture.ts` holds typical cu ft and lb for common pieces, written by a person; they fill the fields on Add furniture and stay editable.
+
+`weightEstimated` marks a weight that is a guess. `spaceAndWeight` reports how much of the total is guessed as `estimatedLb`, and a guessed weight never feeds the per-size average that fills in unweighed boxes. Typing a weight on box detail keeps whatever mark the box had; clearing the weight clears the mark.
+
+`undecided` marks a piece the household is not sure is going. It stays in every main total, which is the safe reading for a hard limit, and `spaceAndWeight` reports the pieces so the screen can show the total without them. Removing either mark deletes the field. Neither writes an activity event.
 
 ### searchText
 

@@ -25,6 +25,8 @@ function open(containers: Container[], move = {}, loaded = true) {
       loaded={loaded}
       zones={zones}
       onWeigh={onWeigh}
+      onAddFurniture={vi.fn()}
+      onOpenBox={vi.fn()}
       onBack={vi.fn()}
     />
   );
@@ -101,6 +103,8 @@ describe("Space and weight", () => {
       loaded: true,
       zones,
       onWeigh: vi.fn(),
+      onAddFurniture: vi.fn(),
+      onOpenBox: vi.fn(),
       onBack: vi.fn(),
     };
     const { rerender } = render(<SpaceAndWeight {...props} move={{}} />);
@@ -115,5 +119,44 @@ describe("Space and weight", () => {
     open([box(1)]);
     fireEvent.blur(screen.getByLabelText("Usable space"));
     expect(mocks.setMoveCapacity).not.toHaveBeenCalled();
+  });
+});
+
+describe("Space and weight furniture", () => {
+  const piece = (n: number, over: Partial<Container> = {}) =>
+    box(n, { type: "furniture", size: "other", volumeCuFt: 25, weightLb: 150, weightEstimated: true, title: "Dresser", ...over });
+
+  it("lists each piece and says how much of the weight is a guess", () => {
+    open([box(1, { size: "bin_large", weightLb: 30 }), piece(2)]);
+    expect(screen.getByText("Dresser")).toBeDefined();
+    expect(screen.getByText("150 lb of that is a guess, not a scale reading.")).toBeDefined();
+    expect(screen.getByText(/25 cu ft, 150 lb guessed/)).toBeDefined();
+  });
+
+  it("gives the total without the pieces not sure they are going", () => {
+    open([box(1, { size: "bin_large", weightLb: 30 }), piece(2, { undecided: true })]);
+    expect(screen.getByText(/Without the piece you're not sure about: 5.4 cu ft, 30 lb./)).toBeDefined();
+  });
+
+  it("opens a piece and offers Add furniture", () => {
+    const onOpenBox = vi.fn();
+    const onAddFurniture = vi.fn();
+    render(
+      <SpaceAndWeight
+        moveId="m1"
+        move={{}}
+        containers={[piece(2)]}
+        loaded
+        zones={zones}
+        onWeigh={vi.fn()}
+        onAddFurniture={onAddFurniture}
+        onOpenBox={onOpenBox}
+        onBack={vi.fn()}
+      />
+    );
+    fireEvent.click(screen.getByText("Dresser"));
+    expect(onOpenBox.mock.calls[0]![0].id).toBe("c2");
+    fireEvent.click(screen.getByText("Add furniture"));
+    expect(onAddFurniture).toHaveBeenCalled();
   });
 });

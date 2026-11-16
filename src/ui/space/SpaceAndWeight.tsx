@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Container, Move, Zone } from "../../domain";
-import { DEFAULT_CAPACITY, capacityOf, sizeLabel, spaceAndWeight } from "../../domain";
+import { DEFAULT_CAPACITY, capacityOf, isFurniture, isVoided, sizeLabel, spaceAndWeight, volumeOf } from "../../domain";
 import { setMoveCapacity, writeInBackground } from "../../repositories";
 import { Button, ErrorLine, Screen } from "../kit";
 import { NumberField } from "../box/SizeChips";
@@ -30,6 +30,8 @@ export function SpaceAndWeight({
   loaded,
   zones,
   onWeigh,
+  onAddFurniture,
+  onOpenBox,
   onBack,
 }: {
   moveId: string;
@@ -38,6 +40,8 @@ export function SpaceAndWeight({
   loaded: boolean;
   zones: readonly Zone[];
   onWeigh: () => void;
+  onAddFurniture: () => void;
+  onOpenBox: (c: Container) => void;
   onBack: () => void;
 }) {
   const capacity = capacityOf(move);
@@ -69,6 +73,9 @@ export function SpaceAndWeight({
   }
 
   const t = spaceAndWeight(containers, zones, capacity);
+  const pieces = containers
+    .filter((c) => !isVoided(c) && isFurniture(c))
+    .sort((a, b) => a.sequenceNumber - b.sequenceNumber);
 
   function saveCapacity() {
     const c = parseNumber(cuFt, 100000, 1);
@@ -119,7 +126,19 @@ export function SpaceAndWeight({
                 {t.estimatedWeightLb !== undefined ? ` Estimate with them: ${amount(t.estimatedWeightLb)} lb.` : ""}
               </p>
             ) : null}
+            {t.estimatedLb > 0 ? (
+              <p className="text-sm text-slate-400">
+                {amount(t.estimatedLb)} lb of that is a guess, not a scale reading.
+              </p>
+            ) : null}
           </div>
+
+          {t.undecided.count > 0 ? (
+            <p className="rounded-2xl bg-slate-800 p-4 text-slate-200">
+              Without the {t.undecided.count === 1 ? "piece" : `${t.undecided.count} pieces`} you're not sure about:{" "}
+              {amount(t.volumeCuFt - t.undecided.volumeCuFt)} cu ft, {amount(t.weightLb - t.undecided.weightLb)} lb.
+            </p>
+          ) : null}
 
           <section className="flex flex-col gap-2">
             <h3 className="text-lg font-semibold text-slate-100">By room</h3>
@@ -141,6 +160,40 @@ export function SpaceAndWeight({
                 </li>
               ))}
             </ul>
+          </section>
+
+          <section className="flex flex-col gap-2">
+            <h3 className="text-lg font-semibold text-slate-100">Furniture</h3>
+            {pieces.length === 0 ? (
+              <p className="text-sm text-slate-400">No furniture yet. Add each piece that is going, with a number on tape.</p>
+            ) : (
+              <>
+                <p className="text-sm text-slate-400">
+                  {t.furniture.count} {t.furniture.count === 1 ? "piece" : "pieces"}, {amount(t.furniture.volumeCuFt)} cu ft,{" "}
+                  {amount(t.furniture.weightLb)} lb
+                </p>
+                <ul className="flex flex-col divide-y divide-slate-800">
+                  {pieces.map((c) => (
+                    <li key={c.id}>
+                      <button onClick={() => onOpenBox(c)} className="flex min-h-14 w-full items-center gap-3 py-2 text-left">
+                        <span className="w-14 font-mono text-lg text-slate-100">{c.displayCode}</span>
+                        <span className="flex-1">
+                          <span className="block text-slate-100">{c.title ?? "Untitled piece"}</span>
+                          <span className="block text-sm text-slate-400">
+                            {volumeOf(c) !== undefined ? `${amount(volumeOf(c)!)} cu ft` : "no size"},{" "}
+                            {c.weightLb !== undefined ? `${amount(c.weightLb)} lb${c.weightEstimated ? " guessed" : ""}` : "no weight"}
+                            {c.undecided ? ". Not sure it's going" : ""}
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            <Button onClick={onAddFurniture} tone="quiet">
+              Add furniture
+            </Button>
           </section>
 
           {t.bySize.length > 0 ? (

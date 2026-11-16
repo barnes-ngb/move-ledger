@@ -408,6 +408,10 @@ Voided boxes are left out of every number. Every status counts.
 
 No loading order or layout, and no weight from a photo. Those are load planning and need their own record. See ADR-0007.
 
+### Furniture, APPLY-20
+
+Added 2026-11-15, ADR-0008. Under By room, a Furniture section lists every piece by number with its title and figures, saying "guessed" beside a guessed weight and "Not sure it's going" where marked. A tap opens box detail. "Add furniture" sits under the list. Under the weight bar, "N lb of that is a guess, not a scale reading." when any weight is guessed. While any piece is marked not sure, a line gives the total without them: "Without the 2 pieces you're not sure about: 640 cu ft, 3,900 lb." The bars always include them.
+
 ## 6c. Weigh boxes
 
 Added 2026-11-14, ADR-0007. Opened from Space and weight. Back returns there.
@@ -430,6 +434,16 @@ The boxes with no weight that are not voided, lowest number first, one at a time
 
 - Empty: "Every box has a weight." and a button back to Space and weight.
 - Offline: the write lands locally and the screen does not wait for the server, the same as every other write in the app.
+
+## 6d. Add furniture
+
+Added 2026-11-15, ADR-0008. Add box in its furniture form, opened from Space and weight. Leaving returns there.
+
+The number is reserved the same way, and the instruction reads "Write on tape on the piece". In place of the size chips, a list of common pieces grouped by room type. A tap fills the cu ft and lb fields with typical figures and ticks "Weight is a guess". Both fields stay editable, and unticking says the weight came off a scale. "Not sure it's going" is a second tick. The title falls back to the name of the piece picked. Everything else works as on Add box, and the leave question says "piece" instead of "box".
+
+A weight or cu ft that is not a number stops the save with one sentence on the error line. Saving goes out in the same write as the room.
+
+Box detail on a piece shows the two ticks under the weight field. Turning "Weight is a guess" off rewrites the same weight as a scale reading.
 
 ## 7. Rooms
 

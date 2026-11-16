@@ -147,3 +147,54 @@ describe("sizeLabel", () => {
     expect(sizeLabel("other")).toBe("Other");
   });
 });
+
+describe("spaceAndWeight furniture", () => {
+  it("counts furniture inside the totals and says how much weight is estimated", () => {
+    const t = spaceAndWeight(
+      [
+        box({ size: "bin_large", weightLb: 30 }),
+        box({ type: "furniture", size: "other", volumeCuFt: 25, weightLb: 150, weightEstimated: true }),
+        box({ type: "appliance", size: "other", volumeCuFt: 20, weightLb: 180, weightEstimated: true }),
+      ],
+      zones
+    );
+    expect(t.volumeCuFt).toBe(50.4);
+    expect(t.weightLb).toBe(360);
+    expect(t.estimatedLb).toBe(330);
+    expect(t.furniture).toEqual({ count: 2, volumeCuFt: 45, weightLb: 330 });
+  });
+
+  it("totals the pieces not sure they are going, without taking them out", () => {
+    const t = spaceAndWeight(
+      [
+        box({ size: "bin_large", weightLb: 30 }),
+        box({ type: "furniture", size: "other", volumeCuFt: 40, weightLb: 200, weightEstimated: true, undecided: true }),
+      ],
+      zones
+    );
+    expect(t.weightLb).toBe(230);
+    expect(t.undecided).toEqual({ count: 1, volumeCuFt: 40, weightLb: 200 });
+  });
+
+  it("never lets an estimated weight stand in for weighed boxes of its size", () => {
+    const t = spaceAndWeight(
+      [box({ size: "bin_large", weightLb: 60, weightEstimated: true }), box({ size: "bin_large" })],
+      zones
+    );
+    expect(t.estimatedWeightLb).toBeUndefined();
+  });
+});
+
+describe("furniture presets", () => {
+  it("has unique ids and figures the schema accepts", async () => {
+    const { FURNITURE_PRESETS } = await import("../furniture");
+    const ids = FURNITURE_PRESETS.map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const p of FURNITURE_PRESETS) {
+      expect(p.cuFt).toBeGreaterThan(0);
+      expect(p.cuFt).toBeLessThanOrEqual(200);
+      expect(p.lb).toBeGreaterThan(0);
+      expect(p.lb).toBeLessThanOrEqual(500);
+    }
+  });
+});

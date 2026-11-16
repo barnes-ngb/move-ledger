@@ -347,19 +347,52 @@ export function setContainerSize(
  * The weight of a box in pounds, typed from a scale. Null clears it, as a
  * delete rather than a zero, so an emptied field reads as not weighed.
  * No activity event, for the reason `setContainerSize` gives.
+ *
+ * `estimated` marks a weight that is a guess rather than a scale reading,
+ * which is what furniture has. Left out, the mark the box already carries is
+ * kept, so a weight typed on box detail does not quietly turn a guess into a
+ * measurement. Clearing the weight clears the mark with it. ADR-0008.
  */
 export function setContainerWeight(
   moveId: string,
   container: Container,
   weightLb: number | null,
   zones: readonly Zone[],
+  actorUid: string,
+  estimated?: boolean
+): PendingWrite<Container> {
+  const { weightLb: _weight, weightEstimated: _est, ...rest } = container;
+  if (weightLb === null) {
+    const cleared: (keyof Container)[] = [];
+    if (container.weightLb !== undefined) cleared.push("weightLb");
+    if (container.weightEstimated !== undefined) cleared.push("weightEstimated");
+    return saveClearing(moveId, rest, cleared, zones, actorUid);
+  }
+  const mark = estimated ?? container.weightEstimated ?? false;
+  return saveClearing(
+    moveId,
+    { ...rest, weightLb, ...(mark ? { weightEstimated: true } : {}) },
+    !mark && container.weightEstimated !== undefined ? ["weightEstimated"] : [],
+    zones,
+    actorUid
+  );
+}
+
+/**
+ * Marks a piece "Not sure it's going", or takes the mark off. Off is a delete
+ * rather than false, so an unmarked piece reads the same as one never marked.
+ * No activity event: it is the household's note to itself. ADR-0008.
+ */
+export function setContainerUndecided(
+  moveId: string,
+  container: Container,
+  undecided: boolean,
+  zones: readonly Zone[],
   actorUid: string
 ): PendingWrite<Container> {
-  const { weightLb: _weight, ...rest } = container;
-  if (weightLb === null) {
-    return saveClearing(moveId, rest, container.weightLb === undefined ? [] : ["weightLb"], zones, actorUid);
-  }
-  return saveContainer(moveId, { ...rest, weightLb }, zones, actorUid);
+  const { undecided: _u, ...rest } = container;
+  if (undecided) return saveContainer(moveId, { ...rest, undecided: true }, zones, actorUid);
+  return saveClearing(moveId, rest, container.undecided !== undefined ? ["undecided"] : [], zones, actorUid);
 }
 
 /**

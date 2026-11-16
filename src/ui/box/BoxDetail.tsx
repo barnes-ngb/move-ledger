@@ -6,6 +6,7 @@ import {
   canTransition,
   contentsItemsOf,
   hasCondition,
+  isFurniture,
   isVoided,
   nextStatuses,
   parseItemLines,
@@ -18,6 +19,7 @@ import {
   reportContainerCondition,
   saveContainer,
   setContainerSize,
+  setContainerUndecided,
   setContainerWeight,
   setContentsItems,
   setStatus,
@@ -33,6 +35,7 @@ import { CategoryChips, ItemList } from "./ContentsList";
 import { PhotoStrip } from "./PhotoStrip";
 import { RoomPicker } from "./RoomPicker";
 import { NumberField, SizeChips } from "./SizeChips";
+import { Check } from "./FurniturePicker";
 import { VOLUME_HELP, WEIGHT_HELP, numberText, parseVolume, parseWeight } from "./numberInput";
 
 const SAVED_HERE = "This change is saved on your phone. It has not reached the other phone yet.";
@@ -406,6 +409,27 @@ export function BoxDetail({
                 />
               ) : null}
               <NumberField label="Weight" unit="lb" value={weight} onChange={setWeight} onCommit={saveWeight} />
+              {/* Furniture does not go on a bathroom scale, so its weight can
+                  be marked as a guess, and a piece can be marked not sure it
+                  is going. ADR-0008. */}
+              {isFurniture(container) || container.weightEstimated ? (
+                <Check
+                  label="Weight is a guess"
+                  checked={container.weightEstimated === true}
+                  onChange={(on) =>
+                    container.weightLb === undefined
+                      ? setError("Type a weight first.")
+                      : run(() => setContainerWeight(moveId, container, container.weightLb!, zones, uid, on))
+                  }
+                />
+              ) : null}
+              {isFurniture(container) || container.undecided ? (
+                <Check
+                  label="Not sure it's going"
+                  checked={container.undecided === true}
+                  onChange={(on) => run(() => setContainerUndecided(moveId, container, on, zones, uid))}
+                />
+              ) : null}
             </div>
 
             <div>

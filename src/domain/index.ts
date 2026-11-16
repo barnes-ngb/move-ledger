@@ -10,3 +10,4 @@ export * from "./summary";
 export * from "./contents";
 export * from "./care";
 export * from "./space";
+export * from "./furniture";

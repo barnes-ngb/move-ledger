@@ -23,6 +23,7 @@ const mocks = vi.hoisted(() => ({
   setStatus: vi.fn(),
   setContainerSize: vi.fn(),
   setContainerWeight: vi.fn(),
+  setContainerUndecided: vi.fn(),
 }));
 
 const pending = { value: undefined, written: Promise.resolve() };
@@ -39,6 +40,7 @@ vi.mock("../../../repositories", () => ({
   setContentsItems: mocks.setContentsItems,
   setContainerSize: mocks.setContainerSize,
   setContainerWeight: mocks.setContainerWeight,
+  setContainerUndecided: mocks.setContainerUndecided,
   writeInBackground: (work: Promise<unknown>) => void work.catch(() => undefined),
 }));
 
@@ -69,6 +71,7 @@ beforeEach(() => {
   mocks.setStatus.mockReturnValue(pending);
   mocks.setContainerSize.mockReturnValue(pending);
   mocks.setContainerWeight.mockReturnValue(pending);
+  mocks.setContainerUndecided.mockReturnValue(pending);
 });
 
 describe("removing a box", () => {
@@ -422,5 +425,26 @@ describe("size and weight", () => {
     open(makeContainer({ voidedAt: NOW, voidedBy: "uid-1" }));
     expect(screen.queryByLabelText("Weight")).toBeNull();
     expect(screen.queryByText("Medium box")).toBeNull();
+  });
+});
+
+describe("furniture on box detail", () => {
+  it("offers the guess and not-sure marks on a piece, and not on a box", () => {
+    open(makeContainer());
+    expect(screen.queryByLabelText("Not sure it's going")).toBeNull();
+  });
+
+  it("marks a piece not sure it is going", () => {
+    open(makeContainer({ type: "furniture", size: "other", volumeCuFt: 25 }));
+    fireEvent.click(screen.getByLabelText("Not sure it's going"));
+    expect(mocks.setContainerUndecided.mock.calls[0]![2]).toBe(true);
+  });
+
+  it("turns a guessed weight into a scale reading", () => {
+    open(makeContainer({ type: "furniture", size: "other", volumeCuFt: 25, weightLb: 150, weightEstimated: true }));
+    fireEvent.click(screen.getByLabelText("Weight is a guess"));
+    const call = mocks.setContainerWeight.mock.calls[0]!;
+    expect(call[2]).toBe(150);
+    expect(call[5]).toBe(false);
   });
 });

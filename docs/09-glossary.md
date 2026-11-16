@@ -55,6 +55,12 @@ Why the split exists: most containers are boxes, but furniture and appliances ar
 
 **Weigh boxes.** The repeat screen that steps through every box with no weight, one at a time.
 
+**Piece.** A container of type `furniture` or `appliance`, as the interface calls it. Add furniture adds one. It has a number like a box, written on tape. Code says `isFurniture`. See decisions/0008-furniture-and-estimated-weight.md.
+
+**Guess.** `weightEstimated` on a container: the weight came from the furniture list or was typed as a guess, not read off a scale. The interface says "Weight is a guess" and "lb of that is a guess".
+
+**Not sure it's going.** `undecided` on a container. The interface never says undecided.
+
 **Care team.** The screen listing the doctors and practices the household is choosing for after the move. One card per `CareNeed`; each card holds its `CareProvider` options. On screen a provider is an option, and the household's current pick on a card is the lean. Code never says doctor; the interface never says provider or need. See decisions/0006-care-page.md.
 
 ## Words not to use

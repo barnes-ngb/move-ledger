@@ -53,6 +53,9 @@ const CSV_COLUMNS = [
   "size",
   "volume_cu_ft",
   "weight_lb",
+  // Appended in APPLY-20, after the APPLY-19 three, for the same reason.
+  "weight_estimated",
+  "not_sure",
 ] as const;
 
 function escapeCell(value: string): string {
@@ -95,6 +98,8 @@ export function toCsv(bundle: Pick<MoveBundle, "containers" | "zones" | "photos"
         c.size ?? "",
         volumeOf(c)?.toString() ?? "",
         c.weightLb?.toString() ?? "",
+        c.weightEstimated ? "yes" : "",
+        c.undecided ? "yes" : "",
       ].map(escapeCell);
     });
 

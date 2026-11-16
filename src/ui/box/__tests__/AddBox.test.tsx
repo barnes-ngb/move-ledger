@@ -70,7 +70,10 @@ const draft: Container = makeContainer({
  * how this screen sees anything written to the box while it is open, which is
  * the whole path a suggestion travels.
  */
-function open(containers: readonly Container[] = [], extra: { draftId?: string; onDraft?: (id: string) => void } = {}) {
+function open(
+  containers: readonly Container[] = [],
+  extra: { draftId?: string; onDraft?: (id: string) => void; kind?: "box" | "furniture" } = {}
+) {
   const onLeave = vi.fn();
   render(
     <AddBox
@@ -83,6 +86,7 @@ function open(containers: readonly Container[] = [], extra: { draftId?: string; 
       draftId={extra.draftId}
       onDraft={extra.onDraft}
       onLeave={onLeave}
+      kind={extra.kind}
     />
   );
   return onLeave;
@@ -532,5 +536,50 @@ describe("a suggestion arriving while the box is open", () => {
 
       expect(screen.getByText("A kettle and four mugs")).toBeDefined();
     });
+  });
+});
+
+describe("Add furniture", () => {
+  const saved = () => mocks.packContainer.mock.calls[0]?.[1] as Container;
+
+  it("fills typical figures from the list and saves them as a guess", () => {
+    open([], { kind: "furniture" });
+    expect(screen.getByText("Write on tape on the piece")).toBeDefined();
+    fireEvent.click(screen.getByText("Dresser, wide"));
+    expect((screen.getByLabelText("Size in cu ft") as HTMLInputElement).value).toBe("25");
+    expect((screen.getByLabelText("Weight") as HTMLInputElement).value).toBe("150");
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(saved()).toMatchObject({
+      type: "furniture",
+      size: "other",
+      volumeCuFt: 25,
+      weightLb: 150,
+      weightEstimated: true,
+      title: "Dresser, wide",
+    });
+    expect(saved()).not.toHaveProperty("undecided");
+  });
+
+  it("keeps edited figures, a scale reading, and the not-sure mark", () => {
+    open([], { kind: "furniture" });
+    fireEvent.click(screen.getByText("Washer"));
+    fireEvent.change(screen.getByLabelText("Weight"), { target: { value: "165" } });
+    fireEvent.click(screen.getByLabelText("Weight is a guess"));
+    fireEvent.click(screen.getByLabelText("Not sure it's going"));
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(saved()).toMatchObject({ type: "appliance", weightLb: 165, undecided: true });
+    expect(saved()).not.toHaveProperty("weightEstimated");
+  });
+
+  it("refuses a weight that is not a number and writes nothing", () => {
+    open([], { kind: "furniture" });
+    fireEvent.change(screen.getByLabelText("Weight"), { target: { value: "heavy" } });
+    fireEvent.click(screen.getByText("Save and finish"));
+    expect(mocks.packContainer).not.toHaveBeenCalled();
+  });
+
+  it("does not show the box size chips", () => {
+    open([], { kind: "furniture" });
+    expect(screen.queryByText("Large tote")).toBeNull();
   });
 });

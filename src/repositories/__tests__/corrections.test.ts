@@ -83,6 +83,7 @@ const {
   dismissAiSummary,
   replaceAiSummary,
   setContainerSize,
+  setContainerUndecided,
   setContainerWeight,
   setContentsItems,
   unvoidContainer,
@@ -679,5 +680,38 @@ describe("setContainerSize", () => {
     const fields = lastUpdate();
     expect(fields.size).toBe(DELETE_FIELD);
     expect(fields.volumeCuFt).toBe(DELETE_FIELD);
+  });
+});
+
+describe("estimated weight and the not-sure mark", () => {
+  it("stores the estimate mark with the weight when asked", () => {
+    const result = setContainerWeight("m1", makeContainer({ type: "furniture" }), 150, [], "uid-1", true);
+    expect(result.value.weightEstimated).toBe(true);
+    expect(lastUpdate().weightEstimated).toBe(true);
+  });
+
+  it("keeps the mark a piece already has when a weight is typed without saying", () => {
+    const result = setContainerWeight("m1", makeContainer({ weightLb: 150, weightEstimated: true }), 140, [], "uid-1");
+    expect(result.value.weightEstimated).toBe(true);
+  });
+
+  it("deletes the mark when a weight is said to be a scale reading", () => {
+    const result = setContainerWeight("m1", makeContainer({ weightLb: 150, weightEstimated: true }), 140, [], "uid-1", false);
+    expect("weightEstimated" in result.value).toBe(false);
+    expect(lastUpdate().weightEstimated).toBe(DELETE_FIELD);
+  });
+
+  it("clears the mark with the weight", () => {
+    setContainerWeight("m1", makeContainer({ weightLb: 150, weightEstimated: true }), null, [], "uid-1");
+    const fields = lastUpdate();
+    expect(fields.weightLb).toBe(DELETE_FIELD);
+    expect(fields.weightEstimated).toBe(DELETE_FIELD);
+  });
+
+  it("sets and removes not sure, removing as a delete", () => {
+    const on = setContainerUndecided("m1", makeContainer(), true, [], "uid-1");
+    expect(on.value.undecided).toBe(true);
+    setContainerUndecided("m1", makeContainer({ undecided: true }), false, [], "uid-1");
+    expect(lastUpdate().undecided).toBe(DELETE_FIELD);
   });
 });

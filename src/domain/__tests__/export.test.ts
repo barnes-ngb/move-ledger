@@ -95,10 +95,10 @@ describe("toCsv", () => {
 });
 
 describe("toCsv size and weight", () => {
-  it("keeps every existing column where it was and appends the three new ones", () => {
+  it("keeps every existing column where it was and appends the new ones", () => {
     const header = toCsv({ containers: [], zones, photos: [] }).split("\r\n")[0];
     expect(header).toBe(
-      "number,room,color,status,priority,title,notes,contents,flags,missing,damaged,photos,created,size,volume_cu_ft,weight_lb"
+      "number,room,color,status,priority,title,notes,contents,flags,missing,damaged,photos,created,size,volume_cu_ft,weight_lb,weight_estimated,not_sure"
     );
   });
 
@@ -108,12 +108,12 @@ describe("toCsv size and weight", () => {
       zones,
       photos: [],
     });
-    expect(csv.split("\r\n")[1]).toMatch(/,bin_large,5\.4,31\.5$/);
+    expect(csv.split("\r\n")[1]).toMatch(/,bin_large,5\.4,31\.5,,$/);
   });
 
   it("leaves the three cells blank on a box with neither", () => {
     const csv = toCsv({ containers: [makeContainer()], zones, photos: [] });
-    expect(csv.split("\r\n")[1]).toMatch(/,,,$/);
+    expect(csv.split("\r\n")[1]).toMatch(/,,,,,$/);
   });
 
   it("writes a typed volume for other and blank when other has none", () => {
@@ -126,8 +126,19 @@ describe("toCsv size and weight", () => {
       photos: [],
     });
     const lines = csv.split("\r\n");
-    expect(lines[1]).toMatch(/,other,22,$/);
-    expect(lines[2]).toMatch(/,other,,$/);
+    expect(lines[1]).toMatch(/,other,22,,,$/);
+    expect(lines[2]).toMatch(/,other,,,,$/);
+  });
+});
+
+describe("toCsv furniture marks", () => {
+  it("says yes for an estimated weight and a piece not sure it is going", () => {
+    const csv = toCsv({
+      containers: [makeContainer({ type: "furniture", size: "other", volumeCuFt: 25, weightLb: 150, weightEstimated: true, undecided: true })],
+      zones,
+      photos: [],
+    });
+    expect(csv.split("\r\n")[1]).toMatch(/,other,25,150,yes,yes$/);
   });
 });
 

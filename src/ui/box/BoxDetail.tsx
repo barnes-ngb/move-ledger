@@ -308,7 +308,14 @@ export function BoxDetail({
 
         {/* A box does not stop accepting photos. Something arrives crushed at
             the other end and the picture is taken then. */}
-        <PhotoStrip moveId={moveId} containerId={container.id} uid={uid} photos={photos} />
+        <PhotoStrip
+          moveId={moveId}
+          containerId={container.id}
+          uid={uid}
+          photos={photos}
+          // A piece's photos are for its size estimate, not a contents list. APPLY-22.
+          kind={isFurniture(container) ? "other" : "contents"}
+        />
 
         {/* The contents list, which until now could be corrected only in the
             moment a suggestion was accepted. It is confirmed text like the
@@ -380,7 +387,9 @@ export function BoxDetail({
           zones={zones}
           photos={photos.map((v) => v.photo)}
           uid={uid}
-          offerAsk={contentsListOn && !voided}
+          // A piece has no contents to list. A suggestion it already has still
+          // shows, so it can be dismissed.
+          offerAsk={contentsListOn && !voided && !isFurniture(container)}
         />
 
         {/* A voided box keeps its photos and its number on screen, because those

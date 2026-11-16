@@ -47,7 +47,9 @@ vi.mock("../../../repositories", () => ({
 }));
 
 vi.mock("../../../hooks/usePhotos", () => ({ usePhotos: () => [] }));
-vi.mock("../PhotoStrip", () => ({ PhotoStrip: () => null }));
+vi.mock("../PhotoStrip", () => ({
+  PhotoStrip: ({ kind }: { kind?: string }) => <p>photo kind {kind ?? "contents"}</p>,
+}));
 vi.mock("../AiSummary", () => ({ AiSummary: () => null }));
 // The real component calls the function; here it hands back a fixed estimate on a tap.
 vi.mock("../PhotoEstimate", () => ({
@@ -524,5 +526,17 @@ describe("using a photo estimate on box detail", () => {
     fireEvent.click(screen.getByText("use the estimate"));
     expect((screen.getByLabelText("Width") as HTMLInputElement).value).toBe("60");
     expect((screen.getByLabelText("Depth") as HTMLInputElement).value).toBe("18");
+  });
+});
+
+describe("photo kind on box detail", () => {
+  it("is contents on a box and other on a piece", () => {
+    open(makeContainer());
+    expect(screen.getByText("photo kind contents")).toBeDefined();
+  });
+
+  it("is other on a piece", () => {
+    open(makeContainer({ type: "furniture", size: "other", volumeCuFt: 20 }));
+    expect(screen.getByText("photo kind other")).toBeDefined();
   });
 });

@@ -449,6 +449,34 @@ export function AddBox({
               containerId={live.id}
               uid={uid}
               photos={photos}
+              // A piece's photos are of the piece, not of what is inside a box,
+              // so they never get a contents list: only the size estimate reads
+              // them. Before this, a dresser photo listed what sat on top of it.
+              kind={furniture ? "other" : "contents"}
+            />
+          </div>
+        ) : null}
+
+        {/* Right under the photos it reads, rather than below the whole list
+            of pieces. */}
+        {furniture && photoEstimateOn && live ? (
+          <div className="mt-4">
+            <PhotoEstimate
+              // A new piece is a new estimate. Save and next swaps the piece
+              // under this component, and an answer for the last one must not
+              // land on this one. Raised in review on pull request 34.
+              key={live.id}
+              moveId={moveId}
+              containerId={live.id}
+              uploadedPhotos={photos.filter((v) => v.photo.uploadState === "uploaded").length}
+              onUse={(e) => {
+                setDims({ width: String(e.widthIn), depth: String(e.depthIn), height: String(e.heightIn) });
+                setVolume(String(cuFtOf({ width: e.widthIn, depth: e.depthIn, height: e.heightIn })));
+                setWeight(String(e.weightLb));
+                setWeightGuess(true);
+                setWeightTouched(true);
+                if (!title.trim()) setTitle(e.name);
+              }}
             />
           </div>
         ) : null}
@@ -508,25 +536,6 @@ export function AddBox({
                 }
               }}
             />
-            {photoEstimateOn && live ? (
-              <PhotoEstimate
-                // A new piece is a new estimate. Save and next swaps the piece
-                // under this component, and an answer for the last one must not
-                // land on this one. Raised in review on pull request 34.
-                key={live.id}
-                moveId={moveId}
-                containerId={live.id}
-                uploadedPhotos={photos.filter((v) => v.photo.uploadState === "uploaded").length}
-                onUse={(e) => {
-                  setDims({ width: String(e.widthIn), depth: String(e.depthIn), height: String(e.heightIn) });
-                  setVolume(String(cuFtOf({ width: e.widthIn, depth: e.depthIn, height: e.heightIn })));
-                  setWeight(String(e.weightLb));
-                  setWeightGuess(true);
-                  setWeightTouched(true);
-                  if (!title.trim()) setTitle(e.name);
-                }}
-              />
-            ) : null}
             <p className="text-sm text-slate-400">Measured outside size, optional. All three set the cu ft.</p>
             <div className="grid grid-cols-3 gap-2">
               {(["width", "depth", "height"] as const).map((k) => (

@@ -57,7 +57,7 @@ Added 2026-11-15, ADR-0009. On Add furniture and on box detail for a piece, Esti
 
 The function returns the estimate and writes nothing. The phone shows it with Use these and Not this, and Use these fills the fields with the weight marked as a guess. Inches are rounded to whole numbers and pounds to whole pounds, so the suggestion claims no more precision than a photo has.
 
-Same privacy rules as the contents list: the move's single setting gates it, only the images are sent, and text on documents or screens is never transcribed. Its own cap of 200 per move, counted in `moves/{moveId}/usage/furnitureEstimates` before each call. A box is never weighed from a photo.
+Same privacy rules as the contents list: the move's single setting gates it, only the images are sent, and text on documents or screens is never transcribed. Its own cap of 200 per move, counted in `moves/{moveId}/usage/furnitureEstimates` before each call. A box is never weighed from a photo. Photos of a piece are stored as type `other`, so the contents list never reads them; only this estimate does. Amended 2026-11-15 after first use.
 
 ## Cut
 

@@ -42,7 +42,9 @@ vi.mock("../../../repositories", () => ({
 vi.mock("../../../lib/functions", () => ({ summarizePhoto: vi.fn() }));
 
 vi.mock("../../../hooks/usePhotos", () => ({ usePhotos: () => [] }));
-vi.mock("../PhotoStrip", () => ({ PhotoStrip: () => null }));
+vi.mock("../PhotoStrip", () => ({
+  PhotoStrip: ({ kind }: { kind?: string }) => <p>photo kind {kind ?? "contents"}</p>,
+}));
 
 const { AddBox } = await import("../AddBox");
 
@@ -644,5 +646,17 @@ describe("Add furniture size limits", () => {
     fireEvent.change(screen.getByLabelText("Height"), { target: { value: "60" } });
     fireEvent.click(screen.getByText("Save and finish"));
     expect(mocks.packContainer.mock.calls[0]?.[1]).toMatchObject({ volumeCuFt: 250 });
+  });
+});
+
+describe("photo kind", () => {
+  it("takes box photos for a contents list and furniture photos for the estimate only", () => {
+    open();
+    expect(screen.getByText("photo kind contents")).toBeDefined();
+  });
+
+  it("does not ask for a contents list from furniture photos", () => {
+    open([], { kind: "furniture" });
+    expect(screen.getByText("photo kind other")).toBeDefined();
   });
 });

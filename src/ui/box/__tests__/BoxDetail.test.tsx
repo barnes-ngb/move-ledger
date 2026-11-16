@@ -428,6 +428,17 @@ describe("size and weight", () => {
   });
 });
 
+describe("furniture on box detail, the typed weight", () => {
+  it("sends the weight in the field with the mark, not the stored one", () => {
+    open(makeContainer({ type: "furniture", size: "other", volumeCuFt: 25, weightLb: 150, weightEstimated: true }));
+    fireEvent.change(screen.getByLabelText("Weight"), { target: { value: "140" } });
+    fireEvent.click(screen.getByLabelText("Weight is a guess"));
+    const last = mocks.setContainerWeight.mock.calls.at(-1)!;
+    expect(last[2]).toBe(140);
+    expect(last[5]).toBe(false);
+  });
+});
+
 describe("furniture on box detail", () => {
   it("offers the guess and not-sure marks on a piece, and not on a box", () => {
     open(makeContainer());

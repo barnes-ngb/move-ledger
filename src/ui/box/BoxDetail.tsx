@@ -416,11 +416,16 @@ export function BoxDetail({
                 <Check
                   label="Weight is a guess"
                   checked={container.weightEstimated === true}
-                  onChange={(on) =>
-                    container.weightLb === undefined
-                      ? setError("Type a weight first.")
-                      : run(() => setContainerWeight(moveId, container, container.weightLb!, zones, uid, on))
-                  }
+                  onChange={(on) => {
+                    // The field, not the stored copy: a weight typed and blurred
+                    // a moment ago may not be back through the subscription yet,
+                    // and resending the old one would undo it. Raised in review
+                    // on pull request 33.
+                    const typed = parseWeight(weight);
+                    if (typed.kind === "invalid") setError(WEIGHT_HELP);
+                    else if (typed.kind === "empty") setError("Type a weight first.");
+                    else run(() => setContainerWeight(moveId, container, typed.value, zones, uid, on));
+                  }}
                 />
               ) : null}
               {isFurniture(container) || container.undecided ? (

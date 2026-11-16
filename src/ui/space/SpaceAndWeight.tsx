@@ -104,7 +104,13 @@ export function SpaceAndWeight({
   return (
     <Screen title="Space and weight" onBack={onBack}>
       {t.counted === 0 ? (
-        <p className="text-slate-400">No boxes yet. Every box you add is counted here.</p>
+        <>
+          <p className="text-slate-400">No boxes yet. Every box you add is counted here.</p>
+          {/* The only way into Add furniture, so it is here on an empty move too. Raised in review on pull request 33. */}
+          <Button onClick={onAddFurniture} tone="quiet">
+            Add furniture
+          </Button>
+        </>
       ) : (
         <>
           {t.notWeighed > 0 ? <Button onClick={onWeigh}>Weigh boxes</Button> : null}

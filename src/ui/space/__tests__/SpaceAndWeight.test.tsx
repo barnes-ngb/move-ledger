@@ -160,3 +160,10 @@ describe("Space and weight furniture", () => {
     expect(onAddFurniture).toHaveBeenCalled();
   });
 });
+
+describe("Space and weight on an empty move", () => {
+  it("still offers Add furniture", () => {
+    open([]);
+    expect(screen.getByText("Add furniture")).toBeDefined();
+  });
+});

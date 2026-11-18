@@ -52,7 +52,7 @@ export default defineConfig({
         navigateFallback: "/index.html",
         // Firestore and Storage traffic must never be intercepted. The SDK
         // has its own offline layer and a cached response would fight it.
-        navigateFallbackDenylist: [/^\/__/],
+        navigateFallbackDenylist: [/^\/__/, /^\/rentals(?:\/|$)/, /^\/trip(?:\/|$)/],
         runtimeCaching: [
           {
             // Photo bytes, and nothing else on that host. An uploaded photo's

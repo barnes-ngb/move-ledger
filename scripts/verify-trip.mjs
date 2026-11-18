@@ -3,11 +3,11 @@ import { readFileSync } from "node:fs";
 import { Script } from "node:vm";
 
 const html = readFileSync("public/trip/index.html", "utf8");
-const scriptBlocks = [...html.matchAll(/<script(\\s[^>]*)?>([\\s\\S]*?)<\\/script>/gi)]
-  .filter((match) => !match[1]?.includes("application/json"));
+const scriptBlocks = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)]
+  .filter((match) => !match[0].includes('type="application/json"'));
 assert(scriptBlocks.length > 0, "Trip page needs executable JavaScript");
 for (const [index, match] of scriptBlocks.entries()) {
-  new Script(match[2], { filename: "trip/index.html:inline-script-" + (index + 1) });
+  new Script(match[1], { filename: "trip/index.html:inline-script-" + (index + 1) });
 }
 
 for (const token of [

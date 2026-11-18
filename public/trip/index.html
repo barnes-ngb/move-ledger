@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#132e32" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="description" content="A practical, interactive family plan for the Saturday, November 21, 2026 drive from Kansas City to Alvarado, Texas." />
+  <title>Texas in one day · Family trip</title>
+  <style>
+    :root{--ink:#163237;--ink2:#365358;--muted:#637a7d;--paper:#f7f6f1;--card:#fff;--line:#dfe5e0;--mint:#dff0e7;--teal:#28685a;--teal2:#17493f;--gold:#e2a962;--gold-bg:#fff0d9;--sky:#e8f3f6;--red:#9a572f;--shadow:0 2px 16px rgba(27,47,50,.065);--radius:20px}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.42;-webkit-font-smoothing:antialiased}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #84b5df;outline-offset:3px}
+    .shell{max-width:1040px;margin:auto;padding:20px 22px 96px}
+    .hero{background:#17393b;color:white;position:relative;overflow:hidden;border-radius:26px;padding:28px 34px 28px;box-shadow:0 8px 30px rgba(15,42,44,.15)}
+    .hero:before,.hero:after{content:"";position:absolute;border:1px solid rgba(171,212,195,.13);width:440px;height:440px;border-radius:46%;right:-130px;top:-295px;transform:rotate(28deg)}
+    .hero:after{width:390px;height:390px;right:-55px;top:-248px;transform:rotate(15deg)}
+    .eyebrow{color:#b7e1d0;letter-spacing:.16em;text-transform:uppercase;font-size:11px;font-weight:800;position:relative}
+    .hero-head{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;position:relative}
+    .hero h1{font-size:clamp(30px,4.6vw,48px);font-weight:790;line-height:1.06;letter-spacing:-.055em;margin:13px 0 10px;max-width:650px}
+    .hero p{margin:0;color:#d7e7df;font-size:14px;max-width:700px}
+    .hero-actions{display:flex;gap:8px;flex-shrink:0;position:relative}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:12px;min-height:43px;padding:10px 15px;font-weight:735;font-size:13px;text-decoration:none;transition:transform .12s,background .12s;white-space:nowrap}
+    .button:active{transform:scale(.98)}
+    .btn-light{color:var(--ink);background:#f3fbf5}
+    .btn-outline{color:white;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22)}
+    .btn-soft{color:var(--teal2);background:#e8f3eb;border-color:#c9dfd2}
+    .btn-link{color:var(--teal2);background:transparent;border-color:var(--line)}
+    .hero-bottom{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;position:relative}
+    .stat{background:rgba(255,255,255,.085);border:1px solid rgba(255,255,255,.15);border-radius:15px;padding:10px 16px;min-width:145px}
+    .stat b{display:block;font-size:20px;font-variant-numeric:tabular-nums;letter-spacing:-.035em}
+    .stat span{color:#c5dcd2;font-size:11px;display:block;margin-top:1px}
+    .hero-tip{margin-top:16px;color:#cee1d7;font-size:12px}
+    .topnav{display:flex;gap:7px;margin:21px 0 21px;padding:5px;background:#e8ede8;border-radius:16px;position:sticky;top:9px;z-index:10;box-shadow:0 3px 15px rgba(38,66,62,.08)}
+    .tab{flex:1;border:0;background:transparent;border-radius:11px;color:#566e6c;font-weight:750;padding:12px 10px;min-height:46px;font-size:14px}
+    .tab[aria-selected="true"]{background:#fff;color:var(--teal2);box-shadow:0 1px 8px rgba(27,55,56,.11)}
+    .tab .counter{font-size:10px;margin-left:5px;color:#6a8780}
+    [hidden]{display:none!important}
+    .two-col{display:grid;grid-template-columns:1.42fr .88fr;gap:18px;align-items:start}
+    .stack{display:grid;gap:16px;align-content:start}
+    .surface{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 22px 20px}
+    .surface.tight{padding:20px}
+    .section-top{display:flex;align-items:flex-start;gap:12px;justify-content:space-between;margin-bottom:13px}
+    .section-top h2{font-size:20px;letter-spacing:-.035em;line-height:1.18;margin:0 0 4px}
+    .section-top p{margin:0;color:var(--muted);font-size:13px}
+    .small-label{font-size:10px;font-weight:850;text-transform:uppercase;color:var(--teal);letter-spacing:.12em;margin-bottom:7px}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:750;color:var(--teal2);background:var(--mint);white-space:nowrap}
+    .pill.warning{color:#8a541d;background:var(--gold-bg)}
+    .pill.neutral{background:#edf0ec;color:#566763}
+    .leave-wrap{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:12px 0 8px;border-top:1px solid var(--line);margin-top:12px;flex-wrap:wrap}
+    .leave-wrap label{font-weight:760;font-size:13px}
+    .segments{display:flex;background:#eff3ef;padding:3px;border-radius:11px;gap:1px}
+    .segment{border:0;background:none;color:#5e7471;font-size:12px;font-weight:760;padding:9px 11px;border-radius:9px;min-width:49px}
+    .segment.active{background:#fff;color:#184b42;box-shadow:0 1px 4px rgba(5,51,42,.12)}
+    .route{position:relative;padding-top:4px}
+    .stop{position:relative;display:grid;grid-template-columns:60px 22px 1fr;column-gap:11px;padding:4px 0 22px}
+    .stop:not(:last-child):before{content:"";position:absolute;left:82px;top:28px;bottom:-6px;width:2px;background:#d7e7df}
+    .time{text-align:right;color:#2b5a50;font-size:13px;font-weight:830;font-variant-numeric:tabular-nums;padding-top:3px}
+    .point{width:16px;height:16px;margin:3px;background:white;border:4px solid #347666;border-radius:50%;position:relative;z-index:1}
+    .stop.featured .point{background:var(--gold);border-color:#f6d3a0;box-shadow:0 0 0 3px #fcf3e8}
+    .stop-content strong{display:block;font-weight:820;font-size:15px;letter-spacing:-.015em}
+    .stop-content>p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+    .stop .detail{margin-top:9px;background:#f8faf8;border:1px solid #e3ebe4;border-radius:12px;padding:12px}
+    .stop .detail p{font-size:12px;color:#526c6c;margin:0 0 8px}
+    .inline-links{display:flex;flex-wrap:wrap;gap:7px}
+    .inline-links a,.inline-links button{font-size:12px;line-height:1.1;color:#145d50;font-weight:800;border:1px solid #c6e2d4;background:#e8f3eb;border-radius:9px;text-decoration:none;padding:10px 11px;min-height:38px}
+    .note{border-left:3px solid #d7ab63;padding:10px 12px;background:#fff7eb;border-radius:0 10px 10px 0;color:#6f583c;font-size:12px;line-height:1.48}
+    .note.green{border-color:#92b9a6;background:#f1f8f3;color:#42665a}
+    .mini-list{margin:0;padding-left:18px;color:var(--ink2);font-size:13px}
+    .mini-list li{margin-bottom:9px}
+    .mini-list li:last-child{margin:0}
+    .callout{background:#f2f8f4;border-radius:14px;padding:15px;border:1px solid #deebe2}
+    .callout .head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+    .callout strong{font-size:14px}
+    .callout p{color:var(--muted);font-size:12px;margin:0}
+    .callout a{display:inline-block;font-size:12px;font-weight:750;color:#216355;margin-top:10px;text-decoration:none}
+    .subtle{color:var(--muted);font-size:12px}
+    .rule{height:1px;background:var(--line);margin:15px 0}
+    details.fold{border-top:1px solid var(--line);padding:0;margin:0}
+    details.fold:last-child{border-bottom:1px solid var(--line)}
+    summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:13px 2px;font-size:14px;font-weight:770}
+    summary::-webkit-details-marker{display:none}
+    .chevron{width:17px;height:17px;flex-shrink:0;transition:transform .15s;color:#738783}
+    details[open] summary .chevron{transform:rotate(180deg)}
+    .fold-content{padding:0 0 15px 0;color:var(--ink2);font-size:13px}
+    .fold-content p{margin:0 0 9px;line-height:1.48}
+    .fold-content p:last-child{margin:0}
+    .bar{height:9px;background:#e7eeea;border-radius:99px;overflow:hidden}
+    .bar>div{height:100%;background:#367b66;max-width:100%;width:0%;transition:width .18s;border-radius:99px}
+    .progress-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:9px}
+    .progress-top strong{font-size:13px}
+    .progress-top span{font-size:12px;color:var(--muted)}
+    .check-group{border-top:1px solid var(--line);margin-top:0}
+    .check-group:last-child{border-bottom:1px solid var(--line)}
+    .check-group>summary{padding:15px 3px;min-height:62px}
+    .group-title{display:flex;align-items:center;gap:11px;min-width:0}
+    .group-title .symbol{background:#eaf3ee;color:#286252;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:17px}
+    .group-title b{display:block;font-size:14px}
+    .group-title small{display:block;color:var(--muted);font-size:11px;font-weight:520;margin-top:2px}
+    .check-items{padding:0 0 12px}
+    .check-row{display:flex;gap:12px;align-items:flex-start;padding:10px 7px;border-radius:10px;cursor:pointer;min-height:45px;line-height:1.35}
+    .check-row:hover{background:#f6f9f6}
+    .check-row input{margin:1px 0 0;width:18px;height:18px;flex:0 0 18px;accent-color:#2c7361;cursor:pointer}
+    .check-row .label-text{font-size:13px;color:#365356;flex:1}
+    .check-row input:checked + .label-text{color:#92a2a0;text-decoration:line-through}
+    .check-items.single .check-row{padding:10px 7px}
+    .car{border:1px solid #d8e4db;background:#f5f9f6;border-radius:18px;padding:18px;margin-top:13px}
+    .car-head{text-align:center;font-size:10px;letter-spacing:.11em;font-weight:850;color:#4c776a;margin-bottom:10px}
+    .car-roof{background:#d9ebdf;color:#225a4a;border:1px dashed #9dc5b0;border-radius:11px;text-align:center;padding:11px;font-weight:760;font-size:13px;margin:0 16px 12px}
+    .car-body{border:2px solid #b6cec0;background:white;border-radius:34px 34px 20px 20px;padding:16px 14px 18px;max-width:440px;margin:auto}
+    .car-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+    .car-seat{display:grid;place-items:center;min-height:60px;padding:9px;border-radius:12px;background:#edf4f0;font-size:12px;color:#2b5f52;text-align:center;font-weight:720}
+    .car-seat.unknown{background:#fff4e6;color:#8a5a2c;border:1px dashed #ddc39f;font-weight:720}
+    .car-seat.dog{background:#ddebe5;min-height:91px}
+    .car-seat.gear{background:#f3efe8;min-height:91px;color:#74624d}
+    .car-hint{text-align:center;font-size:11px;margin-top:12px;color:#667d78}
+    .car-notes{display:grid;gap:6px;margin-top:13px}
+    .car-notes p{margin:0;color:var(--ink2);font-size:12px}
+    .location-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:750;margin:15px 0 7px}
+    .location-title .dot{width:8px;height:8px;background:#327666;border-radius:50%}
+    .selection{width:100%;padding:11px 12px;border:1px solid #d5e2d9;border-radius:10px;background:white;color:#224d44;font-size:13px;font-weight:740}
+    .micro{font-size:11px;color:#738882;margin-top:7px}
+    .input-wrap{display:grid;gap:7px}
+    textarea{width:100%;min-height:102px;resize:vertical;padding:12px;border:1px solid #d6e1d9;border-radius:12px;background:#fbfcfa;color:var(--ink);font-size:13px}
+    .download-notice{padding:12px 14px;background:#ecf2ed;border-radius:12px;font-size:12px;color:#47665b}
+    .footer-actions{margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .footer-actions button{color:#56736d;font-size:12px;border:0;background:transparent;text-decoration:underline;padding:8px 0}
+    .footer-actions span{font-size:11px;color:#768a86}
+    .toast{position:fixed;bottom:23px;left:50%;transform:translateX(-50%);background:#183c37;color:white;border-radius:14px;padding:13px 18px;font-size:13px;font-weight:700;box-shadow:0 8px 25px rgba(0,0,0,.2);z-index:20;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+    .toast[hidden]{display:none}
+    .eye{font-weight:800;letter-spacing:.08em;font-size:10px;color:#447266;text-transform:uppercase}
+    .underlined-link{color:#266653;text-decoration:underline;font-size:12px;font-weight:760}
+    @media(max-width:850px){.shell{max-width:700px}.two-col{grid-template-columns:1fr}.hero-head{display:block}.hero-actions{margin-top:20px}.hero-actions .button{flex:1}.surface{padding:20px}.hero-bottom{gap:8px}.stat{flex:1;min-width:110px}}
+    @media(max-width:560px){.shell{padding:10px 11px 80px}.hero{padding:24px 21px 22px;border-radius:20px}.hero h1{font-size:36px;margin-top:12px}.hero-actions{gap:8px}.hero-actions .button{padding:9px 12px}.stat{padding:9px 10px;min-width:90px}.stat b{font-size:18px}.topnav{margin:14px 0;top:5px;border-radius:12px}.tab{font-size:13px;padding:11px 5px}.surface{padding:18px 16px;border-radius:17px}.surface.tight{padding:17px 16px}.section-top h2{font-size:19px}.stop{grid-template-columns:51px 18px 1fr;gap:9px}.stop:not(:last-child):before{left:68px}.time{font-size:11px;padding-top:4px}.stop-content strong{font-size:14px}.stop .detail{padding:10px}.leave-wrap{align-items:flex-start}.segments{width:100%}.segment{flex:1}.hero-tip{line-height:1.6}}
+    @media print{body{background:white}.shell{max-width:none;padding:0}.hero{background:#fff;color:#17393b;box-shadow:none;border:1px solid #ced9d2;padding:15px}.eyebrow,.hero p,.hero-tip{color:#4d6861}.hero-actions,.topnav,.footer-actions,.button,.toast,.location-title,.selection{display:none!important}.panel{display:block!important}.two-col{display:block}.surface{box-shadow:none;page-break-inside:avoid;padding:14px 0;border:0;border-top:1px solid #ccc;border-radius:0}.stack{display:block}.stack>.surface{margin-bottom:15px}details{display:block!important}details .fold-content,details .check-items{display:block!important}.stat{border-color:#ddd;background:#f1f5f1;color:#123}.stat span{color:#567}#view-pack,#view-ready{break-before:page}textarea{border:1px solid #ccc}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="hero">
+    <div class="eyebrow">Our family trip · Sat Nov 21, 2026</div>
+    <div class="hero-head">
+      <div>
+        <h1>Texas in<br>one day.</h1>
+        <p>Kansas City → Wichita → Buc-ee’s → Alvarado. Four people, Sunny and Bell, one well-planned drive.</p>
+      </div>
+      <div class="hero-actions">
+        <button type="button" class="button btn-outline" id="copySummary">Copy summary</button>
+        <button type="button" class="button btn-light" id="shareCopy">Copy trip link</button>
+      </div>
+    </div>
+    <div class="hero-bottom">
+      <div class="stat"><b id="heroLeave">9:30 AM</b><span>leave Saturday</span></div>
+      <div class="stat"><b id="heroEta">~9:00 PM</b><span>estimated arrival</span></div>
+      <div class="stat"><b>4 stops</b><span>Lunch, breaks + Buc-ee’s dinner</span></div>
+    </div>
+    <div class="hero-tip">The boys, Sunny and Bell will stay with the grandparents. Nathan and Shelly return to Kansas City after Thanksgiving.</div>
+  </header>
+  <nav class="topnav" aria-label="Trip sections" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" aria-controls="view-drive" id="tab-drive" data-tab="drive">The drive</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="view-pack" id="tab-pack" data-tab="pack">What to pack <span class="counter" id="packCount"></span></button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="view-ready" id="tab-ready" data-tab="ready">Get ready <span class="counter" id="readyCount"></span></button>
+  </nav>
+
+  <section class="panel" id="view-drive" aria-labelledby="tab-drive" role="tabpanel">
+    <div class="two-col">
+      <div class="stack">
+        <section class="surface">
+          <div class="section-top"><div><div class="small-label">01 / The day</div><h2>Simple travel timeline</h2><p>Everything is approximate; change departure to see the schedule.</p></div><span class="pill">One-day plan</span></div>
+          <div class="leave-wrap"><label for="departSegments">Leave Kansas City</label><div class="segments" id="departSegments" role="group" aria-label="Choose departure time"><button class="segment" data-leave="540">9:00</button><button class="segment active" data-leave="570">9:30</button><button class="segment" data-leave="600">10:00</button><button class="segment" data-leave="660">11:00</button></div></div>
+          <div class="route" aria-label="Trip route timeline">
+            <div class="stop"><span class="time" data-offset="0">9:30</span><span class="point"></span><div class="stop-content"><strong>Leave Kansas City</strong><p>Breakfast done, fuel full, animals secure. No packing in the morning.</p></div></div>
+            <div class="stop featured"><span class="time" data-offset="190">12:40</span><span class="point"></span><div class="stop-content"><strong>Wichita · Chinese lunch</strong><p>About 45 minutes · main food stop</p><div class="detail"><div class="pill">Best detour · Exit 53</div><p style="margin-top:8px">Chosen stop: China Go, 11661 E 13th St N, near I-35 Exit 53; drive-thru available. Gluten-free choices include orange chicken, sesame chicken and rice. Call this kitchen to confirm cross-contact precautions.</p><div class="inline-links"><a href="https://www.chinagowichita.com/" target="_blank" rel="noopener">Menu & locations ↗</a><a id="foodPhone" href="tel:+13166528889">Call restaurant</a></div></div></div></div>
+            <div class="stop"><span class="time" data-offset="380">3:50</span><span class="point"></span><div class="stop-content"><strong>Oklahoma City area</strong><p>20-minute restroom, water and leashed pet break. Find a quiet, grassy area near I-35.</p></div></div>
+            <div class="stop"><span class="time" data-offset="495">5:45</span><span class="point"></span><div class="stop-content"><strong>Ardmore · optional</strong><p>15-minute fuel / bathroom break if needed. Bring filling snacks so nobody is hungry before dinner.</p></div></div>
+            <div class="stop featured"><span class="time" data-offset="615">7:45</span><span class="point"></span><div class="stop-content"><strong>Fort Worth · Buc-ee’s dinner</strong><p>Allow 25–35 minutes · I-35W Exit 70, by Texas Motor Speedway</p><div class="detail"><div class="pill">Last planned stop</div><p style="margin-top:8px">15901 N Freeway, Fort Worth, TX 76177. Get chicken tenders or BBQ for the boys and Nathan, and let everyone use the restrooms. Shelly can have her chilled, verified gluten-free meal from the cooler. If the boys prefer nuggets, Chick-fil-A is nearby at 3588 Highway 114.</p><div class="inline-links"><a href="https://www.google.com/maps/search/?api=1&amp;query=15901%20N%20Freeway%2C%20Fort%20Worth%2C%20TX%2076177" target="_blank" rel="noopener">Buc-ee’s directions ↗</a><a href="https://buc-ees.com/locations/" target="_blank" rel="noopener">Official locations ↗</a></div></div></div></div>
+            <div class="stop"><span class="time" data-offset="690">9:00</span><span class="point"></span><div class="stop-content"><strong>Grandparents · Alvarado</strong><p>Unpack sleeping gear, give the pets a calm setup, and settle in.</p></div></div>
+          </div>
+          <a id="fullRoute" class="button btn-soft" target="_blank" rel="noopener" style="width:100%" href="https://www.google.com/maps/dir/?api=1&amp;origin=Kansas+City%2C+MO&amp;destination=Alvarado%2C+TX&amp;waypoints=11661+E+13th+St+N%2C+Wichita%2C+KS+67206%7C15901+N+Freeway%2C+Fort+Worth%2C+TX+76177&amp;travelmode=driving">↗ Open the route in Google Maps</a>
+          <p class="micro">Allow about 11½ hours door-to-door with a Buc-ee’s dinner stop. Estimates exclude live traffic and bad weather. Public directions show Alvarado, not the private street address.</p>
+        </section>
+      </div>
+      <div class="stack">
+        <section class="surface tight">
+          <div class="small-label">02 / Food · lunch</div>
+          <div class="section-top"><div><h2>13th Street is the pick</h2><p>Closest practical stop off the Kansas Turnpike: Exit 53, roughly 1.4 miles to the restaurant. Drive-thru available.</p></div></div>
+          <label for="branch" class="eye">Selected branch · change if needed</label>
+          <select class="selection" id="branch" aria-label="Select Wichita restaurant">
+            <option value="13th" selected>13th Street · 11661 E 13th St</option>
+            <option value="rock">Rock Road · 1230 S Rock Rd</option>
+            <option value="woodlawn">Woodlawn · 3700 N Woodlawn</option>
+          </select>
+          <p class="micro" id="branchPhone">13th Street · (316) 425-3091 · Sat hours listed 11–9</p>
+          <div class="note" style="margin-top:13px"><strong>Food rule:</strong> Eat lunch here and refrigerate Shelly’s later food immediately in a cooler kept at 40°F or colder. Bring gluten-free snacks as a backup.</div>
+        </section>
+        <section class="surface tight">
+          <div class="small-label">03 / Food · dinner</div>
+          <div class="section-top"><div><h2>Buc-ee’s near Fort Worth</h2><p>Final major stop, I-35W Exit 70. Store open 24 hours.</p></div><span class="pill">Texas!</span></div>
+          <ul class="mini-list"><li><b>For the boys and Nathan:</b> chicken tenders, BBQ sandwiches or packaged food, depending on availability. Nearby Chick-fil-A at 3588 Highway 114 is the backup for nuggets.</li><li><b>For Shelly:</b> gluten-free dinner brought in a properly chilled cooler. Buc-ee’s does not guarantee gluten-free preparation.</li><li><b>For the car:</b> use restrooms, refuel if needed, keep Sunny leashed and Bell secured. Pets do not go inside the store.</li></ul>
+          <a class="underlined-link" href="https://www.google.com/maps/search/?api=1&amp;query=15901%20N%20Freeway%2C%20Fort%20Worth%2C%20TX%2076177" target="_blank" rel="noopener">Open Buc-ee’s in Google Maps ↗</a>
+        </section>
+        <section class="surface tight">
+          <div class="small-label">04 / Keep it easy</div>
+          <h2 style="font-size:18px;margin:0 0 12px;letter-spacing:-.025em">Our three travel rules</h2>
+          <ul class="mini-list">
+            <li><b>Food is decided before we leave.</b> No searching for restaurants mid-drive.</li>
+            <li><b>Stop intentionally.</b> Wichita lunch, a short stretch, and Buc-ee’s dinner. Ardmore is optional.</li>
+            <li><b>Comfort beats the clock.</b> Stop sooner for Shelly, the kids or the animals; don't push through fatigue or storms.</li>
+          </ul>
+        </section>
+        <section class="surface tight">
+          <details class="fold"><summary>Pet travel basics <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></summary><div class="fold-content"><p><b>Sunny:</b> secure him in a stable cargo area. Use leashed relief stops away from other dogs and dog parks while his DAPP vaccination is pending.</p><p><b>Bell:</b> use a secured, ventilated carrier. Open it only in a closed room at your parents' house; have litter, water and a quiet space ready.</p><p>Never leave either animal unattended in the car.</p></div></details>
+          <details class="fold"><summary>Before we get on the road <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></summary><div class="fold-content"><p>Friday evening: check Saturday's Kansas, Oklahoma and Texas weather and road conditions, confirm China's hours, check coolant and tires following the Forester repair, and text grandparents the ETA.</p></div></details>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="view-pack" aria-labelledby="tab-pack" role="tabpanel" hidden>
+    <div class="two-col">
+      <div class="stack">
+        <section class="surface">
+          <div class="section-top"><div><div class="small-label">01 / Vehicle</div><h2>How we use the Forester</h2><p>Zones first. Then fit the foam before other luggage.</p></div><span class="pill warning">Fit test needed</span></div>
+          <div class="car">
+            <div class="car-head">ROOF</div><div class="car-roof">◈  Rooftop soft cargo bag<br><span style="font-weight:550;font-size:11px">Light soft gear, only within load limits</span></div>
+            <div class="car-body">
+              <div class="car-row"><div class="car-seat">Nathan<br>driver</div><div class="car-seat">Shelly<br>passenger</div></div>
+              <div class="car-row"><div class="car-seat">Lincoln + London<br>rear seats</div><div class="car-seat unknown">Bell's secured carrier<br>position to test</div></div>
+              <div class="car-row"><div class="car-seat dog">Sunny<br>stable padded area</div><div class="car-seat gear">Low, secured<br>gear beside him</div></div>
+            </div>
+            <p class="car-hint">Illustration, not to scale. Keep seat belts, ventilation and Sunny's space clear.</p>
+          </div>
+          <div class="callout" style="margin-top:14px"><div class="head"><strong>Do this first on Friday</strong><span class="pill warning">Priority</span></div><p>Measure the foam mattress and both toppers when rolled or gently compressed, then dry-fit the roof bag, folded crate and bed, dog space and cat carrier. Anything that doesn't fit stays for the later move.</p></div>
+          <details class="fold" style="margin-top:12px"><summary>Roof load & restraint notes <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></summary><div class="fold-content"><p>Stay within the <b>lowest</b> allowed rating of the Forester's roof, rack, crossbars, and bag. Secure straps to the manufacturer's instructions and inspect them at stops. Do not put hard or heavy items overhead. No tall, unstable cargo stack beside Sunny; protect him from shifting objects.</p></div></details>
+        </section>
+        <section class="surface" id="packListCard">
+          <div class="section-top"><div><div class="small-label">02 / Bring in the car</div><h2>What actually comes</h2><p>Tick things as they go into their final bag or zone.</p></div></div>
+          <div class="progress-top"><strong id="packProgressText">0 packed</strong><span id="packProgressFraction">0 / 0</span></div><div class="bar"><div id="packBar"></div></div>
+          <div id="packGroups" style="margin-top:14px"></div>
+        </section>
+      </div>
+      <div class="stack">
+        <section class="surface tight">
+          <div class="small-label">03 / Don't haul the bulky stuff</div>
+          <h2 style="margin:0 0 5px;font-size:19px;letter-spacing:-.025em">Delivered to Texas</h2>
+          <p class="subtle" style="margin:0 0 12px">Order or confirm these at your parents' house; check delivery dates.</p>
+          <div id="deliveryList" class="check-items single"></div>
+        </section>
+        <section class="surface tight"><div class="small-label">04 / Keep in reach</div><h2 style="margin:0 0 10px;font-size:19px;letter-spacing:-.025em">Not buried under bags</h2><ul class="mini-list"><li>Medicines, documents and pet vaccine records</li><li>Snacks, water, wipes, kids' spare outfits</li><li>Leash, waste bags, cat carrier and travel bowls</li><li>Phones, cords, tablets, food cooler</li></ul></section>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="view-ready" aria-labelledby="tab-ready" role="tabpanel" hidden>
+    <div class="two-col">
+      <div class="stack">
+        <section class="surface">
+          <div class="section-top"><div><div class="small-label">01 / Friday night · Nov 20</div><h2>Saturday morning should be easy</h2><p>Finish these before bed so departure doesn't slip.</p></div><span class="pill">Main checklist</span></div>
+          <div class="progress-top"><strong id="readyProgressText">0 ready</strong><span id="readyProgressFraction">0 / 0</span></div><div class="bar"><div id="readyBar"></div></div>
+          <div class="check-items single" id="fridayList" style="margin-top:12px"></div>
+        </section>
+        <section class="surface"><div class="section-top"><div><div class="small-label">02 / Saturday morning</div><h2>Just five things</h2><p>Everything else should already be loaded.</p></div></div><div class="check-items single" id="morningList"></div></section>
+      </div>
+      <div class="stack">
+        <section class="surface tight">
+          <div class="section-top"><div><div class="small-label">03 / Decisions</div><h2>Confirm together</h2><p>A few things we shouldn't guess at.</p></div><span class="pill warning">4 items</span></div>
+          <div id="decisionList" class="check-items single"></div>
+        </section>
+        <section class="surface tight">
+          <div class="section-top"><div><div class="small-label">04 / For Shelly</div><h2>Notes or changes</h2><p>Food choice, comfort needs, extra packing, anything else.</p></div></div>
+          <div class="input-wrap"><label class="eye" for="sharedNotes">Our notes</label><textarea id="sharedNotes" placeholder="Example: China Go on Woodlawn; bring extra pillows for the boys…"></textarea><span class="micro">Notes and checkmarks are saved on this phone only. Use “Copy summary” to send changes to each other.</span></div>
+        </section>
+        <div class="download-notice"><b>Send to Shelly:</b> Tap <b>Copy trip link</b>, then paste that normal webpage link into Android Messages. No attachment or Move Ledger login needed. Each phone keeps its own checkmarks and notes; use <b>Copy summary</b> to exchange decisions.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-actions"><span>Built for Nathan + Shelly · Sat Nov 21, 2026 · all times Central</span><button type="button" id="reset">Reset my checkmarks</button></div>
+</main>
+<div id="toast" class="toast" aria-live="polite" hidden></div>
+<script type="application/json" id="portable-state">{}</script>
+<script>
+(() => {
+  'use strict';
+  const KEY = 'tx-thanksgiving-trip-2026-11-21-v3';
+  const OLD_KEY = 'tx-thanksgiving-trip-2026-11-21-v2';
+  const packGroups = [
+    {id:'sleep',icon:'◫',title:'Sleeping setup',hint:'Biggest space constraint',items:[['foam','Foam mattress'],['foamTop','Mattress topper'],['foamTop2','Extra foam topper'],['pillow','Needed pillows and lightweight bedding']]},
+    {id:'people',icon:'♙',title:'Clothes & kids',hint:'Boys stay in Texas afterward',items:[['boysClothes','Boys’ clothes for the extended stay + laundry'],['adultClothes','Nathan and Shelly: Thanksgiving + house-tour outfits'],['kidFun','Tablets, headphones, chargers and two small activities'],['toiletries','Family toiletries and medications']]},
+    {id:'pets',icon:'♡',title:'Sunny & Bell',hint:'First days of supplies; bulk orders there',items:[['sunnyBed','Sunny’s bed, folded crate and secure travel setup'],['sunnyKit','Sunny’s leash, bowls, waste bags and first-days food'],['bellKit','Bell’s carrier, travel litter and first-days food'],['petPaper','Sunny and Bell rabies certificates; Bell spay record']]},
+    {id:'cabin',icon:'✦',title:'Easy access on the road',hint:'Keep these out of the deep cargo stack',items:[['paper','IDs, lease/move papers and car papers'],['snacks','Filling snacks, chilled gluten-free dinner for Shelly and drinks'],['cooler','Cold packs and cooler for any leftovers'],['spare','Wipes, tissues, a spare outfit and charging cables']]}
+  ];
+  const deliver = [
+    ['deliveryLitter','Cat litter, regular litter box and scoop'],
+    ['deliveryFood','Bulk dog food and cat food'],
+    ['deliveryLeash','Dog long leash + safe ground stake'],
+    ['deliveryPantry','Pantry groceries and drinks'],
+    ['deliverySupplies','Paper goods and extra household supplies']
+  ];
+  const friday = [
+    ['fit','Dry-fit all foam layers, Sunny’s space and Bell’s carrier'],
+    ['roof','Load/secure rooftop bag and check weight limits'],
+    ['clothes','Finish bags for kids, adults and pets'],
+    ['texas','Confirm deliveries and pet sleeping/litter setup in Texas'],
+    ['food','Decide Wichita order; pack cooler and gluten-free dinner for Shelly; Buc-ee’s for boys'],
+    ['car','Fill gas; check tires, fluids, lights and coolant'],
+    ['docs','Set aside IDs, animal records and the no-pack tote'],
+    ['loaded','Load everything except cold food, medicines, toiletries and pets'],
+    ['weather','Check forecast and road conditions; tell grandparents ETA']
+  ];
+  const morning = [
+    ['breakfast','Breakfast, clothes, bathrooms'],
+    ['petWalk','Sunny bathroom break; pet feeding/water as appropriate'],
+    ['quickLoad','Load medicine bag, cooler, phones and water'],
+    ['petsIn','Secure both pets, boys’ seat belts, luggage and doors'],
+    ['walkAround','Final roof-strap check, walk around car, leave']
+  ];
+  const decisions = [
+    ['confirmChina','Call 13th Street China Go about gluten-free prep and order'],
+    ['bucDinner','Confirm Buc-ee’s dinner works for the boys; pack a familiar fallback'],
+    ['confirmFoam','Confirm actual foam fit in roof/vehicle'],
+    ['confirmBell','Find a safe, secured place for Bell’s carrier'],
+    ['confirmTexas','Confirm parents have deliveries and the animal setup ready']
+  ];
+  const BRANCHES = {
+    rock:{name:'Rock Road',address:'1230 S Rock Rd, Wichita, KS 67207',phone:'+13166528889',pretty:'(316) 652-8889'},
+    woodlawn:{name:'Woodlawn',address:'3700 N Woodlawn St, Wichita, KS 67226',phone:'+13166918888',pretty:'(316) 691-8888'},
+    '13th':{name:'13th Street',address:'11661 E 13th St N, Wichita, KS 67206',phone:'+13164253091',pretty:'(316) 425-3091'}
+  };
+  const base={departure:570,branch:'13th',checked:[],notes:''};
+  let incoming={};
+  try { incoming=JSON.parse(document.getElementById('portable-state').textContent)||{}; } catch(e){}
+  let saved={};
+  try { saved=JSON.parse(localStorage.getItem(KEY))||{}; if(!Object.keys(saved).length){const old=JSON.parse(localStorage.getItem(OLD_KEY))||{};saved={...old,branch:'13th'};} }catch(e){}
+  const state={...base,...(incoming.snapshot?incoming:saved)};
+  if(!Array.isArray(state.checked))state.checked=[];
+  if(!BRANCHES[state.branch])state.branch='13th';
+  const $=id=>document.getElementById(id);
+  const has=id=>state.checked.includes(id);
+  const allPack=packGroups.flatMap(g=>g.items.map(i=>i[0])).concat(deliver.map(i=>i[0]));
+  const allReady=friday.concat(morning,decisions).map(i=>i[0]);
+  function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){} updateProgress();}
+  function checkRow(id,label){const l=document.createElement('label'); l.className='check-row'; const i=document.createElement('input');i.type='checkbox';i.checked=has(id);i.setAttribute('aria-label',label);i.addEventListener('change',()=>{const set=new Set(state.checked); i.checked?set.add(id):set.delete(id);state.checked=[...set];persist();}); const s=document.createElement('span');s.className='label-text';s.textContent=label;l.append(i,s);return l;}
+  function renderChecks(){
+    $('packGroups').replaceChildren();
+    for(const group of packGroups){
+      const d=document.createElement('details');d.className='check-group';d.open=group.id==='sleep';
+      const sum=document.createElement('summary');sum.innerHTML=`<div class="group-title"><span class="symbol">${group.icon}</span><span><b>${group.title}</b><small>${group.hint}</small></span></div><span style="display:flex;align-items:center;gap:9px"><small class="group-fraction subtle"></small><svg class="chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>`;
+      const content=document.createElement('div');content.className='check-items';for(const [id,label] of group.items)content.append(checkRow(id,label));d.append(sum,content);d.dataset.group=group.id;$('packGroups').append(d);
+    }
+    for(const [name,data] of [['deliveryList',deliver],['fridayList',friday],['morningList',morning],['decisionList',decisions]]){const node=$(name);node.replaceChildren();data.forEach(([id,label])=>node.append(checkRow(id,label)));}
+  }
+  function fmt(minutes){minutes=((minutes%1440)+1440)%1440;const h=Math.floor(minutes/60),m=minutes%60;return `${h%12||12}:${String(m).padStart(2,'0')} ${h<12?'AM':'PM'}`;}
+  function shortFmt(minutes){minutes=((minutes%1440)+1440)%1440;const h=Math.floor(minutes/60),m=minutes%60;return `${h%12||12}:${String(m).padStart(2,'0')}`;}
+  function updateTime(){const dep=Number(state.departure)||570; $('heroLeave').textContent=fmt(dep);$('heroEta').textContent='~'+fmt(dep+690);document.querySelectorAll('[data-offset]').forEach(n=>n.textContent=shortFmt(dep+Number(n.dataset.offset)));document.querySelectorAll('[data-leave]').forEach(n=>{const active=Number(n.dataset.leave)===dep;n.classList.toggle('active',active);n.setAttribute('aria-pressed',String(active));});}
+  function updateBranch(){const b=BRANCHES[state.branch];$('branch').value=state.branch;$('branchPhone').textContent=`${b.name} · ${b.pretty} · Saturday hours listed 11 AM–9 PM (call ahead)`;$('foodPhone').href='tel:'+b.phone;$('fullRoute').href='https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent('Kansas City, MO')+'&destination='+encodeURIComponent('Alvarado, TX')+'&waypoints='+encodeURIComponent(b.address+'|15901 N Freeway, Fort Worth, TX 76177')+'&travelmode=driving';}
+  function updateProgress(){const packed=allPack.filter(has).length,ready=allReady.filter(has).length;$('packProgressText').textContent=packed===allPack.length?'Packing list complete':`${packed} packed`;$('packProgressFraction').textContent=`${packed} / ${allPack.length}`;$('packBar').style.width=`${packed/allPack.length*100}%`;$('packCount').textContent=`${packed}/${allPack.length}`;$('readyProgressText').textContent=ready===allReady.length?'All ready':`${ready} ready`;$('readyProgressFraction').textContent=`${ready} / ${allReady.length}`;$('readyBar').style.width=`${ready/allReady.length*100}%`;$('readyCount').textContent=`${ready}/${allReady.length}`;
+    packGroups.forEach(g=>{const el=document.querySelector(`[data-group="${g.id}"] .group-fraction`);if(el)el.textContent=`${g.items.filter(x=>has(x[0])).length}/${g.items.length}`});
+  }
+  function showTab(t){document.querySelectorAll('.tab').forEach(n=>{const on=n.dataset.tab===t;n.setAttribute('aria-selected',on?'true':'false');n.tabIndex=on?0:-1;});document.querySelectorAll('.panel').forEach(n=>n.hidden=n.id!==`view-${t}`);if(history.replaceState){try{history.replaceState(null,'','#'+t)}catch(e){}}}
+  let toastTimer=null;function toast(message){const el=$('toast');el.textContent=message;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,2600);}
+  function summary(){const b=BRANCHES[state.branch];return `TEXAS FAMILY TRIP — SAT NOV 21, 2026\nLeave Kansas City: ${fmt(state.departure)}\nWichita lunch: China Go, ${b.name} (${b.address}) — confirm with Shelly, verify gluten-free preparation\nOKC area: quick restroom & leash break\nArdmore: optional fuel/bathroom break\nBuc-ee’s Fort Worth (15901 N Freeway): dinner about ${fmt(Number(state.departure)+615)}; Shelly uses chilled GF food; Chick-fil-A nearby for nuggets if needed\nAlvarado arrival: about ${fmt(Number(state.departure)+690)} (traffic/weather may change)\n\nFriday: pack the Forester fully; keep morning minimal. The boys, Sunny and Bell stay with grandparents.\nPacking progress: ${allPack.filter(has).length}/${allPack.length}; preparation: ${allReady.filter(has).length}/${allReady.length}.\n${state.notes?`\nNotes: ${state.notes}\n`:''}\nThis is a planning estimate, not live traffic.\n`;}
+  async function copySummary(){const txt=summary();try{await navigator.clipboard.writeText(txt);toast('Trip summary copied — paste it to Shelly');}catch(e){const node=document.createElement('textarea');node.value=txt;document.body.append(node);node.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}node.remove();toast(ok?'Trip summary copied':'Copy not supported; use Share a copy');}}
+  function createPortable(){const cloned=document.documentElement.cloneNode(true);const script=cloned.querySelector('#portable-state');if(script){const snapshot={...state,snapshot:true};script.textContent=JSON.stringify(snapshot).replace(/</g,'\\u003c');}cloned.querySelectorAll('.toast').forEach(el=>el.remove());return '<!doctype html>\n'+cloned.outerHTML;}
+  function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);}
+  async function shareCopy(){const url='https://move-ledger.web.app/trip/';try{await navigator.clipboard.writeText(url);toast('Page link copied - paste into Messages');}catch(e){const node=document.createElement('textarea');node.value=url;document.body.append(node);node.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}node.remove();toast(ok?'Page link copied':'Use the website address: '+url);}}
+  renderChecks();updateBranch();updateTime();updateProgress();$('sharedNotes').value=state.notes||'';
+  document.querySelectorAll('[data-leave]').forEach(b=>b.addEventListener('click',()=>{state.departure=Number(b.dataset.leave);updateTime();persist();}));
+  $('branch').addEventListener('change',e=>{state.branch=e.target.value;updateBranch();persist();});
+  $('sharedNotes').addEventListener('input',e=>{state.notes=e.target.value;persist();});
+  document.querySelectorAll('.tab').forEach(n=>n.addEventListener('click',()=>{showTab(n.dataset.tab);const hero=document.querySelector('.hero');window.scrollTo({top:Math.max(0,hero.offsetTop+hero.offsetHeight+12),behavior:'instant'});}));
+  $('copySummary').addEventListener('click',copySummary);$('shareCopy').addEventListener('click',shareCopy);
+  $('reset').addEventListener('click',()=>{if(confirm('Clear all checkmarks on this device? Your departure time, restaurant choice and notes stay saved.')){state.checked=[];document.querySelectorAll('input[type="checkbox"]').forEach(n=>n.checked=false);persist();toast('Checkmarks cleared');}});
+  showTab(['drive','pack','ready'].includes(location.hash.slice(1))?location.hash.slice(1):'drive');
+})();
+</script>
+</body>
+</html>

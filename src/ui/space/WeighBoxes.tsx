@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { Container, ContainerSize, Zone } from "../../domain";
-import { isVoided } from "../../domain";
+import { isFurniture, isVoided } from "../../domain";
 import { setContainerSize, setContainerWeight, writeInBackground } from "../../repositories";
 import { usePhotos } from "../../hooks/usePhotos";
 import { BackBar, Button, ErrorLine, Screen } from "../kit";
@@ -42,7 +42,9 @@ export function WeighBoxes({
   const field = useRef<HTMLInputElement>(null);
 
   const queue = containers
-    .filter((c) => !isVoided(c) && c.weightLb === undefined && !passed.has(c.id))
+    // Furniture never comes up here: it does not go on a bathroom scale, and
+    // its weight comes from the list or a photo on its own screen. APPLY-23.
+    .filter((c) => !isVoided(c) && !isFurniture(c) && c.weightLb === undefined && !passed.has(c.id))
     .sort((a, b) => a.sequenceNumber - b.sequenceNumber);
   const subscribed = queue[0];
   const current = subscribed ? withSize(subscribed, sizeHere) : undefined;

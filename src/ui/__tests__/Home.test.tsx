@@ -312,3 +312,15 @@ describe("the overview count", () => {
     expect(screen.getByText("1 box, 1 of them yours.")).toBeDefined();
   });
 });
+
+describe("the overview count with furniture", () => {
+  it("counts furniture apart from boxes", () => {
+    listener.containers = [
+      container,
+      makeContainer({ id: "c2", sequenceNumber: 2, displayCode: "002", type: "furniture", size: "other", volumeCuFt: 20 }),
+      makeContainer({ id: "c3", sequenceNumber: 3, displayCode: "003", type: "appliance", size: "other", volumeCuFt: 20 }),
+    ];
+    open();
+    expect(screen.getByText("1 box, 1 of them yours. 2 pieces of furniture.")).toBeDefined();
+  });
+});

@@ -37,6 +37,7 @@ Settled 2026-08-02. The vertical slice was one plan when APPLY-02 was written, t
 | APPLY-19 | Size and weight on a box, Weigh boxes, and the Space and weight summary against the container. ADR-0007 | Run 2026-11-14 |
 | APPLY-20 | Furniture numbered like a box, from a list of typical figures, with estimated weight and a not-sure mark. ADR-0008 | Run 2026-11-15 |
 | APPLY-21 | Measured dimensions on a piece, and Estimate from photo for its size and weight. ADR-0009 | Run 2026-11-15 |
+| APPLY-23 | Boxes and furniture counted apart: overview, box list chips, Space and weight lines, Weigh boxes skips furniture | Run 2026-11-17 |
 
 APPLY-14 was never executed and has no file here. Its scope, several photos at once from the library and a Title field on Add box, landed in APPLY-17 as items D1 and D2, so the number is spent and stays unused.
 

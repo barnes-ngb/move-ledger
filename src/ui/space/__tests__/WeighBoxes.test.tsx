@@ -115,3 +115,11 @@ describe("Weigh boxes", () => {
     expect(onBack).toHaveBeenCalled();
   });
 });
+
+describe("Weigh boxes and furniture", () => {
+  it("never puts a piece of furniture on the queue", () => {
+    open([box(2, { type: "furniture", size: "other", volumeCuFt: 20 }), box(4)]);
+    expect(screen.getByText("004")).toBeDefined();
+    expect(screen.getByText("1 left")).toBeDefined();
+  });
+});

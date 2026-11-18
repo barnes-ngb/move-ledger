@@ -66,6 +66,8 @@ The counters in **Shows** above are still owed. The overview names the move, cou
 
 Amended 2026-10-17 during the APPLY-17 run. **The count is what the box list shows,** so voided boxes are left out of it; the overview said 12 where the list one tap away said 11. **Nothing is said about the boxes until the containers listener has delivered.** Before that the list is empty because nothing has arrived, and the screen reads "Loading" rather than explaining the physical system to somebody forty boxes in. The cache answers in a tick, so this is a blink. The same rule holds on box detail, which read "That box is gone" in that tick after a reload, and on the box list, which read "No boxes yet".
 
+Amended 2026-11-17, APPLY-23. The count names boxes and furniture apart: "62 boxes, 33 of them yours. 14 pieces of furniture." "Yours" counts boxes, because it is about the number range each person writes on cardboard. The furniture sentence is left off when there is none.
+
 Amended 2026-11-14 during the APPLY-19 run. A fourth quiet button, "Space and weight", sits under "See all boxes" and opens section 6b.
 
 ## 2. Add box
@@ -253,6 +255,10 @@ Amended again 2026-08-15 during the APPLY-09 run. The condition badge exists now
 
 Voided boxes are not in this list by default, and not in these results by default. A control under the search field reveals them, counts them while it offers, and hides them again. Revealed, a row reads "voided" where its status would be. The filter is in the component on purpose, and the comment there says why: `reserveContainer` reads the same container list this screen does, so filtering voided boxes any higher up would hand a retired number to a second physical box.
 
+### Boxes and furniture, APPLY-23
+
+Added 2026-11-17. Once any furniture is in the move, three chips sit above the count: All, Boxes, Furniture. All is the default, so nothing is hidden until somebody asks. The count names the two apart, "62 boxes, 14 pieces of furniture", and follows the chip. Each piece carries a small Furniture tag before its title. Search works inside the chip picked. With no furniture there are no chips and the count reads as before.
+
 ## 6. Box detail
 
 ### Shows
@@ -412,6 +418,10 @@ No loading order or layout, and no weight from a photo. Those are load planning 
 
 Added 2026-11-15, ADR-0008. Under By room, a Furniture section lists every piece by number with its title and figures, saying "guessed" beside a guessed weight and "Not sure it's going" where marked. A tap opens box detail. "Add furniture" sits under the list. Under the weight bar, "N lb of that is a guess, not a scale reading." when any weight is guessed. While any piece is marked not sure, a line gives the total without them: "Without the 2 pieces you're not sure about: 640 cu ft, 3,900 lb." The bars always include them.
 
+### Boxes and furniture apart, APPLY-23
+
+Amended 2026-11-17. The bars still total everything, boxes and furniture together, because that is what the container holds. The lines under them count boxes only: "N boxes have no size" and "N boxes not weighed yet". Furniture gets its own lines when a piece is missing a figure: "N pieces of furniture have no cu ft" and "N pieces of furniture have no weight. Open them below to add one." Each room row names both, "10 boxes, 2 pieces", and its not-weighed count is boxes only. By size lists boxes only; furniture has its own section. Weigh boxes is offered while any box is unweighed.
+
 ## 6c. Weigh boxes
 
 Added 2026-11-14, ADR-0007. Opened from Space and weight. Back returns there.
@@ -429,6 +439,8 @@ The boxes with no weight that are not voided, lowest number first, one at a time
 - Save and next: writes the weight and moves to the next box. Disabled while the field is empty.
 - Skip: moves to the next box and writes nothing. A skipped box comes round again the next time the screen opens.
 - A size chip saves on the tap, the same as box detail.
+
+Furniture never comes up on this screen: a piece does not go on a bathroom scale, and its weight comes from the furniture list or a photo on its own screen. Amended 2026-11-17, APPLY-23.
 
 ### States
 

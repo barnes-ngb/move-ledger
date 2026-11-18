@@ -167,3 +167,17 @@ describe("Space and weight on an empty move", () => {
     expect(screen.getByText("Add furniture")).toBeDefined();
   });
 });
+
+describe("Space and weight counts boxes and furniture apart", () => {
+  it("does not count a piece in the boxes lines, and says what a piece is missing", () => {
+    open([
+      box(1),
+      box(2, { type: "furniture", size: "other", volumeCuFt: 20, destinationZoneId: "z1" }),
+    ]);
+    expect(screen.getByText("1 box has no size.")).toBeDefined();
+    expect(screen.getByText("1 box not weighed yet.")).toBeDefined();
+    expect(screen.getByText(/1 piece of furniture has no weight/)).toBeDefined();
+    expect(screen.getByText("1 box, 0 cu ft, 0 lb. 1 not weighed")).toBeDefined();
+    expect(screen.getAllByText(/^1 piece, 20 cu ft/).length).toBeGreaterThan(0);
+  });
+});

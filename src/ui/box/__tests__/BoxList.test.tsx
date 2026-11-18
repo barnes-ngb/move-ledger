@@ -240,3 +240,33 @@ describe("BoxList", () => {
     expect(screen.queryByText(/No boxes yet/)).toBeNull();
   });
 });
+
+describe("BoxList with furniture", () => {
+  const mixed = [
+    makeContainer({ id: "c1", sequenceNumber: 1, displayCode: "001", destinationZoneId: "z1" }),
+    makeContainer({ id: "c2", sequenceNumber: 2, displayCode: "002", destinationZoneId: "z1" }),
+    makeContainer({ id: "c3", sequenceNumber: 3, displayCode: "003", destinationZoneId: "z2", type: "furniture", size: "other", volumeCuFt: 20, title: "Dresser" }),
+  ];
+
+  it("counts boxes and furniture apart and tags each piece", () => {
+    renderList({ containers: mixed });
+    expect(screen.getByText("2 boxes, 1 piece of furniture")).toBeDefined();
+    expect(screen.getByText("Furniture", { selector: "span" })).toBeDefined();
+  });
+
+  it("shows only boxes, or only furniture, from the chips", () => {
+    renderList({ containers: mixed });
+    fireEvent.click(screen.getByRole("button", { name: "Boxes" }));
+    expect(screen.getAllByText(/^00\d$/).map((n) => n.textContent)).toEqual(["002", "001"]);
+    expect(screen.getByText("2 boxes")).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Furniture" }));
+    expect(screen.getAllByText(/^00\d$/).map((n) => n.textContent)).toEqual(["003"]);
+    expect(screen.getByText("1 piece of furniture")).toBeDefined();
+  });
+
+  it("offers no chips when there is no furniture", () => {
+    renderList({ containers: mixed.slice(0, 2) });
+    expect(screen.queryByRole("button", { name: "Furniture" })).toBeNull();
+    expect(screen.getByText("2 boxes")).toBeDefined();
+  });
+});

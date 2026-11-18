@@ -256,17 +256,33 @@ describe("BoxList with furniture", () => {
 
   it("shows only boxes, or only furniture, from the chips", () => {
     renderList({ containers: mixed });
-    fireEvent.click(screen.getByRole("button", { name: "Boxes" }));
+    fireEvent.click(screen.getByRole("button", { name: "Show boxes" }));
     expect(screen.getAllByText(/^00\d$/).map((n) => n.textContent)).toEqual(["002", "001"]);
     expect(screen.getByText("2 boxes")).toBeDefined();
-    fireEvent.click(screen.getByRole("button", { name: "Furniture" }));
+    fireEvent.click(screen.getByRole("button", { name: "Show furniture" }));
     expect(screen.getAllByText(/^00\d$/).map((n) => n.textContent)).toEqual(["003"]);
     expect(screen.getByText("1 piece of furniture")).toBeDefined();
   });
 
   it("offers no chips when there is no furniture", () => {
     renderList({ containers: mixed.slice(0, 2) });
-    expect(screen.queryByRole("button", { name: "Furniture" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Show furniture" })).toBeNull();
     expect(screen.getByText("2 boxes")).toBeDefined();
+  });
+});
+
+describe("BoxList furniture filter when furniture leaves the view", () => {
+  it("goes back to everything when the only furniture is voided and hidden again", () => {
+    renderList({
+      containers: [
+        makeContainer({ id: "c1", sequenceNumber: 1, displayCode: "001" }),
+        makeContainer({ id: "c2", sequenceNumber: 2, displayCode: "002", type: "furniture", size: "other", volumeCuFt: 20, voidedAt: "2026-11-01T00:00:00.000Z", voidedBy: "u" }),
+      ],
+    });
+    fireEvent.click(screen.getByText("Show 1 voided box"));
+    fireEvent.click(screen.getByRole("button", { name: "Show furniture" }));
+    fireEvent.click(screen.getByText("Hide voided boxes"));
+    expect(screen.getByText("001")).toBeDefined();
+    expect(screen.getByText("1 box")).toBeDefined();
   });
 });

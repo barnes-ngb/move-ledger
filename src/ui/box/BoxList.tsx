@@ -63,8 +63,14 @@ export function BoxList({
   const shown = showVoided ? containers : containers.filter((c) => !isVoided(c));
   const boxCount = shown.filter((c) => !isFurniture(c)).length;
   const pieceCount = shown.length - boxCount;
+  // With no furniture showing there are no chips, so a chip picked earlier
+  // must not keep filtering a list that offers no way to clear it. Raised in
+  // review on pull request 36.
+  const effectiveKind = pieceCount > 0 ? kind : "all";
   const visible =
-    kind === "all" ? shown : shown.filter((c) => (kind === "furniture" ? isFurniture(c) : !isFurniture(c)));
+    effectiveKind === "all"
+      ? shown
+      : shown.filter((c) => (effectiveKind === "furniture" ? isFurniture(c) : !isFurniture(c)));
 
   // Unfiltered, the newest box is the one being worked on, so it goes on top.
   // Filtered, the ranking from the search decides and this order is discarded.
@@ -91,9 +97,9 @@ export function BoxList({
           <div role="group" aria-label="Show" className="flex gap-2">
             {(
               [
-                ["all", "All"],
-                ["boxes", "Boxes"],
-                ["furniture", "Furniture"],
+                ["all", "Show all"],
+                ["boxes", "Show boxes"],
+                ["furniture", "Show furniture"],
               ] as const
             ).map(([k, label]) => (
               <button
@@ -111,7 +117,7 @@ export function BoxList({
           </div>
         ) : null}
         <p className="text-sm text-slate-400">
-          {(filtering ? `${rows.length} of ` : "") + countLine(kind, boxCount, pieceCount)}
+          {(filtering ? `${rows.length} of ` : "") + countLine(effectiveKind, boxCount, pieceCount)}
         </p>
         {voidedCount > 0 ? (
           <button

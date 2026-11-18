@@ -257,7 +257,7 @@ Voided boxes are not in this list by default, and not in these results by defaul
 
 ### Boxes and furniture, APPLY-23
 
-Added 2026-11-17. Once any furniture is in the move, three chips sit above the count: All, Boxes, Furniture. All is the default, so nothing is hidden until somebody asks. The count names the two apart, "62 boxes, 14 pieces of furniture", and follows the chip. Each piece carries a small Furniture tag before its title. Search works inside the chip picked. With no furniture there are no chips and the count reads as before.
+Added 2026-11-17. Once any furniture is in the move, three chips sit above the count: Show all, Show boxes, Show furniture. Show all is the default, so nothing is hidden until somebody asks. The count names the two apart, "62 boxes, 14 pieces of furniture", and follows the chip. Each piece carries a small Furniture tag before its title. Search works inside the chip picked. With no furniture there are no chips, the list shows everything, and the count reads as before.
 
 ## 6. Box detail
 

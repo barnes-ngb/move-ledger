@@ -1,4 +1,4 @@
-import { isVoided, type Container } from "../domain";
+import { isFurniture, isVoided, type Container } from "../domain";
 import type { MoveContext } from "../hooks/useMove";
 import { useCare } from "../hooks/useCare";
 import { useContainers } from "../hooks/useContainers";
@@ -222,7 +222,12 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
   // What the box list shows, which leaves voided boxes out. A count that
   // includes them disagrees with the list one tap away.
   const inUse = containers.filter((c) => !isVoided(c));
-  const mine = inUse.filter((c) => c.ownerMemberId === ctx.me!.id).length;
+  // Boxes and furniture are counted apart, so fourteen pieces of furniture do
+  // not read as fourteen more boxes. "Yours" is boxes: it is about the number
+  // range each person writes on cardboard. APPLY-23.
+  const inUseBoxes = inUse.filter((c) => !isFurniture(c));
+  const pieceCount = inUse.length - inUseBoxes.length;
+  const mine = inUseBoxes.filter((c) => c.ownerMemberId === ctx.me!.id).length;
 
   return (
     <div className="flex min-h-full flex-col justify-between p-6">
@@ -245,7 +250,8 @@ export function Home({ ctx, uid, onSetup }: { ctx: MoveContext; uid: string; onS
           </div>
         ) : (
           <p className="text-slate-400">
-            {inUse.length} box{inUse.length === 1 ? "" : "es"}, {mine} of them yours.
+            {inUseBoxes.length} box{inUseBoxes.length === 1 ? "" : "es"}, {mine} of them yours.
+            {pieceCount > 0 ? ` ${pieceCount} ${pieceCount === 1 ? "piece" : "pieces"} of furniture.` : ""}
           </p>
         )}
       </div>

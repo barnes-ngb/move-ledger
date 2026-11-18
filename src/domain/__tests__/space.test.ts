@@ -214,3 +214,35 @@ describe("dimensions", () => {
     expect(scaledWeight(dresser, 5)).toBe(75);
   });
 });
+
+describe("spaceAndWeight boxes and furniture apart", () => {
+  const piece = (over = {}) => box({ type: "furniture", size: "other", ...over });
+
+  it("counts gaps in boxes and in furniture separately", () => {
+    const t = spaceAndWeight(
+      [box({}), box({ size: "box_small" }), piece({ volumeCuFt: 20 }), piece({ weightLb: 80, weightEstimated: true })],
+      zones
+    );
+    expect(t.noSize).toBe(1);
+    expect(t.notWeighed).toBe(2);
+    expect(t.furnitureNoSize).toBe(1);
+    expect(t.furnitureNotWeighed).toBe(1);
+  });
+
+  it("names boxes and pieces apart in each room, and keeps furniture out of By size", () => {
+    const t = spaceAndWeight(
+      [box({ destinationZoneId: "z1", size: "box_small" }), piece({ destinationZoneId: "z1", volumeCuFt: 20, weightLb: 100 })],
+      zones
+    );
+    expect(t.byZone[0]).toMatchObject({ count: 1, pieces: 1, volumeCuFt: 21.5, notWeighed: 1 });
+    expect(t.bySize.map((r) => r.size)).toEqual(["box_small"]);
+  });
+
+  it("gives no estimate while a piece has no weight", () => {
+    const t = spaceAndWeight(
+      [box({ size: "bin_large", weightLb: 30 }), box({ size: "bin_large" }), piece({ volumeCuFt: 20 })],
+      zones
+    );
+    expect(t.estimatedWeightLb).toBeUndefined();
+  });
+});

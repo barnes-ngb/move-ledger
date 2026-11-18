@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Container, Zone } from "../../domain";
-import { hasCondition, isVoided, search, statusLabel } from "../../domain";
+import { hasCondition, isFurniture, isVoided, search, statusLabel } from "../../domain";
 import { BackBar, Button } from "../kit";
 
 /**
@@ -36,6 +36,13 @@ export function BoxList({
   onBack: () => void;
 }) {
   const [showVoided, setShowVoided] = useState(false);
+  /**
+   * Boxes, furniture, or both. Furniture is numbered like a box so it can be
+   * found on the other end, and fourteen pieces made the list read as
+   * fourteen more boxes. The chips split it without hiding anything by
+   * default. APPLY-23.
+   */
+  const [kind, setKind] = useState<"all" | "boxes" | "furniture">("all");
   const filtering = query.trim().length > 0;
 
   /**
@@ -53,7 +60,17 @@ export function BoxList({
    * stapler does not get back a box they retired last week.
    */
   const voidedCount = containers.filter(isVoided).length;
-  const visible = showVoided ? containers : containers.filter((c) => !isVoided(c));
+  const shown = showVoided ? containers : containers.filter((c) => !isVoided(c));
+  const boxCount = shown.filter((c) => !isFurniture(c)).length;
+  const pieceCount = shown.length - boxCount;
+  // With no furniture showing there are no chips, so a chip picked earlier
+  // must not keep filtering a list that offers no way to clear it. Raised in
+  // review on pull request 36.
+  const effectiveKind = pieceCount > 0 ? kind : "all";
+  const visible =
+    effectiveKind === "all"
+      ? shown
+      : shown.filter((c) => (effectiveKind === "furniture" ? isFurniture(c) : !isFurniture(c)));
 
   // Unfiltered, the newest box is the one being worked on, so it goes on top.
   // Filtered, the ranking from the search decides and this order is discarded.
@@ -76,10 +93,31 @@ export function BoxList({
             className="mt-1 min-h-14 w-full rounded-xl bg-slate-800 px-4 text-lg text-slate-100 placeholder:text-slate-500"
           />
         </label>
+        {pieceCount > 0 ? (
+          <div role="group" aria-label="Show" className="flex gap-2">
+            {(
+              [
+                ["all", "Show all"],
+                ["boxes", "Show boxes"],
+                ["furniture", "Show furniture"],
+              ] as const
+            ).map(([k, label]) => (
+              <button
+                key={k}
+                onClick={() => setKind(k)}
+                aria-pressed={kind === k}
+                className={
+                  "min-h-12 flex-1 rounded-2xl px-3 text-base " +
+                  (kind === k ? "bg-slate-100 font-semibold text-slate-900" : "bg-slate-800 text-slate-100")
+                }
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        ) : null}
         <p className="text-sm text-slate-400">
-          {filtering
-            ? `${rows.length} of ${visible.length} box${visible.length === 1 ? "" : "es"}`
-            : `${visible.length} box${visible.length === 1 ? "" : "es"}`}
+          {(filtering ? `${rows.length} of ` : "") + countLine(effectiveKind, boxCount, pieceCount)}
         </p>
         {voidedCount > 0 ? (
           <button
@@ -125,8 +163,13 @@ export function BoxList({
                       No room. Open it and pick one.
                     </span>
                   )}
-                  {container.title ? (
-                    <span className="block truncate text-sm text-slate-500">{container.title}</span>
+                  {container.title || isFurniture(container) ? (
+                    <span className="block truncate text-sm text-slate-500">
+                      {isFurniture(container) ? (
+                        <span className="mr-2 rounded bg-slate-800 px-1.5 py-0.5 text-xs text-slate-300">Furniture</span>
+                      ) : null}
+                      {container.title}
+                    </span>
                   ) : null}
                   {/* One line, two things it can say, so they cannot stack.
                       With a query typed, the row explains why this box came
@@ -217,4 +260,17 @@ function conditionWord(container: Container): string {
   ]
     .filter((w): w is string => w !== null)
     .join(", ");
+}
+
+function plural(n: number, one: string, many: string): string {
+  return `${n} ${n === 1 ? one : many}`;
+}
+
+/** What the list holds, boxes and furniture named apart. APPLY-23. */
+function countLine(kind: "all" | "boxes" | "furniture", boxes: number, pieces: number): string {
+  const b = plural(boxes, "box", "boxes");
+  const p = plural(pieces, "piece of furniture", "pieces of furniture");
+  if (kind === "boxes") return b;
+  if (kind === "furniture") return p;
+  return pieces > 0 ? `${b}, ${p}` : b;
 }

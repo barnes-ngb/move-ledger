@@ -15,6 +15,17 @@ function boxes(n: number): string {
   return `${n} box${n === 1 ? "" : "es"}`;
 }
 
+function piecesOf(n: number): string {
+  return `${n} ${n === 1 ? "piece" : "pieces"} of furniture`;
+}
+
+/** "10 boxes, 2 pieces", or either alone when the other is none. APPLY-23. */
+function boxesAndPieces(b: number, p: number): string {
+  if (p === 0) return boxes(b);
+  if (b === 0) return `${p} ${p === 1 ? "piece" : "pieces"}`;
+  return `${boxes(b)}, ${p} ${p === 1 ? "piece" : "pieces"}`;
+}
+
 /**
  * The boxes read against what the container holds. Totals only: ADR-0007
  * approves no loading order, no layout, and no suggestion of what to leave.
@@ -122,6 +133,11 @@ export function SpaceAndWeight({
                 {boxes(t.noSize)} {t.noSize === 1 ? "has" : "have"} no size.
               </p>
             ) : null}
+            {t.furnitureNoSize > 0 ? (
+              <p className="text-sm text-slate-400">
+                {piecesOf(t.furnitureNoSize)} {t.furnitureNoSize === 1 ? "has" : "have"} no cu ft.
+              </p>
+            ) : null}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -130,6 +146,12 @@ export function SpaceAndWeight({
               <p className="text-sm text-slate-400">
                 {boxes(t.notWeighed)} not weighed yet.
                 {t.estimatedWeightLb !== undefined ? ` Estimate with them: ${amount(t.estimatedWeightLb)} lb.` : ""}
+              </p>
+            ) : null}
+            {t.furnitureNotWeighed > 0 ? (
+              <p className="text-sm text-slate-400">
+                {piecesOf(t.furnitureNotWeighed)} {t.furnitureNotWeighed === 1 ? "has" : "have"} no weight. Open{" "}
+                {t.furnitureNotWeighed === 1 ? "it" : "them"} below to add one.
               </p>
             ) : null}
             {t.estimatedLb > 0 ? (
@@ -159,7 +181,7 @@ export function SpaceAndWeight({
                   <span className="flex-1">
                     <span className="block text-slate-100">{r.name}</span>
                     <span className="block text-sm text-slate-400">
-                      {boxes(r.count)}, {amount(r.volumeCuFt)} cu ft, {amount(r.weightLb)} lb
+                      {boxesAndPieces(r.count, r.pieces)}, {amount(r.volumeCuFt)} cu ft, {amount(r.weightLb)} lb
                       {r.notWeighed > 0 ? `. ${r.notWeighed} not weighed` : ""}
                     </span>
                   </span>

@@ -1,6 +1,6 @@
 {
-  "edition": "November 17, 2026 - Hidden Lake human agent terms and virtual walkthrough",
-  "note": "Nov17 green-zone follow-up: Chelsea Holguin directly replied Nov16 for 1121 Hidden Lake and confirms $2,275 advertised BASE and $1,000 first-full-month rent concession; $25/month ordinary pet rent EACH means $2,325 recurring assuming both pets independently approved and no additional mandatory recurring fees. Each pet $250 nonrefundable once and $25 verification once; $150 admin, $50 application per adult, deposit minimum first month's rent subject to credit, prorated rent before move. NO refrigerator, washer or dryer. No HOA; fireplace decorative. Agent-provided address-verified InsideMaps tour was scanned Aug28 2026. She did NOT confirm large golden retriever + cat specifically, 12-month term, December lease-start cutoff, separate private office, grass/fence, tub, carpet or specific requested Thanksgiving tour date. No appointment. Progress Chloe Nov16 says automated incomplete Beaver Creek application workflow expired, NOT a user-confirmed application/payment/hold and not evidence home rented. Direct manager still listed Beaver $1,915 12/13-month base + $29.98 recurring fixed as of latest Nov17 read. No outbound contact, booking or payment. Preserve all ratings and green-zone rules.",
+  "edition": "November 18, 2026 — Thanksgiving tour status and user-adjusted ratings",
+  "note": "Nov18/19 tour reconciliation from user screenshots + actual Gmail: Clarks Mill CONFIRMED Nov24 6–7pm CST (Progress/Rently) and added Nathan Google Calendar with Shelly invited; HAR Loftin showing REQUESTED Mon Nov23 7pm first / Tue Nov24 7:30pm second, no appointment; Northview Nov23–25 afternoon Zillow form appears filled but submission not verified; Realtor acknowledged Flour Mill inquiry but no time. Preserved new locally provided Shelly ratings: Northview 4.8, Clarks 4.8, Garrison 4.7, Flour Mill 4.6. No other tour booked, no landlord follow-ups, pet approvals, or payment. User still must accept Shelly invite. Pricing not revised from unsynchronized screenshot.\nPrior evidence: Nov17 green-zone follow-up: Chelsea Holguin directly replied Nov16 for 1121 Hidden Lake and confirms $2,275 advertised BASE and $1,000 first-full-month rent concession; $25/month ordinary pet rent EACH means $2,325 recurring assuming both pets independently approved and no additional mandatory recurring fees. Each pet $250 nonrefundable once and $25 verification once; $150 admin, $50 application per adult, deposit minimum first month's rent subject to credit, prorated rent before move. NO refrigerator, washer or dryer. No HOA; fireplace decorative. Agent-provided address-verified InsideMaps tour was scanned Aug28 2026. She did NOT confirm large golden retriever + cat specifically, 12-month term, December lease-start cutoff, separate private office, grass/fence, tub, carpet or specific requested Thanksgiving tour date. No appointment. Progress Chloe Nov16 says automated incomplete Beaver Creek application workflow expired, NOT a user-confirmed application/payment/hold and not evidence home rented. Direct manager still listed Beaver $1,915 12/13-month base + $29.98 recurring fixed as of latest Nov17 read. No outbound contact, booking or payment. Preserve all ratings and green-zone rules.",
   "homes": [
     {
       "id": "hearthstone",
@@ -63,7 +63,7 @@
       "name": "2533 Clarks Mill Ln",
       "city": "Fort Worth",
       "rent": 2235,
-      "rating": 4.4,
+      "rating": 4.8,
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
@@ -103,8 +103,8 @@
           "detail": "Exact off-peak office/Alvarado routes not verified"
         },
         "tour": {
-          "status": "pending",
-          "detail": "Thanksgiving inquiry sent"
+          "status": "yes",
+          "detail": "CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied."
         }
       },
       "questions": [
@@ -112,11 +112,23 @@
         "Sunny/cat HOA screening",
         "Full fence and missing washer/dryer"
       ],
-      "checksUpdatedOn": "2026-11-12",
+      "checksUpdatedOn": "2026-11-18",
       "allInEstimate": 2408.98,
       "allInBasis": "Last manager basis + general pet rent, not final",
-      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7.",
-      "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cb4d2abe8eea7"
+      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied.",
+      "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cb4d2abe8eea7",
+      "ratingUpdatedOn": "2026-11-18",
+      "ratingStatus": "Shelly-confirmed 4.8/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
+      "tourSchedule": {
+        "status": "yes",
+        "date": "2026-11-24",
+        "start": "18:00",
+        "end": "19:00",
+        "timezone": "America/Chicago",
+        "kind": "self-guided",
+        "confirmation": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1f22c21ea7655a",
+        "calendarEvent": "https://www.google.com/calendar/event?eid=YXBqYjZkNDkxMTIwaG8yaHFoamN0ZHVzZmMgbmF0aGFuLnhiOTc1M0Bt"
+      }
     },
     {
       "id": "castle",
@@ -457,8 +469,8 @@
       "name": "6312 Flour Mill Run",
       "city": "Fort Worth",
       "rent": 2200,
-      "rating": 4.3,
-      "basis": "Estimated",
+      "rating": 4.6,
+      "basis": "Shelly",
       "checkpoint": "2026-11-20",
       "url": "https://www.realtor.com/rentals/details/6312-Flour-Mill-Run_Fort-Worth_TX_76179_M92136-49892",
       "priceNote": "Current MLS-linked asking rent $2,200, down $200 on Oct 26. Last published security deposit $2,400, $50 per adult application; pet rent/fees, other mandatory costs and 12-month lease quote unverified. Some portals still show $2,300–$2,400.",
@@ -496,8 +508,8 @@
           "detail": "Exact off-peak office/Alvarado routes not verified"
         },
         "tour": {
-          "status": "unknown",
-          "detail": "No confirmed showing"
+          "status": "pending",
+          "detail": "Realtor.com acknowledged Nov18 inquiry for a rental viewing at 6312 Flour Mill Run and identified Yecica Velazco. No specific time requested or confirmed."
         }
       },
       "questions": [
@@ -506,14 +518,22 @@
         "All required recurring fees and 2-pet rent",
         "Exact lease start, gallery and two commute routes"
       ],
-      "checksUpdatedOn": "2026-11-11"
+      "checksUpdatedOn": "2026-11-18",
+      "ratingUpdatedOn": "2026-11-18",
+      "ratingStatus": "Shelly-confirmed 4.6/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
+      "tourSchedule": {
+        "status": "pending",
+        "kind": "realtor.com inquiry",
+        "confirmation": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1f23819f7a5344"
+      },
+      "contactUpdate": "Nov18/19 TOUR STATUS: Realtor.com acknowledged Nov18 inquiry for a rental viewing at 6312 Flour Mill Run and identified Yecica Velazco. No specific time requested or confirmed."
     },
     {
       "id": "northview",
       "name": "236 Northview Ter",
       "city": "Burleson",
       "rent": 2198,
-      "rating": 4.5,
+      "rating": 4.8,
       "basis": "Shelly",
       "checkpoint": "2026-11-20",
       "trackedOn": "2026-11-04",
@@ -523,8 +543,8 @@
       "priceNote": "AMH virtual leasing assistant Amy T. Nov13 confirms total monthly price REDUCED $2,228→$2,198 including required charges, excluding one-time/conditional charges including normal dog+cat fees. Underlying base, actual 12-month rent and promotion eligibility unresolved. Prior AMH answer latest compatible start Nov20; no December 1 acceptance. Nov15 15-month promotion deadline still unresolved. No individual dog+cat approval.",
       "fit": "Shelly reviewed 236 Northview Terrace on Nov 4 and said she likes it, tentatively about 4.5/5. This supersedes the earlier assistant-predicted 3.8/5; she has NOT explicitly ranked it ahead of Clarks Mill. One-story 4BR/2BA, 1,798 sq ft; open island kitchen, granite, light walls and LVP in main spaces are advertised/visible in listing material. Actual backyard grass/fencing, bathtub location, bedroom floors and laundry-to-primary proximity remain incompletely verified; listing imagery and plans may be illustrative.",
       "status": "Nov13 AMH direct automated email confirms a $2,198 mandatory-fees-inclusive advertised total BEFORE pets; current final lease cost/term and Dec start not verified. Earlier latest compatible start Nov20; later date not granted.",
-      "ratingStatus": "tentative",
-      "ratingUpdatedOn": "2026-11-04",
+      "ratingStatus": "Shelly-confirmed 4.8/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
+      "ratingUpdatedOn": "2026-11-18",
       "readiness": {
         "dog": {
           "status": "pending",
@@ -556,7 +576,7 @@
         },
         "tour": {
           "status": "pending",
-          "detail": "Self-tour offered; not booked"
+          "detail": "Screenshot Nov18 shows Zillow tour-request form filled proposing Mon Nov23, Tue Nov24 or Wed Nov25 afternoons. No proof form was submitted, no slot or confirmation. AMH earlier offered self-tours 8AM–8PM; Nov20 latest start remains unresolved."
         }
       },
       "questions": [
@@ -564,10 +584,29 @@
         "Pet charges and approval",
         "Bedroom floors, tub, grass and photo source"
       ],
-      "checksUpdatedOn": "2026-11-14",
-      "contactUpdate": "Nov13 2:36pm CT AMH Amy T virtual leasing assistant: advertised total $2,228→$2,198, required recurring included, pet/conditional charges extra; no new move-in timing approval. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d69fd601557b1",
+      "checksUpdatedOn": "2026-11-18",
+      "contactUpdate": "Nov13 2:36pm CT AMH Amy T virtual leasing assistant: advertised total $2,228→$2,198, required recurring included, pet/conditional charges extra; no new move-in timing approval. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d69fd601557b1 | Nov18/19 TOUR STATUS: Screenshot Nov18 shows Zillow tour-request form filled proposing Mon Nov23, Tue Nov24 or Wed Nov25 afternoons. No proof form was submitted, no slot or confirmation. AMH earlier offered self-tours 8AM–8PM; Nov20 latest start remains unresolved.",
       "priceUpdatedOn": "2026-11-13",
-      "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d69fd601557b1"
+      "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d69fd601557b1",
+      "tourSchedule": {
+        "status": "pending",
+        "choices": [
+          {
+            "date": "2026-11-23",
+            "period": "afternoon"
+          },
+          {
+            "date": "2026-11-24",
+            "period": "afternoon"
+          },
+          {
+            "date": "2026-11-25",
+            "period": "afternoon"
+          }
+        ],
+        "submissionVerified": false,
+        "kind": "unsent/unverified form"
+      }
     },
     {
       "id": "watson",
@@ -1002,9 +1041,9 @@
       "name": "1500 Garrison St",
       "city": "Arlington",
       "rent": 2100,
-      "rating": 4.3,
-      "basis": "Nathan",
-      "ratingStatus": "reported",
+      "rating": 4.7,
+      "basis": "Shelly",
+      "ratingStatus": "Shelly-confirmed 4.7/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
       "trackedOn": "2026-11-11",
       "checkpoint": "2026-11-23",
       "url": "https://www.residential.com/l/1500-Garrison-St-Arlington-TX-76018-91ef7b8c09",
@@ -1052,7 +1091,8 @@
         "Actual kitchen, grass, carpet, bathtub, fridge and laundry"
       ],
       "checksUpdatedOn": "2026-11-14",
-      "contactUpdate": "Nov11 one-time inquiry to agent Nonie Bennett sent, no verified reply/tour. Nov14 syndicated public status conflicts: do not assume available."
+      "contactUpdate": "Nov11 one-time inquiry to agent Nonie Bennett sent, no verified reply/tour. Nov14 syndicated public status conflicts: do not assume available.",
+      "ratingUpdatedOn": "2026-11-18"
     },
     {
       "id": "walnutplace",
@@ -1391,15 +1431,61 @@
           "detail": "No verified offpeak work or family destination route"
         },
         "tour": {
-          "status": "unknown",
-          "detail": "No direct inquiry or showing yet"
+          "status": "pending",
+          "detail": "HAR Nov18 showing REQUEST SENT, NOT CONFIRMED. Agent Viren Shah: choice 1 Mon Nov23 7:00 PM CST; choice 2 Tue Nov24 7:30 PM CST. No duration specified. Nov18/19 email was automated leasing contact numbers only; do not treat as appointment."
         }
       },
-      "checksUpdatedOn": "2026-11-14",
-      "contactUpdate": "Not contacted; rating recorded only"
+      "checksUpdatedOn": "2026-11-18",
+      "contactUpdate": "Not contacted; rating recorded only | Nov18/19 TOUR STATUS: HAR Nov18 showing REQUEST SENT, NOT CONFIRMED. Agent Viren Shah: choice 1 Mon Nov23 7:00 PM CST; choice 2 Tue Nov24 7:30 PM CST. No duration specified. Nov18/19 email was automated leasing contact numbers only; do not treat as appointment.",
+      "tourSchedule": {
+        "status": "pending",
+        "choices": [
+          {
+            "date": "2026-11-23",
+            "start": "19:00",
+            "status": "requested"
+          },
+          {
+            "date": "2026-11-24",
+            "start": "19:30",
+            "status": "requested"
+          }
+        ],
+        "timezone": "America/Chicago",
+        "kind": "agent showing request",
+        "reply": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1f229a7ae6bbd2"
+      }
     }
   ],
   "updates": [
+    {
+      "date": "Nov 18",
+      "tag": "INQUIRY • No appointment",
+      "houseId": "flourmill",
+      "title": "Flour Mill Run, Fort Worth",
+      "detail": "Realtor.com acknowledged Nov18 inquiry and named Yecica Velazco; no showing date offered or confirmed."
+    },
+    {
+      "date": "Nov 18",
+      "tag": "TOUR • Form not verified sent",
+      "houseId": "northview",
+      "title": "Northview, Burleson",
+      "detail": "Zillow form screenshot prepared Mon Nov23/Tue Nov24/Wed Nov25 afternoon tour request; submission and date unconfirmed."
+    },
+    {
+      "date": "Nov 18",
+      "tag": "TOUR • Requested, not booked",
+      "houseId": "loftin",
+      "title": "Loftin, Crowley",
+      "detail": "HAR showing request sent: choice 1 Mon Nov23 at 7 PM, choice 2 Tue Nov24 at 7:30 PM. No agent confirmation; auto-response not booking."
+    },
+    {
+      "date": "Nov 18",
+      "tag": "TOUR • Confirmed",
+      "houseId": "clarks",
+      "title": "Clarks Mill, Fort Worth",
+      "detail": "Progress/Rently self-guided showing confirmed Tue Nov24 6–7 PM CST. Verified by agent bot email + tour dashboard screenshot. Nathan Google Calendar entry created; Shelly invited, awaiting acceptance."
+    },
     {
       "date": "Nov 17",
       "tag": "AGENT REPLY",

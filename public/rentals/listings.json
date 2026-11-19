@@ -1,6 +1,6 @@
 {
-  "edition": "November 18, 2026 — Thanksgiving tour status and user-adjusted ratings",
-  "note": "Nov18/19 tour reconciliation from user screenshots + actual Gmail: Clarks Mill CONFIRMED Nov24 6–7pm CST (Progress/Rently) and added Nathan Google Calendar with Shelly invited; HAR Loftin showing REQUESTED Mon Nov23 7pm first / Tue Nov24 7:30pm second, no appointment; Northview Nov23–25 afternoon Zillow form appears filled but submission not verified; Realtor acknowledged Flour Mill inquiry but no time. Preserved new locally provided Shelly ratings: Northview 4.8, Clarks 4.8, Garrison 4.7, Flour Mill 4.6. No other tour booked, no landlord follow-ups, pet approvals, or payment. User still must accept Shelly invite. Pricing not revised from unsynchronized screenshot.\nPrior evidence: Nov17 green-zone follow-up: Chelsea Holguin directly replied Nov16 for 1121 Hidden Lake and confirms $2,275 advertised BASE and $1,000 first-full-month rent concession; $25/month ordinary pet rent EACH means $2,325 recurring assuming both pets independently approved and no additional mandatory recurring fees. Each pet $250 nonrefundable once and $25 verification once; $150 admin, $50 application per adult, deposit minimum first month's rent subject to credit, prorated rent before move. NO refrigerator, washer or dryer. No HOA; fireplace decorative. Agent-provided address-verified InsideMaps tour was scanned Aug28 2026. She did NOT confirm large golden retriever + cat specifically, 12-month term, December lease-start cutoff, separate private office, grass/fence, tub, carpet or specific requested Thanksgiving tour date. No appointment. Progress Chloe Nov16 says automated incomplete Beaver Creek application workflow expired, NOT a user-confirmed application/payment/hold and not evidence home rented. Direct manager still listed Beaver $1,915 12/13-month base + $29.98 recurring fixed as of latest Nov17 read. No outbound contact, booking or payment. Preserve all ratings and green-zone rules.",
+  "edition": "November 19, 2026 — Clarks Mill price reconciliation and Shelly calendar acceptance",
+  "note": "Nov19 RECONCILIATION: Clarks Mill tour remains CONFIRMED Tue Nov24 6–7PM CST and Shelly accepted joint calendar invitation. Progress bot reports $2,090 BASE (+ fees), Zillow Nov19 $2,120 required-fees-inclusive total BEFORE pets; separate Rently Nov18 total displayed $2,109.99 on 12 months. No final two-pet approval or fee reconciliation. Loftin Nov23 7PM / Nov24 7:30PM choices are unconfirmed, only automated response. Northview Nov23–25 afternoon form not verified submitted. No further outgoing inquiries or calendar writes today. No new qualifying 4.2+ photo-reviewed home established today.\nPrior update: Nov18/19 tour reconciliation from user screenshots + actual Gmail: Clarks Mill CONFIRMED Nov24 6–7pm CST (Progress/Rently) and added Nathan Google Calendar with Shelly invited; HAR Loftin showing REQUESTED Mon Nov23 7pm first / Tue Nov24 7:30pm second, no appointment; Northview Nov23–25 afternoon Zillow form appears filled but submission not verified; Realtor acknowledged Flour Mill inquiry but no time. Preserved new locally provided Shelly ratings: Northview 4.8, Clarks 4.8, Garrison 4.7, Flour Mill 4.6. No other tour booked, no landlord follow-ups, pet approvals, or payment. User still must accept Shelly invite. Pricing not revised from unsynchronized screenshot.\nPrior evidence: Nov17 green-zone follow-up: Chelsea Holguin directly replied Nov16 for 1121 Hidden Lake and confirms $2,275 advertised BASE and $1,000 first-full-month rent concession; $25/month ordinary pet rent EACH means $2,325 recurring assuming both pets independently approved and no additional mandatory recurring fees. Each pet $250 nonrefundable once and $25 verification once; $150 admin, $50 application per adult, deposit minimum first month's rent subject to credit, prorated rent before move. NO refrigerator, washer or dryer. No HOA; fireplace decorative. Agent-provided address-verified InsideMaps tour was scanned Aug28 2026. She did NOT confirm large golden retriever + cat specifically, 12-month term, December lease-start cutoff, separate private office, grass/fence, tub, carpet or specific requested Thanksgiving tour date. No appointment. Progress Chloe Nov16 says automated incomplete Beaver Creek application workflow expired, NOT a user-confirmed application/payment/hold and not evidence home rented. Direct manager still listed Beaver $1,915 12/13-month base + $29.98 recurring fixed as of latest Nov17 read. No outbound contact, booking or payment. Preserve all ratings and green-zone rules.",
   "homes": [
     {
       "id": "hearthstone",
@@ -62,17 +62,17 @@
       "id": "clarks",
       "name": "2533 Clarks Mill Ln",
       "city": "Fort Worth",
-      "rent": 2235,
+      "rent": 2120,
       "rating": 4.8,
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
-      "priceNote": "NEW Nov11 Zillow price-cut notification: 'Total monthly price' $2,175, DOWN $45 from $2,220, before individual pet rent; Zillow figure includes its identified mandatory recurring price but not confirmed as current 12-month Progress quote. Earlier 12-month manager base $2,235 + $29.98 services + general $144 two-pet rent = $2,408.98 illustrative and outdated basis. IF same lease/fees, $2175 + $144 = $2319 illustrative, not approved all-in and not comparable to $2235 base without synchronized term. Resolve live manager quote, pets and HOA rules. Nov8 Progress: possession within 12 days of rent-ready, optional +7 for $250 fee; fridge yes, washer/dryer no; landlord pays HOA dues.",
+      "priceNote": "Nov19 Zillow follow-up email displays $2,120/month TOTAL including required recurring fees before pet charges (down from Nov11 $2,175 total). Nov18/19 Progress booking email quotes $2,090 BASE + applicable fees; previous standard $29.98 fixed smart-home/utility charge implies $2,119.98, matching Zillow rounded price, but manager has not reconfirmed property-specific fee itemization. Rently confirmed self-tour screen separately showed $2,109.99 TOTAL/12 months. Do not conflate quote sources. Two-pet charges could be up to $144 generic scenario, not individually approved; $2,264 illustrative not a final pet-inclusive quote. Self-guided tour CONFIRMED Nov24 6–7PM CST, Shelly accepted joint Google Calendar invitation Nov19; not lease/pet approval.",
       "fit": "Shelly's second-favorite. Hard floors and comfortable layout; painted cabinets and complete fencing need review.",
       "status": "Nov11 Zillow alert advertised FOR RENT at $2,175 monthly total (down $45 from $2,220); live manager listing/current 12-month base, two-pet approval and exact true full monthly quote still unverified. Progress Nov8 says rent-ready possession within 12 days +7 days extension for $250, washer/dryer not included, fridge included, HOA dues covered.",
-      "priceBasis": "12-month manager base rent; $29.98 required services extra",
+      "priceBasis": "Nov19 Zillow email: $2,120 TOTAL/month including advertised required recurring fees BEFORE pets; Progress Nov18 manager bot: $2,090 BASE plus applicable fees. 12-month Rently screenshot was $2,109.99 TOTAL, differing $10 from Zillow; NOT final binding fee quote.",
       "petGate": "Large dogs + cats listed; individual approval pending",
-      "priceUpdatedOn": "2026-11-11",
+      "priceUpdatedOn": "2026-11-19",
       "readiness": {
         "dog": {
           "status": "pending",
@@ -88,7 +88,7 @@
         },
         "cost": {
           "status": "pending",
-          "detail": "Nov11 Zillow TOTAL $2175 before pets (down $45), indicative $2319 if $144 generic pet rent applied; 12mo/individual approval not verified; prior manager-based estimate $2408.98 no longer reliable"
+          "detail": "Nov19 Zillow TOTAL $2120 before pets; Progress bot base $2090 plus fees (standard $29.98 => $2119.98), Rently screen $2109.99 total on 12mo. Pet charges not approved/itemized; $144/mo generic two-pet scenario would yield about $2264, illustrative only."
         },
         "lease": {
           "status": "pending",
@@ -104,7 +104,7 @@
         },
         "tour": {
           "status": "yes",
-          "detail": "CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied."
+          "detail": "Confirmed self-tour Tue Nov24 6–7PM CST; Progress email + Rently reservation screenshot. Google Calendar event created by Nathan and accepted by Shelly Nov19."
         }
       },
       "questions": [
@@ -112,10 +112,10 @@
         "Sunny/cat HOA screening",
         "Full fence and missing washer/dryer"
       ],
-      "checksUpdatedOn": "2026-11-18",
+      "checksUpdatedOn": "2026-11-19",
       "allInEstimate": 2408.98,
       "allInBasis": "Last manager basis + general pet rent, not final",
-      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied.",
+      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied. | Nov19: Shelly ACCEPTED Nathan calendar invitation 12:39 AM CST; both participants now have event on calendars (event link recorded). Zillow morning follow-up shows $2,120 advertised mandatory-fee-inclusive TOTAL before pet charges, manager email $2,090 BASE + applicable fees; old board $2,235 obsolete.",
       "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cb4d2abe8eea7",
       "ratingUpdatedOn": "2026-11-18",
       "ratingStatus": "Shelly-confirmed 4.8/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
@@ -127,7 +127,8 @@
         "timezone": "America/Chicago",
         "kind": "self-guided",
         "confirmation": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1f22c21ea7655a",
-        "calendarEvent": "https://www.google.com/calendar/event?eid=YXBqYjZkNDkxMTIwaG8yaHFoamN0ZHVzZmMgbmF0aGFuLnhiOTc1M0Bt"
+        "calendarEvent": "https://www.google.com/calendar/event?eid=YXBqYjZkNDkxMTIwaG8yaHFoamN0ZHVzZmMgbmF0aGFuLnhiOTc1M0Bt",
+        "attendeeShelly": "accepted 2026-11-19 00:39 CST"
       }
     },
     {
@@ -1432,11 +1433,11 @@
         },
         "tour": {
           "status": "pending",
-          "detail": "HAR Nov18 showing REQUEST SENT, NOT CONFIRMED. Agent Viren Shah: choice 1 Mon Nov23 7:00 PM CST; choice 2 Tue Nov24 7:30 PM CST. No duration specified. Nov18/19 email was automated leasing contact numbers only; do not treat as appointment."
+          "detail": "HAR Nov18 showing REQUEST delivered choices Mon Nov23 7PM or Tue Nov24 7:30PM CST. Viren Shah only sent auto-routing messages; no verified confirmation."
         }
       },
-      "checksUpdatedOn": "2026-11-18",
-      "contactUpdate": "Not contacted; rating recorded only | Nov18/19 TOUR STATUS: HAR Nov18 showing REQUEST SENT, NOT CONFIRMED. Agent Viren Shah: choice 1 Mon Nov23 7:00 PM CST; choice 2 Tue Nov24 7:30 PM CST. No duration specified. Nov18/19 email was automated leasing contact numbers only; do not treat as appointment.",
+      "checksUpdatedOn": "2026-11-19",
+      "contactUpdate": "Not contacted; rating recorded only | Nov18/19 TOUR STATUS: HAR Nov18 showing REQUEST SENT, NOT CONFIRMED. Agent Viren Shah: choice 1 Mon Nov23 7:00 PM CST; choice 2 Tue Nov24 7:30 PM CST. No duration specified. Nov18/19 email was automated leasing contact numbers only; do not treat as appointment. | Nov19: second email from Viren Shah automated intake reply with leasing phone contacts, NO showing time confirmed.",
       "tourSchedule": {
         "status": "pending",
         "choices": [
@@ -1458,6 +1459,13 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 19",
+      "tag": "CONFIRMED TOUR • Shared calendar",
+      "houseId": "clarks",
+      "title": "Clarks Mill tour + new fee-inclusive listing price",
+      "detail": "Progress confirms self-guided Nov24 6–7 PM CST; Shelly accepted Nathan's Google Calendar invitation. Nov19 Zillow email says $2,120 required-fees-inclusive TOTAL before pets; Progress bot $2,090 BASE plus applicable fees, $29.98 general fixed fee; Rently dashboard separately $2,109.99 total. Require written final pet/lease quote; not approval. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1f31bb942a3b94"
+    },
     {
       "date": "Nov 18",
       "tag": "INQUIRY • No appointment",

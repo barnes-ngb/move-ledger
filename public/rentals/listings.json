@@ -1,6 +1,6 @@
 {
-  "edition": "November 19, 2026 — Clarks Mill price reconciliation and Shelly calendar acceptance",
-  "note": "Nov19 RECONCILIATION: Clarks Mill tour remains CONFIRMED Tue Nov24 6–7PM CST and Shelly accepted joint calendar invitation. Progress bot reports $2,090 BASE (+ fees), Zillow Nov19 $2,120 required-fees-inclusive total BEFORE pets; separate Rently Nov18 total displayed $2,109.99 on 12 months. No final two-pet approval or fee reconciliation. Loftin Nov23 7PM / Nov24 7:30PM choices are unconfirmed, only automated response. Northview Nov23–25 afternoon form not verified submitted. No further outgoing inquiries or calendar writes today. No new qualifying 4.2+ photo-reviewed home established today.\nPrior update: Nov18/19 tour reconciliation from user screenshots + actual Gmail: Clarks Mill CONFIRMED Nov24 6–7pm CST (Progress/Rently) and added Nathan Google Calendar with Shelly invited; HAR Loftin showing REQUESTED Mon Nov23 7pm first / Tue Nov24 7:30pm second, no appointment; Northview Nov23–25 afternoon Zillow form appears filled but submission not verified; Realtor acknowledged Flour Mill inquiry but no time. Preserved new locally provided Shelly ratings: Northview 4.8, Clarks 4.8, Garrison 4.7, Flour Mill 4.6. No other tour booked, no landlord follow-ups, pet approvals, or payment. User still must accept Shelly invite. Pricing not revised from unsynchronized screenshot.\nPrior evidence: Nov17 green-zone follow-up: Chelsea Holguin directly replied Nov16 for 1121 Hidden Lake and confirms $2,275 advertised BASE and $1,000 first-full-month rent concession; $25/month ordinary pet rent EACH means $2,325 recurring assuming both pets independently approved and no additional mandatory recurring fees. Each pet $250 nonrefundable once and $25 verification once; $150 admin, $50 application per adult, deposit minimum first month's rent subject to credit, prorated rent before move. NO refrigerator, washer or dryer. No HOA; fireplace decorative. Agent-provided address-verified InsideMaps tour was scanned Aug28 2026. She did NOT confirm large golden retriever + cat specifically, 12-month term, December lease-start cutoff, separate private office, grass/fence, tub, carpet or specific requested Thanksgiving tour date. No appointment. Progress Chloe Nov16 says automated incomplete Beaver Creek application workflow expired, NOT a user-confirmed application/payment/hold and not evidence home rented. Direct manager still listed Beaver $1,915 12/13-month base + $29.98 recurring fixed as of latest Nov17 read. No outbound contact, booking or payment. Preserve all ratings and green-zone rules.",
+  "edition": "November 19, 2026 — Shelly-rated Mesa Vista and Thompson added to green-zone comparison",
+  "note": "Shelly direct Nov19 ratings: 825 Mesa Vista Dr, Crowley 4.6/5; 528 Thompson Dr, Saginaw 4.5/5. Both newly tracked from Nov19 expanded-geography audit, not assumed newly public-listed, ordinary both-pet approval/availability, actual recurring all-in and commute remain unverified. Mesa Vista $1,899.98 known mandatory-fees-inclusive before pets; Thompson $2,200 advertised BASE on 12-month listing. Do not infer route metrics absent travel.json. No outbound contact/tours/calendars. Prior state: Nov19 RECONCILIATION: Clarks Mill tour remains CONFIRMED Tue Nov24 6–7PM CST and Shelly accepted joint calendar invitation. Progress bot reports $2,090 BASE (+ fees), Zillow Nov19 $2,120 required-fees-inclusive total BEFORE pets; separate Rently Nov18 total displayed $2,109.99 on 12 months. No final two-pet approval or fee reconciliation. Loftin Nov23 7PM / Nov24 7:30PM choices are unconfirmed, only automated response. Northview Nov23–25 afternoon form not verified submitted. No further outgoing inquiries or calendar writes today. No new qualifying 4.2+ photo-reviewed home established today.\nPrior update: Nov18/19 tour reconciliation from user screenshots + actual Gmail: Clarks Mill CONFIRMED Nov24 6–7pm CST (Progress/Rently) and added Nathan Google Calendar with Shelly invited; HAR Loftin showing REQUESTED Mon Nov23 7pm first / Tue Nov24 7:30pm second, no appointment; Northview Nov23–25 afternoon Zillow form appears filled but submission not verified; Realtor acknowledged Flour Mill inquiry but no time. Preserved new locally provided Shelly ratings: Northview 4.8, Clarks 4.8, Garrison 4.7, Flour Mill 4.6. No other tour booked, no landlord follow-ups, pet approvals, or payment. User still must accept Shelly invite. Pricing not revised from unsynchronized screenshot.\nPrior evidence: Nov17 green-zone follow-up: Chelsea Holguin directly replied Nov16 for 1121 Hidden Lake and confirms $2,275 advertised BASE and $1,000 first-full-month rent concession; $25/month ordinary pet rent EACH means $2,325 recurring assuming both pets independently approved and no additional mandatory recurring fees. Each pet $250 nonrefundable once and $25 verification once; $150 admin, $50 application per adult, deposit minimum first month's rent subject to credit, prorated rent before move. NO refrigerator, washer or dryer. No HOA; fireplace decorative. Agent-provided address-verified InsideMaps tour was scanned Aug28 2026. She did NOT confirm large golden retriever + cat specifically, 12-month term, December lease-start cutoff, separate private office, grass/fence, tub, carpet or specific requested Thanksgiving tour date. No appointment. Progress Chloe Nov16 says automated incomplete Beaver Creek application workflow expired, NOT a user-confirmed application/payment/hold and not evidence home rented. Direct manager still listed Beaver $1,915 12/13-month base + $29.98 recurring fixed as of latest Nov17 read. No outbound contact, booking or payment. Preserve all ratings and green-zone rules.",
   "homes": [
     {
       "id": "hearthstone",
@@ -1456,9 +1456,145 @@
         "kind": "agent showing request",
         "reply": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1f229a7ae6bbd2"
       }
+    },
+    {
+      "id": "mesavista825",
+      "name": "825 Mesa Vista Dr",
+      "city": "Crowley",
+      "rent": 1899.98,
+      "rating": 4.6,
+      "basis": "Shelly",
+      "ratingStatus": "Shelly-confirmed 4.6/5 on November 19, 2026",
+      "ratingUpdatedOn": "2026-11-19",
+      "trackedOn": "2026-11-19",
+      "checkpoint": "2026-11-21",
+      "url": "https://www.apartments.com/825-mesa-vista-dr-crowley-tx/dys6znh/",
+      "priceBasis": "Advertised $1,870 BASE + $19.99 smart-home + $9.99 utility-service = $1,899.98 known fixed-fee recurring before both ordinary pets; exact lease length not re-verified",
+      "priceNote": "Address-specific Progress Residential syndicated listing in Nov19 surrounding-area audit advertised $1,870 base and $29.98 mandatory recurring service total = $1,899.98 BEFORE any pet rent, usage-based utilities and renters insurance. Exact lease duration, two-pet monthly charges, security deposit and nonrefundable application/admin/pet fees were not verified for this house. Do not transfer fees from another manager home as a confirmed quote.",
+      "fit": "Shelly directly rates this one-story 4BR/2BA approx 1,744 sqft house 4.6/5 (Nov 19). Advertised vinyl flooring, fenced yard, garage, primary double vanity. Gallery includes virtual staging. Current grass coverage and actual bedroom floors, tub location and enclosed office are unverified; 4th bedroom could serve as office. Smaller than Hearthstone.",
+      "status": "Newly discovered to tracker Nov19 in broader Crowley search, not verified as genuinely NEW listing. Syndicated rental advertised $1,870 base / $1,899.98 known recurring before pets, currently occupied, advertised availability December 11 (not guarantee). Current active manager status not separately confirmed.",
+      "petGate": "Cats and dogs generally listed; Sunny's specific large-dog approval, Belle's cat approval together, and ordinary two-pet monthly/one-time fees unverified.",
+      "petBlocked": false,
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "General dog-friendly wording only; adult Golden Retriever Sunny not individually approved"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Generic cat listing only; simultaneous ordinary dog+cat acceptance not confirmed"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "Currently occupied; advertised Dec 11 availability, not confirmed vacancy/approved Dec move-in"
+        },
+        "cost": {
+          "status": "pending",
+          "detail": "$1,870 base + $29.98 mandatory = $1,899.98 BEFORE 2 pets. Pet screening, pet rent, one-time fees, security deposit and lease term not quoted for this address"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "Exact 12-month lease price, approved start and possession window unknown; Dec11 advertised only"
+        },
+        "photos": {
+          "status": "pending",
+          "detail": "Property-specific 16-photo gallery; virtual staging; real 2026 bedroom floors, usable grass, tub, kitchen size and enclosed office need inspection"
+        },
+        "commute": {
+          "status": "pending",
+          "detail": "Exact-address work/parents off-peak travel unknown. No route baseline exists in travel.json"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No inquiry, appointment or booking authorized for this newly rated house"
+        }
+      },
+      "questions": [
+        "Confirm both regular pets (large golden retriever and cat) and all fees",
+        "Verify current occupancy, earliest actual move-in and 12-month quoted term",
+        "Current kitchen/yard/bedroom flooring, primary tub/vanity, enclosed 4th-as-office arrangement",
+        "Obtain exact travel baselines to work/1801 W Lake Shore Dr and viable indoor pool"
+      ],
+      "checksUpdatedOn": "2026-11-19",
+      "contactUpdate": "No direct inquiry; discovered via surrounding-area research Nov19; Shelly rating added same day."
+    },
+    {
+      "id": "thompson528",
+      "name": "528 Thompson Dr",
+      "city": "Saginaw",
+      "rent": 2200,
+      "rating": 4.5,
+      "basis": "Shelly",
+      "ratingStatus": "Shelly-confirmed 4.5/5 on November 19, 2026",
+      "ratingUpdatedOn": "2026-11-19",
+      "trackedOn": "2026-11-19",
+      "checkpoint": "2026-11-21",
+      "url": "https://www.coldwellbankerhomes.com/tx/saginaw/528-thompson-dr/pid_74591573/",
+      "priceBasis": "MLS-linked advertised BASE $2,200/month on stated 12-month lease; mandatory recurring and two-pet charges unquoted",
+      "priceNote": "MLS-linked Coldwell Banker/CitiHomes Realty listing previously retrieved in Nov19 area audit: advertised $2,200 base for 12-month term, $2,200 listed security deposit; other mandatory recurring fees, pet rent for both pets, nonrefundable application/admin/pet charges, lawn-care cost and appliances beyond photographed refrigerator unconfirmed.",
+      "fit": "Shelly directly rates 4.5/5 on Nov19. Listing claims one-story 4BR/2BA around 1,811 sqft, open kitchen, granite counters, substantial cabinetry, tile kitchen flooring, 2-car garage and no HOA. Address-matched photo shows reddish-brown kitchen cabinets and included refrigerator. Eight-image gallery insufficient to verify private office, bedroom carpet, primary tub/double vanity and genuine grassy fenced dog-safe backyard. Smaller and darker kitchen than Hearthstone.",
+      "status": "Previously existing rental inventory newly discovered to tracker Nov19; MLS #21427919, advertised available in Nov19 area audit but current individual leasing status not directly confirmed. NOT counted as verified new-to-market arrival.",
+      "petGate": "General listing permits pets, individual ordinary large Golden Retriever Sunny + cat Belle approval, limits and charges not confirmed.",
+      "petBlocked": false,
+      "readiness": {
+        "dog": {
+          "status": "pending",
+          "detail": "Pets considered generically; individual acceptance of large Golden Retriever unknown"
+        },
+        "cat": {
+          "status": "pending",
+          "detail": "Cat acceptance alongside large dog still requires written confirmation"
+        },
+        "availability": {
+          "status": "pending",
+          "detail": "MLS-linked rental advertised; current active/possession date not verified directly with broker"
+        },
+        "cost": {
+          "status": "pending",
+          "detail": "$2,200 12-month advertised BASE; mandatory packages, two-pet rent and upfront fees unknown"
+        },
+        "lease": {
+          "status": "pending",
+          "detail": "12-month stated in listing, but permissible December start and renewal/break conditions unknown"
+        },
+        "photos": {
+          "status": "pending",
+          "detail": "Only eight address-matched listing photos; office, grass, tub/vanity and bedroom floors unverified"
+        },
+        "commute": {
+          "status": "pending",
+          "detail": "No verified exact-address office or parents commute; no route entry yet"
+        },
+        "tour": {
+          "status": "unknown",
+          "detail": "No showing requested or confirmed"
+        }
+      },
+      "questions": [
+        "Confirm exact normal-pet approval and pet rent/fees for BOTH Sunny and Belle",
+        "All-in recurring total with required charges and 12-month lease start/deposit",
+        "Current photos or video of grass, bedroom floors, primary tub and vanity, office and fridge/washer/dryer",
+        "Verify exact routes to work and parents and pool access"
+      ],
+      "checksUpdatedOn": "2026-11-19",
+      "contactUpdate": "No outreach authorized; Shelly rating added Nov19 from current conversation."
     }
   ],
   "updates": [
+    {
+      "date": "Nov 19",
+      "tag": "SHELLY RATED • NEW TO TRACKER",
+      "houseId": "mesavista825",
+      "title": "825 Mesa Vista Dr, Crowley",
+      "detail": "Shelly explicitly rated 4.6/5. $1,870 BASE + $29.98 published services = $1,899.98 known monthly before ordinary dog/cat rent. Occupied, advertised Dec11. Pet/lease/photos/route gates unresolved. Listing age not verified; do not count as new market entry."
+    },
+    {
+      "date": "Nov 19",
+      "tag": "SHELLY RATED • NEW TO TRACKER",
+      "houseId": "thompson528",
+      "title": "528 Thompson Dr, Saginaw",
+      "detail": "Shelly explicitly rated 4.5/5. MLS-linked $2,200 12-month BASE (fees + both pets extra). Large-dog+cat approval, full fees, bath/bedroom floors, grass and commute remain unresolved; older inventory newly found in geographic expansion."
+    },
     {
       "date": "Nov 19",
       "tag": "CONFIRMED TOUR • Shared calendar",

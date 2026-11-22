@@ -133,6 +133,27 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 @media(max-width:750px){.filter-grid{grid-template-columns:1fr 1fr}.pool-disclosure .pool-grid{grid-template-columns:1fr}.filter-grid label:last-child{grid-column:1/-1}.decision-card{padding:11px}.travel-cell{padding:7px 5px}.travel-cell strong{font-size:14px}}
 @media(max-width:400px){.travel-strip{gap:4px}.travel-cell span{font-size:10px}.decision-card .head{gap:5px}.decision-card h3{font-size:14px}}
 
+
+/* Mobile tour booking tracker; all public links are credential-free */
+.tour-summary{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px;font-size:12px}
+.tour-summary span{border-radius:8px;background:#edf5f4;color:#2a5a52;padding:5px 9px;font-weight:750}
+.tour-summary a{color:#186b5e;font-weight:700;padding:5px}
+.tour-rows{display:grid;gap:8px}
+.tour-row{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;border:1px solid #dce6e9;background:#fbfdfd;border-radius:10px;padding:12px;min-width:0}
+.tour-row .tr-header{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.tour-row h3{font-size:14px;margin:0;line-height:1.3}
+.tour-row .tr-when{font-size:12px;color:#4d6473;margin:2px 0 0}
+.tour-row .tr-state{font-size:11px;font-weight:780;white-space:nowrap;border-radius:12px;padding:3px 8px;background:#ecf1f3;color:#4e6b75}
+.tour-row .tr-state.confirmed{background:#e3f2e9;color:#1e6e50}
+.tour-row .tr-state.code-received,.tour-row .tr-state.login,.tour-row .tr-state.requested{background:#fff2dc;color:#8c651e}
+.tour-row .tr-copy{font-size:12px;color:#475d68;margin:0}
+.tour-row .tr-caution{font-size:11px;color:#92552d;background:#fff8e9;padding:7px 8px;border-radius:6px;margin:0}
+.tour-row .tr-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tour-row .tr-actions a{font-size:12px;color:#206952;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.tour-archive{margin-top:12px;border-top:1px solid #dce6e9;padding-top:12px}
+.tour-archive>summary{cursor:pointer;color:#225a70;font-size:13px;font-weight:750;margin-bottom:9px}
+#tour-board{scroll-margin-top:15px}
+
 </style>
 </head>
 <body>
@@ -166,6 +187,14 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
  <div class="legend"><span><b></b> Shelly rated</span><span><b class="nathan"></b> Nathan rated</span><span><b class="pred"></b> Estimated</span></div>
  <p class="explain">The horizontal position uses the listing's advertised figure, which may be base rent or a fees-inclusive quote. The card shows the distinction. Current green-zone homes receive route research; other homes remain in the archive and exceptions view.</p>
  <p id="boardStatus" role="status" aria-live="polite"></p>
+</section>
+<section class="panel" id="tour-board" aria-label="Thanksgiving house tour schedule and booking links">
+ <div class="subhead"><h2>Thanksgiving tours · booking tracker</h2><span class="pill neutral">Nov 22–28</span></div>
+ <p class="hint">Confirmation is different from a booking link or an entry code. Only a provider-confirmed slot is marked confirmed. These actions are safe to share; no private entry codes, passwords, or identity documents are stored here.</p>
+ <div class="tour-summary"><span id="tourConfirmed">1 confirmed</span><span id="tourPending">Pending requests</span><a href="#tourOther">Other contacted houses ↓</a></div>
+ <div id="tourPriority" class="tour-rows"><p class="hint">Loading the tour schedule…</p></div>
+ <details id="tourOther" class="tour-archive"><summary>Other contacted homes &amp; unresolved access</summary><div id="tourArchive" class="tour-rows"></div></details>
+ <p class="explain">Dates marked requested are planning preferences, not appointments. Sign in to the provider's official scheduling page to confirm self-guided tours. Ask about BOTH ordinary pets before spending time on a house with conflicting pet rules.</p>
 </section>
 <section class="panel" id="shortlist" aria-label="Rental shortlist">
  <div class="subhead"><h2>Homes &amp; decision exceptions</h2><span class="small" id="count">Updated when published</span></div>
@@ -445,6 +474,58 @@ function drawUpdates(items){
  });
 }
 
+
+var tourData={groups:[]};
+function safeTourHref(x){
+ try{var u=new URL(x,location.href);return ["https:","http:","tel:","sms:","mailto:"].includes(u.protocol)?u.href:"#"}catch(e){return"#"}
+}
+function renderTourRows(entries,target){
+ var root=byId(target);if(!root)return;root.replaceChildren();
+ (entries||[]).forEach(function(t){
+  var row=write(root,"article","","tour-row");
+  row.id="tour-"+t.id;
+  var header=write(row,"div","","tr-header"),left=write(header,"div","");
+  write(left,"h3",t.name);
+  write(left,"div",(t.date||"")+" · "+(t.time||"")+" · "+t.city,"tr-when");
+  write(header,"span",t.statusLabel||"Pending","tr-state "+(t.status||""));
+  if(t.contact)write(row,"div",t.contact,"small");
+  write(row,"p",t.next||"Awaiting provider confirmation","tr-copy");
+  if(t.caution)write(row,"p",t.caution,"tr-caution");
+  var actions=write(row,"div","","tr-actions");
+  (t.actions||[]).forEach(function(a){
+   var link=document.createElement("a");link.href=safeTourHref(a.url);
+   link.textContent=a.label+" ↗";if(/^https?:/i.test(link.href)){link.target="_blank";link.rel="noopener noreferrer"}
+   actions.appendChild(link);
+  });
+  if(t.houseId){
+   var cardLink=document.createElement("a");cardLink.textContent="House details ↓";cardLink.href="#house-"+t.houseId;
+   cardLink.addEventListener("click",function(e){
+    e.preventDefault();
+    if(!byId("house-"+t.houseId)){
+     byId("filterMode").value="all";byId("filterSearch").value="";byId("onlyShelly").checked=false;render();
+    }
+    focusHouse(t.houseId);
+   });
+   actions.appendChild(cardLink);
+  }
+ });
+}
+function renderTours(){
+ var groups=tourData.groups||[];
+ var first=groups.find(function(g){return g.id==="priority"})||{entries:[]};
+ var second=groups.find(function(g){return g.id==="other"})||{entries:[]};
+ renderTourRows(first.entries,"tourPriority");renderTourRows(second.entries,"tourArchive");
+ var all=groups.flatMap(function(g){return g.entries||[]});
+ byId("tourConfirmed").textContent=all.filter(function(t){return t.status==="confirmed"}).length+" confirmed";
+ byId("tourPending").textContent=all.filter(function(t){return t.status!=="confirmed"}).length+" still need action";
+}
+function loadTours(){
+ fetch("./tours.json?_="+Date.now(),{cache:"no-store"})
+ .then(function(r){if(!r.ok)throw Error("HTTP "+r.status);return r.json()})
+ .then(function(d){if(d&&Array.isArray(d.groups)){tourData=d;renderTours()}})
+ .catch(function(){byId("tourPriority").textContent="Tour links unavailable. Try refreshing the page."});
+}
+
 var poolItems=[];
 
 function renderPools(){
@@ -489,7 +570,7 @@ function loadTravel(){
  .then(function(d){if(d&&d.homes&&d.destinations){travelData=d;render()}})
  .catch(function(){show("Travel times unavailable; Google Maps route links remain available.")});
 }
-base=fallback;render();sync(false);byId("poolOrigin").addEventListener("change",renderPools);loadPools();loadTravel();
+base=fallback;render();sync(false);byId("poolOrigin").addEventListener("change",renderPools);loadPools();loadTravel();loadTours();
 })();
 </script>
 </body>

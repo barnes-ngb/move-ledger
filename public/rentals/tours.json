@@ -1,0 +1,308 @@
+{
+  "edition": "November 22, 2026 — about 5:30 PM Central",
+  "privacy": "Public shared decision page. Never place lockbox access codes, website passwords, identity-document images, private phone verification codes, or personal document identifiers in this file.",
+  "timezone": "America/Chicago",
+  "groups": [
+    {
+      "id": "priority",
+      "title": "This week — act on these",
+      "entries": [
+        {
+          "id": "clarks",
+          "houseId": "clarks",
+          "name": "2533 Clarks Mill Ln",
+          "city": "Fort Worth",
+          "address": "2533 Clarks Mill Ln, Fort Worth, TX 76123",
+          "date": "Tue Nov 24",
+          "time": "6–7 PM",
+          "status": "confirmed",
+          "statusLabel": "Confirmed",
+          "contact": "Progress Residential / Chloe",
+          "next": "Keep this appointment. Check in on MyTours on arrival for the smart-lock access process.",
+          "caution": "Pet approval and final lease fees still unverified.",
+          "actions": [
+            {
+              "label": "Tour access",
+              "url": "https://MyTours.rentprogress.com"
+            },
+            {
+              "label": "Calendar",
+              "url": "https://www.google.com/calendar/event?eid=YXBqYjZkNDkxMTIwaG8yaHFoamN0ZHVzZmMgbmF0aGFuLnhiOTc1M0Bt&ctz=America/Chicago"
+            }
+          ]
+        },
+        {
+          "id": "mcpherson",
+          "name": "McPherson Village · 5601 McLanahan Ln",
+          "city": "Fort Worth / Crowley",
+          "address": "5601 McLanahan Lane, Fort Worth, TX 76036",
+          "date": "Wed Nov 25",
+          "time": "3 PM requested",
+          "status": "code-received",
+          "statusLabel": "Entry code received privately",
+          "contact": "Melissa Moseley · Shipman Companies",
+          "next": "Confirm with Melissa that Wednesday 3 PM is approved and the previously sent entry code is valid for that day. Do not publish or forward the code.",
+          "caution": "CRITICAL: an address-specific listing says cats AND dogs aren't allowed. Sent clarification; do not assume pet approval.",
+          "actions": [
+            {
+              "label": "Text Melissa",
+              "url": "sms:+12075315573"
+            },
+            {
+              "label": "Call manager",
+              "url": "tel:+18172981652"
+            },
+            {
+              "label": "Listing",
+              "url": "https://www.showmetherent.com/listing/details/5601-McLanahan-Lane-Fort-Worth-TX-76036/2b748350-2db7-11ef-87c2-06d64c3d8bfe"
+            }
+          ]
+        },
+        {
+          "id": "hiddenlake",
+          "houseId": "hiddenlake",
+          "name": "1121 Hidden Lake Dr",
+          "city": "Burleson",
+          "address": "1121 Hidden Lake Dr, Burleson, TX 76028",
+          "date": "Wed Nov 25",
+          "time": "5 PM requested",
+          "status": "requested",
+          "statusLabel": "Awaiting confirmation",
+          "contact": "Chelsea Holguin · Open House Texas",
+          "next": "Reply sent Nov 22 requesting Wednesday 5 PM, with Saturday 4–6 PM backup. Agent's prior email offered a tour but never confirmed a time.",
+          "caution": "Large golden retriever + cat still require property-specific approval. Refrigerator, washer and dryer are not provided.",
+          "actions": [
+            {
+              "label": "Email Chelsea",
+              "url": "mailto:chelsea.holguin@openhouse-group.com"
+            },
+            {
+              "label": "Walkthrough",
+              "url": "https://www.insidemaps.com/app/walkthrough-tour/?p=m7f8nqzGu6"
+            }
+          ]
+        },
+        {
+          "id": "tide",
+          "houseId": "tide",
+          "name": "6932 Tide Ln",
+          "city": "Fort Worth",
+          "address": "6932 Tide Ln, Fort Worth, TX 76179",
+          "date": "Sat Nov 28",
+          "time": "4 PM requested",
+          "status": "requested",
+          "statusLabel": "Agent can arrange · awaiting slot",
+          "contact": "Kyle Vance",
+          "next": "Reply sent Nov 22 requesting Saturday 4 PM. Kyle has offered to show it or send a colleague, but has not confirmed a new slot.",
+          "caution": "December 1 lease start acceptable. Advertised $500 NONREFUNDABLE fee for both pets; 12-month total still needs verification.",
+          "actions": [
+            {
+              "label": "Email Kyle",
+              "url": "mailto:kylevancesold@gmail.com"
+            },
+            {
+              "label": "Listing",
+              "url": "https://www.coldwellbankerhomes.com/tx/fort-worth/6932-tide-ln/pid_74666023/"
+            }
+          ]
+        },
+        {
+          "id": "garrison",
+          "houseId": "garrison",
+          "name": "1500 Garrison St",
+          "city": "Arlington",
+          "address": "1500 Garrison St, Arlington, TX 76018",
+          "date": "Wed Nov 25",
+          "time": "12:30 PM requested",
+          "status": "requested",
+          "statusLabel": "Awaiting agent reply",
+          "contact": "Nonie · Listing contact",
+          "next": "Follow-up sent Nov 22 for Wednesday 12:30 PM, or Saturday midday backup. No agent confirmation.",
+          "caution": "Availability, combined dog+cat approval, total costs and yard condition unknown.",
+          "actions": [
+            {
+              "label": "Email Nonie",
+              "url": "mailto:nonie.wilson@yahoo.com"
+            },
+            {
+              "label": "Listing",
+              "url": "https://www.residential.com/l/1500-Garrison-St-Arlington-TX-76018-91ef7b8c09"
+            }
+          ]
+        },
+        {
+          "id": "bridgetown",
+          "name": "10348 Bridgetown Ln",
+          "city": "Fort Worth / Crowley",
+          "address": "10348 Bridgetown Ln, Fort Worth, TX 76036",
+          "date": "Mon Nov 23",
+          "time": "6–7 or 7–8 PM shown online",
+          "status": "login",
+          "statusLabel": "Sign in to reserve",
+          "contact": "RPM Trailhead · ShowingHero",
+          "next": "Live ShowingHero calendar displayed Monday 6–7 and 7–8 PM, but signing in is required to finish booking. These are NOT reserved. Book only once cat/large-dog eligibility is cleared.",
+          "caution": "CRITICAL: one property listing says cats not allowed; size restrictions conflict. Manager emailed Nov 22 for clarification.",
+          "actions": [
+            {
+              "label": "ShowingHero booking",
+              "url": "https://showinghero.com/property/managetenantproperty/NDgyMzM="
+            },
+            {
+              "label": "Leasing contact",
+              "url": "mailto:info@rpmtrailhead.com"
+            },
+            {
+              "label": "Listing",
+              "url": "https://www.realtor.com/rentals/details/10348-Bridgetown-Ln_Crowley_TX_76036_M97274-91325"
+            }
+          ]
+        },
+        {
+          "id": "northview",
+          "houseId": "northview",
+          "name": "236 Northview Ter",
+          "city": "Burleson",
+          "address": "236 Northview Ter, Burleson, TX 76028",
+          "date": "Any convenient day",
+          "time": "Self-tour advertised 8 AM–8 PM",
+          "status": "self-service",
+          "statusLabel": "Self-tour offered",
+          "contact": "AMH / Let Yourself In",
+          "next": "Open official property page, choose Let Yourself In, create/sign into AMH account, verify ID, and follow the current access procedure. No appointment on calendar.",
+          "caution": "Latest direct manager subtotal $2,148 before conditional charges; prior lease-start hold limit not expressly extended; clarify before applying.",
+          "actions": [
+            {
+              "label": "Start self-tour",
+              "url": "https://amh.com/p/TX14085"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "other",
+      "title": "Other requests and exceptions",
+      "entries": [
+        {
+          "id": "loftin",
+          "houseId": "loftin",
+          "name": "945 Loftin St",
+          "city": "Crowley",
+          "address": "945 Loftin St, Crowley, TX 76036",
+          "date": "Not scheduled",
+          "time": "Call leasing",
+          "status": "contact",
+          "statusLabel": "Contacts received",
+          "contact": "VP Realty · Husna / Jeel",
+          "next": "Automated HAR response gave leasing contacts; ask for a confirmed late-afternoon showing and both-pet approval.",
+          "caution": "Advertised nonrefundable pet fees may be $600 per animal.",
+          "actions": [
+            {
+              "label": "Call Husna",
+              "url": "tel:+19037515965"
+            },
+            {
+              "label": "Call Jeel",
+              "url": "tel:+19037764548"
+            },
+            {
+              "label": "Listing",
+              "url": "https://www.har.com/homedetail/945-loftin-st-crowley-tx-76036/14807693"
+            }
+          ]
+        },
+        {
+          "id": "hearthstone",
+          "houseId": "hearthstone",
+          "name": "1305 Hearthstone Dr",
+          "city": "Burleson",
+          "address": "1305 Hearthstone Dr, Burleson, TX 76028",
+          "date": "Not scheduled",
+          "time": "Agent reply outstanding",
+          "status": "contact",
+          "statusLabel": "No response located",
+          "contact": "Cecilia · Texas Legacy Realty",
+          "next": "No answer found to Nov 6 inquiry; follow up by email or phone for an available showing if still actively rentable.",
+          "caution": "Shelly's ideal 5/5; advertised $2,500 base is at the cap before pets and fees.",
+          "actions": [
+            {
+              "label": "Email Cecilia",
+              "url": "mailto:cecilia@texaslegacyrealty.com"
+            },
+            {
+              "label": "Gallery",
+              "url": "https://www.apartments.com/1305-hearthstone-dr-burleson-tx/sczjcc6/"
+            }
+          ]
+        },
+        {
+          "id": "vista",
+          "houseId": "vistaoak",
+          "name": "12113 Vista Oak Blvd",
+          "city": "Burleson",
+          "address": "12113 Vista Oak Blvd, Burleson, TX 76028",
+          "date": "Not scheduled",
+          "time": "Specialist hasn't replied",
+          "status": "contact",
+          "statusLabel": "Pet rule unresolved",
+          "contact": "Racheal Ross-Addison · Invitation Homes",
+          "next": "Written confirmation required that an adult golden retriever and cat are both allowed before booking a tour.",
+          "caution": "One source says small dogs only; current rent quote depends on a long lease.",
+          "actions": [
+            {
+              "label": "Email Racheal",
+              "url": "mailto:racheal.ross-addison@invitationhomes.com"
+            },
+            {
+              "label": "Listing",
+              "url": "https://www.invitationhomes.com/houses-for-rent/12113-vista-oak-blvd-76028-9538"
+            }
+          ]
+        },
+        {
+          "id": "beavercreek",
+          "houseId": "beavercreek",
+          "name": "828 Beaver Creek Dr",
+          "city": "Burleson",
+          "address": "828 Beaver Creek Dr, Burleson, TX 76028",
+          "date": "Not scheduled",
+          "time": "Resident/entry status unresolved",
+          "status": "contact",
+          "statusLabel": "No viewing confirmed",
+          "contact": "Progress Residential",
+          "next": "The automatic incomplete-application expiration notice is NOT a confirmed application or tour. Ask manager for permitted resident-occupied showing or a recent video.",
+          "caution": "Current condition, both pets and earliest possession remain unverified.",
+          "actions": [
+            {
+              "label": "Leasing listing",
+              "url": "https://rentprogress.com/property-details/828-beaver-creek-dr/burleson/tx/76028/316204"
+            }
+          ]
+        },
+        {
+          "id": "ridgehill",
+          "name": "712 Ridgehill Dr",
+          "city": "Burleson",
+          "address": "712 Ridgehill Dr, Burleson, TX 76028",
+          "date": "Not scheduled",
+          "time": "Application invitations only",
+          "status": "contact",
+          "statusLabel": "No showing offered",
+          "contact": "Invitation Homes / Alia",
+          "next": "Texts and email promote applying early. That does NOT confirm a tour or lease. Contact leasing specialist if still interested.",
+          "caution": "3 bedrooms and advertised fees-inclusive rent about $2,494, before ordinary pet rent; lower priority.",
+          "actions": [
+            {
+              "label": "Official listing",
+              "url": "https://www.invitationhomes.com/houses-for-rent/712-ridgehill-76028-109928"
+            },
+            {
+              "label": "Email specialist",
+              "url": "mailto:racheal.ross-addison@invitationhomes.com"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

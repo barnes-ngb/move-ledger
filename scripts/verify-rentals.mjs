@@ -53,5 +53,30 @@ for (const [id, routes] of Object.entries(matrix.homes || {})) {
   }
 }
 
+const tourData = JSON.parse(readFileSync("public/rentals/tours.json", "utf8"));
+const tours = (tourData.groups || []).flatMap((group) => group.entries || []);
+assert(tours.length >= 6, "Tour tracker should include the current viewing leads");
+assert(new Set(tours.map((t) => t.id)).size === tours.length, "Duplicate tour entry IDs");
+assert(tours.filter((t) => t.status === "confirmed").length === 1,
+  "Only the provider-confirmed Clarks Mill appointment should be marked confirmed");
+assert(tours.find((t) => t.id === "clarks")?.status === "confirmed", "Clarks Mill must stay confirmed");
+assert(tours.find((t) => t.id === "mcpherson")?.status === "code-received",
+  "McPherson code receipt is not a provider-confirmed appointment");
+assert(tours.find((t) => t.id === "bridgetown")?.status === "login",
+  "Bridgetown booking needs login and provider confirmation");
+assert(html.includes('id="tour-board"') && html.includes('href="#tour-board"'),
+  "Tour tracker section and navigation link are required");
+assert(html.includes('fetch("./tours.json'), "Rental board must load tours.json");
+assert(!Object.keys(tourData).some((key) => /password|lockbox|licen[sc]e.*number/i.test(key)),
+  "No personal secrets in tour data keys");
+for (const t of tours) {
+  assert(t.name && t.next && Array.isArray(t.actions), "Incomplete tour entry: " + t.id);
+  assert(!t.accessCode && !t.password && !t.licenseNumber && !t.licensePhoto,
+    "Private access data must not appear on the publicly shared rental board");
+  for (const link of t.actions) {
+    assert(/^(https:\/\/|mailto:|tel:|sms:)/.test(link.url), "Invalid tour action link for " + t.id);
+  }
+}
+
 console.log("Rental board parses; " + data.homes.length + " unique houses and " +
   Object.keys(matrix.homes).length + " green-zone routing records checked.");

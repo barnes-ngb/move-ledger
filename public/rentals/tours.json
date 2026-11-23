@@ -22,6 +22,10 @@
           "caution": "Self-tour authorization is for Nov 23; not proof of approved pets, available December possession or final quote. Latest manager fee-inclusive subtotal $2,148 before conditional charges.",
           "actions": [
             {
+              "label": "Map directions",
+              "url": "https://www.google.com/maps/search/?api=1&query=236%20Northview%20Terrace%20Burleson%20TX%2076028"
+            },
+            {
               "label": "myAMH access",
               "url": "https://amh.com/p/TX14085"
             },
@@ -45,6 +49,10 @@
           "next": "User identified this as one of today's two homes in Google Maps. The screenshot confirms a saved map location, not an agent appointment. Chelsea has not issued an entry authorization for today. View street/exterior from public areas or get explicit consent before entering.",
           "caution": "Written Wednesday Nov 25 5:30 PM tour request also remains unconfirmed. Don't assume an interior viewing today; both pets need property-specific approval.",
           "actions": [
+            {
+              "label": "Map directions",
+              "url": "https://www.google.com/maps/search/?api=1&query=1121%20Hidden%20Lake%20Drive%20Burleson%20TX%2076028"
+            },
             {
               "label": "Call Chelsea",
               "url": "tel:+14696742095"

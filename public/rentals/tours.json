@@ -1,6 +1,6 @@
 {
-  "edition": "November 22, 2026 — corrected availability and pet approval",
-  "privacy": "Public shared decision page. Never place lockbox access codes, website passwords, identity-document images, private phone verification codes, or personal document identifiers in this file.",
+  "edition": "November 23, 2026 — Hearthstone rented; tour schedule otherwise unchanged",
+  "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. SMS confirmations require user screenshots; Gmail read-only finds no other new confirmed tours.",
   "timezone": "America/Chicago",
   "groups": [
     {
@@ -217,21 +217,21 @@
           "name": "1305 Hearthstone Dr",
           "city": "Burleson",
           "address": "1305 Hearthstone Dr, Burleson, TX 76028",
-          "date": "Not scheduled",
-          "time": "Agent reply outstanding",
-          "status": "contact",
-          "statusLabel": "No response located",
+          "date": "Unavailable",
+          "time": "HAR recently rented",
+          "status": "unavailable",
+          "statusLabel": "Rented Nov 12 · do not tour",
           "contact": "Cecilia · Texas Legacy Realty",
-          "next": "No answer found to Nov 6 inquiry; follow up by email or phone for an available showing if still actively rentable. Updated availability: Mon/Tue after 5 PM only; Wed after 2 PM preferred; Fri after 2 PM possible. No tours Saturday.",
-          "caution": "Shelly's ideal 5/5; advertised $2,500 base is at the cap before pets and fees.",
+          "next": "NTREIS-linked HAR.com 76028 'Recently Rented' index records this address rented Nov 12, 2026. Trulia rental removed Nov13. Older cached active portal pages conflict; do not seek a Thanksgiving showing absent a NEW official relisting. Keep Shelly 5/5 as home-fit benchmark.",
+          "caution": "No active lease offer. Historical $2,500 base/12mo not actionable; original both-pet questions unanswered.",
           "actions": [
-            {
-              "label": "Email Cecilia",
-              "url": "mailto:cecilia@texaslegacyrealty.com"
-            },
             {
               "label": "Gallery",
               "url": "https://www.apartments.com/1305-hearthstone-dr-burleson-tx/sczjcc6/"
+            },
+            {
+              "label": "HAR status",
+              "url": "https://www.har.com/houses-for-rent-76028"
             }
           ]
         },
@@ -306,7 +306,7 @@
     }
   ],
   "constraints": {
-    "monday": "Mon Nov 23: after 5 PM only (working)",
+    "monday": "Mon Nov23: after 5 PM only; NO additional confirmed tours as of Nov23 morning.",
     "tuesday": "Tue Nov 24: after 5 PM only (working; Clarks Mill 6–7 PM confirmed)",
     "wednesday": "Wed Nov 25: after 2 PM (preferred)",
     "thursday": "Thu Nov 26: Thanksgiving, no viewing requested",

@@ -1,5 +1,5 @@
 {
-  "edition": "November 23, 2026 — Hearthstone rented; tour schedule otherwise unchanged",
+  "edition": "November 23, 2026 — Northview booked today; Hidden Lake visit planned; Tide Friday accepted",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. SMS confirmations require user screenshots; Gmail read-only finds no other new confirmed tours.",
   "timezone": "America/Chicago",
   "groups": [
@@ -7,6 +7,58 @@
       "id": "priority",
       "title": "This week — act on these",
       "entries": [
+        {
+          "id": "northview",
+          "houseId": "northview",
+          "name": "236 Northview Ter",
+          "city": "Burleson",
+          "address": "236 Northview Ter, Burleson, TX 76028",
+          "date": "Mon Nov 23 · TODAY",
+          "time": "AMH booked date; time not stated",
+          "status": "booked-date",
+          "statusLabel": "Provider booking — today",
+          "contact": "AMH / myAMH Let Yourself In",
+          "next": "AMH November 23 email confirms booking for today (without a specific hour). On arrival before 8 PM, enable location services and go to myAMH → Online Bookings → Get Access Code. An actual access code is delivered by AMH privately; never put it on this public page.",
+          "caution": "Self-tour authorization is for Nov 23; not proof of approved pets, available December possession or final quote. Latest manager fee-inclusive subtotal $2,148 before conditional charges.",
+          "actions": [
+            {
+              "label": "myAMH access",
+              "url": "https://amh.com/p/TX14085"
+            },
+            {
+              "label": "Email confirmation",
+              "url": "https://mail.google.com/mail/u/0/#all/1a20a8a921607b3f"
+            }
+          ]
+        },
+        {
+          "id": "hiddenlake",
+          "houseId": "hiddenlake",
+          "name": "1121 Hidden Lake Dr",
+          "city": "Burleson",
+          "address": "1121 Hidden Lake Dr, Burleson, TX 76028",
+          "date": "Mon Nov 23 · TODAY",
+          "time": "User plans to visit; no authorized interior time",
+          "status": "planned",
+          "statusLabel": "Planned stop · entry not confirmed",
+          "contact": "Chelsea Holguin · Open House Texas",
+          "next": "User identified this as one of today's two homes in Google Maps. The screenshot confirms a saved map location, not an agent appointment. Chelsea has not issued an entry authorization for today. View street/exterior from public areas or get explicit consent before entering.",
+          "caution": "Written Wednesday Nov 25 5:30 PM tour request also remains unconfirmed. Don't assume an interior viewing today; both pets need property-specific approval.",
+          "actions": [
+            {
+              "label": "Call Chelsea",
+              "url": "tel:+14696742095"
+            },
+            {
+              "label": "Email Chelsea",
+              "url": "mailto:chelsea.holguin@openhouse-group.com"
+            },
+            {
+              "label": "Virtual walkthrough",
+              "url": "https://www.insidemaps.com/app/walkthrough-tour/?p=m7f8nqzGu6"
+            }
+          ]
+        },
         {
           "id": "clarks",
           "houseId": "clarks",
@@ -18,7 +70,7 @@
           "status": "confirmed",
           "statusLabel": "Confirmed",
           "contact": "Progress Residential / Chloe",
-          "next": "Keep this appointment. Check in on MyTours on arrival for the smart-lock access process.",
+          "next": "Progress Residential confirmed Tuesday November 24, 6–7 PM. Use MyTours check-in for smart lock code upon arrival. No application/lease implied.",
           "caution": "Pet approval and final lease fees still unverified.",
           "actions": [
             {
@@ -28,6 +80,30 @@
             {
               "label": "Calendar",
               "url": "https://www.google.com/calendar/event?eid=YXBqYjZkNDkxMTIwaG8yaHFoamN0ZHVzZmMgbmF0aGFuLnhiOTc1M0Bt&ctz=America/Chicago"
+            }
+          ]
+        },
+        {
+          "id": "garrison",
+          "houseId": "garrison",
+          "name": "1500 Garrison St",
+          "city": "Arlington",
+          "address": "1500 Garrison St, Arlington, TX 76018",
+          "date": "Wed Nov 25",
+          "time": "2:15 PM requested",
+          "status": "requested",
+          "statusLabel": "Awaiting agent reply",
+          "contact": "Nonie · Listing contact",
+          "next": "Nov 22 correction withdrew the earlier 12:30 PM and Saturday suggestions. Requested Wednesday 2:15 PM or another time after 2 PM, Friday afternoon backup. Awaiting confirmation.",
+          "caution": "Availability, combined dog+cat approval, total costs and yard condition unknown.",
+          "actions": [
+            {
+              "label": "Email Nonie",
+              "url": "mailto:nonie.wilson@yahoo.com"
+            },
+            {
+              "label": "Listing",
+              "url": "https://www.residential.com/l/1500-Garrison-St-Arlington-TX-76018-91ef7b8c09"
             }
           ]
         },
@@ -59,74 +135,30 @@
           ]
         },
         {
-          "id": "hiddenlake",
-          "houseId": "hiddenlake",
-          "name": "1121 Hidden Lake Dr",
-          "city": "Burleson",
-          "address": "1121 Hidden Lake Dr, Burleson, TX 76028",
-          "date": "Wed Nov 25",
-          "time": "5:30 PM requested",
-          "status": "requested",
-          "statusLabel": "Awaiting confirmation",
-          "contact": "Chelsea Holguin · Open House Texas",
-          "next": "Nov 22 correction requested Wednesday 5:30 PM or Friday afternoon after 2 PM; earlier Saturday suggestion withdrawn. Chelsea has not confirmed a specific appointment.",
-          "caution": "Large golden retriever and cat still require property-specific approval; refrigerator, washer and dryer not provided.",
-          "actions": [
-            {
-              "label": "Email Chelsea",
-              "url": "mailto:chelsea.holguin@openhouse-group.com"
-            },
-            {
-              "label": "Walkthrough",
-              "url": "https://www.insidemaps.com/app/walkthrough-tour/?p=m7f8nqzGu6"
-            }
-          ]
-        },
-        {
           "id": "tide",
           "houseId": "tide",
           "name": "6932 Tide Ln",
           "city": "Fort Worth",
           "address": "6932 Tide Ln, Fort Worth, TX 76179",
           "date": "Fri Nov 27",
-          "time": "4 PM requested",
-          "status": "requested",
-          "statusLabel": "Agent can arrange · awaiting slot",
-          "contact": "Kyle Vance",
-          "next": "Nov 22 correction withdrew Saturday 4 PM, requested Friday November 27 at 4 PM, with Wednesday after 2 PM backup. Kyle or a colleague can show it but no time confirmed.",
-          "caution": "December 1 lease start workable, pets generally allowed with $500 nonrefundable charge; final terms unverified.",
+          "time": "4 PM accepted by agent · finalize by call/text",
+          "status": "agent-agreed",
+          "statusLabel": "Agent agreed · confirm with him",
+          "contact": "Kyle Vance · listing agent AND property owner",
+          "next": "Kyle's November 23 email explicitly agreed to Friday November 27 at 4 PM; he says he is both listing agent and owner and asked you to call/text to finalize. Contact 682-269-4358, then add to calendar after actual mutual confirmation.",
+          "caution": "$2,250 advertised base; fenced yard and general acceptance of both ordinary pets with $500 nonrefundable fee. No washer, dryer or refrigerator. Obtain final leasing terms.",
           "actions": [
             {
-              "label": "Email Kyle",
+              "label": "Text Kyle to confirm",
+              "url": "sms:+16822694358"
+            },
+            {
+              "label": "Call Kyle",
+              "url": "tel:+16822694358"
+            },
+            {
+              "label": "Email",
               "url": "mailto:kylevancesold@gmail.com"
-            },
-            {
-              "label": "Listing",
-              "url": "https://www.coldwellbankerhomes.com/tx/fort-worth/6932-tide-ln/pid_74666023/"
-            }
-          ]
-        },
-        {
-          "id": "garrison",
-          "houseId": "garrison",
-          "name": "1500 Garrison St",
-          "city": "Arlington",
-          "address": "1500 Garrison St, Arlington, TX 76018",
-          "date": "Wed Nov 25",
-          "time": "2:15 PM requested",
-          "status": "requested",
-          "statusLabel": "Awaiting agent reply",
-          "contact": "Nonie · Listing contact",
-          "next": "Nov 22 correction withdrew the earlier 12:30 PM and Saturday suggestions. Requested Wednesday 2:15 PM or another time after 2 PM, Friday afternoon backup. Awaiting confirmation.",
-          "caution": "Availability, combined dog+cat approval, total costs and yard condition unknown.",
-          "actions": [
-            {
-              "label": "Email Nonie",
-              "url": "mailto:nonie.wilson@yahoo.com"
-            },
-            {
-              "label": "Listing",
-              "url": "https://www.residential.com/l/1500-Garrison-St-Arlington-TX-76018-91ef7b8c09"
             }
           ]
         },
@@ -154,26 +186,6 @@
             {
               "label": "Listing",
               "url": "https://www.realtor.com/rentals/details/10348-Bridgetown-Ln_Crowley_TX_76036_M97274-91325"
-            }
-          ]
-        },
-        {
-          "id": "northview",
-          "houseId": "northview",
-          "name": "236 Northview Ter",
-          "city": "Burleson",
-          "address": "236 Northview Ter, Burleson, TX 76028",
-          "date": "Mon/Tue after 5; Wed/Fri after 2",
-          "time": "Self-service window advertised 8 AM–8 PM",
-          "status": "self-service",
-          "statusLabel": "Self-tour offered",
-          "contact": "AMH / Let Yourself In",
-          "next": "AMH Let Yourself In requires account/ID verification; choose only a time within actual availability: Mon/Tue after 5 PM, Wed/Fri after 2 PM, never Saturday. No self-tour booked.",
-          "caution": "Latest direct manager subtotal $2,148 before conditional charges; prior lease-start hold limit not expressly extended; clarify before applying.",
-          "actions": [
-            {
-              "label": "Start self-tour",
-              "url": "https://amh.com/p/TX14085"
             }
           ]
         }
@@ -208,30 +220,6 @@
             {
               "label": "Listing",
               "url": "https://www.har.com/homedetail/945-loftin-st-crowley-tx-76036/14807693"
-            }
-          ]
-        },
-        {
-          "id": "hearthstone",
-          "houseId": "hearthstone",
-          "name": "1305 Hearthstone Dr",
-          "city": "Burleson",
-          "address": "1305 Hearthstone Dr, Burleson, TX 76028",
-          "date": "Unavailable",
-          "time": "HAR recently rented",
-          "status": "unavailable",
-          "statusLabel": "Rented Nov 12 · do not tour",
-          "contact": "Cecilia · Texas Legacy Realty",
-          "next": "NTREIS-linked HAR.com 76028 'Recently Rented' index records this address rented Nov 12, 2026. Trulia rental removed Nov13. Older cached active portal pages conflict; do not seek a Thanksgiving showing absent a NEW official relisting. Keep Shelly 5/5 as home-fit benchmark.",
-          "caution": "No active lease offer. Historical $2,500 base/12mo not actionable; original both-pet questions unanswered.",
-          "actions": [
-            {
-              "label": "Gallery",
-              "url": "https://www.apartments.com/1305-hearthstone-dr-burleson-tx/sczjcc6/"
-            },
-            {
-              "label": "HAR status",
-              "url": "https://www.har.com/houses-for-rent-76028"
             }
           ]
         },
@@ -306,11 +294,12 @@
     }
   ],
   "constraints": {
-    "monday": "Mon Nov23: after 5 PM only; NO additional confirmed tours as of Nov23 morning.",
+    "monday": "Mon Nov 23: after 5 PM (working), Northview AMH booked for today, Hidden Lake user-planned/entry unconfirmed",
     "tuesday": "Tue Nov 24: after 5 PM only (working; Clarks Mill 6–7 PM confirmed)",
     "wednesday": "Wed Nov 25: after 2 PM (preferred)",
     "thursday": "Thu Nov 26: Thanksgiving, no viewing requested",
-    "friday": "Fri Nov 27: after 2 PM possible",
+    "friday": "Fri Nov 27: owner Kyle agrees Tide Lane 4 PM; call/text to finalize",
     "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
-  }
+  },
+  "todayNote": "Today Monday Nov23: 236 Northview is self-tour BOOKED for Nov23 by AMH with exact hour absent; 1121 Hidden Lake is a USER-PLANNED LOCATION, with no agent-authorized interior tour for Nov23. Google Maps saved addresses are not confirmations. Confirm access before entry."
 }

@@ -1,5 +1,5 @@
 {
-  "edition": "November 22, 2026 — about 5:30 PM Central",
+  "edition": "November 22, 2026 — corrected availability and pet approval",
   "privacy": "Public shared decision page. Never place lockbox access codes, website passwords, identity-document images, private phone verification codes, or personal document identifiers in this file.",
   "timezone": "America/Chicago",
   "groups": [
@@ -37,12 +37,12 @@
           "city": "Fort Worth / Crowley",
           "address": "5601 McLanahan Lane, Fort Worth, TX 76036",
           "date": "Wed Nov 25",
-          "time": "3 PM requested",
+          "time": "4 PM proposed · not accepted",
           "status": "code-received",
-          "statusLabel": "Entry code received privately",
-          "contact": "Melissa Moseley · Shipman Companies",
-          "next": "Confirm with Melissa that Wednesday 3 PM is approved and the previously sent entry code is valid for that day. Do not publish or forward the code.",
-          "caution": "CRITICAL: an address-specific listing says cats AND dogs aren't allowed. Sent clarification; do not assume pet approval.",
+          "statusLabel": "Pets allowed · code received · time unconfirmed",
+          "contact": "Melissa Moseley · Shipman Companies · SMS primary",
+          "next": "Melissa confirmed by SMS that the large golden retriever and cat are allowed with a $750 pet fee and privately provided a self-tour entry code. You have not accepted any tour time. Nov 22 correction email asks whether Wednesday 4 PM (Friday afternoon backup) is approved and whether her existing code is valid for that window. Do not assume unrestricted access.",
+          "caution": "$750 pet fee quoted; refundability and any monthly charges unverified. Do not publish or forward the lockbox code.",
           "actions": [
             {
               "label": "Text Melissa",
@@ -65,12 +65,12 @@
           "city": "Burleson",
           "address": "1121 Hidden Lake Dr, Burleson, TX 76028",
           "date": "Wed Nov 25",
-          "time": "5 PM requested",
+          "time": "5:30 PM requested",
           "status": "requested",
           "statusLabel": "Awaiting confirmation",
           "contact": "Chelsea Holguin · Open House Texas",
-          "next": "Reply sent Nov 22 requesting Wednesday 5 PM, with Saturday 4–6 PM backup. Agent's prior email offered a tour but never confirmed a time.",
-          "caution": "Large golden retriever + cat still require property-specific approval. Refrigerator, washer and dryer are not provided.",
+          "next": "Nov 22 correction requested Wednesday 5:30 PM or Friday afternoon after 2 PM; earlier Saturday suggestion withdrawn. Chelsea has not confirmed a specific appointment.",
+          "caution": "Large golden retriever and cat still require property-specific approval; refrigerator, washer and dryer not provided.",
           "actions": [
             {
               "label": "Email Chelsea",
@@ -88,13 +88,13 @@
           "name": "6932 Tide Ln",
           "city": "Fort Worth",
           "address": "6932 Tide Ln, Fort Worth, TX 76179",
-          "date": "Sat Nov 28",
+          "date": "Fri Nov 27",
           "time": "4 PM requested",
           "status": "requested",
           "statusLabel": "Agent can arrange · awaiting slot",
           "contact": "Kyle Vance",
-          "next": "Reply sent Nov 22 requesting Saturday 4 PM. Kyle has offered to show it or send a colleague, but has not confirmed a new slot.",
-          "caution": "December 1 lease start acceptable. Advertised $500 NONREFUNDABLE fee for both pets; 12-month total still needs verification.",
+          "next": "Nov 22 correction withdrew Saturday 4 PM, requested Friday November 27 at 4 PM, with Wednesday after 2 PM backup. Kyle or a colleague can show it but no time confirmed.",
+          "caution": "December 1 lease start workable, pets generally allowed with $500 nonrefundable charge; final terms unverified.",
           "actions": [
             {
               "label": "Email Kyle",
@@ -113,11 +113,11 @@
           "city": "Arlington",
           "address": "1500 Garrison St, Arlington, TX 76018",
           "date": "Wed Nov 25",
-          "time": "12:30 PM requested",
+          "time": "2:15 PM requested",
           "status": "requested",
           "statusLabel": "Awaiting agent reply",
           "contact": "Nonie · Listing contact",
-          "next": "Follow-up sent Nov 22 for Wednesday 12:30 PM, or Saturday midday backup. No agent confirmation.",
+          "next": "Nov 22 correction withdrew the earlier 12:30 PM and Saturday suggestions. Requested Wednesday 2:15 PM or another time after 2 PM, Friday afternoon backup. Awaiting confirmation.",
           "caution": "Availability, combined dog+cat approval, total costs and yard condition unknown.",
           "actions": [
             {
@@ -136,12 +136,12 @@
           "city": "Fort Worth / Crowley",
           "address": "10348 Bridgetown Ln, Fort Worth, TX 76036",
           "date": "Mon Nov 23",
-          "time": "6–7 or 7–8 PM shown online",
-          "status": "login",
-          "statusLabel": "Sign in to reserve",
+          "time": "6–7 or 7–8 PM displayed; NOT booked",
+          "status": "fee",
+          "statusLabel": "Paid self-tour step · not booked",
           "contact": "RPM Trailhead · ShowingHero",
-          "next": "Live ShowingHero calendar displayed Monday 6–7 and 7–8 PM, but signing in is required to finish booking. These are NOT reserved. Book only once cat/large-dog eligibility is cleared.",
-          "caution": "CRITICAL: one property listing says cats not allowed; size restrictions conflict. Manager emailed Nov 22 for clarification.",
+          "next": "ShowingHero showed Monday evening and Wednesday afternoon times. Wednesday 4–5 PM was highlighted on screen, not confirmed. The site requires selecting a paid self-tour plan; Nov 22 correction asked for both-pet approval and fee clarification before purchasing or booking. Wednesday after 2 PM or Friday after 2 PM possible; not Saturday.",
+          "caution": "ShowingHero is not free: Basic $0.01 one single-day tour (no support), Gold $2 ten-day multi-tour, Hero $5 thirty-day. No purchase or reservation. Listing has conflicting dog/cat rules.",
           "actions": [
             {
               "label": "ShowingHero booking",
@@ -163,12 +163,12 @@
           "name": "236 Northview Ter",
           "city": "Burleson",
           "address": "236 Northview Ter, Burleson, TX 76028",
-          "date": "Any convenient day",
-          "time": "Self-tour advertised 8 AM–8 PM",
+          "date": "Mon/Tue after 5; Wed/Fri after 2",
+          "time": "Self-service window advertised 8 AM–8 PM",
           "status": "self-service",
           "statusLabel": "Self-tour offered",
           "contact": "AMH / Let Yourself In",
-          "next": "Open official property page, choose Let Yourself In, create/sign into AMH account, verify ID, and follow the current access procedure. No appointment on calendar.",
+          "next": "AMH Let Yourself In requires account/ID verification; choose only a time within actual availability: Mon/Tue after 5 PM, Wed/Fri after 2 PM, never Saturday. No self-tour booked.",
           "caution": "Latest direct manager subtotal $2,148 before conditional charges; prior lease-start hold limit not expressly extended; clarify before applying.",
           "actions": [
             {
@@ -194,7 +194,7 @@
           "status": "contact",
           "statusLabel": "Contacts received",
           "contact": "VP Realty · Husna / Jeel",
-          "next": "Automated HAR response gave leasing contacts; ask for a confirmed late-afternoon showing and both-pet approval.",
+          "next": "Automated HAR response gave leasing contacts; ask for a confirmed late-afternoon showing and both-pet approval. Updated availability: Mon/Tue after 5 PM only; Wed after 2 PM preferred; Fri after 2 PM possible. No tours Saturday.",
           "caution": "Advertised nonrefundable pet fees may be $600 per animal.",
           "actions": [
             {
@@ -222,7 +222,7 @@
           "status": "contact",
           "statusLabel": "No response located",
           "contact": "Cecilia · Texas Legacy Realty",
-          "next": "No answer found to Nov 6 inquiry; follow up by email or phone for an available showing if still actively rentable.",
+          "next": "No answer found to Nov 6 inquiry; follow up by email or phone for an available showing if still actively rentable. Updated availability: Mon/Tue after 5 PM only; Wed after 2 PM preferred; Fri after 2 PM possible. No tours Saturday.",
           "caution": "Shelly's ideal 5/5; advertised $2,500 base is at the cap before pets and fees.",
           "actions": [
             {
@@ -246,7 +246,7 @@
           "status": "contact",
           "statusLabel": "Pet rule unresolved",
           "contact": "Racheal Ross-Addison · Invitation Homes",
-          "next": "Written confirmation required that an adult golden retriever and cat are both allowed before booking a tour.",
+          "next": "Written confirmation required that an adult golden retriever and cat are both allowed before booking a tour. Updated availability: Mon/Tue after 5 PM only; Wed after 2 PM preferred; Fri after 2 PM possible. No tours Saturday.",
           "caution": "One source says small dogs only; current rent quote depends on a long lease.",
           "actions": [
             {
@@ -270,7 +270,7 @@
           "status": "contact",
           "statusLabel": "No viewing confirmed",
           "contact": "Progress Residential",
-          "next": "The automatic incomplete-application expiration notice is NOT a confirmed application or tour. Ask manager for permitted resident-occupied showing or a recent video.",
+          "next": "The automatic incomplete-application expiration notice is NOT a confirmed application or tour. Ask manager for permitted resident-occupied showing or a recent video. Updated availability: Mon/Tue after 5 PM only; Wed after 2 PM preferred; Fri after 2 PM possible. No tours Saturday.",
           "caution": "Current condition, both pets and earliest possession remain unverified.",
           "actions": [
             {
@@ -289,7 +289,7 @@
           "status": "contact",
           "statusLabel": "No showing offered",
           "contact": "Invitation Homes / Alia",
-          "next": "Texts and email promote applying early. That does NOT confirm a tour or lease. Contact leasing specialist if still interested.",
+          "next": "Texts and email promote applying early. That does NOT confirm a tour or lease. Contact leasing specialist if still interested. Updated availability: Mon/Tue after 5 PM only; Wed after 2 PM preferred; Fri after 2 PM possible. No tours Saturday.",
           "caution": "3 bedrooms and advertised fees-inclusive rent about $2,494, before ordinary pet rent; lower priority.",
           "actions": [
             {
@@ -304,5 +304,13 @@
         }
       ]
     }
-  ]
+  ],
+  "constraints": {
+    "monday": "Mon Nov 23: after 5 PM only (working)",
+    "tuesday": "Tue Nov 24: after 5 PM only (working; Clarks Mill 6–7 PM confirmed)",
+    "wednesday": "Wed Nov 25: after 2 PM (preferred)",
+    "thursday": "Thu Nov 26: Thanksgiving, no viewing requested",
+    "friday": "Fri Nov 27: after 2 PM possible",
+    "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
+  }
 }

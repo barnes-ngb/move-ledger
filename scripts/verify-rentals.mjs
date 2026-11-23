@@ -21,6 +21,15 @@ assert(!html.includes('id="dateChart"'), "Retired timeline chart should not clut
 
 const data = JSON.parse(readFileSync("public/rentals/listings.json", "utf8"));
 assert(Array.isArray(data.homes) && data.homes.length > 0, "Rental listings must be populated");
+const archived = data.archivedHomes || [];
+assert(html.includes('id="rental-archive"') && html.includes('id="archiveHomes"'),
+  "Unavailable-rental archive must render separately from the active plot");
+assert(archived.every((h) => h.archive?.availabilityStatus && h.archive?.archiveReason),
+  "Archived houses need a documented unavailability reason");
+assert(archived.every((h) => !data.homes.some((x) => x.id === h.id)),
+  "Unavailable rentals must not appear in active chart data");
+assert(new Set([...data.homes,...archived].map((h) => h.id)).size === data.homes.length + archived.length,
+  "Duplicate house IDs between active and archived collections");
 const ids = data.homes.map((home) => home.id);
 assert(new Set(ids).size === ids.length, "Duplicate rental house IDs");
 for (const home of data.homes) {

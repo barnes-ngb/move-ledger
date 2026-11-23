@@ -175,7 +175,7 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 <div class="stats">
  <div class="stat"><strong id="greenCount">—</strong><span>Green-zone houses for comparison</span></div>
  <div class="stat"><strong>$2,400</strong><span>Preferred all-in monthly target · $2,500 base ceiling</span></div>
- <div class="stat"><strong id="edition">Nov 14, 2026</strong><span>Published shortlist update</span></div>
+ <div class="stat"><strong id="edition">Nov 23, 2026</strong><span>Published shortlist update</span></div>
 </div>
 <section class="panel" id="decision" aria-label="Filter and compare rental homes">
  <div class="subhead"><h2>Home fit × advertised rent</h2><span class="pill">Tap a dot → house below</span></div>
@@ -194,7 +194,7 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 <section class="panel" id="tour-board" aria-label="Thanksgiving house tour schedule and booking links">
  <div class="subhead"><h2>Thanksgiving tours · booking tracker</h2><span class="pill neutral">Nov 22–28</span></div>
  <p class="hint">Today: <strong>Northview is booked by AMH for November 23 (no hour specified)</strong>; <strong>Hidden Lake is planned but interior access is not yet authorized</strong>. A saved map pin is not a tour confirmation. Only provider-confirmed slots count as booked; no private access codes or ID documents are displayed.</p>
- <div class="tour-summary"><span id="tourConfirmed">1 confirmed</span><span id="tourPending">Pending requests</span><a href="#tourOther">Other contacted houses ↓</a></div>
+ <div class="tour-summary"><span id="tourConfirmed">2 provider-booked</span><span id="tourPending">Other requests pending</span><a href="#tourOther">Other contacted houses ↓</a></div>
  <p id="tourAvailability" class="tour-availability" aria-live="polite"></p>
  <div id="tourPriority" class="tour-rows"><p class="hint">Loading the tour schedule…</p></div>
  <details id="tourOther" class="tour-archive"><summary>Other contacted homes &amp; unresolved access</summary><div id="tourArchive" class="tour-rows"></div></details>
@@ -207,7 +207,7 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
  <p class="notice">Road-network times are one-time estimates without live traffic, not a weekday commute prediction. Pool suitability for standing exercises is still unverified. Nothing in a green zone means pets are approved or a tour is booked.</p>
 </section>
 <details class="panel disclosure" id="rental-archive">
- <summary>Unavailable homes · archived for reference (<span id="archiveCount">0</span>)</summary>
+ <summary>Unavailable homes · archived for reference (<span id="archiveCount">3</span>)</summary>
  <p class="hint">These are removed from the active plot and rental shortlist, not permanently deleted. Their photo links and Shelly's original ratings remain as house-fit benchmarks. We archive only when a manager or credible listing evidence shows a property is unavailable.</p>
  <div id="archiveHomes" class="archive-homes"></div>
 </details>
@@ -248,7 +248,7 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 <script>
 (function(){
 "use strict";
-var NS="http://www.w3.org/2000/svg",KEY="texas-rental-board-v1",base=[],overrides={},extra=[],latestEdition="Nov 14, 2026";
+var NS="http://www.w3.org/2000/svg",KEY="texas-rental-board-v1",base=[],overrides={},extra=[],latestEdition="Nov 23, 2026";
 var fallback=[
 {id:"hearthstone",name:"1305 Hearthstone Dr",city:"Burleson",rent:2500,rating:5,basis:"Shelly",checkpoint:"2026-11-08",url:"https://www.apartments.com/1305-hearthstone-dr-burleson-tx/sczjcc6/",fit:"Shelly's ideal home."},
 {id:"clarks",name:"2533 Clarks Mill Ln",city:"Fort Worth",rent:2265,rating:4.4,basis:"Shelly",checkpoint:"2026-11-14",url:"https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",fit:"Shelly's second favorite."}

@@ -154,6 +154,7 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 .tour-archive>summary{cursor:pointer;color:#225a70;font-size:13px;font-weight:750;margin-bottom:9px}
 #tour-board{scroll-margin-top:15px}
 
+.tour-availability{font-size:12px;color:#234e60;background:#f0f6f8;border-radius:8px;padding:9px 11px;margin:7px 0 12px}.tour-row .tr-state.fee{background:#fff2dc;color:#8c651e}
 </style>
 </head>
 <body>
@@ -193,6 +194,7 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
  <div class="subhead"><h2>Thanksgiving tours · booking tracker</h2><span class="pill neutral">Nov 22–28</span></div>
  <p class="hint">Confirmation is different from a booking link or an entry code. Only a provider-confirmed slot is marked confirmed. These actions are safe to share; no private entry codes, passwords, or identity documents are stored here.</p>
  <div class="tour-summary"><span id="tourConfirmed">1 confirmed</span><span id="tourPending">Pending requests</span><a href="#tourOther">Other contacted houses ↓</a></div>
+ <p id="tourAvailability" class="tour-availability" aria-live="polite"></p>
  <div id="tourPriority" class="tour-rows"><p class="hint">Loading the tour schedule…</p></div>
  <details id="tourOther" class="tour-archive"><summary>Other contacted homes &amp; unresolved access</summary><div id="tourArchive" class="tour-rows"></div></details>
  <p class="explain">Dates marked requested are planning preferences, not appointments. Sign in to the provider's official scheduling page to confirm self-guided tours. Ask about BOTH ordinary pets before spending time on a house with conflicting pet rules.</p>
@@ -512,6 +514,8 @@ function renderTourRows(entries,target){
  });
 }
 function renderTours(){
+ var rules=tourData.constraints||{};
+ byId("tourAvailability").textContent="Your availability: Mon/Tue after 5 PM · Wed after 2 PM preferred · Fri after 2 PM possible · no tours Saturday.";
  var groups=tourData.groups||[];
  var first=groups.find(function(g){return g.id==="priority"})||{entries:[]};
  var second=groups.find(function(g){return g.id==="other"})||{entries:[]};

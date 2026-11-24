@@ -156,6 +156,7 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 
 .tour-availability{font-size:12px;color:#234e60;background:#f0f6f8;border-radius:8px;padding:9px 11px;margin:7px 0 12px}.tour-row .tr-state.fee{background:#fff2dc;color:#8c651e}
 .archive-homes{display:grid;gap:8px;margin-top:10px}.archived-house{padding:11px 13px;border:1px solid #e4e8eb;border-radius:9px;background:#f7fafb;font-size:12px;color:#506776}.archived-house strong{font-size:13px;color:#2b4554}.archived-house p{margin:4px 0 6px}.archived-house a{color:#1f6b5f;font-size:12px;font-weight:700}.tour-row .tr-state.booked-date{background:#e3f2e9;color:#1e6e50}.tour-row .tr-state.agent-agreed,.tour-row .tr-state.planned{background:#fff2dc;color:#8c651e}
+.tour-row .tr-state.completed{background:#e3f2e9;color:#1e6e50}.tour-row .tr-state.access-blocked{background:#fff0e3;color:#8b4a23}
 </style>
 </head>
 <body>
@@ -193,8 +194,8 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 </section>
 <section class="panel" id="tour-board" aria-label="Thanksgiving house tour schedule and booking links">
  <div class="subhead"><h2>Thanksgiving tours · booking tracker</h2><span class="pill neutral">Nov 22–28</span></div>
- <p class="hint">Today: <strong>Northview is booked by AMH for November 23 (no hour specified)</strong>; <strong>Hidden Lake is planned but interior access is not yet authorized</strong>. A saved map pin is not a tour confirmation. Only provider-confirmed slots count as booked; no private access codes or ID documents are displayed.</p>
- <div class="tour-summary"><span id="tourConfirmed">2 provider-booked</span><span id="tourPending">Other requests pending</span><a href="#tourOther">Other contacted houses ↓</a></div>
+ <p class="hint">November 23 update: <strong>Northview has been toured — initial impression: “okay.”</strong> <strong>Hidden Lake could not be entered because authorized access was not arranged.</strong> The Open House Texas office and Chelsea direct numbers are below. Only provider-confirmed slots count as booked; no private access codes or ID documents are displayed.</p>
+ <div class="tour-summary"><span id="tourConfirmed">1 confirmed · 1 toured</span><span id="tourPending">Other requests pending</span><a href="#tourOther">Other contacted houses ↓</a></div>
  <p id="tourAvailability" class="tour-availability" aria-live="polite"></p>
  <div id="tourPriority" class="tour-rows"><p class="hint">Loading the tour schedule…</p></div>
  <details id="tourOther" class="tour-archive"><summary>Other contacted homes &amp; unresolved access</summary><div id="tourArchive" class="tour-rows"></div></details>
@@ -541,8 +542,8 @@ function renderTours(){
  var second=groups.find(function(g){return g.id==="other"})||{entries:[]};
  renderTourRows(first.entries,"tourPriority");renderTourRows(second.entries,"tourArchive");
  var all=groups.flatMap(function(g){return g.entries||[]});
- byId("tourConfirmed").textContent=all.filter(function(t){return t.status==="confirmed"||t.status==="booked-date"}).length+" provider-booked";
- byId("tourPending").textContent=all.filter(function(t){return t.status!=="confirmed"}).length+" still need action";
+ byId("tourConfirmed").textContent=all.filter(function(t){return t.status==="confirmed"||t.status==="booked-date"}).length+" confirmed · "+all.filter(function(t){return t.status==="completed"}).length+" toured";
+ byId("tourPending").textContent=all.filter(function(t){return !["confirmed","completed","booked-date"].includes(t.status)}).length+" requests / leads pending";
 }
 function loadTours(){
  fetch("./tours.json?_="+Date.now(),{cache:"no-store"})

@@ -1,5 +1,5 @@
 {
-  "edition": "November 24, 2026 — Bridgetown provider confirms Wednesday self-tour",
+  "edition": "November 24, 2026 midday — Hidden Lake confirmed Wednesday access; Flour Mill rented",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. Provider confirmation recorded without assuming pet eligibility or payment.",
   "timezone": "America/Chicago",
   "groups": [
@@ -41,29 +41,29 @@
           "name": "1121 Hidden Lake Dr",
           "city": "Burleson",
           "address": "1121 Hidden Lake Dr, Burleson, TX 76028",
-          "date": "Mon Nov 23 · access attempt",
-          "time": "Could not reach agent / not toured",
-          "status": "access-blocked",
-          "statusLabel": "Access blocked · call office",
+          "date": "Wed Nov 25 · authorized self-tour",
+          "time": "Anytime Wednesday before 8 PM; family available after 2 PM (not a fixed 5:30 appointment)",
+          "status": "confirmed",
+          "statusLabel": "Confirmed Wed · code sent day-of",
           "contact": "Chelsea Holguin / Open House Texas Property Management",
-          "next": "Nathan tried to see the house Nov23 but could not reach Chelsea/arrange authorized entry. Her latest email remains November 16, and Nathan sent an unanswered follow-up this evening. Call Open House Texas main office (972) 525-4006 and ask a different leasing representative to authorize a self-tour or schedule Wednesday after 2 PM or Friday after 2 PM. Chelsea direct (469) 674-2095.",
-          "caution": "Do not enter without confirmed permission. Both-pet permission and December lease start remain property-specific unknowns.",
+          "next": "Chelsea's Nov24 human email confirms Wednesday Nov25 access anytime before 8 PM. Rently's Nov24 access instruction confirms date and says a unique code will be emailed on Wednesday. Check the private email before driving; no code is published here. Family prefers after 2 PM. This does not confirm ordinary two-pet approval or December lease start.",
+          "caution": "Wed Nov25 tour authorization is confirmed, but NO fixed 5:30 PM slot and NO completed interior visit. Do not publish codes. Sunny + Belle approval, quoted lease length, Dec start and full costs remain unanswered.",
           "actions": [
             {
-              "label": "Call office",
-              "url": "tel:+19725254006"
+              "label": "Chelsea confirmation",
+              "url": "https://mail.google.com/mail/u/0/#all/1a20e91363081a81"
             },
             {
-              "label": "Call Chelsea",
-              "url": "tel:+14696742095"
+              "label": "Access email",
+              "url": "https://mail.google.com/mail/u/0/#all/1a20e9176896dffd"
             },
             {
-              "label": "Email Chelsea",
-              "url": "mailto:chelsea.holguin@openhouse-group.com"
-            },
-            {
-              "label": "Walkthrough",
+              "label": "InsideMaps walkthrough",
               "url": "https://www.insidemaps.com/app/walkthrough-tour/?p=m7f8nqzGu6"
+            },
+            {
+              "label": "Directions",
+              "url": "https://www.google.com/maps/search/?api=1&query=1121+Hidden+Lake+Dr+Burleson+TX+76028"
             }
           ]
         },
@@ -102,7 +102,7 @@
           "status": "requested",
           "statusLabel": "Awaiting agent reply",
           "contact": "Nonie · Listing contact",
-          "next": "Nonie Bennett has not responded to the November 25 after-2 PM request. Direct agent phone 817-266-6997 found on MLS-syndicated Redfin listing, so CALL instead of repeating emails. Request firm time and written dog+cat eligibility and current availability.",
+          "next": "Nov24 email read-only check: no response from Nonie to Wed Nov25 2:15 PM request. Call 817-266-6997 to seek an agreed Wednesday after 2 PM or Friday after 2 PM time; do not assume a showing. Confirm active status and ordinary Sunny + Belle eligibility.",
           "caution": "Availability, combined dog+cat approval, total costs and yard condition unknown.",
           "actions": [
             {
@@ -130,7 +130,7 @@
           "status": "agent-agreed",
           "statusLabel": "Agent agreed · confirm with him",
           "contact": "Kyle Vance · listing agent AND property owner",
-          "next": "Kyle's November 23 email explicitly agreed to Friday November 27 at 4 PM; he says he is both listing agent and owner and asked you to call/text to finalize. Contact 682-269-4358, then add to calendar after actual mutual confirmation.",
+          "next": "Kyle's Nov23 human email says Friday Nov27 4 PM works. He is both owner and listing agent and asks Nathan to call/text 682-269-4358 to finalize. Agent-agreed, NOT yet mutually finalized or on calendar. No outgoing action taken.",
           "caution": "$2,250 advertised base; fenced yard and general acceptance of both ordinary pets with $500 nonrefundable fee. No washer, dryer or refrigerator. Obtain final leasing terms.",
           "actions": [
             {
@@ -184,6 +184,30 @@
       "id": "other",
       "title": "Other requests and exceptions",
       "entries": [
+        {
+          "id": "thompson528",
+          "houseId": "thompson528",
+          "name": "528 Thompson Dr",
+          "city": "Saginaw",
+          "address": "528 Thompson Dr, Saginaw, TX 76179",
+          "date": "No tour requested",
+          "time": "Optional Fri after 2 PM (not arranged)",
+          "status": "contact",
+          "statusLabel": "Backup · contact not yet made",
+          "contact": "Jazmin Arreola · 817-361-3269",
+          "next": "Shelly 4.5/5, $2,200 advertised base on 12-month listing, one-story/4BR and a 2-car carport instead of garage (family accepts compromise). Agent phone 817-361-3269. If Garrison unavailable, call and ask about a Friday showing, ordinary adult Golden Retriever + cat, pet fee/deposit basis and full costs. No outbound message sent or appointment created.",
+          "caution": "$25 monthly pet fee and $250 pet deposit unclear per-pet vs household; dog-size approval, grass, tub and exact commute unverified.",
+          "actions": [
+            {
+              "label": "Call Jazmin",
+              "url": "tel:+18173613269"
+            },
+            {
+              "label": "Exact-property gallery",
+              "url": "https://www.coldwellbankerhomes.com/tx/saginaw/528-thompson-dr/pid_74591573/"
+            }
+          ]
+        },
         {
           "id": "loftin",
           "houseId": "loftin",
@@ -278,34 +302,6 @@
               "url": "mailto:racheal.ross-addison@invitationhomes.com"
             }
           ]
-        },
-        {
-          "id": "flourmill",
-          "houseId": "flourmill",
-          "name": "6312 Flour Mill Run",
-          "city": "Fort Worth",
-          "address": "6312 Flour Mill Run, Fort Worth, TX 76179",
-          "date": "No time confirmed",
-          "time": "Agent reply outstanding",
-          "status": "contact",
-          "statusLabel": "Optional next contact",
-          "contact": "Yecica Velazco · Elite Real Estate Texas",
-          "next": "Home fit 4.6/5, but Nov18 Realtor.com inquiry produced an acknowledgment only. MLS currently advertises active; call 817-983-8252 or reply to prior agent contact. Ask about both pets and current lease start before driving. Road-network baseline to parents was ~68 minutes, so this is secondary.",
-          "caution": "Pets have size/number/HOA restrictions; Sunny and cat acceptance not confirmed. Long drive to parents.",
-          "actions": [
-            {
-              "label": "Call listing agent",
-              "url": "tel:+18179838252"
-            },
-            {
-              "label": "Email agent",
-              "url": "mailto:Yecisells.dfw@gmail.com"
-            },
-            {
-              "label": "Listing",
-              "url": "https://www.realtor.com/rentals/details/6312-Flour-Mill-Run_Fort-Worth_TX_76179_M92136-49892"
-            }
-          ]
         }
       ]
     }
@@ -313,10 +309,10 @@
   "constraints": {
     "monday": "Mon Nov23: Northview tour completed; Hidden Lake access attempt unsuccessful.",
     "tuesday": "Tue Nov 24: after 5 PM only (working; Clarks Mill 6–7 PM confirmed)",
-    "wednesday": "Wed Nov25: after 2 PM; Bridgetown confirmed at 3 PM; Garrison 2:15 requested, Hidden Lake 5:30 requested, neither confirmed.",
+    "wednesday": "Wed Nov25: after 2 PM; Bridgetown confirmed self-tour at 3 PM (cat eligibility unresolved), Hidden Lake provider/Chelsea CONFIRM self-tour anytime before 8 PM (code day-of), Garrison 2:15 requested/unconfirmed. Avoid simultaneous/overlapping slots.",
     "thursday": "Thu Nov 26: Thanksgiving, no viewing requested",
     "friday": "Fri Nov 27: owner Kyle agrees Tide Lane 4 PM; call/text to finalize",
     "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
   },
-  "todayNote": "Tue Nov24: Clarks Mill 6–7 PM confirmed; Bridgetown self-tour confirmed by ShowingHero for Wed Nov25 at 3 PM (end not stated; pet gate unresolved). Hidden Lake not yet toured, Garrison request pending, Tide Fri 4 PM agent agreed pending finalization. Northview visited Nov23, okay. Incorrect referral excluded."
+  "todayNote": "Tue Nov24: Clarks Mill 6–7 PM CONFIRMED. Wed Nov25: Hidden Lake provider/Chelsea confirmed anytime before 8 PM (access code privately arrives day-of); Bridgetown 3 PM confirmed but ordinary-cat policy conflicts; Garrison 2:15 requested/unconfirmed. Fri Nov27: Tide Ln owner accepted 4 PM but final phone/text confirmation pending. Northview visited Nov23 'okay'. Flour Mill RENTED Nov19 and removed from actionable tour board. McLanahan incorrect referral excluded."
 }

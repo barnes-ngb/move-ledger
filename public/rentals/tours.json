@@ -1,5 +1,5 @@
 {
-  "edition": "November 23, 2026 evening — Northview toured, Hidden Lake call escalation, next agent contacts",
+  "edition": "November 23, 2026 — incorrect rental referral excluded",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. SMS confirmations require user screenshots; Gmail read-only finds no other new confirmed tours.",
   "timezone": "America/Chicago",
   "groups": [
@@ -116,33 +116,6 @@
             {
               "label": "Listing",
               "url": "https://www.redfin.com/TX/Arlington/1500-Garrison-St-76018/home/32278517"
-            }
-          ]
-        },
-        {
-          "id": "mcpherson",
-          "name": "McPherson Village · 5601 McLanahan Ln",
-          "city": "Fort Worth / Crowley",
-          "address": "5601 McLanahan Lane, Fort Worth, TX 76036",
-          "date": "Wed Nov 25",
-          "time": "4 PM proposed · not accepted",
-          "status": "code-received",
-          "statusLabel": "Pets allowed · code received · time unconfirmed",
-          "contact": "Melissa Moseley · Shipman Companies · SMS primary",
-          "next": "Melissa confirmed by SMS that the large golden retriever and cat are allowed with a $750 pet fee and privately provided a self-tour entry code. You have not accepted any tour time. Nov 22 correction email asks whether Wednesday 4 PM (Friday afternoon backup) is approved and whether her existing code is valid for that window. Do not assume unrestricted access.",
-          "caution": "$750 pet fee quoted; refundability and any monthly charges unverified. Do not publish or forward the lockbox code.",
-          "actions": [
-            {
-              "label": "Text Melissa",
-              "url": "sms:+12075315573"
-            },
-            {
-              "label": "Call manager",
-              "url": "tel:+18172981652"
-            },
-            {
-              "label": "Listing",
-              "url": "https://www.showmetherent.com/listing/details/5601-McLanahan-Lane-Fort-Worth-TX-76036/2b748350-2db7-11ef-87c2-06d64c3d8bfe"
             }
           ]
         },

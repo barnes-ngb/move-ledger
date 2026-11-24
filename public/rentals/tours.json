@@ -1,5 +1,5 @@
 {
-  "edition": "November 23, 2026 evening — Northview completed; Hidden Lake contact blocked",
+  "edition": "November 23, 2026 evening — Northview toured, Hidden Lake call escalation, next agent contacts",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. SMS confirmations require user screenshots; Gmail read-only finds no other new confirmed tours.",
   "timezone": "America/Chicago",
   "groups": [
@@ -102,16 +102,20 @@
           "status": "requested",
           "statusLabel": "Awaiting agent reply",
           "contact": "Nonie · Listing contact",
-          "next": "Nov 22 correction withdrew the earlier 12:30 PM and Saturday suggestions. Requested Wednesday 2:15 PM or another time after 2 PM, Friday afternoon backup. Awaiting confirmation.",
+          "next": "Nonie Bennett has not responded to the November 25 after-2 PM request. Direct agent phone 817-266-6997 found on MLS-syndicated Redfin listing, so CALL instead of repeating emails. Request firm time and written dog+cat eligibility and current availability.",
           "caution": "Availability, combined dog+cat approval, total costs and yard condition unknown.",
           "actions": [
+            {
+              "label": "Call Nonie",
+              "url": "tel:+18172666997"
+            },
             {
               "label": "Email Nonie",
               "url": "mailto:nonie.wilson@yahoo.com"
             },
             {
               "label": "Listing",
-              "url": "https://www.residential.com/l/1500-Garrison-St-Arlington-TX-76018-91ef7b8c09"
+              "url": "https://www.redfin.com/TX/Arlington/1500-Garrison-St-76018/home/32278517"
             }
           ]
         },
@@ -213,20 +217,20 @@
           "time": "Call leasing",
           "status": "contact",
           "statusLabel": "Contacts received",
-          "contact": "VP Realty · Husna / Jeel",
-          "next": "Automated HAR response gave leasing contacts; ask for a confirmed late-afternoon showing and both-pet approval. Updated availability: Mon/Tue after 5 PM only; Wed after 2 PM preferred; Fri after 2 PM possible. No tours Saturday.",
+          "contact": "Viren Shah · VP Realty Services (direct 214-597-0294)",
+          "next": "Agent Viren Shah lists 214-597-0294 as call/text for leasing. Older autoresponders supplied generic leasing numbers. This is lower priority than Hidden Lake/Tide/Clarks due to up to $600 NONREFUNDABLE per pet; verify both pets and current quoted cost before any tour.",
           "caution": "Advertised nonrefundable pet fees may be $600 per animal.",
           "actions": [
             {
-              "label": "Call Husna",
-              "url": "tel:+19037515965"
+              "label": "Text Viren",
+              "url": "sms:+12145970294"
             },
             {
-              "label": "Call Jeel",
-              "url": "tel:+19037764548"
+              "label": "Call Viren",
+              "url": "tel:+12145970294"
             },
             {
-              "label": "Listing",
+              "label": "Manager page",
               "url": "https://www.har.com/homedetail/945-loftin-st-crowley-tx-76036/14807693"
             }
           ]
@@ -295,6 +299,34 @@
             {
               "label": "Email specialist",
               "url": "mailto:racheal.ross-addison@invitationhomes.com"
+            }
+          ]
+        },
+        {
+          "id": "flourmill",
+          "houseId": "flourmill",
+          "name": "6312 Flour Mill Run",
+          "city": "Fort Worth",
+          "address": "6312 Flour Mill Run, Fort Worth, TX 76179",
+          "date": "No time confirmed",
+          "time": "Agent reply outstanding",
+          "status": "contact",
+          "statusLabel": "Optional next contact",
+          "contact": "Yecica Velazco · Elite Real Estate Texas",
+          "next": "Home fit 4.6/5, but Nov18 Realtor.com inquiry produced an acknowledgment only. MLS currently advertises active; call 817-983-8252 or reply to prior agent contact. Ask about both pets and current lease start before driving. Road-network baseline to parents was ~68 minutes, so this is secondary.",
+          "caution": "Pets have size/number/HOA restrictions; Sunny and cat acceptance not confirmed. Long drive to parents.",
+          "actions": [
+            {
+              "label": "Call listing agent",
+              "url": "tel:+18179838252"
+            },
+            {
+              "label": "Email agent",
+              "url": "mailto:Yecisells.dfw@gmail.com"
+            },
+            {
+              "label": "Listing",
+              "url": "https://www.realtor.com/rentals/details/6312-Flour-Mill-Run_Fort-Worth_TX_76179_M92136-49892"
             }
           ]
         }

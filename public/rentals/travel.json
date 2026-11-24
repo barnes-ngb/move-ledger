@@ -1,5 +1,5 @@
 {
-  "edition": "November 14, 2026",
+  "edition": "November 24, 2026 — archived Flour Mill removed from green-zone route matrix",
   "method": "US Census matched street addresses → OpenStreetMap OSRM public car route-table, one-time snapshot; approximate baseline with NO live traffic or departure-time adjustment.",
   "caveats": "Minutes are model baseline, not guaranteed travel or weekday/rush-hour estimates. Travel times are not verified in Google Maps. Indoor pool suitability, independent standing access and membership have not been confirmed. Only actionable house-fit green zone (rating ≥4.2 and advertised figure ≤$2300, no hard pet/availability exclusion) was researched.",
   "destinations": {
@@ -78,28 +78,6 @@
           "id": "huguley",
           "minutes": 15,
           "miles": 7.9
-        }
-      ]
-    },
-    "flourmill": {
-      "work": {
-        "minutes": 43,
-        "miles": 32.3
-      },
-      "parents": {
-        "minutes": 68,
-        "miles": 47.1
-      },
-      "pools": [
-        {
-          "id": "nrh",
-          "minutes": 27,
-          "miles": 16.7
-        },
-        {
-          "id": "resource",
-          "minutes": 35,
-          "miles": 22
         }
       ]
     },

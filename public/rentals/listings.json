@@ -1,22 +1,22 @@
 {
-  "edition": "November 23, 2026 — Northview toured okay; Hidden Lake access unsuccessful",
-  "note": "Active decision candidates exclude VERIFIED unavailable 1305 Hearthstone, 1416 Castle Ridge, and 2601 Crestwood; ratings/photos preserved under archivedHomes. AMH confirmed 236 Northview Terrace Nov23 self-tour DATE only in email; no hour specified. User plans to see 1121 Hidden Lake Nov23 but no authorized interior booking verified. Progress 2533 Clarks Mill Nov24 6–7PM booked. Kyle Vance accepted 6932 Tide Lane Nov27 4PM but wants call/text final confirmation. Do not mistake saved map pins for confirmation. Other unverified houses are not assumed active. NOV23 EVENING VISIT FEEDBACK: 236 Northview viewed in person, user's impression 'okay' (NO revised numeric score given; preserve Shelly rating). 1121 Hidden Lake unable to gain authorized access / contact Chelsea, NOT toured inside. Open House main line 972-525-4006 best next call; Chelsea direct 469-674-2095. No additional unconfirmed appointments are deemed booked.",
+  "edition": "November 24, 2026 — Clarks Mill Zillow reduction and verified Bridgetown tour",
+  "note": "Nov24: Clarks Mill Zillow advertised total $2,050 before conditional pets; provider-confirmed Bridgetown Wed Nov25 3 PM recorded in tours.json but cat restriction unresolved, not green. Northview completed okay; Hidden Lake access not secured; Garrison pending; Tide owner agreed Friday 4 PM pending mutual confirmation. Incorrect referral excluded. Active decision candidates exclude VERIFIED unavailable 1305 Hearthstone, 1416 Castle Ridge, and 2601 Crestwood; ratings/photos preserved under archivedHomes. AMH confirmed 236 Northview Terrace Nov23 self-tour DATE only in email; no hour specified. User plans to see 1121 Hidden Lake Nov23 but no authorized interior booking verified. Progress 2533 Clarks Mill Nov24 6–7PM booked. Kyle Vance accepted 6932 Tide Lane Nov27 4PM but wants call/text final confirmation. Do not mistake saved map pins for confirmation. Other unverified houses are not assumed active. NOV23 EVENING VISIT FEEDBACK: 236 Northview viewed in person, user's impression 'okay' (NO revised numeric score given; preserve Shelly rating). 1121 Hidden Lake unable to gain authorized access / contact Chelsea, NOT toured inside. Open House main line 972-525-4006 best next call; Chelsea direct 469-674-2095. No additional unconfirmed appointments are deemed booked.",
   "homes": [
     {
       "id": "clarks",
       "name": "2533 Clarks Mill Ln",
       "city": "Fort Worth",
-      "rent": 2100,
+      "rent": 2050,
       "rating": 4.8,
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
-      "priceNote": "Nov20 Zillow address-specific rent page shows $2,100 TOTAL advertised monthly INCLUDING displayed required recurring fees before pets (Zillow checked within ~8h, refreshed ~13h). Nov19 Zillow email quoted $2,120 TOTAL; Nov18 Progress assistant quoted $2,090 BASE + applicable fees; Rently displayed $2,109.99 for 12mo at booking. CURRENT live manager 12mo quote, actual package, HOA extra requirements and two-pet charges remain unresolved. Do not treat this as $2,100 final all-in. Earlier: Nov19 Zillow follow-up email displays $2,120/month TOTAL including required recurring fees before pet charges (down from Nov11 $2,175 total). Nov18/19 Progress booking email quotes $2,090 BASE + applicable fees; previous standard $29.98 fixed smart-home/utility charge implies $2,119.98, matching Zillow rounded price, but manager has not reconfirmed property-specific fee itemization. Rently confirmed self-tour screen separately showed $2,109.99 TOTAL/12 months. Do not conflate quote sources. Two-pet charges could be up to $144 generic scenario, not individually approved; $2,264 illustrative not a final pet-inclusive quote. Self-guided tour CONFIRMED Nov24 6–7PM CST, Shelly accepted joint Google Calendar invitation Nov19; not lease/pet approval. NOV23 Zillow address-specific active rent still $2,100 required-fees TOTAL before pets (checked today); manager aggregated search pages in separate cached views show conflicting old $2,220 / $2,265. Only a fresh specific lease checkout binds price; current tour unchanged.",
+      "priceNote": "Nov23 Zillow email reports $2,050 TOTAL required monthly price, down $45 from its previous $2,095 (board previously recorded $2,100). Conditional pet charges, term, and final Progress manager quote unresolved. Earlier manager $2,090 base and Rently $2,109.99 12-month quote are historical conflicting figures; do not combine with current Zillow total. Nov20 Zillow address-specific rent page shows $2,100 TOTAL advertised monthly INCLUDING displayed required recurring fees before pets (Zillow checked within ~8h, refreshed ~13h). Nov19 Zillow email quoted $2,120 TOTAL; Nov18 Progress assistant quoted $2,090 BASE + applicable fees; Rently displayed $2,109.99 for 12mo at booking. CURRENT live manager 12mo quote, actual package, HOA extra requirements and two-pet charges remain unresolved. Do not treat this as $2,100 final all-in. Earlier: Nov19 Zillow follow-up email displays $2,120/month TOTAL including required recurring fees before pet charges (down from Nov11 $2,175 total). Nov18/19 Progress booking email quotes $2,090 BASE + applicable fees; previous standard $29.98 fixed smart-home/utility charge implies $2,119.98, matching Zillow rounded price, but manager has not reconfirmed property-specific fee itemization. Rently confirmed self-tour screen separately showed $2,109.99 TOTAL/12 months. Do not conflate quote sources. Two-pet charges could be up to $144 generic scenario, not individually approved; $2,264 illustrative not a final pet-inclusive quote. Self-guided tour CONFIRMED Nov24 6–7PM CST, Shelly accepted joint Google Calendar invitation Nov19; not lease/pet approval. NOV23 Zillow address-specific active rent still $2,100 required-fees TOTAL before pets (checked today); manager aggregated search pages in separate cached views show conflicting old $2,220 / $2,265. Only a fresh specific lease checkout binds price; current tour unchanged.",
       "fit": "Shelly's second-favorite. Hard floors and comfortable layout; painted cabinets and complete fencing need review.",
       "status": "Nov11 Zillow alert advertised FOR RENT at $2,175 monthly total (down $45 from $2,220); live manager listing/current 12-month base, two-pet approval and exact true full monthly quote still unverified. Progress Nov8 says rent-ready possession within 12 days +7 days extension for $250, washer/dryer not included, fridge included, HOA dues covered.",
-      "priceBasis": "Nov20 Zillow shows $2,100 advertised TOTAL incl required monthly fees BEFORE two pets; manager bot previously said $2,090 BASE, 12mo Rently showed $2,109.99 TOTAL. Reconcile quote before financial decision.",
+      "priceBasis": "Nov23 Zillow advertised total including required monthly fees; ordinary pet fees and lease term not confirmed",
       "petGate": "Large dogs + cats listed; individual approval pending",
-      "priceUpdatedOn": "2026-11-20",
+      "priceUpdatedOn": "2026-11-23",
       "readiness": {
         "dog": {
           "status": "pending",
@@ -32,7 +32,7 @@
         },
         "cost": {
           "status": "pending",
-          "detail": "Nov20 Zillow $2100 TOTAL pre-pet; previous Nov19 $2120 TOTAL and Rently $2109.99. Actual Progress 12mo quote/pet fees and HOA obligations unverified."
+          "detail": "Nov23 Zillow email $2,050 advertised required-fee total before conditional pet fees, $45 below immediate prior portal quote $2,095. Final Progress base/term and both-pet rent/fees unresolved."
         },
         "lease": {
           "status": "pending",
@@ -59,7 +59,7 @@
       "checksUpdatedOn": "2026-11-23",
       "allInEstimate": 2408.98,
       "allInBasis": "Last manager basis + general pet rent, not final",
-      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied. | Nov19: Shelly ACCEPTED Nathan calendar invitation 12:39 AM CST; both participants now have event on calendars (event link recorded). Zillow morning follow-up shows $2,120 advertised mandatory-fee-inclusive TOTAL before pet charges, manager email $2,090 BASE + applicable fees; old board $2,235 obsolete. Nov20 user screenshot: Progress automated SMS invited reply Y for assistance. User replied Y; this is not a second appointment and does NOT change confirmed Nov24 6–7PM Rently tour.",
+      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied. | Nov19: Shelly ACCEPTED Nathan calendar invitation 12:39 AM CST; both participants now have event on calendars (event link recorded). Zillow morning follow-up shows $2,120 advertised mandatory-fee-inclusive TOTAL before pet charges, manager email $2,090 BASE + applicable fees; old board $2,235 obsolete. Nov20 user screenshot: Progress automated SMS invited reply Y for assistance. User replied Y; this is not a second appointment and does NOT change confirmed Nov24 6–7PM Rently tour. Nov23 Zillow price alert: https://mail.google.com/mail/u/0/#all/1a209131569de82d; Nov24 confirmed self-tour unchanged.",
       "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cb4d2abe8eea7",
       "ratingUpdatedOn": "2026-11-18",
       "ratingStatus": "Shelly-confirmed 4.8/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
@@ -1428,6 +1428,13 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 24",
+      "tag": "PRICE • Zillow alert",
+      "houseId": "clarks",
+      "title": "Clarks Mill, Fort Worth",
+      "detail": "Nov23 Zillow emailed $2,050 total including required recurring fees (down $45 from its immediate prior $2,095); prior board $2,100. Ordinary pet rent, final Progress quote and lease term not verified. Nov24 6–7 PM confirmed tour."
+    },
     {
       "date": "Nov 23",
       "tag": "TOURED • qualitative feedback",

@@ -1,6 +1,6 @@
 {
-  "edition": "November 24, 2026 — Clarks Mill Zillow reduction and verified Bridgetown tour",
-  "note": "Nov24: Clarks Mill Zillow advertised total $2,050 before conditional pets; provider-confirmed Bridgetown Wed Nov25 3 PM recorded in tours.json but cat restriction unresolved, not green. Northview completed okay; Hidden Lake access not secured; Garrison pending; Tide owner agreed Friday 4 PM pending mutual confirmation. Incorrect referral excluded. Active decision candidates exclude VERIFIED unavailable 1305 Hearthstone, 1416 Castle Ridge, and 2601 Crestwood; ratings/photos preserved under archivedHomes. AMH confirmed 236 Northview Terrace Nov23 self-tour DATE only in email; no hour specified. User plans to see 1121 Hidden Lake Nov23 but no authorized interior booking verified. Progress 2533 Clarks Mill Nov24 6–7PM booked. Kyle Vance accepted 6932 Tide Lane Nov27 4PM but wants call/text final confirmation. Do not mistake saved map pins for confirmation. Other unverified houses are not assumed active. NOV23 EVENING VISIT FEEDBACK: 236 Northview viewed in person, user's impression 'okay' (NO revised numeric score given; preserve Shelly rating). 1121 Hidden Lake unable to gain authorized access / contact Chelsea, NOT toured inside. Open House main line 972-525-4006 best next call; Chelsea direct 469-674-2095. No additional unconfirmed appointments are deemed booked.",
+  "edition": "November 24, 2026 midday — Hidden Lake Wed authorized, Flour Mill Nov19 rented",
+  "note": "Nov24 midday: Chelsea/Rently confirm 1121 Hidden Lake Wed Nov25 self-guided access before 8 PM; private access code will arrive day-of. Interior not yet viewed, pets and lease start unresolved. Nov24 Clarks Mill 6–7 PM confirmed; Wed Bridgetown 3 PM confirmed but cat policy conflicts; Garrison still requested, no reply. Fri Tide 4 PM agent agreed but phone/text finalization pending. 6312 Flour Mill Run verified RENTED Nov19 on NTREIS-linked HAR/@properties and archived, removed from tour board. Historical rating preserved. Northview viewed Nov23 'okay'; wrongly referred McLanahan excluded. No user contact, new bookings, or calendar changes by this update.",
   "homes": [
     {
       "id": "clarks",
@@ -298,70 +298,6 @@
         "Exact lease start, gallery and two commute routes"
       ],
       "checksUpdatedOn": "2026-11-11"
-    },
-    {
-      "id": "flourmill",
-      "name": "6312 Flour Mill Run",
-      "city": "Fort Worth",
-      "rent": 2200,
-      "rating": 4.6,
-      "basis": "Shelly",
-      "checkpoint": "2026-11-20",
-      "url": "https://www.realtor.com/rentals/details/6312-Flour-Mill-Run_Fort-Worth_TX_76179_M92136-49892",
-      "priceNote": "Current MLS-linked asking rent $2,200, down $200 on Oct 26. Last published security deposit $2,400, $50 per adult application; pet rent/fees, other mandatory costs and 12-month lease quote unverified. Some portals still show $2,300–$2,400.",
-      "fit": "Shelly said this house is very nice and placed it in the 4s (no exact decimal assigned); 4.3 is a provisional plotting estimate. Her supplied kitchen photos show an open, bright single-level kitchen/dining/living arrangement, spacious granite island, dark cabinetry, and continuous light-colored hard-surface flooring in main spaces. Four bedrooms allow one room for office. Tub presence, bedrooms' carpeting, grass/fence and exact commute still need confirmation.",
-      "status": "Shelly described the house as very nice and in the 4s; 4.3 is an estimated graph position, not her numeric vote. Large-dog and number limits need written approval. Inquiry emailed November 1; no reply found November 4. Tub, floor plan and fence coverage remain unverified.",
-      "priceBasis": "base rent, property MLS",
-      "petGate": "Size and number limits; both pets awaiting agent reply",
-      "readiness": {
-        "dog": {
-          "status": "unknown",
-          "detail": "No individual large-dog approval"
-        },
-        "cat": {
-          "status": "unknown",
-          "detail": "No individual cat approval"
-        },
-        "availability": {
-          "status": "unknown",
-          "detail": "Current status/possession not independently confirmed"
-        },
-        "cost": {
-          "status": "unknown",
-          "detail": "Full monthly quote incl. both pets not confirmed"
-        },
-        "lease": {
-          "status": "unknown",
-          "detail": "Exact lease term/start not approved"
-        },
-        "photos": {
-          "status": "unknown",
-          "detail": "Current room-by-room photos not verified"
-        },
-        "commute": {
-          "status": "unknown",
-          "detail": "Exact off-peak office/Alvarado routes not verified"
-        },
-        "tour": {
-          "status": "pending",
-          "detail": "Realtor.com acknowledged Nov18 inquiry for a rental viewing at 6312 Flour Mill Run and identified Yecica Velazco. No specific time requested or confirmed."
-        }
-      },
-      "questions": [
-        "Current rental status",
-        "Individual Sunny and Belle approval",
-        "All required recurring fees and 2-pet rent",
-        "Exact lease start, gallery and two commute routes"
-      ],
-      "checksUpdatedOn": "2026-11-18",
-      "ratingUpdatedOn": "2026-11-18",
-      "ratingStatus": "Shelly-confirmed 4.6/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
-      "tourSchedule": {
-        "status": "pending",
-        "kind": "realtor.com inquiry",
-        "confirmation": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1f23819f7a5344"
-      },
-      "contactUpdate": "Nov18/19 TOUR STATUS: Realtor.com acknowledged Nov18 inquiry for a rental viewing at 6312 Flour Mill Run and identified Yecica Velazco. No specific time requested or confirmed."
     },
     {
       "id": "northview",
@@ -796,7 +732,7 @@
         },
         "tour": {
           "status": "pending",
-          "detail": "Nov13 agent or colleague can show once date chosen; no Nov22/25/28 actual time slots, none booked"
+          "detail": "Owner/agent Kyle Vance said Fri Nov27 4 PM works Nov23, but asked Nathan to call/text 682-269-4358 to mutually finalize. Agent-agreed, not yet fully confirmed/created calendar."
         }
       },
       "questions": [
@@ -806,7 +742,7 @@
         "Which late afternoon/evening Nov22, Nov25, Nov28 windows are truly available; none booked",
         "Exact two-destination commute and appliance costs"
       ],
-      "checksUpdatedOn": "2026-11-13",
+      "checksUpdatedOn": "2026-11-24",
       "contactUpdate": "Nov13 5:17AM CST Kyle Vance: not senior community, pets OK, $500 nonrefundable, Dec1 'perfect', agent or colleague can show once date chosen; Nov22/25/28 late afternoon/evening NOT individually answered. No tour booked. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d4a09596e8a54",
       "agentReplyUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d4a09596e8a54"
     },
@@ -920,7 +856,7 @@
         },
         "tour": {
           "status": "pending",
-          "detail": "Nov11 Thanksgiving-week inquiry sent"
+          "detail": "Nonie contacted Nov11 and corrected Wed Nov25 2:15 PM request Nov22. Nov24 read-only Gmail check found no incoming agent confirmation. Call 817-266-6997, no booking."
         }
       },
       "questions": [
@@ -928,7 +864,7 @@
         "Both-pet all-in quote and December lease start",
         "Actual kitchen, grass, carpet, bathtub, fridge and laundry"
       ],
-      "checksUpdatedOn": "2026-11-14",
+      "checksUpdatedOn": "2026-11-24",
       "contactUpdate": "Nov11 one-time inquiry to agent Nonie Bennett sent, no verified reply/tour. Nov14 syndicated public status conflicts: do not assume available.",
       "ratingUpdatedOn": "2026-11-18"
     },
@@ -1110,7 +1046,7 @@
       "rent": 2275,
       "rating": 4.7,
       "basis": "Shelly",
-      "checkpoint": "2026-11-22",
+      "checkpoint": "2026-11-24",
       "trackedOn": "2026-11-13",
       "ratingUpdatedOn": "2026-11-13",
       "url": "https://www.zumper.com/address/1121-hidden-lk-dr-burleson-tx-76028-usa",
@@ -1119,7 +1055,7 @@
       "petBlocked": false,
       "priceNote": "Nov16 human listing-agent reply confirms $2,275 BASE advertised, and a $1,000 first-full-month concession. Two ordinary pets at general manager policy $25/each/month, $50/month combined, gives CONDITIONAL $2,325/month if both individually approved and no other required monthly packages. Per pet: $250 nonrefundable once ($500 total) and $25 verification ($50 total). $50 application per person ($100 if two adults), $150 nonrefundable admin, security deposit depends on credit with $2,275 minimum (higher possible); prorated rent due prior to move, plus utilities/insurance. Payment-processing fees may apply. Agent did not quote a lease term, confirm exact December start, any additional monthly fees or final 2-pet approval. Zillow $2,425 and older MLS $2,375 lag the agent quote. No fridge, washer or dryer. No HOA, decorative-only fireplace.",
       "fit": "Shelly direct 4.7/5 retained. Approx 2,044 sqft one-story 3BR/2BA; current 3BR+enclosed office remains UNVERIFIED despite older sale marketing. Chelsea provided exact-address InsideMaps walkthrough with 'MAKE ACTIVE SCANS 08.28.26' metadata: https://www.insidemaps.com/app/walkthrough-tour/?p=m7f8nqzGu6. Agent encourages tour to verify whether grassy yard and fence are dog-safe. Bedroom carpeting, primary versus secondary tub, vanity, laundry proximity and current office enclosure still need inspection. Missing refrigerator, washer and dryer are added expense compared with equipped options.",
-      "status": "Nov16 human agent confirms active offered base $2,275 and first-full-month $1,000 concession; she offers to help schedule a tour and asks whether buyer is working with an agent. She gave no November 22/25/28 time or December lease-start acceptance. No tour booked, no home hold. Property not in HOA. Current family pet gates pending.",
+      "status": "Nov24 human agent Chelsea confirms Wed Nov25 self-tour authorized before 8 PM; Rently confirms scheduled date and will email private code day-of. Previous Nov23 access failure is historical, NOT current. House lease availability, December start and ordinary Golden Retriever + cat permission still unverified. Nov16 Chelsea quotes $2,275 BASE, $1,000 first-full-month rent credit, manager-standard pet fees; no fridge/washer/dryer.",
       "readiness": {
         "dog": {
           "status": "pending",
@@ -1131,7 +1067,7 @@
         },
         "availability": {
           "status": "pending",
-          "detail": "Agent Nov16 confirms house offered for rental at $2,275, but no exact move-in date/lease-start cutoff or holiday appointment confirmed."
+          "detail": "Human listing agent arranged Wednesday viewing Nov25; confirms ability to view, not approved December lease start or guaranteed continuing rental availability."
         },
         "cost": {
           "status": "pending",
@@ -1150,16 +1086,28 @@
           "detail": "Exact off-peak office and parents-address route time unavailable"
         },
         "tour": {
-          "status": "pending",
-          "detail": "Nov 23 attempted/planned visit: no authorization could be obtained from Chelsea; interior NOT toured. Open House Texas alternate main office 972-525-4006 and Chelsea direct 469-674-2095. Ask for another leasing representative/authorized self-tour Wed Nov25 after2 or Fri Nov27 after2."
+          "status": "yes",
+          "detail": "Chelsea + Rently confirm authorized self-guided access Wednesday Nov25, any time before 8 PM; access code delivered privately on the day. No fixed 5:30 PM booking; interior not yet visited.",
+          "source": "https://mail.google.com/mail/u/0/#all/1a20e91363081a81"
         }
       },
-      "checksUpdatedOn": "2026-11-20",
-      "contactUpdate": "DIRECT HUMAN REPLY Nov16 1:32PM CST, Chelsea Holguin: $2,275 current listing base, $1,000 off first full month; two pets generic per-pet fee schedule $25/month, $250 nonrefundable, $25 verification; $50 application/adult, deposit min first month's rent subject to credit, $150 admin. No refrigerator/washer/dryer, no HOA, fireplace decorative. Agent sent authentic exact-house InsideMaps tour, offered help to arrange showing and asked if working with an agent. No individual Golden Retriever/cat consent, firm Dec lease start, 12-month term, exact tour times or booking. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1e5d91d42c2801 | Nov23 Nathan visited/attempted Hidden Lake but could not reach Chelsea for an interior tour. A Nov23 6:26 PM follow-up email is outgoing only, not Chelsea accepting. Main office 972-525-4006 is the next contact.",
+      "checksUpdatedOn": "2026-11-24",
+      "contactUpdate": "DIRECT HUMAN REPLY Nov16 1:32PM CST, Chelsea Holguin: $2,275 current listing base, $1,000 off first full month; two pets generic per-pet fee schedule $25/month, $250 nonrefundable, $25 verification; $50 application/adult, deposit min first month's rent subject to credit, $150 admin. No refrigerator/washer/dryer, no HOA, fireplace decorative. Agent sent authentic exact-house InsideMaps tour, offered help to arrange showing and asked if working with an agent. No individual Golden Retriever/cat consent, firm Dec lease start, 12-month term, exact tour times or booking. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1e5d91d42c2801 | Nov23 Nathan visited/attempted Hidden Lake but could not reach Chelsea for an interior tour. A Nov23 6:26 PM follow-up email is outgoing only, not Chelsea accepting. Main office 972-525-4006 is the next contact. | Nov24 Chelsea human reply CONFIRMS self-tour Wednesday Nov25 anytime before 8 PM; Rently emails code on day of showing. No fixed start hour, application or permission for both pets/December lease. https://mail.google.com/mail/u/0/#all/1a20e91363081a81",
       "allInEstimate": 2325,
       "allInBasis": "CONDITIONAL agent Nov16 $2,275 base + published $25/month each for TWO ordinary pets, IF both specifically approved and no extra recurring mandatory fees. No lease quote or final sign-off.",
       "visitAttemptedOn": "2026-11-23",
-      "accessStatus": "Could not reach Chelsea for interior access on November 23; outside location visited/attempted; interior not toured."
+      "accessStatus": "Confirmed Wed Nov25 self-guided, private code day-of; interior not yet visited.",
+      "tourSchedule": {
+        "status": "confirmed-date",
+        "date": "2026-11-25",
+        "accessEnd": "20:00",
+        "timezone": "America/Chicago",
+        "kind": "self-guided",
+        "requestedWindow": "After 14:00",
+        "confirmation": "https://mail.google.com/mail/u/0/#all/1a20e91363081a81",
+        "accessNotice": "https://mail.google.com/mail/u/0/#all/1a20e9176896dffd",
+        "code": "NOT STORED"
+      }
     },
     {
       "id": "trusler",
@@ -1428,6 +1376,20 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 24",
+      "tag": "RENTED • ARCHIVED",
+      "houseId": "flourmill",
+      "title": "6312 Flour Mill Run — rented November 19",
+      "detail": "NTREIS-linked HAR and @properties mark this exact address RENTED Nov19, 2026; older Realtor/Redfin/other portal active ads stale. Removed from active candidates and tour board; Shelly 4.6/5 historical preference kept. https://www.atproperties.com/21365133/6312-flour-mill-run-fort-worth-texas-76179-ntreis"
+    },
+    {
+      "date": "Nov 24",
+      "tag": "SELF-TOUR • Confirmed date",
+      "houseId": "hiddenlake",
+      "title": "Hidden Lake — Wednesday Nov25 access confirmed",
+      "detail": "Chelsea human reply Nov24 explicitly arranged Wed Nov25 self-guided access anytime before 8 PM; Rently email confirms date and will send private code on Wednesday. No fixed 5:30 PM time. Previous Nov23 unsuccessful access is historical. Still need both normal pets approved, actual 12mo/start cutoff, appliances and all fees. https://mail.google.com/mail/u/0/#all/1a20e91363081a81"
+    },
     {
       "date": "Nov 24",
       "tag": "PRICE • Zillow alert",
@@ -2000,6 +1962,76 @@
         "availabilityStatus": "rented",
         "archiveReason": "NTREIS-linked HAR.com rented November 6, 2026; previous listing-active status is stale.",
         "sourceUrl": "https://www.har.com/houses-for-rent-76028"
+      }
+    },
+    {
+      "id": "flourmill",
+      "name": "6312 Flour Mill Run",
+      "city": "Fort Worth",
+      "rent": 2200,
+      "rating": 4.6,
+      "basis": "Shelly",
+      "checkpoint": "2026-11-24",
+      "url": "https://www.realtor.com/rentals/details/6312-Flour-Mill-Run_Fort-Worth_TX_76179_M92136-49892",
+      "priceNote": "Current MLS-linked asking rent $2,200, down $200 on Oct 26. Last published security deposit $2,400, $50 per adult application; pet rent/fees, other mandatory costs and 12-month lease quote unverified. Some portals still show $2,300–$2,400.",
+      "fit": "Shelly said this house is very nice and placed it in the 4s (no exact decimal assigned); 4.3 is a provisional plotting estimate. Her supplied kitchen photos show an open, bright single-level kitchen/dining/living arrangement, spacious granite island, dark cabinetry, and continuous light-colored hard-surface flooring in main spaces. Four bedrooms allow one room for office. Tub presence, bedrooms' carpeting, grass/fence and exact commute still need confirmation.",
+      "status": "ARCHIVED: NTREIS-linked HAR and @properties identify RENTED November 19, 2026; stale third-party active rental ads are not current evidence of availability. Historical Shelly 4.6/5 fit preserved; no tour.",
+      "priceBasis": "base rent, property MLS",
+      "petGate": "Size and number limits; both pets awaiting agent reply",
+      "readiness": {
+        "dog": {
+          "status": "unknown",
+          "detail": "No individual large-dog approval"
+        },
+        "cat": {
+          "status": "unknown",
+          "detail": "No individual cat approval"
+        },
+        "availability": {
+          "status": "no",
+          "detail": "NTREIS-linked HAR recently rented Nov19 and @properties marks Rented, updated Nov19."
+        },
+        "cost": {
+          "status": "unknown",
+          "detail": "Full monthly quote incl. both pets not confirmed"
+        },
+        "lease": {
+          "status": "unknown",
+          "detail": "Exact lease term/start not approved"
+        },
+        "photos": {
+          "status": "unknown",
+          "detail": "Current room-by-room photos not verified"
+        },
+        "commute": {
+          "status": "unknown",
+          "detail": "Exact off-peak office/Alvarado routes not verified"
+        },
+        "tour": {
+          "status": "no",
+          "detail": "Property rented Nov19, no tour."
+        }
+      },
+      "questions": [
+        "Current rental status",
+        "Individual Sunny and Belle approval",
+        "All required recurring fees and 2-pet rent",
+        "Exact lease start, gallery and two commute routes"
+      ],
+      "checksUpdatedOn": "2026-11-24",
+      "ratingUpdatedOn": "2026-11-18",
+      "ratingStatus": "Shelly-confirmed 4.6/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
+      "tourSchedule": {
+        "status": "pending",
+        "kind": "realtor.com inquiry",
+        "confirmation": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1f23819f7a5344"
+      },
+      "contactUpdate": "Nov18/19 TOUR STATUS: Realtor.com acknowledged Nov18 inquiry for a rental viewing at 6312 Flour Mill Run and identified Yecica Velazco. No specific time requested or confirmed.",
+      "archive": {
+        "archivedOn": "2026-11-24",
+        "availabilityStatus": "rented",
+        "archiveReason": "NTREIS-linked HAR and @properties both report RENTED Nov19, 2026; exclude stale active portal listings. Keep historical fit.",
+        "sourceUrl": "https://www.atproperties.com/21365133/6312-flour-mill-run-fort-worth-texas-76179-ntreis"
       }
     }
   ]

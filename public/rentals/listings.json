@@ -1,5 +1,5 @@
 {
-  "edition": "November 25, 2026 — Chelsea final yard as-is and pets require screening",
+  "edition": "November 25, 2026 — finalist neighborhoods and Burleson shops road estimates",
   "note": "Clarks Mill toured Nov24, household loved everything with no compromise. Screenshot of Progress application Overview shows Nathan submitted Tue Nov24 but Shelly's co-applicant portion not submitted; property team review starts only after Shelly submits. $2133.98/mo direct application estimate incl ordinary Sunny and Belle; chose intended Dec4/18-month term, verify final saved selection. No approval, security-deposit payment, hold or signed lease proven. Historical ratings preserved. Other tours remain unchanged.",
   "homes": [
     {
@@ -122,7 +122,15 @@
         "lawn": "HOA 7.16 requires maintained lawns",
         "source": "User-provided 29-page Parkview Declaration HOA PDF; city code https://codelibrary.amlegal.com/codes/ftworth/latest/ftworth_tx/0-0-0-37808"
       },
-      "ratingSource": "User-directed update, November 25, 2026"
+      "ratingSource": "User-directed update, November 25, 2026",
+      "neighborhoodNotes": {
+        "asOf": "2026-11-25",
+        "source": "Household firsthand impressions (not neighborhood survey)",
+        "greenery": "Fewer mature trees/privacy compared with Hidden Lake in family's personal impression; not objectively surveyed",
+        "rearPrivacy": "Unlike Hidden Lake, no firsthand claim of an unobstructed rear view",
+        "park": "Family remembers a park relatively close to Clarks Mill; exact park, walkability, and safe route to verify",
+        "shopping": "Road-network driving baseline to Old Town Burleson ~13 minutes / 6.8 miles, Gateway Station ~11 min / 5.8 mi, Burleson Town Center ~11 min / 6.2 mi (no traffic)."
+      }
     },
     {
       "id": "trecini",
@@ -1175,6 +1183,14 @@
         "tenantAlterations": "Permission and any rent credit NOT answered; obtain written consent before changes",
         "drainage": "Not diagnosed; water runoff only a potential issue from observed bare soil/downspouts",
         "dogUse": "Mud and wear risk for Sunny, particularly after rain. Check fence gates/latches and any dog-safe surfacing alternatives."
+      },
+      "neighborhoodNotes": {
+        "asOf": "2026-11-25",
+        "source": "Household firsthand impressions (not neighborhood survey)",
+        "greenery": "Family particularly appreciates mature trees around Hidden Lake",
+        "rearPrivacy": "Family reports no house directly behind the backyard, providing attractive rear privacy; view/sight lines can vary by season",
+        "shopping": "Household remarked nice Burleson shopping roughly 5-minute drive. Address-matched Old Town ~6min / 2.2mi, Gateway Station ~9min / 4.5mi, Burleson Town Center ~8min / 3.8mi. No traffic; not all shopping is equally close.",
+        "yardTradeoff": "Despite more privacy and mature trees, owner expressly refuses lawn repairs: substantial bare dirt in fenced yard remains as-is."
       }
     },
     {
@@ -1444,6 +1460,13 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 25",
+      "tag": "AREA / SHOPPING · ROUTES VERIFIED",
+      "houseId": "clarks",
+      "title": "Old Town Burleson access: Clarks ~13 min, Hidden Lake ~6 min",
+      "detail": "Household identified Hidden Lake's mature trees, no directly rear-adjacent house and roughly 5-minute access to Burleson shops as reasons the neighborhood feels nicer. OSRM car baseline Old Town at 141 W Renfro: Clarks 13m/6.8mi, Hidden Lake 6m/2.2mi; Gateway 11 vs 9m and Burleson Town Center 11 vs 8m. No traffic modeled. Clarks park nearby is a memory, precise walkability not verified. Both house ratings remain 4.9. User's own first impressions are qualitative, not independently surveyed."
+    },
     {
       "date": "Nov 25",
       "tag": "OWNER POLICY · YARD AS-IS",
@@ -2244,6 +2267,11 @@
         "title": "Pool feasibility",
         "detail": "Road-network baseline: Clarks Ryan YMCA 4min, Huguley 11min; Hidden BRiCk 7min, Huguley 10min. These are no-traffic estimates, and independent standing stretches/handrails have not been verified at any facility.",
         "priority": "care"
+      },
+      {
+        "title": "Neighborhood setting and Burleson shops",
+        "priority": "lifestyle",
+        "detail": "User firsthand values Hidden Lake mature trees, no directly rear-adjacent house and close shops. Old Town drive baseline Hidden 6m vs Clarks 13m, Gateway 9 vs 11, Town Center 8 vs 11. Clarks has a park the household remembers nearby (park route not confirmed). The trees/privacy are a daily amenity; 2–7m shop difference is relatively modest; Hidden backyard remains bare and owner will not improve."
       }
     ],
     "sources": {
@@ -2257,6 +2285,27 @@
       "urgent": "Clarks Mill lease was issued for signature November 25 with 24-hour signing/deposit instructions. Verify the actual lease names both intended adult co-tenants and the terms before signing; no signature/deposit is verified.",
       "sourceDate": "Chelsea email November 25, 2026, 2:16 PM Central",
       "status": "no-landlord-yard-improvements"
+    },
+    "neighborhoodComparison": {
+      "asOf": "2026-11-25",
+      "familyCriteria": [
+        "Mature tree cover/shade",
+        "Rear-facing privacy (no directly adjoining house behind)",
+        "Easy access to Old Town Burleson and retail centers",
+        "Park/playground convenience and safe walking",
+        "Dog-use yard quality and landlord maintenance"
+      ],
+      "firsthand": {
+        "hiddenlake": "Preferred surrounding trees, no house directly behind, convenient nearby shops in Burleson. Positive ongoing home environment, even though yard turf itself needs remediation the landlord will not provide.",
+        "clarks": "House itself rated equal 4.9 and family recalls a nearby park, but exact park walking-route/access not verified."
+      },
+      "destinations": [
+        "Old Town Burleson — 141 W Renfro St",
+        "Gateway Station — 1173 N Burleson Blvd",
+        "Burleson Town Center — 811 NE Alsbury Blvd"
+      ],
+      "travelSource": "Exact-address Census geocoding + OSRM open road network baseline on Nov 25 2026. No traffic.",
+      "keyComparison": "Old Town ~13 minutes from Clarks vs ~6 from Hidden Lake. Larger retail district Gateway ~11 vs ~9, Burleson Town Center ~11 vs ~8. Trees and rear privacy matter more than a 2–7 minute drive difference to specific shops."
     }
   }
 }

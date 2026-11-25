@@ -1,5 +1,5 @@
 {
-  "edition": "November 24, 2026 late — Clarks Mill application submitted; waiting on Shelly",
+  "edition": "November 24, 2026 — Parkview HOA PODS review logged",
   "note": "Clarks Mill toured Nov24, household loved everything with no compromise. Screenshot of Progress application Overview shows Nathan submitted Tue Nov24 but Shelly's co-applicant portion not submitted; property team review starts only after Shelly submits. $2133.98/mo direct application estimate incl ordinary Sunny and Belle; chose intended Dec4/18-month term, verify final saved selection. No approval, security-deposit payment, hold or signed lease proven. Historical ratings preserved. Other tours remain unchanged.",
   "homes": [
     {
@@ -55,7 +55,8 @@
         "Final Progress actual 12-month/base/mandatory recurring and dog+cat combined quote",
         "Progress/HOA written normal acceptance of both adult golden retriever Sunny and cat Belle",
         "Latest permissible December lease start, extension fees and incremental overlap",
-        "Deposit, administration/application/pet fees, reimbursement/holding terms and included appliances"
+        "Deposit, administration/application/pet fees, reimbursement/holding terms and included appliances",
+        "PODS delivery: confirm written Progress/Parkview HOA approval for temporary storage container on paved driveway, permitted number of days, size, placement and pickup; city 30-day maximum does NOT equal HOA approval"
       ],
       "checksUpdatedOn": "2026-11-24",
       "allInEstimate": 2133.98,
@@ -106,6 +107,17 @@
         "approval": "not granted",
         "lease": "not signed",
         "payment": "not independently verified"
+      },
+      "hoaReview": {
+        "reviewedOn": "2026-11-24",
+        "declaration": "Parkview CC&Rs scanned signed 2007; confirm applicability to exact Clarks Mill lot and any amendments",
+        "pods": "HOA 7.3 permits certain trailers/equipment temporarily for loading/unloading, but does not expressly say PODS container or set duration. Fort Worth 5.301(b)(1)(e) portable container maximum 30 days, paved driveway/front-yard placement, not in street right-of-way. This does not override HOA/landlord rules.",
+        "podsApproval": "unverified; need written landlord/HOA confirmation of exact PODS size, driveway location, arrival/pickup dates",
+        "parking": "HOA 7.2 and 7.3 may constrain on-street storage and vehicles",
+        "pets": "HOA 7.7 generally permits reasonable household cats/dogs, but nuisance rules, lease/HOA addenda and individual screening apply",
+        "fence": "HOA 7.4 fully enclosed backyard and generally 6-foot fences",
+        "lawn": "HOA 7.16 requires maintained lawns",
+        "source": "User-provided 29-page Parkview Declaration HOA PDF; city code https://codelibrary.amlegal.com/codes/ftworth/latest/ftworth_tx/0-0-0-37808"
       }
     },
     {
@@ -1409,6 +1421,13 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 24",
+      "tag": "HOA • PODS delivery review",
+      "houseId": "clarks",
+      "title": "Clarks Mill — PODS not expressly covered by HOA, written placement clearance needed",
+      "detail": "Parkview CC&Rs §7.3 allows certain trailers/equipment temporarily for loading/unloading but does not name PODS or specify days. Fort Worth zoning §5.301(b)(1)(e) has 30-day max for portable storage containers; paved surface in front yard, none in street right-of-way. Need manager/HOA approval for driveway placement & dates; original and detailed notes filed in private DFW Move Google Drive."
+    },
     {
       "date": "Nov 24",
       "tag": "APPLICATION • Submitted, household pending",

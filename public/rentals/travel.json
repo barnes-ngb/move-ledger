@@ -1,5 +1,5 @@
 {
-  "edition": "November 24, 2026 — archived Flour Mill removed from green-zone route matrix",
+  "edition": "November 25, 2026 — additional shopping access comparisons for two finalists",
   "method": "US Census matched street addresses → OpenStreetMap OSRM public car route-table, one-time snapshot; approximate baseline with NO live traffic or departure-time adjustment.",
   "caveats": "Minutes are model baseline, not guaranteed travel or weekday/rush-hour estimates. Travel times are not verified in Google Maps. Indoor pool suitability, independent standing access and membership have not been confirmed. Only actionable house-fit green zone (rating ≥4.2 and advertised figure ≤$2300, no hard pet/availability exclusion) was researched.",
   "destinations": {
@@ -34,6 +34,24 @@
     "kirby": {
       "label": "Kirby Creek Natatorium",
       "address": "3201 Corn Valley Rd, Grand Prairie, TX 75052, USA"
+    },
+    "oldtown": {
+      "label": "Old Town Burleson",
+      "address": "141 W Renfro St, Burleson, TX 76028, USA",
+      "description": "Boutiques, walkable restaurant area and family plaza",
+      "category": "shopping"
+    },
+    "gateway": {
+      "label": "Gateway Station",
+      "address": "1173 N Burleson Blvd, Burleson, TX 76028, USA",
+      "description": "Shopping and dining retail center",
+      "category": "shopping"
+    },
+    "burlesontown": {
+      "label": "Burleson Town Center",
+      "address": "811 NE Alsbury Blvd, Burleson, TX 76028, USA",
+      "description": "Everyday retail along north Burleson",
+      "category": "shopping"
     }
   },
   "homes": {
@@ -56,6 +74,23 @@
           "id": "huguley",
           "minutes": 11,
           "miles": 5.7
+        }
+      ],
+      "shopping": [
+        {
+          "id": "oldtown",
+          "minutes": 13,
+          "miles": 6.8
+        },
+        {
+          "id": "gateway",
+          "minutes": 11,
+          "miles": 5.8
+        },
+        {
+          "id": "burlesontown",
+          "minutes": 11,
+          "miles": 6.2
         }
       ]
     },
@@ -167,6 +202,23 @@
           "minutes": 10,
           "miles": 5.2
         }
+      ],
+      "shopping": [
+        {
+          "id": "oldtown",
+          "minutes": 6,
+          "miles": 2.2
+        },
+        {
+          "id": "gateway",
+          "minutes": 9,
+          "miles": 4.5
+        },
+        {
+          "id": "burlesontown",
+          "minutes": 8,
+          "miles": 3.8
+        }
       ]
     },
     "trusler": {
@@ -212,6 +264,16 @@
           "miles": 4.7
         }
       ]
+    }
+  },
+  "shoppingRouteNotes": {
+    "calculatedOn": "2026-11-25",
+    "method": "US Census address-matched exact house and destination addresses, public OSRM OpenStreetMap road-network driving table without traffic/departure adjustments",
+    "scope": "Current user-selected finalists only: 2533 Clarks Mill Ln and 1121 Hidden Lake Dr",
+    "limit": "Do not present as real-time traffic or an exact Google Maps trip. Includes only car road model; add signal/parking/seasonal holiday delay if needed. User's 'five minutes' impression refers to their own Burleson shopping experience; three actual destination candidates were separately modeled.",
+    "originAddresses": {
+      "clarks": "2533 Clarks Mill Ln, Fort Worth TX 76123",
+      "hiddenlake": "1121 Hidden Lake Dr, Burleson TX 76028"
     }
   }
 }

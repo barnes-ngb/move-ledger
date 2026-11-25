@@ -123,6 +123,28 @@ for (const [id, routes] of Object.entries(matrix.homes || {})) {
   }
 }
 
+// Shopping comparison: verify source-backed drive estimates and first-hand neighborhood factors.
+const shopping = {
+  clarks: { oldtown: 13, gateway: 11, burlesontown: 11 },
+  hiddenlake: { oldtown: 6, gateway: 9, burlesontown: 8 }
+};
+for (const [houseId, targets] of Object.entries(shopping)) {
+  const home = data.homes.find((h) => h.id === houseId);
+  assert(home?.rating === 4.9, "Two finalist ratings must remain 4.9");
+  for (const [destination, minutes] of Object.entries(targets)) {
+    const t = matrix.homes?.[houseId]?.shopping?.find((r) => r.id === destination);
+    assert(t && t.minutes === minutes && t.miles > 0,
+      "Missing or incorrect shopping road estimate for " + houseId + ":" + destination);
+    assert(matrix.destinations?.[destination]?.address,
+      "Shopping trip must have a verified destination address");
+  }
+}
+assert(data.frontRunners?.neighborhoodComparison?.firsthand?.hiddenlake?.includes("trees"),
+  "Preserve household's mature trees and rear privacy preference");
+assert(html.includes('frontRunnerRow(matrix,"Old Town Burleson"') &&
+       html.includes('"Drive to Old Town Burleson ↗"'),
+  "Show shopping minutes and Google Maps directions in the comparison");
+
 const tourData = JSON.parse(readFileSync("public/rentals/tours.json", "utf8"));
 const tours = (tourData.groups || []).flatMap((group) => group.entries || []);
 assert(tours.length >= 6, "Tour tracker should include the current viewing leads");

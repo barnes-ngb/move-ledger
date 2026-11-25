@@ -21,6 +21,25 @@ assert(!html.includes('id="dateChart"'), "Retired timeline chart should not clut
 
 const data = JSON.parse(readFileSync("public/rentals/listings.json", "utf8"));
 assert(Array.isArray(data.homes) && data.homes.length > 0, "Rental listings must be populated");
+const finalists = data.frontRunners;
+assert(html.includes('id="front-runners"') && html.includes('id="finalistCards"') && html.includes('id="finalistMatrix"'),
+  "Two-front-runner featured section and tradeoff comparison must be rendered");
+assert(html.includes('function renderFrontRunners()') && html.includes('frontRunnerConfig=d.frontRunners'),
+  "Front-runner comparison must track live published rental data");
+assert(Array.isArray(finalists?.order) && finalists.order.join(",") === "clarks,hiddenlake",
+  "Front-runner order must match current family decision");
+assert(finalists.order.every((id) => data.homes.some((h) => h.id === id)),
+  "Front-runner must remain a current active house");
+const clarks = data.homes.find((h) => h.id === "clarks");
+const hiddenLake = data.homes.find((h) => h.id === "hiddenlake");
+assert(clarks.allInEstimate === 2133.98 && hiddenLake.allInEstimate === 2325,
+  "Featured recurring quotes must be accurate and distinguish direct versus conditional figures");
+assert(finalists.highlights.clarks.status.includes("not verified signed") ||
+  finalists.highlights.clarks.status.includes("NOT verified signed"),
+  "Do not equate an approved application to a signed lease");
+assert(!JSON.stringify(finalists).includes("securecafe.com/onlineleasing/"),
+  "Shared comparison must not contain personal lease-account login URLs");
+
 const archived = data.archivedHomes || [];
 assert(html.includes('id="rental-archive"') && html.includes('id="archiveHomes"'),
   "Unavailable-rental archive must render separately from the active plot");

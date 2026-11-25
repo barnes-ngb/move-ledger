@@ -1,6 +1,6 @@
 {
-  "edition": "November 24, 2026 evening — Clarks Mill application quote $2,133.98 with both pets",
-  "note": "Nov24 evening FIRSTHAND REVIEW: Nathan and Shelly toured Clarks Mill and loved everything, reporting zero compromises. Application is desired, NOT submitted or approved; keep earlier numeric rating until user revises. Household's priority now verifying pet approval, final full recurring quote, lease start and refundable/nonrefundable costs. Hidden Lake Wed authorized self-tour remains backup; prior tour/other statuses remain. Flour Mill rented archived and McLanahan erroneous referral excluded.",
+  "edition": "November 24, 2026 late — Clarks Mill application submitted; waiting on Shelly",
+  "note": "Clarks Mill toured Nov24, household loved everything with no compromise. Screenshot of Progress application Overview shows Nathan submitted Tue Nov24 but Shelly's co-applicant portion not submitted; property team review starts only after Shelly submits. $2133.98/mo direct application estimate incl ordinary Sunny and Belle; chose intended Dec4/18-month term, verify final saved selection. No approval, security-deposit payment, hold or signed lease proven. Historical ratings preserved. Other tours remain unchanged.",
   "homes": [
     {
       "id": "clarks",
@@ -13,7 +13,7 @@
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
       "priceNote": "DIRECT Nov24 application estimate: $1960 BASE + $144 TWO-PET monthly rent + $29.98 required Smart Home/utility-service recurring = $2133.98/month excluding metered utilities/insurance. $30 one-time utility management setup shown separately. Lease term, deposit, application fee amount, and approved start not visible. Earlier Nov23 Zillow $2050 required-fee before pets is superseded as comparison by direct current application estimate ($1989.98 pre-pet); not final signed lease.",
       "fit": "After the Nov24 in-person tour Nathan and Shelly report they loved EVERYTHING and felt NO compromises. This firsthand assessment supersedes earlier photo-based cabinet/fence worries as subjective fit concerns, while documented inspection/legal requirements and pet approval remain separate gates. Shelly's previous explicit numeric 4.8/5 is preserved until revised.",
-      "status": "Tour completed Nov24 6–7 PM; Nathan and Shelly loved everything and felt no compromises. Household wants to APPLY, but no application, approval, hold or lease established. Latest Zillow Nov23 advertised $2050 total before pet charges is not final Progress quote; both pets, latest permissible December start, term and all fees remain unverified. | Nov24 screenshot: household reached Progress Review & Pay, APPLICATION NOT SUBMITTED/NO PAYMENT VERIFIED. Direct monthly amount incl pets $2133.98, term/start/deposit still unverified.",
+      "status": "Nov24 Progress application Overview confirms Nathan SUBMITTED, waiting for Shelly co-applicant to submit; property team review has NOT started. Tour completed Nov24; both loved the home with no compromises. $2133.98/mo direct application estimate incl both pets; no signed contract, approval or hold. Last intended selection Dec4 18 months must be verified on application details and final lease.",
       "priceBasis": "Nov24 user screenshot of Progress application Review & Pay: $1,960 BASE + $72 Sunny + $72 Belle + $19.99 Smart Home + $9.99 Utility Service Fee = $2,133.98 MONTHLY (conditional until final lease). This is all listed recurring including TWO ordinary pets, not a 12-month confirmed lease contract.",
       "petGate": "Large dogs + cats listed; individual approval pending",
       "priceUpdatedOn": "2026-11-24",
@@ -36,7 +36,7 @@
         },
         "lease": {
           "status": "pending",
-          "detail": "Progress Nov8: rent ready start within 12 days, possible +7 days/$250"
+          "detail": "User chose Dec4 and 18 months during Home Selection, but post-submission Overview screenshot doesn't show final selection/approval. Verify in Application Details; no signed lease."
         },
         "photos": {
           "status": "yes",
@@ -48,7 +48,7 @@
         },
         "tour": {
           "status": "yes",
-          "detail": "COMPLETED in person Tue Nov24 2026; Nathan and Shelly loved everything, no subjective compromises. They intend to apply; no submitted application/payment/approval verified."
+          "detail": "In-person Nov24 tour COMPLETED: household loved everything, no compromises. Nathan's application submitted Nov24; waiting on Shelly to submit before review starts."
         }
       },
       "questions": [
@@ -60,7 +60,7 @@
       "checksUpdatedOn": "2026-11-24",
       "allInEstimate": 2133.98,
       "allInBasis": "Direct Progress application estimate at step 8, Nov24, 2026: rent $1960; two pets $72 each; required Smart Home $19.99 and utility service $9.99; excludes metered utilities/insurance; $30 one-time utility setup appears separately.",
-      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied. | Nov19: Shelly ACCEPTED Nathan calendar invitation 12:39 AM CST; both participants now have event on calendars (event link recorded). Zillow morning follow-up shows $2,120 advertised mandatory-fee-inclusive TOTAL before pet charges, manager email $2,090 BASE + applicable fees; old board $2,235 obsolete. Nov20 user screenshot: Progress automated SMS invited reply Y for assistance. User replied Y; this is not a second appointment and does NOT change confirmed Nov24 6–7PM Rently tour. Nov23 Zillow price alert: https://mail.google.com/mail/u/0/#all/1a209131569de82d; Nov24 confirmed self-tour unchanged.",
+      "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied. | Nov19: Shelly ACCEPTED Nathan calendar invitation 12:39 AM CST; both participants now have event on calendars (event link recorded). Zillow morning follow-up shows $2,120 advertised mandatory-fee-inclusive TOTAL before pet charges, manager email $2,090 BASE + applicable fees; old board $2,235 obsolete. Nov20 user screenshot: Progress automated SMS invited reply Y for assistance. User replied Y; this is not a second appointment and does NOT change confirmed Nov24 6–7PM Rently tour. Nov23 Zillow price alert: https://mail.google.com/mail/u/0/#all/1a209131569de82d; Nov24 confirmed self-tour unchanged. | Nov24 Progress Overview screenshot: Nathan submitted Nov24, Shelly not yet submitted; property team review pending. No approval/lease claimed.",
       "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cb4d2abe8eea7",
       "ratingUpdatedOn": "2026-11-18",
       "ratingStatus": "Shelly-confirmed 4.8/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
@@ -95,6 +95,17 @@
         "leaseStart": "not visible in screenshot",
         "applicationFee": "not visible in screenshot",
         "securityDeposit": "not visible in screenshot"
+      },
+      "applicationStatus": {
+        "state": "submitted-waiting-on-household",
+        "observedOn": "2026-11-24",
+        "evidence": "User screenshot of Progress application Overview",
+        "nathan": "submitted Tuesday November 24",
+        "shelly": "not submitted as of screenshot",
+        "review": "not started until Shelly submits",
+        "approval": "not granted",
+        "lease": "not signed",
+        "payment": "not independently verified"
       }
     },
     {
@@ -1398,6 +1409,13 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 24",
+      "tag": "APPLICATION • Submitted, household pending",
+      "houseId": "clarks",
+      "title": "Clarks Mill — Nathan submitted; Shelly must complete",
+      "detail": "Progress application Overview screenshot says 'Submitted Tue, Nov 24' and 'Waiting on household: Shelly hasn't submitted yet. Your review starts once they do.' This supersedes old 'intent only' status. No manager review/approval/lease yet. Both pets on estimated $2133.98 monthly quote. Intended Dec4 move-in/18-month term needs final Application Details verification."
+    },
     {
       "date": "Nov 24",
       "tag": "APPLICATION ESTIMATE • Both pets included",

@@ -227,6 +227,13 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 .utility-method a{display:inline-block;color:#1e695c;margin:4px 9px 4px 0;text-decoration:underline}
 @media(max-width:580px){.utility-results{grid-template-columns:1fr}.utility-panel{padding:11px}.utility-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.utility-modes button{font-size:11px;padding:8px 3px}}
 
+
+/* Latest leasing reply shown as plain decision evidence, not a colored recommendation */
+.decision-signal{border-top:1px solid #dce7e9;border-bottom:1px solid #dce7e9;margin:12px 0;padding:10px 1px}
+.decision-signal strong{display:block;font-size:14px;color:#243f50}
+.decision-signal p{font-size:12px;color:#4a6573;margin:4px 0;line-height:1.55}
+.decision-signal .decision-date{font-size:11px;color:#647987}
+
 </style>
 </head>
 <body>
@@ -247,6 +254,7 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 <section class="panel finalists" id="front-runners" aria-label="Featured two-house comparison">
  <div class="subhead"><h2>Our two front-runners</h2><span class="small" id="frontAsOf">Updated November 25, 2026</span></div>
  <p class="hint">The household's two serious choices. We compare the real lease offer with the still-conditional alternative—not automatically-ranked houses.</p>
+ <div id="frontRunnerSignal" class="decision-signal" aria-live="polite"></div>
  <div class="finalist-grid" id="finalistCards"><p class="hint">Loading current offers and inspection notes…</p></div>
  <div class="finalist-difference" id="finalistDifference"></div>
  <section class="utility-panel" id="utility-comparison" aria-label="Utilities budget comparison">
@@ -606,6 +614,16 @@ function renderFrontRunners(){
  var all=houses(),cs=cfg.order.map(function(id){return all.find(function(h){return h.id===id})}),notes=cfg.order.map(function(id){return cfg.highlights&&cfg.highlights[id]});
  if(cs.some(function(h){return !h})||notes.some(function(n){return !n})){root.textContent="One comparison entry is missing. Refresh the published list.";return}
  byId("frontAsOf").textContent=cfg.asOf||"Latest published information";
+ var signal=byId("frontRunnerSignal");if(signal){
+   signal.replaceChildren();
+   if(cfg.decisionSignal){
+    var sig=cfg.decisionSignal;
+    write(signal,"strong",sig.title||"Latest decision evidence");
+    if(sig.sourceDate)write(signal,"div",sig.sourceDate,"decision-date");
+    if(sig.detail)write(signal,"p",sig.detail);
+    if(sig.urgent)write(signal,"p","Time-sensitive: "+sig.urgent);
+   }
+ }
  root.replaceChildren();matrix.replaceChildren();tasks.replaceChildren();difference.replaceChildren();
  cs.forEach(function(h,i){
   var detail=notes[i],c=document.createElement("article");c.className="finalist-house";root.appendChild(c);

@@ -40,6 +40,31 @@ assert(finalists.highlights.clarks.status.includes("not verified signed") ||
 assert(!JSON.stringify(finalists).includes("securecafe.com/onlineleasing/"),
   "Shared comparison must not contain personal lease-account login URLs");
 
+// Utility-planning evidence is explicitly separate from published rent quotes.
+const utilities = JSON.parse(readFileSync("public/rentals/utility-estimates.json","utf8"));
+assert(html.includes('id="utility-comparison"') && html.includes('id="utilityMode"') &&
+  html.includes('id="utilityResults"') && html.includes('function renderUtilityComparison()'),
+  "Public front-runner page must expose functional utility scenario comparison");
+assert(html.includes('fetch("./utility-estimates.json'),
+  "Utility comparison must read maintained sourced utility data");
+const scenarioKeys = ["low","typical","high"];
+for (const id of ["clarks","hiddenlake"]) {
+  const house = data.homes.find((h) => h.id === id);
+  assert(house?.rating === 4.9, "Each user-confirmed front-runner must have a 4.9/5 rating");
+  assert(house?.basis === "Shelly", "Retain Shelly's original rating basis");
+  for (const mode of scenarioKeys) {
+    const row = utilities.houses?.[id]?.scenarios?.[mode];
+    assert(row && row.electricity > 0 && row.municipalTotal > 0,
+      "Missing electric and city utility estimates for " + id + ":" + mode);
+    assert(Math.abs((row.electricity + row.municipalTotal) - row.utilityTotal) < .02,
+      "Utility components must total for " + id + ":" + mode);
+    assert(Math.abs((Number(house.allInEstimate) + row.utilityTotal) - row.housingPlusUtilities) < .02,
+      "Utility-inclusive housing total must not double-count fees for " + id + ":" + mode);
+  }
+}
+assert(utilities.exclusions.some((v) => /gas/i.test(v)),
+  "Unverified natural gas use must be explicitly excluded");
+
 const archived = data.archivedHomes || [];
 assert(html.includes('id="rental-archive"') && html.includes('id="archiveHomes"'),
   "Unavailable-rental archive must render separately from the active plot");

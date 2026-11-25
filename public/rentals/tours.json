@@ -1,5 +1,5 @@
 {
-  "edition": "November 24, 2026 — Clarks Mill applicant submitted; co-applicant pending",
+  "edition": "November 25, 2026 — Clarks Mill application deadline; Hidden Lake access issued",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. Provider confirmation recorded without assuming pet eligibility or payment.",
   "timezone": "America/Chicago",
   "groups": [
@@ -44,18 +44,14 @@
           "date": "Wed Nov 25 · authorized self-tour",
           "time": "Anytime Wednesday before 8 PM; family available after 2 PM (not a fixed 5:30 appointment)",
           "status": "confirmed",
-          "statusLabel": "Confirmed Wed · code sent day-of",
+          "statusLabel": "Confirmed today · access email received",
           "contact": "Chelsea Holguin / Open House Texas Property Management",
-          "next": "Chelsea's Nov24 human email confirms Wednesday Nov25 access anytime before 8 PM. Rently's Nov24 access instruction confirms date and says a unique code will be emailed on Wednesday. Check the private email before driving; no code is published here. Family prefers after 2 PM. This does not confirm ordinary two-pet approval or December lease start.",
+          "next": "Chelsea Nov24 confirms Wednesday Nov25 access anytime before 8 PM; Rently day-of access email received Nov25 at 7:11 AM CT. Open private access instructions only at property. Family available after 2 PM; no fixed 5:30 appointment. Pet and lease-start gates unresolved.",
           "caution": "Wed Nov25 tour authorization is confirmed, but NO fixed 5:30 PM slot and NO completed interior visit. Do not publish codes. Sunny + Belle approval, quoted lease length, Dec start and full costs remain unanswered.",
           "actions": [
             {
               "label": "Chelsea confirmation",
               "url": "https://mail.google.com/mail/u/0/#all/1a20e91363081a81"
-            },
-            {
-              "label": "Access email",
-              "url": "https://mail.google.com/mail/u/0/#all/1a20e9176896dffd"
             },
             {
               "label": "InsideMaps walkthrough",
@@ -64,6 +60,10 @@
             {
               "label": "Directions",
               "url": "https://www.google.com/maps/search/?api=1&query=1121+Hidden+Lake+Dr+Burleson+TX+76028"
+            },
+            {
+              "label": "Day-of access email",
+              "url": "https://mail.google.com/mail/u/0/#all/1a212d50b84ddcc2"
             }
           ]
         },
@@ -76,9 +76,9 @@
           "date": "Tue Nov24 · toured",
           "time": "Tour completed; previously 6–7 PM",
           "status": "completed",
-          "statusLabel": "Toured · applied · waiting on Shelly",
+          "statusLabel": "Toured · household application due Fri 7:29 PM",
           "contact": "Progress Residential / Chloe",
-          "next": "Nathan's Progress application submitted Tue Nov24. Screenshot says Shelly's co-applicant portion still incomplete, preventing property-team review. Both loved house in person with no compromises. Have Shelly complete her invitation, verify contact info and final intended Dec4/18mo terms before review. No approval/lease or payment assumed.",
+          "next": "Progress Nov24 evening email acknowledges applicant submission and payment and sets deadline for ALL applicants to complete application/payment by Fri Nov27 7:29 PM CST. Complete outstanding co-applicant requirements and verify intended Dec4/18mo terms. Await complete-application email; not approval or signed lease.",
           "caution": "Do not claim application approved, home held, or lease signed. Sunny/Belle ordinary pet charges entered, individual/property rules remain to be finalized. Refundable deposit due upon approval under application quote.",
           "actions": [
             {
@@ -88,6 +88,10 @@
             {
               "label": "Calendar",
               "url": "https://www.google.com/calendar/event?eid=YXBqYjZkNDkxMTIwaG8yaHFoamN0ZHVzZmMgbmF0aGFuLnhiOTc1M0Bt&ctz=America/Chicago"
+            },
+            {
+              "label": "Application deadline email",
+              "url": "https://mail.google.com/mail/u/0/#all/1a210ac4e7b9fa8e"
             }
           ]
         },
@@ -157,7 +161,7 @@
           "status": "confirmed",
           "statusLabel": "Self-tour confirmed · pet gate unresolved",
           "contact": "RPM Trailhead · ShowingHero",
-          "next": "ShowingHero email sent Nov23 confirms self-tour Wednesday Nov25 at 3 PM CT. Use provider's private access instructions and allocated time. No calendar event created. User may have paid through the provider; payment is not verified. The ordinary-cat policy remains unresolved.",
+          "next": "ShowingHero Nov24 reminder reconfirms Wednesday Nov25 3 PM tour. Tricia Salas RPM Trailhead attempted to call Nov24 and requests callback at 817-930-1160. Confirm ordinary cat + large dog before spending further time; no written pet clearance.",
           "caution": "Tour confirmation is not pet approval. Published cat restriction remains unresolved; do not assume rental eligibility. Do not publish access credentials.",
           "actions": [
             {
@@ -175,6 +179,14 @@
             {
               "label": "Listing",
               "url": "https://www.realtor.com/rentals/details/10348-Bridgetown-Ln_Crowley_TX_76036_M97274-91325"
+            },
+            {
+              "label": "Call RPM Trailhead",
+              "url": "tel:+18179301160"
+            },
+            {
+              "label": "Agent callback email",
+              "url": "https://mail.google.com/mail/u/0/#all/1a20f26d255ce264"
             }
           ]
         }
@@ -309,10 +321,10 @@
   "constraints": {
     "monday": "Mon Nov23: Northview tour completed; Hidden Lake access attempt unsuccessful.",
     "tuesday": "Tue Nov 24: after 5 PM only (working; Clarks Mill 6–7 PM confirmed)",
-    "wednesday": "Wed Nov25: after 2 PM; Bridgetown confirmed self-tour at 3 PM (cat eligibility unresolved), Hidden Lake provider/Chelsea CONFIRM self-tour anytime before 8 PM (code day-of), Garrison 2:15 requested/unconfirmed. Avoid simultaneous/overlapping slots.",
+    "wednesday": "Wed Nov25: after 2 PM; Bridgetown confirmed at 3 PM (pet gate), Hidden Lake access email received, self-tour before 8 PM; Garrison 2:15 PM requested only.",
     "thursday": "Thu Nov 26: Thanksgiving, no viewing requested",
     "friday": "Fri Nov 27: owner Kyle agrees Tide Lane 4 PM; call/text to finalize",
     "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
   },
-  "todayNote": "Nov24 Clarks Mill in-person tour completed, household loved everything. Nathan SUBMITTED Progress application, Shelly co-applicant has not submitted yet; property review will start after her submission. No approval or signed lease; previously quoted $2133.98 monthly with two pets, intended Dec4 18mo pending final confirmation. Hidden Lake Wed authorized, Bridgetown Wed 3pm reserved with cat gate, Tide Fri owner agreed needs finalization."
+  "todayNote": "Clarks Mill firsthand fit loved; Progress requires all applicants to finish by Fri Nov27 7:29 PM CST, not approved or signed. Hidden Lake day-of access received, visit today before 8 PM. Bridgetown 3 PM confirmed but pet question unresolved; Tide Fri 4 PM agent-agreed, finalize. Garrison unconfirmed."
 }

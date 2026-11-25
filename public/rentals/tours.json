@@ -1,5 +1,5 @@
 {
-  "edition": "November 25, 2026 — Clarks Mill application deadline; Hidden Lake access issued",
+  "edition": "November 25, 2026 — Hidden Lake completed and backyard follow-up sent",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. Provider confirmation recorded without assuming pet eligibility or payment.",
   "timezone": "America/Chicago",
   "groups": [
@@ -41,13 +41,13 @@
           "name": "1121 Hidden Lake Dr",
           "city": "Burleson",
           "address": "1121 Hidden Lake Dr, Burleson, TX 76028",
-          "date": "Wed Nov 25 · authorized self-tour",
-          "time": "Anytime Wednesday before 8 PM; family available after 2 PM (not a fixed 5:30 appointment)",
-          "status": "confirmed",
-          "statusLabel": "Confirmed today · access email received",
+          "date": "Wed Nov 25 · toured",
+          "time": "Self-guided showing completed; exact hour not recorded",
+          "status": "completed",
+          "statusLabel": "Toured · family liked; office confirmed",
           "contact": "Chelsea Holguin / Open House Texas Property Management",
-          "next": "Chelsea Nov24 confirms Wednesday Nov25 access anytime before 8 PM; Rently day-of access email received Nov25 at 7:11 AM CT. Open private access instructions only at property. Family available after 2 PM; no fixed 5:30 appointment. Pet and lease-start gates unresolved.",
-          "caution": "Wed Nov25 tour authorization is confirmed, but NO fixed 5:30 PM slot and NO completed interior visit. Do not publish codes. Sunny + Belle approval, quoted lease length, Dec start and full costs remain unanswered.",
+          "next": "Family toured Nov25 and confirmed separate enclosed office; liked the house. Backyard substantially bare/shaded with dirt patch. Chelsea emailed Nov25 asking owner to improve yard/assess runoff or allow authorized renter work/credit; also asking for written acceptance of large dog+cat, December lease and all costs. Awaiting reply.",
+          "caution": "The gate/fence is visually present, but dog-safe latches, yard drainage and possible improvement are NOT verified. Ordinary two-pet approval and written December lease start pending. $1000 first-full-month credit stated earlier.",
           "actions": [
             {
               "label": "Chelsea confirmation",
@@ -326,5 +326,5 @@
     "friday": "Fri Nov 27: owner Kyle agrees Tide Lane 4 PM; call/text to finalize",
     "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
   },
-  "todayNote": "Clarks Mill firsthand fit loved; Progress requires all applicants to finish by Fri Nov27 7:29 PM CST, not approved or signed. Hidden Lake day-of access received, visit today before 8 PM. Bridgetown 3 PM confirmed but pet question unresolved; Tide Fri 4 PM agent-agreed, finalize. Garrison unconfirmed."
+  "todayNote": "November 25: Hidden Lake completed self-guided tour, family liked it and verified separate enclosed office. Photos show big bare yard patch; Chelsea follow-up SENT seeking restoration/drainage and pets/lease clarity. Clarks Mill Nov24 tour complete, approved application and lease ready (not signed confirmed)."
 }

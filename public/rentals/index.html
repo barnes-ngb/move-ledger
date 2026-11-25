@@ -640,6 +640,12 @@ function renderFrontRunners(){
   frontRunnerLink(links,i===0?"Official listing":"Real walkthrough",detail.page);
   if(h.url&&h.url!==detail.page)frontRunnerLink(links,"Listing photos",h.url);
   var tour=document.createElement("a");tour.href="#tour-"+h.id;tour.textContent="Tour/next steps ↓";links.appendChild(tour);
+  var dest=travelData.destinations?.oldtown?.address;
+  if(dest){
+   var shopLink=document.createElement("a");shopLink.href=linkForRoute(h,dest);
+   shopLink.target="_blank";shopLink.rel="noopener noreferrer";
+   shopLink.textContent="Drive to Old Town Burleson ↗";links.appendChild(shopLink);
+  }
  });
  var a=Number(cs[0].allInEstimate),b=Number(cs[1].allInEstimate);
  var delta=(Number.isFinite(a)&&Number.isFinite(b))?b-a:null;
@@ -657,6 +663,18 @@ function renderFrontRunners(){
  function time(r,key){return r&&r[key]&&r[key].minutes!=null?"~"+r[key].minutes+" min (no traffic)":"Not yet measured";}
  frontRunnerRow(matrix,"Work drive",time(ca,"work"),time(hb,"work"));
  frontRunnerRow(matrix,"Mom & Dad",time(ca,"parents"),time(hb,"parents"));
+ function shop(r,id){
+  if(!r||!Array.isArray(r.shopping))return "Not yet measured";
+  var t=r.shopping.find(function(x){return x.id===id});
+  return t?"~"+t.minutes+" min · "+t.miles.toFixed(1)+" mi (no traffic)":"Not yet measured";
+ }
+ frontRunnerRow(matrix,"Old Town Burleson",shop(ca,"oldtown"),shop(hb,"oldtown"));
+ frontRunnerRow(matrix,"Gateway Station shops",shop(ca,"gateway"),shop(hb,"gateway"));
+ frontRunnerRow(matrix,"Burleson Town Center",shop(ca,"burlesontown"),shop(hb,"burlesontown"));
+ if(cfg.neighborhoodComparison?.firsthand){
+  var hood=cfg.neighborhoodComparison.firsthand;
+  frontRunnerRow(matrix,"Trees, privacy & area",hood.clarks,hood.hiddenlake);
+ }
  function pool(r){if(!r||!r.pools||!r.pools.length)return"Not measured";return r.pools.map(function(p){var dest=travelData.destinations&&travelData.destinations[p.id];return (dest?dest.label:p.id)+" ~"+p.minutes+" min";}).join("; ");}
  frontRunnerRow(matrix,"Indoor pools",pool(ca),pool(hb));
  frontRunnerRow(matrix,"Key unknown",notes[0].unknown,notes[1].unknown);

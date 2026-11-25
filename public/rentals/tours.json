@@ -1,5 +1,5 @@
 {
-  "edition": "November 25, 2026 — Hidden Lake completed and backyard follow-up sent",
+  "edition": "Nov 25 2026 — Hidden Lake yard as-is confirmed, pets need applications",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. Provider confirmation recorded without assuming pet eligibility or payment.",
   "timezone": "America/Chicago",
   "groups": [
@@ -44,11 +44,15 @@
           "date": "Wed Nov 25 · toured",
           "time": "Self-guided showing completed; exact hour not recorded",
           "status": "completed",
-          "statusLabel": "Toured · family liked; office confirmed",
+          "statusLabel": "Toured · yard as-is / pets not approved",
           "contact": "Chelsea Holguin / Open House Texas Property Management",
-          "next": "Family toured Nov25 and confirmed dedicated office (door/enclosure not separately verified); liked the house. Backyard substantially bare/shaded with dirt patch. Chelsea emailed Nov25 asking owner to improve yard/assess runoff or allow authorized renter work/credit; also asking for written acceptance of large dog+cat, December lease and all costs. Awaiting reply.",
-          "caution": "The gate/fence is visually present, but dog-safe latches, yard drainage and possible improvement are NOT verified. Ordinary two-pet approval and written December lease start pending. $1000 first-full-month credit stated earlier.",
+          "next": "After the tour, Chelsea replied Nov25 2:16PM Central: owner will LEASE YARD AS-IS and will not do more lawn work. EACH pet must complete application/screening, and agent CANNOT preapprove either the large dog or cat. Confirmed $2,275 base, plus per-pet $25 screening, $250 nonrefundable upon approval, $25/month if accepted. Old $1,000 first-full-month credit was not repeated in this reply.",
+          "caution": "Landlord will not fix dirt/patchy grass. Tenant modifications or rent credit NOT approved. No guarantee either pet passes screening. December lease start/term and any additional monthly service charges not provided.",
           "actions": [
+            {
+              "label": "Chelsea's latest answer",
+              "url": "https://mail.google.com/mail/u/0/#all/1a2145a1a5f54d40"
+            },
             {
               "label": "Chelsea confirmation",
               "url": "https://mail.google.com/mail/u/0/#all/1a20e91363081a81"
@@ -326,5 +330,5 @@
     "friday": "Fri Nov 27: owner Kyle agrees Tide Lane 4 PM; call/text to finalize",
     "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
   },
-  "todayNote": "November 25: Hidden Lake completed self-guided tour, family liked it and verified separate enclosed office. Photos show big bare yard patch; Chelsea follow-up SENT seeking restoration/drainage and pets/lease clarity. Clarks Mill Nov24 tour complete, approved application and lease ready (not signed confirmed)."
+  "todayNote": "Hidden Lake toured and liked, separate office confirmed. Latest Chelsea direct reply Nov25: landlord will not improve yard, lease as-is, two pets require individual application and cannot be preapproved. Clarks had an approved application and lease-ready email, with time-sensitive signature/deposit request. Both scored 4.9."
 }

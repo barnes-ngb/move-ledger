@@ -1,0 +1,172 @@
+{
+  "edition": "November 25, 2026",
+  "kind": "Planning scenarios, NOT actual utility bills or quotes",
+  "summary": "Based on Oncor-area Nov 2026 market electricity rates, Fort Worth 2027 published water/wastewater and drainage fees, and Burleson 2026-27 public residential rates. Rates and service territory require final meter/address confirmation.",
+  "householdAssumptions": "4 people, regular home-day occupancy, single-story 1,758 and 2,044 sf houses. kWh varies with HVAC, insulation, heating fuel, thermostats and seasonal load. Water 6,000/10,000/16,000 gallons per month; wastewater billed on assumed winter average 7,000 gallons and varies on actual account. Normal trash cart, no large special water demand.",
+  "exclusions": [
+    "Metered natural gas (if gas equipment exists), because service/fuel is unverified; gas use may reduce electric heating demand, so do not blindly add a gas bill to an all-electric assumption",
+    "Internet, optional streaming and mobile phone service",
+    "Renters insurance, one-time deposits, utility connection costs and taxes/surcharges not expressly modeled",
+    "Landscaping/sod and irrigation upgrades, new appliances, extraordinary summer cooling/heat or water leaks"
+  ],
+  "scenarios": [
+    {
+      "id": "low",
+      "label": "Lower-use month",
+      "rate": 0.12,
+      "waterGallons": 6000,
+      "notes": "Efficient-use month; especially not a summer maximum"
+    },
+    {
+      "id": "typical",
+      "label": "Planning month",
+      "rate": 0.132,
+      "waterGallons": 10000,
+      "notes": "Midpoint planning case; not a forecast of actual monthly weather"
+    },
+    {
+      "id": "high",
+      "label": "Higher-use month",
+      "rate": 0.14,
+      "waterGallons": 16000,
+      "notes": "Higher energy and more yard watering; extreme Texas summer peaks can exceed this"
+    }
+  ],
+  "ratesAssumed": {
+    "electricity": "Nov25 DFW Oncor retail plan index median around 13.2 cents/kWh at 1000 kWh, including delivery; use 12–14 cents/kWh as scenario price, no bill-credit cliff assumed.",
+    "fortWorth": "2027 5/8-inch water fixed $14.45, residential tiered volume $2.28/$3.19/$4.35 per CCF; sewer fixed $8.35+$4.33/CCF at 7k gallon winter average; assumed 64-gallon trash $23.40; stormwater approx Tier2 $7.65 from Jan 2027.",
+    "burleson": "2026-27 5/8-inch water fixed $19.27+$5.89/kgal to 10k and $7.11 next; sewer $23.28+$6.46/kgal of winter average 7k; trash $26.49 plus potential tax; typical stormwater $8 Tier2, exact lot tier unknown."
+  },
+  "sources": [
+    {
+      "label": "Texas oncor electric rate market",
+      "url": "https://texashomebills.com/electricity/city/fort-worth",
+      "kind": "Fresh market-based price, not a specific contract"
+    },
+    {
+      "label": "Fort Worth water and wastewater 2027 rates",
+      "url": "https://www.fortworthtexas.gov/departments/water/rates",
+      "kind": "Official municipal schedule"
+    },
+    {
+      "label": "Fort Worth sanitation cart pricing",
+      "url": "https://www.fortworthtexas.gov/departments/environmental-services/solidwaste/garbage",
+      "kind": "Official municipal schedule; rate/taxes need address-level bill"
+    },
+    {
+      "label": "Fort Worth stormwater fee",
+      "url": "https://www.fortworthtexas.gov/departments/tpw/stormwater",
+      "kind": "Official tier schedule; 2027 January increase"
+    },
+    {
+      "label": "Burleson water sewer solid waste rates",
+      "url": "https://www.burlesontx.com/230/Rates",
+      "kind": "Official municipal schedule"
+    },
+    {
+      "label": "Burleson stormwater tier rates",
+      "url": "https://burlesontx.com/2920/Stormwater-Utility-Fee-and-Drainage-in-B",
+      "kind": "Official municipal schedule"
+    }
+  ],
+  "houses": {
+    "clarks": {
+      "monthlyHousing": 2133.98,
+      "roomsSqFt": 1758,
+      "city": "Fort Worth",
+      "meterAssumption": "small residential 5/8-inch",
+      "utilityProviderStatus": "Assumed municipal water/sewer/trash; verify actual account service territory and which fees are tenant-billed.",
+      "fuelStatus": "Natural-gas service / heating / water-heater fuel NOT confirmed; the electricity model is not a meter-history estimate and gas may require an additional bill.",
+      "scenarios": {
+        "low": {
+          "kwh": 1200,
+          "gallons": 6000,
+          "electricRate": 0.12,
+          "electricity": 144,
+          "water": 34.57,
+          "wastewater": 48.87,
+          "trash": 23.4,
+          "stormwater": 7.65,
+          "municipalTotal": 114.49,
+          "utilityTotal": 258.49,
+          "housingPlusUtilities": 2392.47
+        },
+        "typical": {
+          "kwh": 1550,
+          "gallons": 10000,
+          "electricRate": 0.132,
+          "electricity": 204.6,
+          "water": 53.22,
+          "wastewater": 48.87,
+          "trash": 23.4,
+          "stormwater": 7.65,
+          "municipalTotal": 133.13,
+          "utilityTotal": 337.73,
+          "housingPlusUtilities": 2471.71
+        },
+        "high": {
+          "kwh": 2000,
+          "gallons": 16000,
+          "electricRate": 0.14,
+          "electricity": 280,
+          "water": 88.11,
+          "wastewater": 48.87,
+          "trash": 23.4,
+          "stormwater": 7.65,
+          "municipalTotal": 168.02,
+          "utilityTotal": 448.02,
+          "housingPlusUtilities": 2582
+        }
+      }
+    },
+    "hiddenlake": {
+      "monthlyHousing": 2325,
+      "roomsSqFt": 2044,
+      "city": "Burleson",
+      "meterAssumption": "small residential 5/8-inch",
+      "utilityProviderStatus": "Assumed municipal water/sewer/trash; verify actual account service territory and which fees are tenant-billed.",
+      "fuelStatus": "Natural-gas service / heating / water-heater fuel NOT confirmed; the electricity model is not a meter-history estimate and gas may require an additional bill.",
+      "scenarios": {
+        "low": {
+          "kwh": 1350,
+          "gallons": 6000,
+          "electricRate": 0.12,
+          "electricity": 162,
+          "water": 54.61,
+          "wastewater": 68.5,
+          "trash": 26.49,
+          "stormwater": 8,
+          "municipalTotal": 157.6,
+          "utilityTotal": 319.6,
+          "housingPlusUtilities": 2644.6
+        },
+        "typical": {
+          "kwh": 1750,
+          "gallons": 10000,
+          "electricRate": 0.132,
+          "electricity": 231,
+          "water": 78.17,
+          "wastewater": 68.5,
+          "trash": 26.49,
+          "stormwater": 8,
+          "municipalTotal": 181.16,
+          "utilityTotal": 412.16,
+          "housingPlusUtilities": 2737.16
+        },
+        "high": {
+          "kwh": 2200,
+          "gallons": 16000,
+          "electricRate": 0.14,
+          "electricity": 308,
+          "water": 120.83,
+          "wastewater": 68.5,
+          "trash": 26.49,
+          "stormwater": 8,
+          "municipalTotal": 223.82,
+          "utilityTotal": 531.82,
+          "housingPlusUtilities": 2856.82
+        }
+      }
+    }
+  }
+}

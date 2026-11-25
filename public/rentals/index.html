@@ -201,6 +201,32 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
  .finalist-tasks{grid-template-columns:1fr}
 }
 
+
+/* Live public-utility-rate scenarios: do not mislabel estimates as actual bills */
+.utility-panel{margin:18px 0 17px;padding:15px;background:#f8fbfa;border:1px solid #d8e6e2;border-radius:13px}
+.utility-panel h3{font-size:15px;margin:0 0 4px}
+.utility-panel .hint{font-size:12px;margin:3px 0 11px}
+.utility-modes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.utility-modes button{padding:7px 11px;font-size:12px;border:1px solid #c7d8dc;background:white;color:#34576b}
+.utility-modes button[aria-pressed="true"]{background:#195c4d;color:white;border-color:#195c4d}
+.utility-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.utility-result{border:1px solid #deeaeb;border-radius:10px;background:#fff;padding:12px;min-width:0}
+.utility-result h4{font-size:14px;margin:0;color:#2d4e60}
+.utility-result .util-total{font-size:24px;line-height:1.3;color:#1c5b4c;font-weight:800;font-variant-numeric:tabular-nums}
+.utility-result .util-allin{margin:7px 0;padding:7px 0;border-top:1px solid #e7eded;font-size:14px;font-weight:800;color:#234253}
+.utility-result .util-allin span{display:block;color:#59717b;font-size:11px;font-weight:500}
+.utility-result .util-detail{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;font-size:12px}
+.utility-result .util-detail span{color:#576c79}
+.utility-result .util-detail strong{color:#385c60;font-variant-numeric:tabular-nums}
+.utility-result .util-usage{font-size:11px;color:#627785;margin:8px 0 0}
+.utility-caveats{font-size:12px;color:#556c79;margin:10px 0}
+.utility-method{margin-top:7px;border-top:1px solid #dce6e8;padding-top:9px;font-size:12px;color:#5b6f7a}
+.utility-method summary{font-size:12px;cursor:pointer;font-weight:750;color:#245b65}
+.utility-method p{margin:6px 0}
+.utility-method ul{padding-left:17px;margin:7px 0}
+.utility-method a{display:inline-block;color:#1e695c;margin:4px 9px 4px 0;text-decoration:underline}
+@media(max-width:580px){.utility-results{grid-template-columns:1fr}.utility-panel{padding:11px}.utility-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.utility-modes button{font-size:11px;padding:8px 3px}}
+
 </style>
 </head>
 <body>
@@ -223,6 +249,18 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
  <p class="hint">The household's two serious choices. We compare the real lease offer with the still-conditional alternative—not automatically-ranked houses.</p>
  <div class="finalist-grid" id="finalistCards"><p class="hint">Loading current offers and inspection notes…</p></div>
  <div class="finalist-difference" id="finalistDifference"></div>
+ <section class="utility-panel" id="utility-comparison" aria-label="Utilities budget comparison">
+  <div class="subhead"><h3>Estimated utilities &amp; full monthly budget</h3><span class="pill neutral">Rate-based · not actual bills</span></div>
+  <p class="hint">Electricity, water, sewer, trash and drainage only. Choose a usage scenario. Gas fuel, internet, insurance and one-time costs are not included; municipal service provider and house heating fuel still need confirmation.</p>
+  <div id="utilityMode" class="utility-modes" aria-label="Utility usage scenarios">
+   <button type="button" data-utility-scenario="low">Lower use</button>
+   <button type="button" data-utility-scenario="typical" aria-pressed="true">Planning month</button>
+   <button type="button" data-utility-scenario="high">Higher use</button>
+  </div>
+  <div id="utilityResults" class="utility-results" aria-live="polite">Calculating utilities…</div>
+  <p id="utilityCaveats" class="utility-caveats"></p>
+  <details class="utility-method"><summary>Assumptions, limitations &amp; official utility rate sources</summary><div id="utilitySources"></div></details>
+ </section>
  <h3 class="finalist-label">Decision tradeoffs</h3>
  <div class="finalist-matrix" id="finalistMatrix"></div>
  <div class="finalist-actions">
@@ -492,6 +530,7 @@ function houseCard(h){
 }
 function render(){
  renderFrontRunners();
+ renderUtilityComparison();
  var all=houses(),visible=matchingHouses(),green=all.filter(isGreen);
  byId("greenCount").textContent=green.length;
  byId("count").textContent=visible.length+" displayed · "+all.length+" tracked";
@@ -609,6 +648,62 @@ function renderFrontRunners(){
  });
 }
 
+
+var utilityEstimates=null;
+var utilityScenario="typical";
+function utilityMoney(v){
+ var n=Number(v);return Number.isFinite(n)?"$"+n.toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:2}):"Not modeled";
+}
+function utilityComparisonDetail(node,label,value){
+ var lab=document.createElement("span");lab.textContent=label;node.appendChild(lab);
+ var val=document.createElement("strong");val.textContent=value;node.appendChild(val);
+}
+function renderUtilityComparison(){
+ var root=byId("utilityResults"),notes=byId("utilityCaveats"),src=byId("utilitySources");
+ if(!root||!notes||!src)return;
+ if(!utilityEstimates||!utilityEstimates.houses){root.textContent="Loading published utility budgets…";return}
+ root.replaceChildren();src.replaceChildren();
+ var active=houses(),cfg=frontRunnerConfig;
+ var scenarios=(utilityEstimates.scenarios||[]),sc=scenarios.find(function(x){return x.id===utilityScenario})||scenarios[1];
+ byId("utilityMode").querySelectorAll("button[data-utility-scenario]").forEach(function(btn){
+  btn.setAttribute("aria-pressed",btn.dataset.utilityScenario===utilityScenario?"true":"false");
+ });
+ var houseIds=cfg&&Array.isArray(cfg.order)?cfg.order:["clarks","hiddenlake"];
+ houseIds.forEach(function(id){
+  var h=active.find(function(x){return x.id===id}),data=utilityEstimates.houses[id],m=data?.scenarios?.[utilityScenario];
+  if(!h||!m)return;
+  var c=document.createElement("article");c.className="utility-result";root.appendChild(c);
+  write(c,"h4",h.name);
+  write(c,"div",utilityMoney(m.utilityTotal)+"/month","util-total");
+  var dt=write(c,"div","","util-detail");
+  utilityComparisonDetail(dt,"Electricity",utilityMoney(m.electricity));
+  utilityComparisonDetail(dt,"Water + sewer",utilityMoney(m.water+m.wastewater));
+  utilityComparisonDetail(dt,"Trash + stormwater",utilityMoney(m.trash+m.stormwater));
+  var base=Number(h.allInEstimate),total=Number.isFinite(base)?base+m.utilityTotal:NaN;
+  var allin=write(c,"div","","util-allin");
+  write(allin,"strong",utilityMoney(total)+"/mo");
+  write(allin,"span","Housing incl. both pets + modeled utilities; before gas, insurance and internet");
+  write(c,"p",m.kwh.toLocaleString("en-US")+" kWh electricity · "+m.gallons.toLocaleString("en-US")+" gallons water · "+(Number(m.electricRate)*100).toFixed(1)+"¢/kWh","util-usage");
+ });
+ var l=utilityEstimates.houses?.clarks?.scenarios?.[utilityScenario],r=utilityEstimates.houses?.hiddenlake?.scenarios?.[utilityScenario];
+ if(l&&r)notes.textContent="Under this scenario, Hidden Lake's modeled utilities are "+utilityMoney(r.utilityTotal-l.utilityTotal)+" more per month. These prices are estimates, not address-specific historical bills. Water-provider and fuel type at each address are still unverified.";
+ var desc=document.createElement("p");desc.textContent=utilityEstimates.householdAssumptions||"";src.appendChild(desc);
+ var warning=document.createElement("p");warning.textContent=utilityEstimates.summary||"";src.appendChild(warning);
+ if(Array.isArray(utilityEstimates.exclusions)){
+  var ul=document.createElement("ul");src.appendChild(ul);
+  utilityEstimates.exclusions.forEach(function(t){write(ul,"li",t)});
+ }
+ (utilityEstimates.sources||[]).forEach(function(z){
+  var a=document.createElement("a");a.href=safeUrl(z.url);a.target="_blank";a.rel="noopener noreferrer";a.textContent=z.label+" ↗";src.appendChild(a);
+ });
+}
+function loadUtilityComparison(){
+ fetch("./utility-estimates.json?_="+Date.now(),{cache:"no-store"})
+ .then(function(r){if(!r.ok)throw Error("HTTP "+r.status);return r.json()})
+ .then(function(data){if(!data||!data.houses?.clarks||!data.houses?.hiddenlake)throw Error("Bad utility estimate");utilityEstimates=data;renderUtilityComparison()})
+ .catch(function(){byId("utilityResults").textContent="Utility estimates could not load. Refresh to retry."});
+}
+
 var archivedHomes=[];
 function renderRentalArchive(){
  var root=byId("archiveHomes"),count=byId("archiveCount");
@@ -720,7 +815,10 @@ function loadTravel(){
  .then(function(d){if(d&&d.homes&&d.destinations){travelData=d;render()}})
  .catch(function(){show("Travel times unavailable; Google Maps route links remain available.")});
 }
-base=fallback;render();sync(false);byId("poolOrigin").addEventListener("change",renderPools);loadPools();loadTravel();loadTours();
+byId("utilityMode").querySelectorAll("button[data-utility-scenario]").forEach(function(b){
+ b.addEventListener("click",function(){utilityScenario=b.dataset.utilityScenario;renderUtilityComparison()});
+});
+base=fallback;render();sync(false);byId("poolOrigin").addEventListener("change",renderPools);loadPools();loadTravel();loadTours();loadUtilityComparison();
 })();
 </script>
 </body>

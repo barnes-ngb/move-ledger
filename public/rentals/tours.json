@@ -1,5 +1,5 @@
 {
-  "edition": "November 24, 2026 midday — Hidden Lake confirmed Wednesday access; Flour Mill rented",
+  "edition": "November 24, 2026 evening — Clarks Mill toured and loved; application intention",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. Provider confirmation recorded without assuming pet eligibility or payment.",
   "timezone": "America/Chicago",
   "groups": [
@@ -73,13 +73,13 @@
           "name": "2533 Clarks Mill Ln",
           "city": "Fort Worth",
           "address": "2533 Clarks Mill Ln, Fort Worth, TX 76123",
-          "date": "Tue Nov 24",
-          "time": "6–7 PM",
-          "status": "confirmed",
-          "statusLabel": "Confirmed",
+          "date": "Tue Nov24 · toured",
+          "time": "Tour completed; previously 6–7 PM",
+          "status": "completed",
+          "statusLabel": "Toured · loved everything",
           "contact": "Progress Residential / Chloe",
-          "next": "Progress Residential confirmed Tuesday November 24, 6–7 PM. Use MyTours check-in for smart lock code upon arrival. No application/lease implied.",
-          "caution": "Pet approval and final lease fees still unverified.",
+          "next": "Nov24 firsthand household review: Nathan and Shelly loved everything about the house and felt NO compromises. They want to submit an application; no application/hold/lease/approval has occurred. Before paying, verify final fee-inclusive lease quote and term, both ordinary pets including Golden Retriever + cat, approved December lease start and extension/overlap cost, deposit and nonrefundable fees. Maintain Hidden Lake Wed tour as backup until application approval.",
+          "caution": "Subjective home fit is highly positive; preserve numeric Shelly 4.8 until user revises. Application desired, not submitted. Ordinary two-pet and timing gates still open.",
           "actions": [
             {
               "label": "Tour access",
@@ -314,5 +314,5 @@
     "friday": "Fri Nov 27: owner Kyle agrees Tide Lane 4 PM; call/text to finalize",
     "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
   },
-  "todayNote": "Tue Nov24: Clarks Mill 6–7 PM CONFIRMED. Wed Nov25: Hidden Lake provider/Chelsea confirmed anytime before 8 PM (access code privately arrives day-of); Bridgetown 3 PM confirmed but ordinary-cat policy conflicts; Garrison 2:15 requested/unconfirmed. Fri Nov27: Tide Ln owner accepted 4 PM but final phone/text confirmation pending. Northview visited Nov23 'okay'. Flour Mill RENTED Nov19 and removed from actionable tour board. McLanahan incorrect referral excluded."
+  "todayNote": "Clarks Mill tour completed Tue Nov24 and household LOVED EVERYTHING / NO COMPROMISES; intends to apply, no application/lease/approval yet. Hidden Lake provider-authorized Wed access before 8 PM remains backup; Bridgetown Wed 3 PM booked but cat restriction unresolved; Garrison request Wed 2:15 unanswered; Tide owner accepts Fri 4 PM pending final phone confirmation. Northview toured 'okay'; rented Flour Mill archived; erroneous McLanahan excluded."
 }

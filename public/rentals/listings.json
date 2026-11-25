@@ -1,5 +1,5 @@
 {
-  "edition": "November 25, 2026 — Hidden Lake dedicated office and backyard concern",
+  "edition": "November 25, 2026 — both front-runners 4.9/5; utilities estimate pending",
   "note": "Clarks Mill toured Nov24, household loved everything with no compromise. Screenshot of Progress application Overview shows Nathan submitted Tue Nov24 but Shelly's co-applicant portion not submitted; property team review starts only after Shelly submits. $2133.98/mo direct application estimate incl ordinary Sunny and Belle; chose intended Dec4/18-month term, verify final saved selection. No approval, security-deposit payment, hold or signed lease proven. Historical ratings preserved. Other tours remain unchanged.",
   "homes": [
     {
@@ -7,7 +7,7 @@
       "name": "2533 Clarks Mill Ln",
       "city": "Fort Worth",
       "rent": 2133.98,
-      "rating": 4.8,
+      "rating": 4.9,
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
@@ -64,8 +64,8 @@
       "allInBasis": "Direct Progress application estimate at step 8, Nov24, 2026: rent $1960; two pets $72 each; required Smart Home $19.99 and utility service $9.99; excludes metered utilities/insurance; $30 one-time utility setup appears separately.",
       "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied. | Nov19: Shelly ACCEPTED Nathan calendar invitation 12:39 AM CST; both participants now have event on calendars (event link recorded). Zillow morning follow-up shows $2,120 advertised mandatory-fee-inclusive TOTAL before pet charges, manager email $2,090 BASE + applicable fees; old board $2,235 obsolete. Nov20 user screenshot: Progress automated SMS invited reply Y for assistance. User replied Y; this is not a second appointment and does NOT change confirmed Nov24 6–7PM Rently tour. Nov23 Zillow price alert: https://mail.google.com/mail/u/0/#all/1a209131569de82d; Nov24 confirmed self-tour unchanged. | Nov24 Progress Overview screenshot: Nathan submitted Nov24, Shelly not yet submitted; property team review pending. No approval/lease claimed. | Progress Chloe email Nov24 evening acknowledges Nathan's application/payment and says all applicants must complete their applications and payments by Fri Nov27 7:29 PM CST. Complete-application email to follow; screening/approval, hold and lease NOT confirmed. | NOV25 direct Progress application-approved email and RentCafe lease-ready notification received. Cost sheet PDF confirms 18mo/Dec4, $2133.98 recurring, $1960 deposit, $2043.44 before move in, $30 after. Need verify omitted intended second adult on actual lease; no signing/payment evidence.",
       "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cb4d2abe8eea7",
-      "ratingUpdatedOn": "2026-11-18",
-      "ratingStatus": "Shelly-confirmed 4.8/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
+      "ratingUpdatedOn": "2026-11-25",
+      "ratingStatus": "User revised household front-runner rating to 4.9/5 November 25, 2026",
       "tourSchedule": {
         "status": "completed",
         "date": "2026-11-24",
@@ -121,7 +121,8 @@
         "fence": "HOA 7.4 fully enclosed backyard and generally 6-foot fences",
         "lawn": "HOA 7.16 requires maintained lawns",
         "source": "User-provided 29-page Parkview Declaration HOA PDF; city code https://codelibrary.amlegal.com/codes/ftworth/latest/ftworth_tx/0-0-0-37808"
-      }
+      },
+      "ratingSource": "User-directed update, November 25, 2026"
     },
     {
       "id": "trecini",
@@ -1092,11 +1093,11 @@
       "name": "1121 Hidden Lake Dr",
       "city": "Burleson",
       "rent": 2275,
-      "rating": 4.7,
+      "rating": 4.9,
       "basis": "Shelly",
       "checkpoint": "2026-11-24",
       "trackedOn": "2026-11-13",
-      "ratingUpdatedOn": "2026-11-13",
+      "ratingUpdatedOn": "2026-11-25",
       "url": "https://www.zumper.com/address/1121-hidden-lk-dr-burleson-tx-76028-usa",
       "priceBasis": "Nov16 direct human agent Chelsea Holguin confirms $2,275 advertised base + $1,000 off first FULL month. Lease term / Dec move-in cutoff not confirmed.",
       "petGate": "Open House general policy permits common pets up to three, Golden Retriever not on published prohibited breed list; large dog Sunny and regular cat Belle not specifically approved for this house. Prior small-dog-only syndicated restriction unaddressed.",
@@ -1164,7 +1165,9 @@
         "Individual written property-specific ordinary approval of Sunny (large golden retriever) and Belle (cat) with all pet charges",
         "Confirm offered early-December possession/start, lease length, advertised $2,275 rent and $1,000 first-full-month concession",
         "Verify total mandatory monthly/one-time fees and deposit, appliances not supplied"
-      ]
+      ],
+      "ratingStatus": "User revised household front-runner rating to 4.9/5 November 25, 2026",
+      "ratingSource": "User-directed update, November 25, 2026"
     },
     {
       "id": "trusler",
@@ -1433,6 +1436,13 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 25",
+      "tag": "RATINGS · 4.9/5",
+      "houseId": "clarks",
+      "title": "Both front-runners now rated 4.9/5",
+      "detail": "At the household's request, updated both 2533 Clarks Mill Lane and 1121 Hidden Lake Drive to 4.9/5. No ranking between them inferred from the equal ratings; utility operating costs will be compared separately."
+    },
     {
       "date": "Nov 25",
       "tag": "TOURED · OFFICE CONFIRMED",
@@ -2149,7 +2159,7 @@
     }
   ],
   "frontRunners": {
-    "asOf": "November 25, 2026 · after Hidden Lake walkthrough",
+    "asOf": "November 25, 2026 — both front-runners now 4.9/5; utility research in progress",
     "order": [
       "clarks",
       "hiddenlake"
@@ -2162,7 +2172,7 @@
         "timing": "18-month lease proposal · Dec 4, 2026 to May 31, 2028",
         "status": "Application approved November 25. Lease has been issued for review/signing; security deposit requested within 24 hours. NOT verified signed or paid.",
         "rooms": "4 bedrooms · 2 baths · 1,758 sq ft · one story",
-        "fit": "Family toured November 24 and loved everything—reported no compromises. Shelly's last explicit numerical rating remains 4.8/5.",
+        "fit": "Family toured November 24 and loved everything—reported no compromises. Shelly's last explicit numerical rating remains 4.9/5.",
         "priceNote": "$2,133.98 recurring from official Nov25 cost sheet, including ordinary rent for both pets and required fees; excludes metered utilities and insurance.",
         "upfront": "$55 application paid; $1,960 quoted deposit; $2,043.44 before-move-in charges; $30 utility setup after move-in. Final lease/payment steps not yet completed.",
         "appliances": "Earlier manager materials indicate refrigerator included; washer and dryer not supplied. Reconfirm in executed lease.",

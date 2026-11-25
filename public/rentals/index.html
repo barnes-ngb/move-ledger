@@ -157,6 +157,50 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 .tour-availability{font-size:12px;color:#234e60;background:#f0f6f8;border-radius:8px;padding:9px 11px;margin:7px 0 12px}.tour-row .tr-state.fee{background:#fff2dc;color:#8c651e}
 .archive-homes{display:grid;gap:8px;margin-top:10px}.archived-house{padding:11px 13px;border:1px solid #e4e8eb;border-radius:9px;background:#f7fafb;font-size:12px;color:#506776}.archived-house strong{font-size:13px;color:#2b4554}.archived-house p{margin:4px 0 6px}.archived-house a{color:#1f6b5f;font-size:12px;font-weight:700}.tour-row .tr-state.booked-date{background:#e3f2e9;color:#1e6e50}.tour-row .tr-state.agent-agreed,.tour-row .tr-state.planned{background:#fff2dc;color:#8c651e}
 .tour-row .tr-state.completed{background:#e3f2e9;color:#1e6e50}.tour-row .tr-state.access-blocked{background:#fff0e3;color:#8b4a23}
+
+/* Featured decision: two front-runners, public-safe financial comparison */
+.finalists{scroll-margin-top:14px;padding:20px}
+.finalists .subhead h2{font-size:22px;margin-bottom:0}
+.finalist-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:13px 0}
+.finalist-house{border:1px solid #d6e3e8;border-radius:12px;background:#fcfdfd;padding:14px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.finalist-house:first-child{border-color:#7eb59f}
+.finalist-house .eyebrow{font-size:11px;font-weight:750;color:#396c62;text-transform:uppercase;letter-spacing:.025em}
+.finalist-house h3{font-size:18px;line-height:1.26}
+.finalist-house .score{font-size:12px;color:#516979}
+.finalist-house .amount{font-size:26px;font-weight:800;letter-spacing:-.6px;line-height:1.1;font-variant-numeric:tabular-nums}
+.finalist-house .moneybasis{font-size:11px;color:#56707d}
+.finalist-house .descriptor{font-size:12px;color:#3f5c6c;margin:0}
+.finalist-house .next{border-top:1px solid #e5edee;padding-top:9px;margin-top:2px;font-size:12px;color:#3d5967}
+.finalist-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:8px}
+.finalist-links a{color:#236b5d;font-weight:750;font-size:12px}
+.finalist-difference{border-top:1px solid #e5ecef;border-bottom:1px solid #e5ecef;padding:12px 0;margin:6px 0 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.finalist-difference strong{font-size:25px;color:#204b42;white-space:nowrap;font-variant-numeric:tabular-nums}
+.finalist-difference span{font-size:12px;color:#506976;flex:1;min-width:190px}
+.finalist-label{font-size:15px;margin:5px 0 9px}
+.finalist-matrix{display:grid;gap:0;border:1px solid #e0e8eb;border-radius:12px;overflow:hidden}
+.finalist-mrow{display:grid;grid-template-columns:minmax(90px,0.7fr) repeat(2,minmax(0,1.5fr));border-bottom:1px solid #e2eaec}
+.finalist-mrow:last-child{border-bottom:0}
+.finalist-mrow>div{padding:10px 11px;font-size:12px;line-height:1.48;overflow-wrap:anywhere}
+.finalist-mrow>div:first-child{font-weight:760;color:#365363;background:#f3f7f8}
+.finalist-mrow>div:nth-child(2){border-left:1px solid #e2eaec;border-right:1px solid #e2eaec}
+.finalist-mrow>div:nth-child(n+2){color:#405a68}
+.finalist-mrow.finalist-mhead>div{font-size:12px;font-weight:800;color:#153849;background:#edf5f3}
+.finalist-actions{margin-top:16px}
+.finalist-actions h3{font-size:15px;margin:0 0 9px}
+.finalist-tasks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.finalist-task{border:1px solid #e3ebee;border-radius:9px;padding:10px 12px;background:#fafcfc}
+.finalist-task strong{font-size:12px;color:#254f5f;display:block}
+.finalist-task p{font-size:12px;color:#5a6c76;margin:5px 0 0}
+.finalist-task.urgent{border-left:3px solid #bb9258}
+@media(max-width:700px){
+ .finalists{padding:13px}
+ .finalist-grid{grid-template-columns:1fr;gap:9px}
+ .finalist-house{padding:12px}
+ .finalist-mrow{grid-template-columns:76px repeat(2,minmax(0,1fr))}
+ .finalist-mrow>div{padding:9px 7px;font-size:11px}
+ .finalist-tasks{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -168,10 +212,25 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 <div class="toolbar">
   <button id="share" class="primary">Share this link</button>
   <button id="refresh" type="button">Refresh published houses</button>
+  <a class="btn" href="#front-runners">Compare our two</a>
   <a class="btn" href="#tour-board">Tours this week</a>
   <a class="btn" href="#add">Edit / add a house</a>
 </div>
 </header>
+
+<section class="panel finalists" id="front-runners" aria-label="Featured two-house comparison">
+ <div class="subhead"><h2>Our two front-runners</h2><span class="small" id="frontAsOf">Updated November 25, 2026</span></div>
+ <p class="hint">The household's two serious choices. We compare the real lease offer with the still-conditional alternative—not automatically-ranked houses.</p>
+ <div class="finalist-grid" id="finalistCards"><p class="hint">Loading current offers and inspection notes…</p></div>
+ <div class="finalist-difference" id="finalistDifference"></div>
+ <h3 class="finalist-label">Decision tradeoffs</h3>
+ <div class="finalist-matrix" id="finalistMatrix"></div>
+ <div class="finalist-actions">
+  <h3>What we must settle before choosing</h3>
+  <div class="finalist-tasks" id="finalistChecklist"></div>
+ </div>
+ <p class="explain">Housing prices may have different fee coverage. Recurring comparisons assume each listed regular-pet charge and do not include metered utilities, insurance or equipment purchases. Driving minutes are road-network baselines without traffic. No lease has been signed and no payment has been made by the page.</p>
+</section>
 
 <div class="stats">
  <div class="stat"><strong id="greenCount">—</strong><span>Green-zone houses for comparison</span></div>
@@ -432,6 +491,7 @@ function houseCard(h){
  return d;
 }
 function render(){
+ renderFrontRunners();
  var all=houses(),visible=matchingHouses(),green=all.filter(isGreen);
  byId("greenCount").textContent=green.length;
  byId("count").textContent=visible.length+" displayed · "+all.length+" tracked";
@@ -484,6 +544,70 @@ function drawUpdates(items){
  });
 }
 
+
+
+var frontRunnerConfig=null;
+function frontRunnerCell(parent,text,label){
+ var div=document.createElement("div");
+ if(label)div.setAttribute("aria-label",label);
+ div.textContent=text||"Not confirmed";parent.appendChild(div);return div;
+}
+function frontRunnerRow(root,title,left,right){
+ var row=document.createElement("div");row.className="finalist-mrow";root.appendChild(row);
+ frontRunnerCell(row,title);frontRunnerCell(row,left);frontRunnerCell(row,right);
+}
+function frontRunnerLink(container,label,url){
+ if(!url)return;
+ var a=document.createElement("a");a.href=safeUrl(url);a.target="_blank";a.rel="noopener noreferrer";a.textContent=label+" ↗";container.appendChild(a);
+}
+function renderFrontRunners(){
+ var cfg=frontRunnerConfig,root=byId("finalistCards"),matrix=byId("finalistMatrix"),tasks=byId("finalistChecklist"),difference=byId("finalistDifference");
+ if(!root||!matrix||!tasks||!difference)return;
+ if(!cfg||!Array.isArray(cfg.order)||cfg.order.length!==2){root.textContent="Comparative offer data not yet available.";return}
+ var all=houses(),cs=cfg.order.map(function(id){return all.find(function(h){return h.id===id})}),notes=cfg.order.map(function(id){return cfg.highlights&&cfg.highlights[id]});
+ if(cs.some(function(h){return !h})||notes.some(function(n){return !n})){root.textContent="One comparison entry is missing. Refresh the published list.";return}
+ byId("frontAsOf").textContent=cfg.asOf||"Latest published information";
+ root.replaceChildren();matrix.replaceChildren();tasks.replaceChildren();difference.replaceChildren();
+ cs.forEach(function(h,i){
+  var detail=notes[i],c=document.createElement("article");c.className="finalist-house";root.appendChild(c);
+  write(c,"span",detail.eyebrow||"Finalist","eyebrow");
+  write(c,"h3",h.name);
+  write(c,"div",h.city+" · "+Number(h.rating).toFixed(1)+"/5 ("+h.basis+" rating)","score");
+  var estimate=Number(h.allInEstimate),shown=Number.isFinite(estimate)&&estimate>0?estimate:Number(h.rent);
+  write(c,"strong","$"+shown.toLocaleString("en-US",{minimumFractionDigits:shown%1?2:0,maximumFractionDigits:2})+"/mo","amount");
+  write(c,"div",i===0?"Quote includes both pets and required services":"Conditional estimate if both pets are accepted","moneybasis");
+  write(c,"p",detail.rooms,"descriptor");
+  write(c,"p",detail.fit,"descriptor");
+  write(c,"div",detail.status,"next");
+  var links=write(c,"div","","finalist-links");
+  frontRunnerLink(links,i===0?"Official listing":"Real walkthrough",detail.page);
+  if(h.url&&h.url!==detail.page)frontRunnerLink(links,"Listing photos",h.url);
+  var tour=document.createElement("a");tour.href="#tour-"+h.id;tour.textContent="Tour/next steps ↓";links.appendChild(tour);
+ });
+ var a=Number(cs[0].allInEstimate),b=Number(cs[1].allInEstimate);
+ var delta=(Number.isFinite(a)&&Number.isFinite(b))?b-a:null;
+ write(difference,"strong",delta===null?"Compare costs":"$"+Math.abs(delta).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})+"/month");
+ write(difference,"span",delta===null?"Full price comparison awaits quotes":delta>=0?"Clarks is cheaper on current quoted/conditional two-pet monthly figures. Hidden Lake has a one-time $1,000 first-full-month concession, which does not eliminate its higher ongoing rent.":"Hidden Lake is cheaper on current quoted/conditional two-pet monthly figures.");
+ var head=document.createElement("div");head.className="finalist-mrow finalist-mhead";matrix.appendChild(head);
+ frontRunnerCell(head,"Factor");frontRunnerCell(head,"Clarks Mill");frontRunnerCell(head,"Hidden Lake");
+ frontRunnerRow(matrix,"Timing / lease",notes[0].timing,notes[1].timing);
+ frontRunnerRow(matrix,"Monthly cost",notes[0].priceNote,notes[1].priceNote);
+ frontRunnerRow(matrix,"Initial costs",notes[0].upfront,notes[1].upfront);
+ frontRunnerRow(matrix,"Appliances",notes[0].appliances,notes[1].appliances);
+ frontRunnerRow(matrix,"Pets",notes[0].pet,notes[1].pet);
+ var routeInfo=(travelData&&travelData.homes)||{};
+ var ca=routeInfo[cs[0].id],hb=routeInfo[cs[1].id];
+ function time(r,key){return r&&r[key]&&r[key].minutes!=null?"~"+r[key].minutes+" min (no traffic)":"Not yet measured";}
+ frontRunnerRow(matrix,"Work drive",time(ca,"work"),time(hb,"work"));
+ frontRunnerRow(matrix,"Mom & Dad",time(ca,"parents"),time(hb,"parents"));
+ function pool(r){if(!r||!r.pools||!r.pools.length)return"Not measured";return r.pools.map(function(p){var dest=travelData.destinations&&travelData.destinations[p.id];return (dest?dest.label:p.id)+" ~"+p.minutes+" min";}).join("; ");}
+ frontRunnerRow(matrix,"Indoor pools",pool(ca),pool(hb));
+ frontRunnerRow(matrix,"Key unknown",notes[0].unknown,notes[1].unknown);
+ (cfg.decisions||[]).forEach(function(t){
+  var card=document.createElement("div");card.className="finalist-task"+(t.priority==="now"?" urgent":"");tasks.appendChild(card);
+  write(card,"strong",t.title);write(card,"p",t.detail);
+ });
+}
 
 var archivedHomes=[];
 function renderRentalArchive(){
@@ -584,7 +708,7 @@ function loadPools(){
 function sync(userInitiated){
  fetch("./listings.json?_="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).then(function(d){
    if(!d||!Array.isArray(d.homes))throw Error("Invalid data");
-   base=d.homes;archivedHomes=Array.isArray(d.archivedHomes)?d.archivedHomes:[];renderRentalArchive();latestEdition=d.edition||"Recently";byId("edition").textContent=latestEdition;byId("footerEdition").textContent="Published data "+latestEdition;
+   base=d.homes;frontRunnerConfig=d.frontRunners||null;archivedHomes=Array.isArray(d.archivedHomes)?d.archivedHomes:[];renderRentalArchive();latestEdition=d.edition||"Recently";byId("edition").textContent=latestEdition;byId("footerEdition").textContent="Published data "+latestEdition;
    render();drawUpdates(d.updates||[]);if(userInitiated)show("Published list refreshed.");
  }).catch(function(){if(!base.length)base=fallback;render();drawUpdates([]);show("Using offline snapshot; published data could not be loaded right now.")});
 }

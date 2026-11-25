@@ -1,30 +1,30 @@
 {
-  "edition": "November 24, 2026 evening — Clarks Mill toured, household wants to apply",
+  "edition": "November 24, 2026 evening — Clarks Mill application quote $2,133.98 with both pets",
   "note": "Nov24 evening FIRSTHAND REVIEW: Nathan and Shelly toured Clarks Mill and loved everything, reporting zero compromises. Application is desired, NOT submitted or approved; keep earlier numeric rating until user revises. Household's priority now verifying pet approval, final full recurring quote, lease start and refundable/nonrefundable costs. Hidden Lake Wed authorized self-tour remains backup; prior tour/other statuses remain. Flour Mill rented archived and McLanahan erroneous referral excluded.",
   "homes": [
     {
       "id": "clarks",
       "name": "2533 Clarks Mill Ln",
       "city": "Fort Worth",
-      "rent": 2050,
+      "rent": 2133.98,
       "rating": 4.8,
       "basis": "Shelly",
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
-      "priceNote": "Nov23 Zillow email reports $2,050 TOTAL required monthly price, down $45 from its previous $2,095 (board previously recorded $2,100). Conditional pet charges, term, and final Progress manager quote unresolved. Earlier manager $2,090 base and Rently $2,109.99 12-month quote are historical conflicting figures; do not combine with current Zillow total. Nov20 Zillow address-specific rent page shows $2,100 TOTAL advertised monthly INCLUDING displayed required recurring fees before pets (Zillow checked within ~8h, refreshed ~13h). Nov19 Zillow email quoted $2,120 TOTAL; Nov18 Progress assistant quoted $2,090 BASE + applicable fees; Rently displayed $2,109.99 for 12mo at booking. CURRENT live manager 12mo quote, actual package, HOA extra requirements and two-pet charges remain unresolved. Do not treat this as $2,100 final all-in. Earlier: Nov19 Zillow follow-up email displays $2,120/month TOTAL including required recurring fees before pet charges (down from Nov11 $2,175 total). Nov18/19 Progress booking email quotes $2,090 BASE + applicable fees; previous standard $29.98 fixed smart-home/utility charge implies $2,119.98, matching Zillow rounded price, but manager has not reconfirmed property-specific fee itemization. Rently confirmed self-tour screen separately showed $2,109.99 TOTAL/12 months. Do not conflate quote sources. Two-pet charges could be up to $144 generic scenario, not individually approved; $2,264 illustrative not a final pet-inclusive quote. Self-guided tour CONFIRMED Nov24 6–7PM CST, Shelly accepted joint Google Calendar invitation Nov19; not lease/pet approval. NOV23 Zillow address-specific active rent still $2,100 required-fees TOTAL before pets (checked today); manager aggregated search pages in separate cached views show conflicting old $2,220 / $2,265. Only a fresh specific lease checkout binds price; current tour unchanged.",
+      "priceNote": "DIRECT Nov24 application estimate: $1960 BASE + $144 TWO-PET monthly rent + $29.98 required Smart Home/utility-service recurring = $2133.98/month excluding metered utilities/insurance. $30 one-time utility management setup shown separately. Lease term, deposit, application fee amount, and approved start not visible. Earlier Nov23 Zillow $2050 required-fee before pets is superseded as comparison by direct current application estimate ($1989.98 pre-pet); not final signed lease.",
       "fit": "After the Nov24 in-person tour Nathan and Shelly report they loved EVERYTHING and felt NO compromises. This firsthand assessment supersedes earlier photo-based cabinet/fence worries as subjective fit concerns, while documented inspection/legal requirements and pet approval remain separate gates. Shelly's previous explicit numeric 4.8/5 is preserved until revised.",
-      "status": "Tour completed Nov24 6–7 PM; Nathan and Shelly loved everything and felt no compromises. Household wants to APPLY, but no application, approval, hold or lease established. Latest Zillow Nov23 advertised $2050 total before pet charges is not final Progress quote; both pets, latest permissible December start, term and all fees remain unverified.",
-      "priceBasis": "Nov23 Zillow advertised total including required monthly fees; ordinary pet fees and lease term not confirmed",
+      "status": "Tour completed Nov24 6–7 PM; Nathan and Shelly loved everything and felt no compromises. Household wants to APPLY, but no application, approval, hold or lease established. Latest Zillow Nov23 advertised $2050 total before pet charges is not final Progress quote; both pets, latest permissible December start, term and all fees remain unverified. | Nov24 screenshot: household reached Progress Review & Pay, APPLICATION NOT SUBMITTED/NO PAYMENT VERIFIED. Direct monthly amount incl pets $2133.98, term/start/deposit still unverified.",
+      "priceBasis": "Nov24 user screenshot of Progress application Review & Pay: $1,960 BASE + $72 Sunny + $72 Belle + $19.99 Smart Home + $9.99 Utility Service Fee = $2,133.98 MONTHLY (conditional until final lease). This is all listed recurring including TWO ordinary pets, not a 12-month confirmed lease contract.",
       "petGate": "Large dogs + cats listed; individual approval pending",
-      "priceUpdatedOn": "2026-11-23",
+      "priceUpdatedOn": "2026-11-24",
       "readiness": {
         "dog": {
           "status": "pending",
-          "detail": "Progress general allowance; HOA/individual screening open"
+          "detail": "Sunny entered into application with $72/month regular pet rent. Entered in quote does NOT establish individual dog/HOA approval."
         },
         "cat": {
           "status": "pending",
-          "detail": "Progress general allowance; HOA/individual screening open"
+          "detail": "Belle entered into application with $72/month regular pet rent. Entered in quote does NOT establish individual cat/HOA approval."
         },
         "availability": {
           "status": "pending",
@@ -32,7 +32,7 @@
         },
         "cost": {
           "status": "pending",
-          "detail": "Nov23 Zillow email $2,050 advertised required-fee total before conditional pet fees, $45 below immediate prior portal quote $2,095. Final Progress base/term and both-pet rent/fees unresolved."
+          "detail": "Nov24 Progress application at Review & Pay screen lists $2133.98 monthly including both entered pets and $29.98 recurring mandatory service fees; $30 one-time setup. Conditional on final lease and screening; deposit/application fees/term not shown."
         },
         "lease": {
           "status": "pending",
@@ -58,8 +58,8 @@
         "Deposit, administration/application/pet fees, reimbursement/holding terms and included appliances"
       ],
       "checksUpdatedOn": "2026-11-24",
-      "allInEstimate": 2408.98,
-      "allInBasis": "Last manager basis + general pet rent, not final",
+      "allInEstimate": 2133.98,
+      "allInBasis": "Direct Progress application estimate at step 8, Nov24, 2026: rent $1960; two pets $72 each; required Smart Home $19.99 and utility service $9.99; excludes metered utilities/insurance; $30 one-time utility setup appears separately.",
       "contactUpdate": "Nov11 Zillow price-cut $45 ($2220→$2175 TOTAL before pets) via email; this is NOT manager-confirmed 12-month quote. Nov8 Progress explained 12-day possession window, optional 7-day $250 extension. Gmail price alert 1a1cb4d2abe8eea7. | Nov18/19 TOUR STATUS: CONFIRMED Progress/Rently self-guided tour Tue Nov24 2026 6:00–7:00 PM CST; manager email confirms 6pm start, Rently screenshot confirms 6–7pm window. Calendar event created for Nathan with Shelly invited (needs acceptance). No lease/pet approval implied. | Nov19: Shelly ACCEPTED Nathan calendar invitation 12:39 AM CST; both participants now have event on calendars (event link recorded). Zillow morning follow-up shows $2,120 advertised mandatory-fee-inclusive TOTAL before pet charges, manager email $2,090 BASE + applicable fees; old board $2,235 obsolete. Nov20 user screenshot: Progress automated SMS invited reply Y for assistance. User replied Y; this is not a second appointment and does NOT change confirmed Nov24 6–7PM Rently tour. Nov23 Zillow price alert: https://mail.google.com/mail/u/0/#all/1a209131569de82d; Nov24 confirmed self-tour unchanged.",
       "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1cb4d2abe8eea7",
       "ratingUpdatedOn": "2026-11-18",
@@ -79,7 +79,23 @@
       },
       "visited": true,
       "reviewedOn": "2026-11-24",
-      "visitFeedback": "Nathan and Shelly physically toured 2533 Clarks Mill Ln on Tue Nov24 evening and said: 'We loved everything about [it], didn't feel any compromise.' This is STRONG FIRSTHAND HOUSEHOLD ENTHUSIASM; do not invent a revised numerical rating or assume application submitted."
+      "visitFeedback": "Nathan and Shelly physically toured 2533 Clarks Mill Ln on Tue Nov24 evening and said: 'We loved everything about [it], didn't feel any compromise.' This is STRONG FIRSTHAND HOUSEHOLD ENTHUSIASM; do not invent a revised numerical rating or assume application submitted.",
+      "appQuote": {
+        "observedOn": "2026-11-24",
+        "source": "User-supplied Progress Residential Review & Pay screenshot",
+        "step": "8 of 8, not submitted",
+        "baseRent": 1960,
+        "petRentSunny": 72,
+        "petRentBelle": 72,
+        "smartHome": 19.99,
+        "utilityService": 9.99,
+        "monthlyTotal": 2133.98,
+        "oneTimeUtilitySetup": 30,
+        "leaseTerm": "not visible in screenshot",
+        "leaseStart": "not visible in screenshot",
+        "applicationFee": "not visible in screenshot",
+        "securityDeposit": "not visible in screenshot"
+      }
     },
     {
       "id": "trecini",
@@ -1382,6 +1398,13 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 24",
+      "tag": "APPLICATION ESTIMATE • Both pets included",
+      "houseId": "clarks",
+      "title": "Clarks Mill — $2,133.98 per month at Review & Pay",
+      "detail": "User's Nov24 screenshot of official Progress application Review & Pay shows $1,960 BASE, $72 Sunny, $72 Belle, $19.99 Smart Home, $9.99 Utility Service Fee = $2,133.98/month incl both ordinary pets. $30 one-time utility setup separate. This is estimated not signed lease; final term/start, application fee/deposit and individual pet/HOA approvals unverified. No submission or payment verified."
+    },
     {
       "date": "Nov 24",
       "tag": "TOURED • NO COMPROMISES • application intent",

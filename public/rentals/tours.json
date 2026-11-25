@@ -1,5 +1,5 @@
 {
-  "edition": "November 24, 2026 evening — Clarks Mill toured and loved; application intention",
+  "edition": "November 24, 2026 — Clarks Mill applicant submitted; co-applicant pending",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. Provider confirmation recorded without assuming pet eligibility or payment.",
   "timezone": "America/Chicago",
   "groups": [
@@ -76,10 +76,10 @@
           "date": "Tue Nov24 · toured",
           "time": "Tour completed; previously 6–7 PM",
           "status": "completed",
-          "statusLabel": "Toured · loved everything",
+          "statusLabel": "Toured · applied · waiting on Shelly",
           "contact": "Progress Residential / Chloe",
-          "next": "Nov24 firsthand household review: Nathan and Shelly loved everything about the house and felt NO compromises. They want to submit an application; no application/hold/lease/approval has occurred. Before paying, verify final fee-inclusive lease quote and term, both ordinary pets including Golden Retriever + cat, approved December lease start and extension/overlap cost, deposit and nonrefundable fees. Maintain Hidden Lake Wed tour as backup until application approval.",
-          "caution": "Subjective home fit is highly positive; preserve numeric Shelly 4.8 until user revises. Application desired, not submitted. Ordinary two-pet and timing gates still open.",
+          "next": "Nathan's Progress application submitted Tue Nov24. Screenshot says Shelly's co-applicant portion still incomplete, preventing property-team review. Both loved house in person with no compromises. Have Shelly complete her invitation, verify contact info and final intended Dec4/18mo terms before review. No approval/lease or payment assumed.",
+          "caution": "Do not claim application approved, home held, or lease signed. Sunny/Belle ordinary pet charges entered, individual/property rules remain to be finalized. Refundable deposit due upon approval under application quote.",
           "actions": [
             {
               "label": "Tour access",
@@ -314,5 +314,5 @@
     "friday": "Fri Nov 27: owner Kyle agrees Tide Lane 4 PM; call/text to finalize",
     "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
   },
-  "todayNote": "Clarks Mill tour completed Tue Nov24 and household LOVED EVERYTHING / NO COMPROMISES; intends to apply, no application/lease/approval yet. Hidden Lake provider-authorized Wed access before 8 PM remains backup; Bridgetown Wed 3 PM booked but cat restriction unresolved; Garrison request Wed 2:15 unanswered; Tide owner accepts Fri 4 PM pending final phone confirmation. Northview toured 'okay'; rented Flour Mill archived; erroneous McLanahan excluded."
+  "todayNote": "Nov24 Clarks Mill in-person tour completed, household loved everything. Nathan SUBMITTED Progress application, Shelly co-applicant has not submitted yet; property review will start after her submission. No approval or signed lease; previously quoted $2133.98 monthly with two pets, intended Dec4 18mo pending final confirmation. Hidden Lake Wed authorized, Bridgetown Wed 3pm reserved with cat gate, Tide Fri owner agreed needs finalization."
 }

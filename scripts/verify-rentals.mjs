@@ -65,6 +65,23 @@ for (const id of ["clarks","hiddenlake"]) {
 assert(utilities.exclusions.some((v) => /gas/i.test(v)),
   "Unverified natural gas use must be explicitly excluded");
 
+// Chelsea Nov25 direct email must remain accurately reflected in the live finalists comparison.
+const chelseaFinal = data.frontRunners?.decisionSignal;
+const hiddenFinal = data.homes.find((h) => h.id === "hiddenlake");
+assert(chelseaFinal && chelseaFinal.status === "no-landlord-yard-improvements",
+  "Chelsea's as-is yard decision must be surfaced in top comparison");
+assert(html.includes('id="frontRunnerSignal"'),
+  "Featured comparison must render the latest human agent decision");
+assert(hiddenFinal?.backyardAssessment?.landlordCommitment?.toLowerCase().includes("as-is"),
+  "Hidden Lake backyard must retain landlord's as-is condition");
+assert(hiddenFinal?.readiness?.dog?.status === "pending" &&
+       hiddenFinal?.readiness?.cat?.status === "pending",
+  "Individual pet approval remains pending; pet policy isn't an approval");
+assert(/cannot preapprove|no preapproval/i.test(hiddenFinal?.petGate||""),
+  "Chelsea explicitly refused pet preapproval");
+assert(data.homes.find((h)=>h.id==="clarks")?.rating === 4.9 && hiddenFinal.rating === 4.9,
+  "Both household front-runner scores must stay 4.9/5");
+
 const archived = data.archivedHomes || [];
 assert(html.includes('id="rental-archive"') && html.includes('id="archiveHomes"'),
   "Unavailable-rental archive must render separately from the active plot");

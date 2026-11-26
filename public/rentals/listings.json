@@ -1,5 +1,5 @@
 {
-  "edition": "November 25, 2026 — finalist neighborhoods and Burleson shops road estimates",
+  "edition": "November 25, 2026 — address-level crime review and final rental sweep",
   "note": "Clarks Mill toured Nov24, household loved everything with no compromise. Screenshot of Progress application Overview shows Nathan submitted Tue Nov24 but Shelly's co-applicant portion not submitted; property team review starts only after Shelly submits. $2133.98/mo direct application estimate incl ordinary Sunny and Belle; chose intended Dec4/18-month term, verify final saved selection. No approval, security-deposit payment, hold or signed lease proven. Historical ratings preserved. Other tours remain unchanged.",
   "homes": [
     {
@@ -935,26 +935,26 @@
       "trackedOn": "2026-11-11",
       "checkpoint": "2026-11-23",
       "url": "https://sundayshowings.com/rent/1006-walnut-place-mansfield-tx-76063-1193749578",
-      "priceBasis": "$2,000 base, deposit $2,000; pet/mandatory monthly fees unquoted",
-      "priceNote": "MLS 21418658 listed Oct22, 25 photos. Cats/dogs broadly allowed but Trulia says SMALL dogs only, so Sunny may be restricted. Deposit $2,000, unknown pet rent/fees, no quoted duration, refrigerator sources conflict.",
-      "fit": "Assistant provisional 4.0, NOT Shelly reviewed. Single story 4 BR/2 BA 1,922 sqft, 0.23 acre fenced lot, garage, primary garden tub, separate shower, double vanity, laundry close to primary. Kitchen openness, carpet, light colors and grass need review.",
-      "status": "MLS-linked advertised active Nov11; no contact or tour.",
+      "priceBasis": "Nov25 direct Rentler/MRE manager page $2,000 base; $65 regular resident-benefits package not reflected in previous base-only board figure",
+      "priceNote": "$2,000 advertised base in direct MRE/Rentler manager listing, with a stated $65 monthly resident-benefits package (possibly $10.95 less with qualifying proof of renter insurance). Thus known pre-pet recurring floor is ~$2,065, excluding any additional services/utilities, insurance and BOTH pets. Manager confirmation and current occupancy required. Nov25 candidate check; $2,000 refundable deposit advertised.",
+      "fit": "POTENTIAL OVERLOOKED FAMILY FIT, NOT RATED BY SHELLY: single-story four bedrooms, two baths, approx 1,922 sf, fenced 0.23 acre yard, primary garden/soaking tub, double vanity and laundry close to primary. Photos, natural light, actual grass, enclosed office and kid play space need family review.",
+      "status": "Existing monitored Mansfield lead (not new listing), Nov25 MRE management page has materially better family-fit details, but ordinary adult Golden Retriever + cat policy conflicts with syndicated small-dog-only restriction. Manager not contacted; no authorized tour; only backup candidate behind two 4.9/5 front-runners.",
       "readiness": {
         "dog": {
           "status": "conflict",
-          "detail": "NTREIS dogs allowed, Trulia SMALL DOGS ONLY"
+          "detail": "MRE manager lists large dogs eligible; Trulia syndicated home says small dogs only. Adult Golden Retriever Sunny needs address-specific written permission."
         },
         "cat": {
           "status": "pending",
-          "detail": "Cats advertised permitted; specific approval unverified"
+          "detail": "MRE direct manager lists cats, but two-pet household screening and fees unconfirmed."
         },
         "availability": {
           "status": "pending",
-          "detail": "MLS advertised active Oct22–Nov11"
+          "detail": "Nov25 current MRE/Rentler manager listing advertises for rent, not manager-confirmed vacancy/approved Dec start"
         },
         "cost": {
-          "status": "unknown",
-          "detail": "Full monthly quote incl. both pets not confirmed"
+          "status": "pending",
+          "detail": "$2,000 base + $65 resident benefits (may reduce $10.95 if optional insurance coverage is replaced), before pets/utilities/insurance."
         },
         "lease": {
           "status": "unknown",
@@ -970,16 +970,18 @@
         },
         "tour": {
           "status": "unknown",
-          "detail": "No confirmed showing"
+          "detail": "No confirmed tour. Manager MRE 817-646-1400 or official listing scheduling URL."
         }
       },
       "questions": [
-        "Resolve small-dog-only rule",
-        "Check kitchen and carpet photos",
-        "Both-pet fees, fridge, lease start, exact commute"
+        "Confirm $2,000 quoted base plus mandatory $65 resident-benefits package (and what can be waived)",
+        "Are BOTH full-size Golden Retriever Sunny and cat Belle acceptable in this exact home? Syndicated small-dog conflict; confirm all pet fees",
+        "Verify availability/December 4-18 move-in, 12/18mo lease terms, fence/gate and lawn condition",
+        "Review current photos for office, primary tub, flooring and laundry; check nearby parks / grandparents routes"
       ],
-      "checksUpdatedOn": "2026-11-11",
-      "contactUpdate": "No contact"
+      "checksUpdatedOn": "2026-11-25",
+      "contactUpdate": "No contact | November 25 targeted Mansfield search: MRE direct manager/Rentler property page has 4BR single-level 1922sf, $2000 base, $65 monthly resident benefits, cats AND large dogs listed, manager 817-646-1400. Trulia conflicts by reporting small dogs only. Contact NOT sent; treat as unverified lead.",
+      "petGate": "PET POLICY CONFLICT REQUIRES DIRECT WRITTEN SCREENING: MRE/Rentler listing advertises both cats and LARGE dogs allowed, while Trulia says SMALL dogs only. Do not infer Sunny golden retriever is allowed; ask for exact breed/weight/HOA and both-pet charges before a showing."
     },
     {
       "id": "grenoble",
@@ -1460,6 +1462,12 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 25",
+      "tag": "FAMILY RENTAL · FINAL SWEEP",
+      "title": "Crime source comparison and fresh rental search Mansfield/Keller/Plano",
+      "detail": "Fort Worth police mapped Aug26-Nov25 crime records near Clarks: 13 offense records within 1/4mi, 32 within 1/2mi, 100 within 1mi. Burleson official weekly Oct26-Nov22 offense logs do not supply same radius incident count; do NOT rank one neighborhood safer. Mansfield 1006 Walnut Pl existing tracked is best overlooked 4BR single-story $2k base+$65 package, but adult Golden Retriever policy conflict, no tour; new Nov24 Plano 6732 Manitowoc $2250 with long 94min grandparents baseline. Both frontrunners 4.9/5 unchanged."
+    },
     {
       "date": "Nov 25",
       "tag": "AREA / SHOPPING · ROUTES VERIFIED",
@@ -2307,5 +2315,172 @@
       "travelSource": "Exact-address Census geocoding + OSRM open road network baseline on Nov 25 2026. No traffic.",
       "keyComparison": "Old Town ~13 minutes from Clarks vs ~6 from Hidden Lake. Larger retail district Gateway ~11 vs ~9, Burleson Town Center ~11 vs ~8. Trees and rear privacy matter more than a 2–7 minute drive difference to specific shops."
     }
+  },
+  "crimeReview": {
+    "asOf": "2026-11-25",
+    "comparisonStatus": "NOT COMPARABLE BETWEEN DEPARTMENTS: different police datasets and publication coverage. No house safety ranking or relative risk model provided.",
+    "clarks": {
+      "houseId": "clarks",
+      "department": "Fort Worth Police Department",
+      "data": "Official police mapped offense POINT records, reported dates and approximate block-level locations, queried on Nov25",
+      "window": "2026-08-26 to 2026-11-25",
+      "radiusCounts": [
+        {
+          "radiusMiles": 0.25,
+          "offenseRecords": 13,
+          "distinctCaseNumbers": 12
+        },
+        {
+          "radiusMiles": 0.5,
+          "offenseRecords": 32,
+          "distinctCaseNumbers": 29
+        },
+        {
+          "radiusMiles": 1,
+          "offenseRecords": 100,
+          "distinctCaseNumbers": 91
+        }
+      ],
+      "latest4Week": "From Oct26 to Nov22: 5 offense records within 0.25 mile, 10 within 0.5 mile, 27 within 1 mile; one or more offenses can share a case.",
+      "summary": "Within quarter-mile, mapped reports include vehicle burglary, theft, fraud/credit misuse, criminal mischief, stalking, reported family assaults and other incidents. These are offense reports, NOT convictions or a home-specific risk score.",
+      "source": "https://oneaddress.fortworthtexas.gov/",
+      "sourceData": "https://mapit.fortworthtexas.gov/ags/rest/services/CIVIC/Crime_Data/FeatureServer/0",
+      "caveat": "Police data only within Fort Worth city reporting jurisdiction; coordinates are block generalized and some incidents excluded/suppressed. Population, visitors, incident type and area density vary."
+    },
+    "hiddenlake": {
+      "houseId": "hiddenlake",
+      "department": "Burleson Police Department",
+      "data": "Official weekly offense report PDF logs, Oct26–Nov22 2026, listing blocks and offense descriptions rather than a matching radius point data feed",
+      "window": "2026-10-26 to 2026-11-22",
+      "radiusCounts": null,
+      "examples": [
+        {
+          "block": "900 block Hidden Oaks Drive",
+          "approxStraightLineMiles": 0.4,
+          "description": "Assault causing bodily injury reported Nov 1 (official police weekly log)"
+        },
+        {
+          "block": "700 block W Hidden Creek Parkway",
+          "approxStraightLineMiles": 1.3,
+          "description": "Homicide reported Oct 29 (official police weekly log). NOT on Hidden Lake Drive or immediately adjacent."
+        }
+      ],
+      "summary": "No comparable quarter-mile or half-mile counts were computed; weekly PDF lists include incidents from across Burleson. Sampled block examples are not exhaustive and should not be used as an estimated crime rate.",
+      "source": "https://www.burlesontx.com/crimereportsstats",
+      "sourceWeekly": "https://www.burlesontx.com/ArchiveCenter/ViewFile/Item/9530",
+      "caveat": "Street blocks geocoded via US Census to approximate points, not precise offense locations. No measured local incident denominator or victimization rate."
+    },
+    "interpretation": "Both areas have reported incidents. It would be misleading to call Hidden Lake safer because it feels wooded, or Clarks Mill unsafe from mapped counts alone; need common datasets and rates before comparing risk."
+  },
+  "searchSweep": {
+    "asOf": "2026-11-25",
+    "scope": "One-time targeted rental review: Mansfield, Keller/Fort Worth 76244, Plano, plus nearby family-friendly alternative areas",
+    "criteria": "Detached family house, four bedrooms or three plus genuine separate office; dog and cat both must be acceptable under ordinary property rules, full fenced yard/grass, preferred $2,400/month total with ordinary pets; distances to Irving job and Alvarado grandparents matter",
+    "ranking": "Discovery screening only; do NOT invent Shelly numerical ratings or override two established 4.9/5 front-runners.",
+    "method": "Public rental advertisements Nov25. Work/parents driving times are Census geocoded exact-address origins to OSRM OpenStreetMap no-traffic road-network table; not real traffic.",
+    "leads": [
+      {
+        "id": "walnutplace",
+        "address": "1006 Walnut Pl, Mansfield TX 76063",
+        "category": "best-overlooked",
+        "existingHomeId": "walnutplace",
+        "listedOn": "Oct 2026; already tracked",
+        "monthlyBase": 2000,
+        "recurringExtraKnown": 65,
+        "bedrooms": 4,
+        "baths": 2,
+        "sqft": 1922,
+        "description": "1-story, fenced yard ~0.23 acre, garden/soaking tub and laundry close to primary, 4 bedrooms",
+        "workMinutes": 38,
+        "parentsMinutes": 49,
+        "workMiles": 29,
+        "parentsMiles": 27,
+        "petGate": "Manager listing says large dogs and cats accepted, conflicting Trulia small-dog-only restriction. Both pets require direct explicit approval.",
+        "manager": "MRE Property Management",
+        "phone": "817-646-1400",
+        "status": "Available advertised by manager, not direct confirmed; no outreach sent",
+        "listingUrl": "https://www.rentler.com/places-for-rent/tx/mansfield/1006-walnut-pl/13846736",
+        "tourUrl": "https://showmojo.com/lrtl/e1cfdb20b1",
+        "recommendation": "Best unverified backup to explore only if pet and December start viable"
+      },
+      {
+        "id": "newhaven",
+        "address": "1402 New Haven Dr, Mansfield TX 76063",
+        "category": "budget-challenge",
+        "listedOn": "Late Nov 2026 listing check",
+        "monthlyBase": 2395,
+        "bedrooms": 4,
+        "baths": 2,
+        "sqft": 2138,
+        "description": "Mostly hard flooring, fenced yard; price varies across syndicated sites",
+        "workMinutes": 37,
+        "parentsMinutes": 51,
+        "workMiles": 28,
+        "parentsMiles": 28,
+        "petGate": "Cats and large dogs not specifically screened; verify individual policy",
+        "status": "Base price above preferred fully-loaded budget; no tour",
+        "listingUrl": "https://www.zillow.com/homedetails/1402-New-Haven-Dr-Mansfield-TX-76063/114620245_zpid/",
+        "recommendation": "Only if price quote improves and photo fit is exceptional"
+      },
+      {
+        "id": "hounds",
+        "address": "4529 Hounds Tail Ln, Fort Worth TX 76244 (Keller area)",
+        "category": "pet-gate",
+        "listedOn": "Ad price dropped mid Nov 2026",
+        "monthlyBase": 1950,
+        "bedrooms": 4,
+        "baths": 2.5,
+        "sqft": 2568,
+        "description": "2-story, primary downstairs, bonus/game space, fenced yard",
+        "workMinutes": 30,
+        "parentsMinutes": 68,
+        "workMiles": 23,
+        "parentsMiles": 52,
+        "petGate": "Syndicated ad indicates small dogs only. Golden Retriever may be disallowed; no exception promised.",
+        "status": "No tour, ordinary pet eligibility NOT established",
+        "listingUrl": "https://www.zillow.com/homedetails/4529-Hounds-Tail-Ln-Fort-Worth-TX-76244/29301120_zpid/",
+        "recommendation": "Work-access alternative only if large dog exception verified; longer grandparents drive"
+      },
+      {
+        "id": "manitowoc",
+        "address": "6732 Manitowoc Dr, Plano TX 75023",
+        "category": "new-listing",
+        "listedOn": "Nov 24 2026",
+        "monthlyBase": 2250,
+        "bedrooms": 4,
+        "baths": 2,
+        "sqft": 1980,
+        "description": "2-story, primary downstairs, fenced backyard, cul-de-sac",
+        "workMinutes": 33,
+        "parentsMinutes": 94,
+        "workMiles": 25,
+        "parentsMiles": 70,
+        "petGate": "Syndicated 1 dog and 1 cat may be considered; size/weight limits unknown, Sunny needs direct clearance",
+        "manager": "Dallas Property Management Pros",
+        "phone": "972-665-9956",
+        "status": "Nov24 advertised new, no verified hold or showing",
+        "listingUrl": "https://www.zillow.com/homedetails/6732-Manitowoc-Dr-Plano-TX-75023/53036861_zpid/",
+        "recommendation": "Interesting genuine new listing but extremely long grandparents drive"
+      }
+    ],
+    "exclusions": [
+      {
+        "description": "Most Keller-proper 4BR detached rentals above $2,500 base",
+        "reason": "budget"
+      },
+      {
+        "description": "734 Somerset Ct Mansfield",
+        "reason": "Only one pet allowed; can't accommodate both ordinary pets"
+      },
+      {
+        "description": "8945 Sun Haven Way Fort Worth",
+        "reason": "Small dogs only conflict with large Golden Retriever"
+      }
+    ],
+    "sources": [
+      "https://www.rentler.com/places-for-rent/tx/mansfield/1006-walnut-pl/13846736",
+      "https://www.zillow.com/homedetails/4529-Hounds-Tail-Ln-Fort-Worth-TX-76244/29301120_zpid/",
+      "https://www.zillow.com/homedetails/6732-Manitowoc-Dr-Plano-TX-75023/53036861_zpid/"
+    ]
   }
 }

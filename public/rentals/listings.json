@@ -1107,8 +1107,8 @@
       "priceBasis": "Nov16 direct human agent Chelsea Holguin confirms $2,275 advertised base + $1,000 off first FULL month. Lease term / Dec move-in cutoff not confirmed.",
       "petGate": "Nov25 CHELSEA DIRECT POLICY: Chelsea cannot preapprove either pet for Sunny adult large Golden Retriever or Belle cat. EACH must pass separate property pet application. Published fee per pet $25 verification, $250 nonrefundable once, $25/mo. Not an explicit dog/cat prohibition, but pet acceptance is NOT assured.",
       "petBlocked": false,
-      "priceNote": "Nov25 Chelsea reaffirmed $2,275 base and pet charges EACH: $25 screening/verification during application, $250 nonrefundable one-time upon approval, $25/mo recurring. IF both ordinary pets pass screening and no additional mandatory packages, conditional recurring total is $2,325. Preapproval NOT possible. Earlier Nov16 $1,000 first-full-month credit remains from that email but NOT reconfirmed Nov25. Nov16 $50 application per adult, $150 admin, refundable security deposit at least one month's rent ($2,275) subject to screening, prorated rent/utility charges; no fridge, washer, dryer. Dec start, lease duration, additional required charges unconfirmed. Owner will not improve yard.",
-      "fit": "User-confirmed Nov25 4.9/5. House was personally toured and liked; separate dedicated office in addition to 3 bedrooms verified. Backyard photos show extensive bare/shaded dirt, patchy grass and fencing/gates. Nov25 Chelsea says backyard leased AS-IS and owner will not provide lawn improvements. Cannot assume owner will authorize tenant changes or rent credit; drainage and pet-safe latches still unverified. No fridge/washer/dryer.",
+      "priceNote": "Nov25 Chelsea reaffirmed $2,275 base and pet charges EACH: $25 screening/verification during application, $250 nonrefundable one-time upon approval, $25/mo recurring. IF both ordinary pets pass screening and no additional mandatory packages, conditional recurring total is $2,325. Preapproval NOT possible. Earlier Nov16 $1,000 first-full-month credit remains from that email but NOT reconfirmed Nov25. Nov16 $50 application per adult, $150 admin, refundable security deposit at least one month's rent ($2,275) subject to screening, prorated rent/utility charges; no landlord-provided fridge, washer or dryer; household already owns washer/dryer, so only refrigerator purchase budget $600–$1,000. Dec start, lease duration, additional required charges unconfirmed. Owner will not improve yard.",
+      "fit": "User-confirmed Nov25 4.9/5. House was personally toured and liked; separate dedicated office in addition to 3 bedrooms verified. Backyard photos show extensive bare/shaded dirt, patchy grass and fencing/gates. Nov25 Chelsea says backyard leased AS-IS and owner will not provide lawn improvements. Cannot assume owner will authorize tenant changes or rent credit; drainage and pet-safe latches still unverified. Landlord supplies no fridge/washer/dryer; household has washer/dryer, only needs refrigerator.",
       "status": "Nov25 CHELSEA DIRECT REPLY: LANDLORD WILL NOT IMPROVE THE BACKYARD; bare/patchy yard delivered AS-IS. No offer of landscaping work. Both ordinary pets require individual screening—Chelsea explicitly CANNOT give advance approval. Per-pet fees $25 verification, $250 nonrefundable, $25/mo; she reconfirmed $2,275 base. No written permission for tenant work/credit, lease term/Dec start, or updated discount confirmation. Family has toured and liked home; separate office verified; user rating 4.9/5. No application submitted for this property.",
       "readiness": {
         "dog": {
@@ -1141,7 +1141,7 @@
         },
         "tour": {
           "status": "yes",
-          "detail": "Self-guided tour COMPLETED November 25. Home liked. Separate office confirmed. User supplied backyard photos; grass sparse and large dirt patch. No final numerical re-rating."
+          "detail": "Self-guided tour completed Nov25; dedicated office confirmed, house rated 4.9/5. Yard as-is concern remains."
         }
       },
       "checksUpdatedOn": "2026-11-25",
@@ -1149,7 +1149,7 @@
       "allInEstimate": 2325,
       "allInBasis": "CONDITIONAL agent Nov16 $2,275 base + published $25/month each for TWO ordinary pets, IF both specifically approved and no extra recurring mandatory fees. No lease quote or final sign-off.",
       "visitAttemptedOn": "2026-11-23",
-      "accessStatus": "Confirmed Wed Nov25 self-tour before 8 PM; Rently day-of access email received at 7:11 AM CST; no completed viewing yet.",
+      "accessStatus": "Self-guided tour completed Nov25; office confirmed.",
       "tourSchedule": {
         "status": "confirmed-date",
         "date": "2026-11-25",
@@ -1163,7 +1163,7 @@
       },
       "visited": true,
       "reviewedOn": "2026-11-25",
-      "visitFeedback": "Household toured in person November 25 and liked the home. Dedicated office CONFIRMED; door/enclosure details not separately recorded by firsthand user observation in addition to the 3 bedrooms. Backyard is mostly bare dirt/sparse grass under shade trees, with some small grassy strips and multiple wood fence gates shown in user-provided photos; full fence/gate integrity and drainage not technically verified. Yard improvement is a decision concern. Shelly's previous 4.7/5 rating remains until explicitly revised.",
+      "visitFeedback": "Household toured in person November 25 and liked the home. Dedicated office CONFIRMED; door/enclosure details not separately recorded by firsthand user observation in addition to the 3 bedrooms. Backyard is mostly bare dirt/sparse grass under shade trees, with some small grassy strips and multiple wood fence gates shown in user-provided photos; full fence/gate integrity and drainage not technically verified. Yard improvement is a decision concern. Household rating explicitly revised to 4.9/5 Nov25.",
       "questions": [
         "Can the family accept a large bare/patchy dirt yard AS-IS with Sunny? Landlord will NOT improve turf.",
         "If still considering: would tenant-funded, landlord-approved mulch/shade-surface improvements be permitted? No permission or credit has been offered.",
@@ -1188,6 +1188,53 @@
         "rearPrivacy": "Family reports no house directly behind the backyard, providing attractive rear privacy; view/sight lines can vary by season",
         "shopping": "Household remarked nice Burleson shopping roughly 5-minute drive. Address-matched Old Town ~6min / 2.2mi, Gateway Station ~9min / 4.5mi, Burleson Town Center ~8min / 3.8mi. No traffic; not all shopping is equally close.",
         "yardTradeoff": "Despite more privacy and mature trees, owner expressly refuses lawn repairs: substantial bare dirt in fenced yard remains as-is."
+      },
+      "appliancePlan": {
+        "asOf": "2026-11-26",
+        "landlordProvided": "None of refrigerator, washer or dryer",
+        "householdOwned": [
+          "washer",
+          "dryer"
+        ],
+        "purchaseRequired": [
+          "refrigerator"
+        ],
+        "refrigeratorBudget": {
+          "low": 600,
+          "high": 1000
+        },
+        "note": "Budget allowance, not a retail quote; moving/installation extra."
+      },
+      "financialSummary": {
+        "asOf": "2026-11-26",
+        "base": 2275,
+        "petMonthlyConditional": 50,
+        "recurringConditional": 2325,
+        "applicationTwoAdults": 100,
+        "petScreeningTwo": 50,
+        "admin": 150,
+        "petNonrefundableTwo": 500,
+        "minimumRefundableDeposit": 2275,
+        "upfrontBeforeRent": 3075,
+        "firstFullMonthConditionalWithCredit": 1325,
+        "creditPreviouslyOffered": 1000,
+        "initialCashWithCredit": {
+          "low": 5000,
+          "high": 5400
+        },
+        "initialCashWithoutCredit": {
+          "low": 6000,
+          "high": 6400
+        },
+        "typicalUtilitiesEstimate": 412.16,
+        "internetAllowance": 60,
+        "insuranceAllowance": 25,
+        "monthlyPlanningTotal": 2822.16,
+        "firstYearExpenseWithCredit": {
+          "low": 34265.92,
+          "high": 34665.92
+        },
+        "assumptions": "Illustrative 12-month horizon; actual lease duration/start unknown; both pets must pass screening; no additional mandatory fees assumed; excludes gas, lawn, delivery/installation, prorated rent; first-year expenses exclude refundable deposit."
       }
     },
     {
@@ -1457,6 +1504,12 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 26",
+      "tag": "HIDDEN LAKE · FINANCIAL UPDATE",
+      "title": "Refrigerator only; revised move-in budget",
+      "detail": "Household owns washer and dryer. Refrigerator allowance $600–$1,000. Conditional recurring rent/pets $2,325; typical utility model $412.16 plus $60 internet/$25 insurance allowances = $2,822.16 monthly. Minimum initial cash $5,000–$5,400 if $1,000 prior concession honored, $6,000–$6,400 otherwise, excluding prorate and installation. Lease start/term, both pet approvals, extra fees and credit remain unresolved."
+    },
     {
       "date": "Nov 26",
       "tag": "SEARCH REOPENED",
@@ -2233,9 +2286,9 @@
         "status": "Chelsea Nov25 confirms backyard will be leased AS-IS; owner refuses further landscaping or lawn care. Pet approval cannot be provided before EACH pet application; no guaranteed acceptance for large dog + cat. Base rent $2,275 confirmed. Family liked tour and confirmed office; no application or lease for Hidden Lake.",
         "rooms": "3 bedrooms + dedicated office · 2 bathrooms · ~2,044 sq ft · one story. Office confirmed during Nov25 viewing.",
         "fit": "Household toured and liked Hidden Lake. Separate dedicated office confirmed; both front runners now 4.9/5. Significant shaded bare dirt area in fenced yard will not be improved by landlord. Fence latch/drainage and dog usability remain your decision.",
-        "priceNote": "Chelsea Nov25 confirms $2,275 base. Conditional $2,325/mo with both screened pets at $25 each, assuming no additional required packages; actual acceptance/fees remain pending.",
-        "upfront": "Earlier agent terms: minimum $2,275 security deposit (credit-dependent), $250 nonrefundable + $25 verification PER PET, $150 administration, $50 application per adult. Previous $1,000 first-full-month credit still shown in Nov16 email, not reconfirmed Nov25. All initial amounts conditional.",
-        "appliances": "Refrigerator, washer and dryer explicitly NOT included. Additional acquisition/setup cost and delivery timing.",
+        "priceNote": "Confirmed $2,275 base + conditional $50 for both pets = $2,325/mo before utilities and any unknown fees. Typical modeled utilities $412.16, internet $60 and insurance $25 allowances = $2,822.16 monthly planning total; gas, lawn and undisclosed charges excluded.",
+        "upfront": "Minimum $3,075 before rent ($2,275 refundable deposit + $800 nonrefundable application, admin and pet fees); $1,325 first full month if both pets approved and prior $1,000 concession honored. With refrigerator $600–$1,000, plan $5,000–$5,400 initial cash, or $6,000–$6,400 without concession. Prorate, delivery and installation additional.",
+        "appliances": "Landlord provides none of refrigerator, washer, dryer. Household already owns washer and dryer; only refrigerator purchase needed ($600–$1,000 planning allowance), plus any delivery/installation.",
         "pet": "Chelsea cannot preapprove either pet: each requires an individual pet application. Per pet $25 verification during application, $250 NONREFUNDABLE once approved and $25 monthly if approved; combined monthly $50 only IF both pass.",
         "unknown": "Yard definitely AS-IS: no landlord re-sod/grass improvements. Tenant improvements/rent credit NOT addressed, so do not assume permission. Sunny+Belle individual approval requires pet screening, no guaranteed acceptance. December lease term/start, other required fees and original $1,000 promotion reconfirmation remain unknown.",
         "page": "https://www.insidemaps.com/app/walkthrough-tour/?p=m7f8nqzGu6"
@@ -2254,7 +2307,7 @@
       },
       {
         "title": "Real recurring and upfront cost",
-        "detail": "Clarks $2,133.98 from approved cost sheet. Hidden $2,325 is only conditional on both pets passing screening, with no unknown required extras. Chelsea confirms $2,275 base, does not reconfirm $1,000 concession in latest reply. All new appliances and lawn upkeep are additional Hidden Lake considerations.",
+        "detail": "Clarks $2,133.98 from approved cost sheet. Hidden $2,325 is only conditional on both pets passing screening, with no unknown required extras. Chelsea confirms $2,275 base, does not reconfirm $1,000 concession in latest reply. Household owns washer and dryer; only a refrigerator purchase ($600–$1,000 allowance), delivery/installation and possible lawn costs are additional. Initial cash estimate $5,000–$5,400 with credit, $6,000–$6,400 without; prorate extra.",
         "priority": "money"
       },
       {
@@ -2264,7 +2317,7 @@
       },
       {
         "title": "Pets, appliances and PODS",
-        "detail": "Hidden Lake Sunny and Belle each require a pet application; Chelsea says she cannot preapprove either. Fees per pet: $25 verification, $250 nonrefundable, $25 monthly if approved. Hidden no fridge/washer/dryer. Clarks cost sheet includes both pets, still verify legal pet/HOA addenda and PODS authorization.",
+        "detail": "Hidden Lake Sunny and Belle each require a pet application; Chelsea says she cannot preapprove either. Fees per pet: $25 verification, $250 nonrefundable, $25 monthly if approved. Hidden provides no appliances of those three; household owns washer and dryer and needs only refrigerator. Clarks cost sheet includes both pets, still verify legal pet/HOA addenda and PODS authorization.",
         "priority": "blocker"
       },
       {

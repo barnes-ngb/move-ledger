@@ -82,6 +82,29 @@ assert(/cannot preapprove|no preapproval/i.test(hiddenFinal?.petGate||""),
 assert(data.homes.find((h)=>h.id==="clarks")?.rating === 4.9 && hiddenFinal.rating === 4.9,
   "Both household front-runner scores must stay 4.9/5");
 
+// Police review and one-time search should never invent a cross-city safety score.
+assert(html.includes('id="crime-review"') && html.includes('id="crimeEvidence"'),
+ "Police review must appear in public decision board");
+assert(html.includes('id="rental-sweep"') && html.includes('id="sweepFinds"'),
+ "One-time rental search must have a separate public display");
+assert(html.includes("renderCrimeAndSweep()"),
+ "Crime/search review must render with published listings.json");
+const crime = data.crimeReview;
+assert(crime && /NOT COMPARABLE/.test(crime.comparisonStatus),
+ "Crime data collected from two differently covered police sources cannot be scored together");
+assert(crime.clarks.radiusCounts.map((x) => x.offenseRecords).join(",") === "13,32,100",
+ "Clarks neighborhood crime records must retain the official quarter, half, one-mile counts");
+assert(crime.hiddenlake.radiusCounts === null,
+ "Do not invent equivalent incident radius counts for Burleson");
+const sweep = data.searchSweep;
+assert(sweep?.leads?.some((x) => x.id === "walnutplace" && x.workMinutes === 38),
+ "One-time Mansfield options must include the previously overlooked but unverified 1006 Walnut lead");
+assert(sweep?.leads?.some((x) => x.id === "manitowoc" && x.parentsMinutes === 94),
+ "Plano alternative must show serious distance cost to grandparents");
+assert(data.homes.find((x) => x.id === "clarks")?.rating === 4.9 &&
+       data.homes.find((x) => x.id === "hiddenlake")?.rating === 4.9,
+ "Household's existing 4.9 top-two score must remain unchanged");
+
 const archived = data.archivedHomes || [];
 assert(html.includes('id="rental-archive"') && html.includes('id="archiveHomes"'),
   "Unavailable-rental archive must render separately from the active plot");

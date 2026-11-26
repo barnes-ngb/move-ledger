@@ -1,5 +1,5 @@
 {
-  "edition": "November 25, 2026 — address-level crime review and final rental sweep",
+  "edition": "Nov 26, 2026",
   "note": "Clarks Mill toured Nov24, household loved everything with no compromise. Screenshot of Progress application Overview shows Nathan submitted Tue Nov24 but Shelly's co-applicant portion not submitted; property team review starts only after Shelly submits. $2133.98/mo direct application estimate incl ordinary Sunny and Belle; chose intended Dec4/18-month term, verify final saved selection. No approval, security-deposit payment, hold or signed lease proven. Historical ratings preserved. Other tours remain unchanged.",
   "homes": [
     {
@@ -12,8 +12,8 @@
       "checkpoint": "2026-11-14",
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
       "priceNote": "Nov25 direct Progress cost sheet confirms $2,133.98 MONTHLY incl Sunny $72, Belle $72, Smart Home $19.99 and Utility Service $9.99, excluding utilities and renter insurance. Lease: 18mo, Dec4 2026–May31 2028. Paid application $55; deposit $1,960 due upon approval; $2,043.44 due before move-in (prorated first rent and pet/smart-home charges plus $125 admin); $30 utility setup billed after moving. SECURITY: 24h signature/deposit request received Nov25; lease not yet confirmed signed or deposit paid. Cost sheet's residents list omits intended second adult tenant; confirm actual lease names before signing. Do NOT expose identities or private lease/login links publicly.",
-      "fit": "After the Nov24 in-person tour Nathan and Shelly report they loved EVERYTHING and felt NO compromises. This firsthand assessment supersedes earlier photo-based cabinet/fence worries as subjective fit concerns, while documented inspection/legal requirements and pet approval remain separate gates. Shelly's previous explicit numeric 4.8/5 is preserved until revised.",
-      "status": "APPLICATION APPROVED Nov25 2026 (direct Progress email). RentCafe issued lease for review/signature. Progress requested lease signed and $1,960 deposit within 24 hours of approval; missed deadline may cancel the application and forfeit funds already paid. This is NOT evidence of executed lease, payment, reservation or possession. Final offer shows 18 months from December 4, 2026 to May 31, 2028. Before signing verify names of BOTH intended adult co-tenants, pet addenda/HOA, early termination policy, PODS container rule, insurance and total fees. Nov24 household toured the house and loved it with no compromises.",
+      "fit": "Household toured Nov24 and rated house 4.9/5; subsequently paused commitment Nov26. Specific reservations not yet recorded.",
+      "status": "ON HOLD BY FAMILY CHOICE Nov26. Application previously approved and lease offered Nov25; family elected not to proceed now. May reapply if needed. No signed lease, deposit, current availability or reapplication terms confirmed.",
       "priceBasis": "Approved Nov 25 Progress cost sheet: $1,960 base + $144 ordinary pet rent (Sunny and Belle) + $29.98 required monthly services = $2,133.98/mo before utilities and insurance. 18mo lease proposed Dec 4 2026–May 31 2028. Lease ready, not verified signed.",
       "petGate": "Large dogs + cats listed; individual approval pending",
       "priceUpdatedOn": "2026-11-24",
@@ -28,7 +28,7 @@
         },
         "availability": {
           "status": "pending",
-          "detail": "Progress approved the household application and generated a lease to sign November 25. No executed lease or paid deposit confirmed. Do not treat as secured until signed and paid."
+          "detail": "On hold by family choice. Confirm current listing availability and new application terms before reconsidering."
         },
         "cost": {
           "status": "pending",
@@ -36,7 +36,7 @@
         },
         "lease": {
           "status": "pending",
-          "detail": "Nov25 official cost sheet specifies Dec4 2026 move-in, 18-month term to May31 2028; 24h signature/deposit request. Actual lease signers and co-tenants must be checked, and early-termination terms reviewed."
+          "detail": "Prior 18-month offer only; family chose not to proceed now. Reapplication may be needed."
         },
         "photos": {
           "status": "yes",
@@ -99,17 +99,12 @@
         "securityDeposit": "not visible in screenshot"
       },
       "applicationStatus": {
-        "state": "submitted-waiting-on-household",
-        "observedOn": "2026-11-25",
-        "evidence": "Progress email Nov24 9:07 PM CT plus Nov24 Overview screenshot",
-        "nathan": "submitted Tuesday November 24",
-        "shelly": "not submitted as of screenshot",
-        "review": "awaiting completed household application confirmation",
-        "approval": "not granted",
-        "lease": "not signed",
-        "payment": "Progress acknowledges primary applicant payment; amount not supplied",
-        "deadline": "2026-11-27T19:29:00-06:00",
-        "confirmation": "https://mail.google.com/mail/u/0/#all/1a210ac4e7b9fa8e"
+        "state": "on-hold-by-family-choice",
+        "observedOn": "2026-11-26",
+        "approval": "Approved Nov25; validity now unverified",
+        "lease": "Not verified executed; family decided not to proceed now",
+        "payment": "Deposit not verified",
+        "review": "Possible future reapplication; no guarantee of same terms"
       },
       "hoaReview": {
         "reviewedOn": "2026-11-24",
@@ -1463,6 +1458,12 @@
   ],
   "updates": [
     {
+      "date": "Nov 26",
+      "tag": "SEARCH REOPENED",
+      "title": "Clarks Mill paused; broaden geography and layout discovery",
+      "detail": "Previous finalists are benchmarks; explore older neighborhoods, 3BR plus flex/office, Benbrook, Cedar Hill, Glenn Heights, Midlothian and Alvarado. No new house rated or approved."
+    },
+    {
       "date": "Nov 25",
       "tag": "FAMILY RENTAL · FINAL SWEEP",
       "title": "Crime source comparison and fresh rental search Mansfield/Keller/Plano",
@@ -2205,22 +2206,22 @@
     }
   ],
   "frontRunners": {
-    "asOf": "November 25, 2026 · Chelsea reply at 2:16 PM Central",
+    "asOf": "November 26, 2026 · search reopened",
     "order": [
       "clarks",
       "hiddenlake"
     ],
-    "subtitle": "Both houses are 4.9/5 on household fit. Clarks has an approved, time-sensitive lease; Hidden Lake landlord expressly refuses backyard improvements, and both pets require separate screening with no preapproval.",
+    "subtitle": "Previous finalists remain 4.9/5 benchmarks. Clarks is on hold by family choice; Hidden Lake remains conditional.",
     "rankingBasis": "These are the household's two explicit front-runners, not an automated score-based recommendation. Preserve Shelly's numeric scores independently.",
     "highlights": {
       "clarks": {
-        "eyebrow": "Approved offer · lease ready",
-        "timing": "18-month lease proposal · Dec 4, 2026 to May 31, 2028",
-        "status": "Application approved November 25. Lease has been issued for review/signing; security deposit requested within 24 hours. NOT verified signed or paid.",
+        "eyebrow": "On hold · family decision",
+        "timing": "Previous 18-month offer, not a current commitment",
+        "status": "ON HOLD BY FAMILY CHOICE Nov26. Application previously approved and lease offered Nov25; family elected not to proceed now. May reapply if needed. No signed lease, deposit, current availability or reapplication terms confirmed.",
         "rooms": "4 bedrooms · 2 baths · 1,758 sq ft · one story",
-        "fit": "Family toured November 24 and loved everything—reported no compromises. Shelly's last explicit numerical rating remains 4.9/5.",
-        "priceNote": "$2,133.98 recurring from official Nov25 cost sheet, including ordinary rent for both pets and required fees; excludes metered utilities and insurance.",
-        "upfront": "$55 application paid; $1,960 quoted deposit; $2,043.44 before-move-in charges; $30 utility setup after move-in. Final lease/payment steps not yet completed.",
+        "fit": "Household toured Nov24 and rated house 4.9/5; subsequently paused commitment Nov26. Specific reservations not yet recorded.",
+        "priceNote": "Historical Nov25 cost sheet: $2,133.98 recurring including both pets; not guaranteed on reapplication.",
+        "upfront": "Previous quote: $1,960 deposit and $2,043.44 initial payment; no further payment verified.",
         "appliances": "Earlier manager materials indicate refrigerator included; washer and dryer not supplied. Reconfirm in executed lease.",
         "pet": "Cost sheet explicitly prices Sunny and Belle at $72/month each. Confirm ordinary-pet addenda and HOA acceptance before signing.",
         "unknown": "Verify all intended adult leaseholders. Cost sheet residents line lists only one adult—actual lease may differ. Confirm 18-month exit terms, insurance, PODS driveway permissions, and pet/HOA riders.",
@@ -2242,14 +2243,9 @@
     },
     "decisions": [
       {
-        "title": "Clarks leaseholder discrepancy",
-        "detail": "Review actual RentCafe lease before signature. The separate cost sheet lists only one adult; both intended adult tenants should be checked, and corrections requested if necessary.",
-        "priority": "now"
-      },
-      {
-        "title": "24-hour offer window",
-        "detail": "Application approved Nov25; Progress instructs lease signature and security deposit within 24 hours. Verify when the deadline runs, and do not sign or pay blindly merely to meet it.",
-        "priority": "now"
+        "title": "Clarks on hold",
+        "detail": "Reconsider only if family chooses; recheck current availability, quote, leaseholders and approval. No commitment assumed.",
+        "priority": "timing"
       },
       {
         "title": "Hidden Lake yard — accept as-is or pass",
@@ -2288,11 +2284,10 @@
       "routes": "US Census address-matched OSRM one-time baseline as of Nov14; NOT a live-traffic forecast."
     },
     "decisionSignal": {
-      "title": "Latest decision: Hidden Lake yard is strictly as-is",
-      "detail": "Chelsea confirms the owner will not make lawn improvements or provide additional yard care. Sunny and Belle must each pass pet application; she cannot grant advance pet approval. $2,275 base and the individual pet-fee schedule are confirmed. The question is now whether Hidden Lake is worth an unmodified dirt-heavy yard, appliances not provided and unknown pet eligibility compared with Clarks' approved lease.",
-      "urgent": "Clarks Mill lease was issued for signature November 25 with 24-hour signing/deposit instructions. Verify the actual lease names both intended adult co-tenants and the terms before signing; no signature/deposit is verified.",
-      "sourceDate": "Chelsea email November 25, 2026, 2:16 PM Central",
-      "status": "no-landlord-yard-improvements"
+      "title": "Search reopened",
+      "detail": "Family chose not to proceed with Clarks Mill at this time. Keep both previous finalists as benchmarks rather than default choices. Hidden Lake yard is as-is and pet screening remains conditional.",
+      "sourceDate": "Family decision November 26, 2026",
+      "status": "search-reopened"
     },
     "neighborhoodComparison": {
       "asOf": "2026-11-25",
@@ -2373,12 +2368,72 @@
     "interpretation": "Both areas have reported incidents. It would be misleading to call Hidden Lake safer because it feels wooded, or Clarks Mill unsafe from mapped counts alone; need common datasets and rates before comparing risk."
   },
   "searchSweep": {
-    "asOf": "2026-11-25",
-    "scope": "One-time targeted rental review: Mansfield, Keller/Fort Worth 76244, Plano, plus nearby family-friendly alternative areas",
+    "asOf": "2026-11-26",
+    "scope": "Fresh discovery: Benbrook, Cedar Hill, Glenn Heights, Midlothian, Alvarado",
     "criteria": "Detached family house, four bedrooms or three plus genuine separate office; dog and cat both must be acceptable under ordinary property rules, full fenced yard/grass, preferred $2,400/month total with ordinary pets; distances to Irving job and Alvarado grandparents matter",
-    "ranking": "Discovery screening only; do NOT invent Shelly numerical ratings or override two established 4.9/5 front-runners.",
-    "method": "Public rental advertisements Nov25. Work/parents driving times are Census geocoded exact-address origins to OSRM OpenStreetMap no-traffic road-network table; not real traffic.",
+    "ranking": "Unrated listing leads, not photo-confirmed matches. No automatic promotion.",
+    "method": "Nov26 listing-text and status screening; exact route links provided, no new travel minutes or individual photo-condition verification.",
     "leads": [
+      {
+        "address": "1500 Vernon Castle Ave, Benbrook TX 76126",
+        "monthlyBase": 2100,
+        "bedrooms": 3,
+        "baths": 2,
+        "sqft": 2005,
+        "description": "One story; bonus/flex room, privacy fenced large yard and covered patio, listing says appliances included; carpet and LVP listed.",
+        "petGate": "Case-by-case, $40 monthly pet fee in older MLS quote; number/size limits and actual two-pet total unknown.",
+        "status": "Older inventory newly reconsidered; MLS-linked broker active $2,100, other portal previously available.",
+        "recommendation": "Review whether flex is enclosed and bedroom flooring; confirm actual availability.",
+        "listingUrl": "https://www.coldwellbankerhomes.com/tx/benbrook/1500-vernon-castle-ave/pid_74248150/"
+      },
+      {
+        "address": "805 Green Acres Ln, Midlothian TX 76065",
+        "monthlyBase": 2300,
+        "bedrooms": 4,
+        "baths": 2,
+        "sqft": 2196,
+        "description": "Open kitchen and den, split bedrooms, double vanity, garden tub, wood fencing and garage; floor material unknown.",
+        "petGate": "Breed restrictions and property-specific fees unknown.",
+        "status": "MLS #21414854 shown active; original listing date not verified.",
+        "recommendation": "Strong layout lead; fees may exceed preferred target.",
+        "listingUrl": "https://www.dpipropertysearch.com/property-details/805-green-acres-lane-midlothian-texas-76065-21414854"
+      },
+      {
+        "address": "813 Sage Meadow Dr, Glenn Heights TX 75154",
+        "monthlyBase": 2250,
+        "bedrooms": 4,
+        "baths": 2,
+        "sqft": 2110,
+        "description": "One story, two living areas, two dining areas, 0.2-acre lot, updated interior per ad.",
+        "petGate": "Cats and dogs advertised; size restrictions and fees unverified.",
+        "status": "Advertised Nov24; HAR active; Red Oak postal label also used.",
+        "recommendation": "Only sparse listing photography in MLS; verify fence, grass and interior.",
+        "listingUrl": "https://www.rentalsource.com/details/813-sage-meadow-dr-red-oak-tx-84766052/"
+      },
+      {
+        "address": "628 Turtle Creek Park Trl, Alvarado TX 76009",
+        "monthlyBase": 2200,
+        "bedrooms": 4,
+        "baths": 2,
+        "sqft": 1844,
+        "description": "Open layout and fenced yard per ad; $500 off each first three months advertised if signed by Dec10.",
+        "petGate": "Large dogs and cats listed, individual approval case by case; fees unknown.",
+        "status": "Advertised Nov25; actual lease start unknown.",
+        "recommendation": "High upfront liquidity: $4,400 cash deposit, $320 inspection, $85 per adult; work route unmeasured.",
+        "listingUrl": "https://www.rentalsource.com/details/628-turtle-creek-park-trail-alvarado-tx-84768824/"
+      },
+      {
+        "address": "708 Mimosa Trl, Cedar Hill TX 75104",
+        "monthlyBase": 2200,
+        "bedrooms": 4,
+        "baths": 2,
+        "sqft": 1813,
+        "description": "Plank floors throughout and fenced yard per ad, garage. Manager estimated $2,304.95 incl insurance/internet/services; $50 for two pets extra.",
+        "petGate": "Cats/dogs advertised, max three; size and individual approval unknown.",
+        "status": "Advertised Nov19; manager-syndicated listing.",
+        "recommendation": "Approx $2,344 excluding $10.95 insurance if listed fees apply. Verify package and yard.",
+        "listingUrl": "https://www.redfin.com/TX/Cedar-Hill/708-Mimosa-Trl-75104/home/32202163"
+      },
       {
         "id": "walnutplace",
         "address": "1006 Walnut Pl, Mansfield TX 76063",
@@ -2402,65 +2457,6 @@
         "listingUrl": "https://www.rentler.com/places-for-rent/tx/mansfield/1006-walnut-pl/13846736",
         "tourUrl": "https://showmojo.com/lrtl/e1cfdb20b1",
         "recommendation": "Best unverified backup to explore only if pet and December start viable"
-      },
-      {
-        "id": "newhaven",
-        "address": "1402 New Haven Dr, Mansfield TX 76063",
-        "category": "budget-challenge",
-        "listedOn": "Late Nov 2026 listing check",
-        "monthlyBase": 2395,
-        "bedrooms": 4,
-        "baths": 2,
-        "sqft": 2138,
-        "description": "Mostly hard flooring, fenced yard; price varies across syndicated sites",
-        "workMinutes": 37,
-        "parentsMinutes": 51,
-        "workMiles": 28,
-        "parentsMiles": 28,
-        "petGate": "Cats and large dogs not specifically screened; verify individual policy",
-        "status": "Base price above preferred fully-loaded budget; no tour",
-        "listingUrl": "https://www.zillow.com/homedetails/1402-New-Haven-Dr-Mansfield-TX-76063/114620245_zpid/",
-        "recommendation": "Only if price quote improves and photo fit is exceptional"
-      },
-      {
-        "id": "hounds",
-        "address": "4529 Hounds Tail Ln, Fort Worth TX 76244 (Keller area)",
-        "category": "pet-gate",
-        "listedOn": "Ad price dropped mid Nov 2026",
-        "monthlyBase": 1950,
-        "bedrooms": 4,
-        "baths": 2.5,
-        "sqft": 2568,
-        "description": "2-story, primary downstairs, bonus/game space, fenced yard",
-        "workMinutes": 30,
-        "parentsMinutes": 68,
-        "workMiles": 23,
-        "parentsMiles": 52,
-        "petGate": "Syndicated ad indicates small dogs only. Golden Retriever may be disallowed; no exception promised.",
-        "status": "No tour, ordinary pet eligibility NOT established",
-        "listingUrl": "https://www.zillow.com/homedetails/4529-Hounds-Tail-Ln-Fort-Worth-TX-76244/29301120_zpid/",
-        "recommendation": "Work-access alternative only if large dog exception verified; longer grandparents drive"
-      },
-      {
-        "id": "manitowoc",
-        "address": "6732 Manitowoc Dr, Plano TX 75023",
-        "category": "new-listing",
-        "listedOn": "Nov 24 2026",
-        "monthlyBase": 2250,
-        "bedrooms": 4,
-        "baths": 2,
-        "sqft": 1980,
-        "description": "2-story, primary downstairs, fenced backyard, cul-de-sac",
-        "workMinutes": 33,
-        "parentsMinutes": 94,
-        "workMiles": 25,
-        "parentsMiles": 70,
-        "petGate": "Syndicated 1 dog and 1 cat may be considered; size/weight limits unknown, Sunny needs direct clearance",
-        "manager": "Dallas Property Management Pros",
-        "phone": "972-665-9956",
-        "status": "Nov24 advertised new, no verified hold or showing",
-        "listingUrl": "https://www.zillow.com/homedetails/6732-Manitowoc-Dr-Plano-TX-75023/53036861_zpid/",
-        "recommendation": "Interesting genuine new listing but extremely long grandparents drive"
       }
     ],
     "exclusions": [

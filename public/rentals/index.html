@@ -234,6 +234,22 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
 .decision-signal p{font-size:12px;color:#4a6573;margin:4px 0;line-height:1.55}
 .decision-signal .decision-date{font-size:11px;color:#647987}
 
+
+.research-panel{padding:15px 18px;scroll-margin-top:15px}
+.research-panel summary{font-weight:800;color:#264e60;font-size:15px;cursor:pointer;line-height:1.5}
+.research-panel details[open]>summary{margin-bottom:10px}
+.research-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.research-card{border:1px solid #dfe9ed;border-radius:10px;background:#fbfdfd;padding:12px;min-width:0}
+.research-card h3{font-size:14px;color:#253f50;margin:0 0 5px}
+.research-card p{margin:5px 0;color:#516b78;font-size:12px}
+.research-card .research-meta{font-size:11px;color:#576e7a}
+.research-card .research-note{font-size:12px;font-weight:600;color:#845826}
+.research-card .research-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.research-card a{font-size:12px;font-weight:700;color:#1c6956;text-decoration:underline}
+.research-footer{font-size:12px;color:#586d77;padding-top:12px}
+.research-panel .hint{font-size:12px}
+@media(max-width:680px){.research-grid{grid-template-columns:1fr}.research-panel{padding:11px 13px}}
+
 </style>
 </head>
 <body>
@@ -276,6 +292,19 @@ header .sub{margin:6px 0 0;font-size:13px;color:#d5e8eb}.toolbar{margin-top:13px
   <div class="finalist-tasks" id="finalistChecklist"></div>
  </div>
  <p class="explain">Housing prices may have different fee coverage. Recurring comparisons assume each listed regular-pet charge and do not include metered utilities, insurance or equipment purchases. Driving minutes are road-network baselines without traffic. No lease has been signed and no payment has been made by the page.</p>
+</section>
+<section class="panel research-panel" id="crime-review" aria-label="Police reports around finalist locations">
+ <details><summary>Crime around the two finalists · official sources &amp; limits</summary>
+  <p class="hint">Police report coverage differs between Fort Worth and Burleson. Do not compare raw city totals or assume an incident nearby predicts family safety.</p>
+  <div id="crimeEvidence" class="research-grid"><p class="hint">Loading published police-source review…</p></div>
+ </details>
+</section>
+<section class="panel research-panel" id="rental-sweep" aria-label="Last Mansfield Keller Plano rental sweep">
+ <details open><summary>One final rental sweep · Mansfield, Keller area &amp; Plano</summary>
+  <p class="hint">Unrated leads only. Manager confirmation, pet eligibility and December start must be verified before any showing or application. The two 4.9-rated finalists remain first.</p>
+  <div id="sweepFinds" class="research-grid"><p class="hint">Loading candidate homes…</p></div>
+  <div class="research-footer" id="sweepCaveat"></div>
+ </details>
 </section>
 
 <div class="stats">
@@ -539,6 +568,7 @@ function houseCard(h){
 function render(){
  renderFrontRunners();
  renderUtilityComparison();
+ renderCrimeAndSweep();
  var all=houses(),visible=matchingHouses(),green=all.filter(isGreen);
  byId("greenCount").textContent=green.length;
  byId("count").textContent=visible.length+" displayed · "+all.length+" tracked";
@@ -740,6 +770,65 @@ function loadUtilityComparison(){
  .catch(function(){byId("utilityResults").textContent="Utility estimates could not load. Refresh to retry."});
 }
 
+
+var crimeEvidence=null;
+var rentalSweep=null;
+function publicResearchLink(parent,label,url){
+ if(!url)return;
+ var a=document.createElement("a");a.textContent=label+" ↗";a.href=safeUrl(url);
+ a.target="_blank";a.rel="noopener noreferrer";parent.appendChild(a);
+}
+function renderCrimeAndSweep(){
+ var root=byId("crimeEvidence"),search=byId("sweepFinds"),extra=byId("sweepCaveat");
+ if(root){
+  root.replaceChildren();
+  if(!crimeEvidence){write(root,"p","No comparison published yet.","hint");}
+  else {
+   var entries=[
+    {name:"Clarks Mill · Fort Worth Police",source:crimeEvidence.clarks},
+    {name:"Hidden Lake · Burleson Police",source:crimeEvidence.hiddenlake}
+   ];
+   entries.forEach(function(item){
+    var x=item.source,card=write(root,"article","","research-card");
+    write(card,"h3",item.name);
+    write(card,"p",x.window+" · "+x.department,"research-meta");
+    if(Array.isArray(x.radiusCounts)){
+     write(card,"p",x.radiusCounts.map(function(y){return y.offenseRecords+" offense records within "+y.radiusMiles+" mile"+(y.radiusMiles===1?"":"s")}).join(" · "));
+     write(card,"p",x.latest4Week||"");
+    }else{
+     write(card,"p","No reliable address-radius incident total from the weekly PDF logs.","research-note");
+     (x.examples||[]).forEach(function(y){write(card,"p",y.description+" · approx. "+y.approxStraightLineMiles+" mi from the house (block-level location).")});
+    }
+    write(card,"p",x.summary||"");write(card,"p",x.caveat||"");
+    var actions=write(card,"div","","research-links");
+    publicResearchLink(actions,"Official source",x.source);
+    if(x.sourceWeekly)publicResearchLink(actions,"Weekly report",x.sourceWeekly);
+   });
+  }
+ }
+ if(search){
+  search.replaceChildren();
+  if(!rentalSweep||!Array.isArray(rentalSweep.leads)){write(search,"p","No latest sweep published.","hint");}
+  else{
+   rentalSweep.leads.forEach(function(x){
+    var card=write(search,"article","","research-card");
+    write(card,"h3",x.address);
+    write(card,"p","$"+x.monthlyBase.toLocaleString("en-US")+"/mo base · "+x.bedrooms+" bed · "+x.baths+" bath · "+x.sqft.toLocaleString("en-US")+" sq ft");
+    write(card,"p",x.description||"");
+    write(card,"p","Drive, no traffic: work ~"+x.workMinutes+" min · grandparents ~"+x.parentsMinutes+" min.","research-meta");
+    write(card,"p",x.petGate,"research-note");
+    if(x.recurringExtraKnown)write(card,"p","Additional published mandatory monthly charges: around $"+x.recurringExtraKnown+" before pets and utilities");
+    write(card,"p",x.recommendation||"");
+    var actions=write(card,"div","","research-links");
+    publicResearchLink(actions,"Exact-property listing",x.listingUrl);
+    if(x.tourUrl)publicResearchLink(actions,"View scheduling",x.tourUrl);
+    if(x.phone)publicResearchLink(actions,"Call management","tel:+1"+x.phone.replace(/\D/g,""));
+   });
+  }
+ }
+ if(extra)extra.textContent=(rentalSweep?.method||"")+" Exact pet policy and leasing availability must be confirmed by the manager.";
+}
+
 var archivedHomes=[];
 function renderRentalArchive(){
  var root=byId("archiveHomes"),count=byId("archiveCount");
@@ -839,7 +928,7 @@ function loadPools(){
 function sync(userInitiated){
  fetch("./listings.json?_="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).then(function(d){
    if(!d||!Array.isArray(d.homes))throw Error("Invalid data");
-   base=d.homes;frontRunnerConfig=d.frontRunners||null;archivedHomes=Array.isArray(d.archivedHomes)?d.archivedHomes:[];renderRentalArchive();latestEdition=d.edition||"Recently";byId("edition").textContent=latestEdition;byId("footerEdition").textContent="Published data "+latestEdition;
+   base=d.homes;frontRunnerConfig=d.frontRunners||null;crimeEvidence=d.crimeReview||null;rentalSweep=d.searchSweep||null;archivedHomes=Array.isArray(d.archivedHomes)?d.archivedHomes:[];renderRentalArchive();latestEdition=d.edition||"Recently";byId("edition").textContent=latestEdition;byId("footerEdition").textContent="Published data "+latestEdition;
    render();drawUpdates(d.updates||[]);if(userInitiated)show("Published list refreshed.");
  }).catch(function(){if(!base.length)base=fallback;render();drawUpdates([]);show("Using offline snapshot; published data could not be loaded right now.")});
 }

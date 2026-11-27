@@ -1,5 +1,5 @@
 {
-  "edition": "Nov 25 2026 — Hidden Lake yard as-is confirmed, pets need applications",
+  "edition": "Nov 27, 2026",
   "privacy": "Public-safe only. Never display or persist private lockbox code, ID or login credentials. Provider confirmation recorded without assuming pet eligibility or payment.",
   "timezone": "America/Chicago",
   "groups": [
@@ -134,12 +134,12 @@
           "city": "Fort Worth",
           "address": "6932 Tide Ln, Fort Worth, TX 76179",
           "date": "Fri Nov 27",
-          "time": "4 PM accepted by agent · finalize by call/text",
+          "time": "5 PM proposed by owner · awaiting confirmation",
           "status": "agent-agreed",
-          "statusLabel": "Agent agreed · confirm with him",
+          "statusLabel": "Revised time proposed · not booked",
           "contact": "Kyle Vance · listing agent AND property owner",
-          "next": "Kyle's Nov23 human email says Friday Nov27 4 PM works. He is both owner and listing agent and asks Nathan to call/text 682-269-4358 to finalize. Agent-agreed, NOT yet mutually finalized or on calendar. No outgoing action taken.",
-          "caution": "$2,250 advertised base; fenced yard and general acceptance of both ordinary pets with $500 nonrefundable fee. No washer, dryer or refrigerator. Obtain final leasing terms.",
+          "next": "Nov26 owner proposed Friday Nov27 at 5 PM instead of 4 PM. Household confirmation not verified; no booking made.",
+          "caution": "$2,250 base; $500 combined nonrefundable pet fee; full lease costs unknown. Tenant owns washer/dryer, needs refrigerator.",
           "actions": [
             {
               "label": "Text Kyle to confirm",
@@ -330,5 +330,5 @@
     "friday": "Fri Nov 27: owner Kyle agrees Tide Lane 4 PM; call/text to finalize",
     "saturday": "Sat Nov 28: leaving Texas; NO VIEWINGS"
   },
-  "todayNote": "Hidden Lake toured and liked, separate office confirmed. Latest Chelsea direct reply Nov25: landlord will not improve yard, lease as-is, two pets require individual application and cannot be preapproved. Clarks had an approved application and lease-ready email, with time-sensitive signature/deposit request. Both scored 4.9."
+  "todayNote": "Friday Nov27: Tide Lane owner proposes 5 PM, awaiting household confirmation. No Saturday tours."
 }

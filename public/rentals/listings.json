@@ -1,5 +1,5 @@
 {
-  "edition": "Nov 26, 2026",
+  "edition": "Nov 27, 2026",
   "note": "Clarks Mill toured Nov24, household loved everything with no compromise. Screenshot of Progress application Overview shows Nathan submitted Tue Nov24 but Shelly's co-applicant portion not submitted; property team review starts only after Shelly submits. $2133.98/mo direct application estimate incl ordinary Sunny and Belle; chose intended Dec4/18-month term, verify final saved selection. No approval, security-deposit payment, hold or signed lease proven. Historical ratings preserved. Other tours remain unchanged.",
   "homes": [
     {
@@ -13,7 +13,7 @@
       "url": "https://www.zillow.com/homedetails/2533-Clarks-Mill-Ln-Fort-Worth-TX-76123/79924493_zpid/",
       "priceNote": "Nov25 direct Progress cost sheet confirms $2,133.98 MONTHLY incl Sunny $72, Belle $72, Smart Home $19.99 and Utility Service $9.99, excluding utilities and renter insurance. Lease: 18mo, Dec4 2026–May31 2028. Paid application $55; deposit $1,960 due upon approval; $2,043.44 due before move-in (prorated first rent and pet/smart-home charges plus $125 admin); $30 utility setup billed after moving. SECURITY: 24h signature/deposit request received Nov25; lease not yet confirmed signed or deposit paid. Cost sheet's residents list omits intended second adult tenant; confirm actual lease names before signing. Do NOT expose identities or private lease/login links publicly.",
       "fit": "Household toured Nov24 and rated house 4.9/5; subsequently paused commitment Nov26. Specific reservations not yet recorded.",
-      "status": "ON HOLD BY FAMILY CHOICE Nov26. Application previously approved and lease offered Nov25; family elected not to proceed now. May reapply if needed. No signed lease, deposit, current availability or reapplication terms confirmed.",
+      "status": "ON HOLD BY FAMILY CHOICE. Nov26 Progress reminder specified 11:10 AM CT Nov26 signature/deposit deadline, now passed; no evidence of executed lease, payment or subsequent cancellation. Reapplication and terms unverified.",
       "priceBasis": "Approved Nov 25 Progress cost sheet: $1,960 base + $144 ordinary pet rent (Sunny and Belle) + $29.98 required monthly services = $2,133.98/mo before utilities and insurance. 18mo lease proposed Dec 4 2026–May 31 2028. Lease ready, not verified signed.",
       "petGate": "Large dogs + cats listed; individual approval pending",
       "priceUpdatedOn": "2026-11-24",
@@ -104,7 +104,8 @@
         "approval": "Approved Nov25; validity now unverified",
         "lease": "Not verified executed; family decided not to proceed now",
         "payment": "Deposit not verified",
-        "review": "Possible future reapplication; no guarantee of same terms"
+        "review": "Historical signature/deposit deadline passed; no subsequent disposition verified. Family on hold.",
+        "deadlineHistorical": "2026-11-26T11:10:00-06:00"
       },
       "hoaReview": {
         "reviewedOn": "2026-11-24",
@@ -355,17 +356,17 @@
       "id": "northview",
       "name": "236 Northview Ter",
       "city": "Burleson",
-      "rent": 2148,
+      "rent": 2113,
       "rating": 4.8,
       "basis": "Shelly",
       "checkpoint": "2026-11-22",
       "trackedOn": "2026-11-04",
       "url": "https://www.zillow.com/homedetails/236-Northview-Ter-Burleson-TX-76028/71275291_zpid/",
-      "priceBasis": "Nov20 2026 AMH direct emailed TOTAL $2,148/month including required monthly charges, BEFORE conditional charges such as both pet rents, not a 12-month base or individually approved lease quote",
+      "priceBasis": "AMH Nov25 $2,113 total required recurring charges before conditional pet and one-time charges; lease term unspecified.",
       "petGate": "Cats and large dogs listed; screening pending",
-      "priceNote": "Nov20 2026 AMH Amy T. direct virtual-agent email reports $2,198→$2,148 (-$50) TOTAL/month including required recurring charges, excludes one-time/conditional charges (both normal pet rents, application/pet fees, deposit), without declaring quoted lease term or base. Older Nov13 email was $2,198. Third-party Homes.com Nov20–21 has 14-month marketing offer saying move-in by DEC 31, 2026, potentially contradicting prior AMH Nov6 latest-compatible Nov20 cutoff; public 14mo offer does NOT guarantee this household's qualifying December lease start. Homes.com BASE is inconsistently $2,135/$2,185 on different pages; use AMH direct $2,148 total before pets rather than mix sources. AMH has not given individual Sunny + Belle ordinary approval. NOV23 independently rechecked address-specific Zillow: $2,148 total required-fees-inclusive before pets; actual listing text now advertises a 14-month lease with move-in by Dec31, replacing older 15-month/Nov15 copy. No property-specific acceptance of December date or two pets; AMH direct quote has no explicit term.",
+      "priceNote": "AMH virtual assistant Nov25 1:48 PM CT reduced total required monthly price from $2,148 to $2,113, excludes conditional and one-time charges. Both pet rents/approval, term and actual December cutoff unknown. Nov26 marketing follow-up does not confirm a hold.",
       "fit": "Shelly reviewed 236 Northview Terrace on Nov 4 and said she likes it, tentatively about 4.5/5. This supersedes the earlier assistant-predicted 3.8/5; she has NOT explicitly ranked it ahead of Clarks Mill. One-story 4BR/2BA, 1,798 sq ft; open island kitchen, granite, light walls and LVP in main spaces are advertised/visible in listing material. Actual backyard grass/fencing, bathtub location, bedroom floors and laundry-to-primary proximity remain incompletely verified; listing imagery and plans may be illustrative.",
-      "status": "Nov20 AMH direct new quoted mandatory-fee-inclusive TOTAL $2,148 before pets ($50 reduction), and continues to market property. Earlier AMH Nov6 latest lease start Nov20 is NOW in conflict with Homes.com displayed 14-month lease promotion mentioning Dec31 2026 deadline; written December start and 14mo quote not confirmed, nor application/hold. | TOUR COMPLETED NOV 23: Nathan's qualitative impression was 'okay'; don't automatically convert that to a numeric score or assume approved lease.",
+      "status": "AMH Nov25 price reduction to $2,113 required monthly total before conditional pets; Nov26 follow-up marketing. Toured Nov23, initial impression okay. No new lease-start confirmation.",
       "ratingStatus": "Shelly-confirmed 4.8/5 on user's locally edited Move Ledger screenshot shared Nov 18, 2026; supersedes prior tracker provisional rating",
       "ratingUpdatedOn": "2026-11-18",
       "readiness": {
@@ -379,11 +380,11 @@
         },
         "availability": {
           "status": "pending",
-          "detail": "Nov20 direct price-update email demonstrates still marketed; property not held and Dec start not granted; newer Dec31 promo marketing conflicts with Nov20 automated cutoff."
+          "detail": "Nov26 marketing follow-up, not a hold or independently confirmed availability; December start unresolved."
         },
         "cost": {
           "status": "pending",
-          "detail": "Nov20 direct AMH $2,148 TOTAL with required monthly charges BEFORE any 2-pet conditional charges; underlying base, 12mo/14mo term, pets and upfront fees unknown."
+          "detail": "AMH virtual assistant Nov25 1:48 PM CT reduced total required monthly price from $2,148 to $2,113, excludes conditional and one-time charges. Both pet rents/approval, term and actual December cutoff unknown. Nov26 marketing follow-up does not confirm a hold."
         },
         "lease": {
           "status": "conflict",
@@ -409,7 +410,7 @@
       ],
       "checksUpdatedOn": "2026-11-23",
       "contactUpdate": "Nov13 2:36pm CT AMH Amy T virtual leasing assistant: advertised total $2,228→$2,198, required recurring included, pet/conditional charges extra; no new move-in timing approval. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1d69fd601557b1 | Nov18/19 TOUR STATUS: Screenshot Nov18 shows Zillow tour-request form filled proposing Mon Nov23, Tue Nov24 or Wed Nov25 afternoons. No proof form was submitted, no slot or confirmation. AMH earlier offered self-tours 8AM–8PM; Nov20 latest start remains unresolved. Nov20 tour instructions verified from Amy T email Nov8: Let Yourself In 8am–8pm, no appointment required; access and current listing status recheck before travel. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1bbc69005ffab0 | Nov20 3:59pm CT AMH virtual leasing assistant Amy T: total price dropped $2198→$2148 including required recurring before pet/conditional charges, without 12mo/Dec-start approval. https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1faf8f04aada4c | Nov21 Homes.com listing marketing displays 14mo promo with move-in by Dec31 2026, contradicting older Nov20 latest-start answer; status/lease still blocked by conflict.",
-      "priceUpdatedOn": "2026-11-20",
+      "priceUpdatedOn": "2026-11-25",
       "priceAlertUrl": "https://mail.google.com/mail/u/?authuser=nathan.xb9753%40gmail.com#all/1a1faf8f04aada4c",
       "tourSchedule": {
         "status": "pending",
@@ -747,7 +748,7 @@
       "petGate": "Nov13 agent says 'Pets are ok' after question about large golden retriever Sunny and cat Belle. Combined $500 NONREFUNDABLE pet charge, tenant liable for animal damage. Written individual pet/HOA/weight clearance and monthly pet rent still unverified.",
       "priceNote": "Nov13 agent: $2250 advertised BASE, $500 NONREFUNDABLE combined pet fee for dog+cat (corrects prior 'pet deposit' assumption). Dec1 lease start acceptable. First month's rent + security deposit needed to secure; $2250 published deposit not reconfirmed. Recurring pet rent, mandatory monthly packages, 12-month term, HOA fee payer unknown. Fridge/washer/dryer excluded. Tenant mows and waters. Do not treat $2250 as full all-in.",
       "fit": "Nathan rates Tide Lane 4.6/5, not yet a Shelly rating. One-story, four bedrooms plus separate 11x10 office/flex, light-colored tile/LVP (no carpet in current MLS), open granite kitchen, pantry, primary soaking tub, fenced yard claimed, two-car garage. Small 0.126-acre lot; actual grass/fence and office enclosure not photo-verified.",
-      "status": "Nov13 human agent Kyle Vance directly confirms NOT a senior community, pets OK in context of golden retriever and cat, and Dec1 start acceptable. Advertised for rent at $2250 base (MLS #21430831, initially Nov8); also for sale until a lease is executed. Exact showing dates/time slots not supplied; no booking or hold. Full lease, costs, HOA and commute still unverified.",
+      "status": "Nov26 owner proposed Fri Nov27 5 PM instead of earlier 4 PM, asks for confirmation. No mutually confirmed appointment found. Prior $2,250 base and $500 combined nonrefundable pet fee, Dec1 acceptable as of Nov13. Term, deposit and recurring extras unknown.",
       "petBlocked": false,
       "availabilityStatus": "ACTIVE rent listing per NTREIS-linked page and agent Nov13; also for sale. No lease signed or held.",
       "ratingConfidence": "medium-low; actual Shelly photo judgment pending",
@@ -763,8 +764,8 @@
           "detail": "Nov13 agent says pets OK re both pets; formal cat/HOA clearance TBD"
         },
         "availability": {
-          "status": "yes",
-          "detail": "Nov13 human agent and MLS active rental, simultaneous sale until lease; not held"
+          "status": "pending",
+          "detail": "Owner proposed a showing Nov26; not a confirmed rental hold or final lease availability."
         },
         "cost": {
           "status": "pending",
@@ -784,7 +785,7 @@
         },
         "tour": {
           "status": "pending",
-          "detail": "Owner/agent Kyle Vance said Fri Nov27 4 PM works Nov23, but asked Nathan to call/text 682-269-4358 to mutually finalize. Agent-agreed, not yet fully confirmed/created calendar."
+          "detail": "Nov26 11:17 AM CT Kyle proposes Friday Nov27 5 PM; awaiting household confirmation. No booking made."
         }
       },
       "questions": [
@@ -1504,6 +1505,12 @@
     }
   ],
   "updates": [
+    {
+      "date": "Nov 27",
+      "tag": "LEASING CHANGES",
+      "title": "Tide Lane proposed 5 PM; Northview $35 lower",
+      "detail": "Owner proposed Friday Nov27 5 PM, not confirmed. AMH Nov25 total $2,113 before conditional pet fees, down $35. Clarks on hold; Nov26 11:10 AM deadline passed, later disposition unknown."
+    },
     {
       "date": "Nov 26",
       "tag": "HIDDEN LAKE · FINANCIAL UPDATE",
@@ -2270,7 +2277,7 @@
       "clarks": {
         "eyebrow": "On hold · family decision",
         "timing": "Previous 18-month offer, not a current commitment",
-        "status": "ON HOLD BY FAMILY CHOICE Nov26. Application previously approved and lease offered Nov25; family elected not to proceed now. May reapply if needed. No signed lease, deposit, current availability or reapplication terms confirmed.",
+        "status": "ON HOLD BY FAMILY CHOICE. Nov26 Progress reminder specified 11:10 AM CT Nov26 signature/deposit deadline, now passed; no evidence of executed lease, payment or subsequent cancellation. Reapplication and terms unverified.",
         "rooms": "4 bedrooms · 2 baths · 1,758 sq ft · one story",
         "fit": "Household toured Nov24 and rated house 4.9/5; subsequently paused commitment Nov26. Specific reservations not yet recorded.",
         "priceNote": "Historical Nov25 cost sheet: $2,133.98 recurring including both pets; not guaranteed on reapplication.",
@@ -2421,11 +2428,11 @@
     "interpretation": "Both areas have reported incidents. It would be misleading to call Hidden Lake safer because it feels wooded, or Clarks Mill unsafe from mapped counts alone; need common datasets and rates before comparing risk."
   },
   "searchSweep": {
-    "asOf": "2026-11-26",
+    "asOf": "2026-11-27",
     "scope": "Fresh discovery: Benbrook, Cedar Hill, Glenn Heights, Midlothian, Alvarado",
     "criteria": "Detached family house, four bedrooms or three plus genuine separate office; dog and cat both must be acceptable under ordinary property rules, full fenced yard/grass, preferred $2,400/month total with ordinary pets; distances to Irving job and Alvarado grandparents matter",
     "ranking": "Unrated listing leads, not photo-confirmed matches. No automatic promotion.",
-    "method": "Nov26 listing-text and status screening; exact route links provided, no new travel minutes or individual photo-condition verification.",
+    "method": "Nov26–27 listing-text and status screening; exact route links provided; no new road minutes or individual photo-condition verification.",
     "leads": [
       {
         "address": "1500 Vernon Castle Ave, Benbrook TX 76126",
@@ -2510,6 +2517,18 @@
         "listingUrl": "https://www.rentler.com/places-for-rent/tx/mansfield/1006-walnut-pl/13846736",
         "tourUrl": "https://showmojo.com/lrtl/e1cfdb20b1",
         "recommendation": "Best unverified backup to explore only if pet and December start viable"
+      },
+      {
+        "address": "2612 Wisteria Ct, Arlington TX 76014",
+        "monthlyBase": 2050,
+        "bedrooms": 4,
+        "baths": 2,
+        "sqft": 1651,
+        "description": "1975 single-story per property record; updated interiors and fenced yard advertised, near Vandergriff Park per prior listing. Current room-by-room photos, grass and tub not verified.",
+        "petGate": "Dogs and cats advertised; large dog size and fees unknown.",
+        "status": "Nov16 listing history; first discovered Nov27. Advertised available Nov17; current manager confirmation missing.",
+        "recommendation": "Unrated discovery lead; review authentic gallery before promoting; $350 monthly headroom for fees.",
+        "listingUrl": "https://www.realtor.com/rentals/details/2612-Wisteria-Ct_Arlington_TX_76014_M70029-50159"
       }
     ],
     "exclusions": [
